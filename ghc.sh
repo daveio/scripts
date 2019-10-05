@@ -23,13 +23,12 @@ export GHC_OTHER_PROTO="https" # use https to clone other repos
 # CODE
 
 function ghc() {
+  ghc_git=$(command -v git)
   ghc_startdir=$(pwd)
   if [[ ${1} =~ "/" ]]; then
-    echo "username/repo form"
     ghc_user="$(echo ${1} | cut -d / -f 1)"
     ghc_repo="$(echo ${1} | cut -d / -f 2)"
   else
-    # repo only form
     ghc_user="${GHC_ME}"
     ghc_repo="${1}"
   fi
@@ -47,17 +46,17 @@ function ghc() {
     fi
     case ${ghc_proto} in
     ssh)
-      ghc_cmd="git clone --recursive git@github.com:${ghc_user}/${ghc_repo}.git ${ghc_repo}"
+      ghc_remote="git@github.com:${ghc_user}/${ghc_repo}.git"
       ;;
     https)
-      ghc_cmd="git clone --recursive https://github.com/${ghc_user}/${ghc_repo}.git ${ghc_repo}"
+      ghc_remote="https://github.com/${ghc_user}/${ghc_repo}.git"
       ;;
     *)
       echo "Invalid git method! Choose either 'https' or 'ssh' in the environment variables."
-      ghc_cmd=""
+      unset ghc_remote
       ;;
     esac
-    ${ghc_cmd}
+    [[ -n ${ghc_remote} ]] && ${ghc_git} clone --recursive ${ghc_remote}
     if [[ -d ${ghc_repo} ]]; then
       ghc_chdir="${GHC_ROOT}/${ghc_user}/${ghc_repo}"
     else
