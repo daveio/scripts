@@ -15,3 +15,7 @@ MusicBrainz Picard plugin to remove imperfect (not yellow) albums from the match
 ## `splitme.sh`
 
 `chunkwm` utility script
+
+## `asdf-latest.fish`
+
+Fish shell function to get the latest version of a package from `asdf`. Requires the appropriate plugin to be installed first.
