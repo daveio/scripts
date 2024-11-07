@@ -1,6 +1,6 @@
 # Miscellaneous Scripts
 
-## `gandi_domain_search.py`
+## `gandi-domain-search/`
 
 Gets prices for domains currently registered on Gandi
 
@@ -8,7 +8,7 @@ Gets prices for domains currently registered on Gandi
 
 GitHub helper to keep sources organised
 
-## `remove_imperfect_albums.py`
+## `remove-imperfect-albums/`
 
 MusicBrainz Picard plugin to remove imperfect (not yellow) albums from the match list
 
