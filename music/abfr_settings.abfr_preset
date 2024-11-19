@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>compositeAction</key>
+	<dict>
+		<key>composite actions array</key>
+		<array>
+			<dict>
+				<key>action name</key>
+				<string>Advanced Options</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<false/>
+					<key>customConflictResolutionActive</key>
+					<false/>
+					<key>customConflictResolutionFirstNameUnchanged</key>
+					<integer>1</integer>
+					<key>customConflictResolutionFirstSortOrder</key>
+					<integer>8</integer>
+					<key>customConflictResolutionScheme</key>
+					<integer>9</integer>
+					<key>customConflictResolutionSecondSortOrder</key>
+					<integer>2</integer>
+					<key>customConflictResolutionThirdSortOrder</key>
+					<integer>10</integer>
+					<key>customShootingDateOrderActive</key>
+					<false/>
+					<key>fragmentSelection</key>
+					<integer>0</integer>
+					<key>pairingActive</key>
+					<false/>
+					<key>pairingIncomingPairs</key>
+					<string>jpg, jpeg</string>
+					<key>pairingOutgoingPairs</key>
+					<string>cr2, cr3, nef</string>
+					<key>priorityOrder</key>
+					<array>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>0</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>2</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>1</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>3</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>4</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>5</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>6</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>11</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>9</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>7</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>10</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>8</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>12</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>15</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>16</integer>
+						</dict>
+						<dict>
+							<key>active</key>
+							<true/>
+							<key>hidden</key>
+							<true/>
+							<key>priority</key>
+							<integer>17</integer>
+						</dict>
+					</array>
+					<key>timezoneBehaviour</key>
+					<integer>0</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Filter</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>anyOrAll</key>
+					<string>Any</string>
+					<key>conditions</key>
+					<array>
+						<dict>
+							<key>selector</key>
+							<string>FileExtension</string>
+							<key>subSelector</key>
+							<string>Contains</string>
+							<key>text</key>
+							<string>mp3</string>
+						</dict>
+						<dict>
+							<key>selector</key>
+							<string>FileExtension</string>
+							<key>subSelector</key>
+							<string>Contains</string>
+							<key>text</key>
+							<string>MP3</string>
+						</dict>
+						<dict>
+							<key>selector</key>
+							<string>FileExtension</string>
+							<key>subSelector</key>
+							<string>Contains</string>
+							<key>text</key>
+							<string>flac</string>
+						</dict>
+						<dict>
+							<key>selector</key>
+							<string>FileExtension</string>
+							<key>subSelector</key>
+							<string>Contains</string>
+							<key>text</key>
+							<string>FLAC</string>
+						</dict>
+						<dict>
+							<key>selector</key>
+							<string>FileExtension</string>
+							<key>subSelector</key>
+							<string>Contains</string>
+							<key>text</key>
+							<string>m4a</string>
+						</dict>
+						<dict>
+							<key>selector</key>
+							<string>FileExtension</string>
+							<key>subSelector</key>
+							<string>Contains</string>
+							<key>text</key>
+							<string>M4A</string>
+						</dict>
+					</array>
+					<key>filesFoldersOrBoth</key>
+					<string>Files</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>MP3 rename</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;AlbumArtist&gt; - </string>
+					<key>pattern1</key>
+					<string>&lt;Artist&gt; - </string>
+					<key>pattern2</key>
+					<string>UNKNOWN ALBUM ARTIST - </string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Add MP3 to end</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;Album&gt; - </string>
+					<key>pattern1</key>
+					<string>UNKNOWN ALBUM - </string>
+					<key>pattern2</key>
+					<string></string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Add MP3 to end</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;Year&gt; - </string>
+					<key>pattern1</key>
+					<string>XXXX - </string>
+					<key>pattern2</key>
+					<string></string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Add MP3 to end</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;0CDNum&gt;-</string>
+					<key>pattern1</key>
+					<string>X-</string>
+					<key>pattern2</key>
+					<string></string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Add MP3 to end</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;0TrackNum&gt; - </string>
+					<key>pattern1</key>
+					<string>XX - </string>
+					<key>pattern2</key>
+					<string></string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Add MP3 to end</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;Artist&gt; - </string>
+					<key>pattern1</key>
+					<string>UNKNOWN ARTIST - </string>
+					<key>pattern2</key>
+					<string></string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+			<dict>
+				<key>action name</key>
+				<string>Add MP3 to end</string>
+				<key>action parameter list</key>
+				<dict>
+					<key>active</key>
+					<true/>
+					<key>fragmentSelection</key>
+					<integer>1</integer>
+					<key>pattern</key>
+					<string>&lt;Song&gt;</string>
+					<key>pattern1</key>
+					<string>UNKNOWN TRACK</string>
+					<key>pattern2</key>
+					<string></string>
+					<key>pattern3</key>
+					<string></string>
+					<key>pattern4</key>
+					<string></string>
+				</dict>
+			</dict>
+		</array>
+		<key>currentActionIndex</key>
+		<integer>1</integer>
+	</dict>
+	<key>minimumVersion</key>
+	<integer>11</integer>
+</dict>
+</plist>

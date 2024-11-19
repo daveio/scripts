@@ -1,6 +1,29 @@
 # Commands
 
-Pretty sure XLD is unused but the settings are
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Commands](#commands)
+  - [A Better Finder Rename](#a-better-finder-rename)
+  - [XLD](#xld)
+  - [Yate](#yate)
+  - [Big Mean Folder Machine](#big-mean-folder-machine)
+  - [fish](#fish)
+
+<!-- /code_chunk_output -->
+
+## A Better Finder Rename
+
+Pretty sure [A Better Finder Rename][link-abfr] is unused.
+
+The settings are available at [abfr_settings.abfr_preset][link-abfr-settings]
+
+![ABFR rename settings](abfr.png)
+
+## XLD
+
+Pretty sure [XLD][link-xld] is unused.
 
 ```text
 %A/%A - %T (%y)/%A - %T - %y - %D-%n - %a - %t
@@ -8,7 +31,9 @@ Pretty sure XLD is unused but the settings are
 
 ![XLD rename settings](xld.png)
 
-Rename with Yate to
+## Yate
+
+Rename with [Yate][link-yate] to
 
 ```text
 ❨Album Artist❩ - ❨Album❩ - ❨Year4❩ -
@@ -18,9 +43,15 @@ Rename with Yate to
 ❨Track Pad2❩ - ❨Artist❩ - ❨Title❩
 ```
 
+Settings are available at [yate_settings.plist][link-yate-settings]
+
 ![Yate rename settings](yate.png)
 
-Flatten with Big Mean Folder Machine
+## Big Mean Folder Machine
+
+Flatten with [Big Mean Folder Machine][link-bmfm]
+
+## fish
 
 ```fish
 find . | \
@@ -48,4 +79,12 @@ if flac -t {}
   echo {}: ok >> ../log
 else
   echo {}: failed >> ../log
-end```
+end
+```
+
+[link-bmfm]: https://www.publicspace.net/BigMeanFolderMachine
+[link-abfr]: https://www.publicspace.net/ABetterFinderRename
+[link-xld]: https://tmkk.undo.jp/xld/index_e.html
+[link-yate]: https://2manyrobots.com/yate/
+[link-yate-settings]: yate_settings.plist
+[link-abfr-settings]: abfr_settings.abfr_preset
