@@ -31,6 +31,22 @@ Pretty sure [XLD][link-xld] is unused.
 
 ![XLD rename settings](xld.png)
 
+## SongKong
+
+```text
+ifnotempty(albumartist,' - ')
++ ifnotempty(album,' ')
++ '(' + (albumyear.length>4 ? albumyear.substring(0,4):albumyear) +')/'
++ ifnotempty(albumartist,' - ')
++ ifnotempty(album,' - ')
++ ifnotempty(pad(discno,2),'-')
++ ifnotempty(pad(trackno,2),' - ')
++ ifnotempty(artist,' - ')
++ title
+```
+
+![SongKong rename settings][songkong.png]
+
 ## Yate
 
 Rename with [Yate][link-yate] to
