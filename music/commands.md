@@ -46,7 +46,7 @@ ifnotempty3(albumartist,artist,'UNKNOWN ARTIST','') + '/'
 + ifnotempty2(title,'UNKNOWN TITLE','')
 ```
 
-![SongKong rename settings][songkong.png]
+![SongKong rename settings](songkong.png)
 
 ## Yate
 
