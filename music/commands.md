@@ -34,15 +34,16 @@ Pretty sure [XLD][link-xld] is unused.
 ## SongKong
 
 ```text
-ifnotempty(albumartist,' - ')
-+ ifnotempty(album,' ')
-+ '(' + (albumyear.length>4 ? albumyear.substring(0,4):albumyear) +')/'
-+ ifnotempty(albumartist,' - ')
-+ ifnotempty(album,' - ')
-+ ifnotempty(pad(discno,2),'-')
-+ ifnotempty(pad(trackno,2),' - ')
-+ ifnotempty(artist,' - ')
-+ title
+ifnotempty3(albumartist,artist,'UNKNOWN ARTIST','') + '/'
++ ifnotempty2(albumartist,'UNKNOWN ALBUM ARTIST','') + ' - '
++ ifnotempty2(album,'UNKNOWN ALBUM','') + ' '
++ '(' + ifnotempty3((albumyear.length>4 ? albumyear.substring(0,4):albumyear),(year.length>4 ? year.substring(0,4):albumyear),'UNKNOWN YEAR','') + ')' + '/'
++ ifnotempty2(albumartist,'UNKNOWN ALBUM ARTIST','') + ' - '
++ ifnotempty2(album,'UNKNOWN ALBUM','') + ' - '
++ ifnotempty2(pad(discno,2),'XX', '') + '-'
++ ifnotempty2(pad(trackno,2),'YY', '') + ' - '
++ ifnotempty2(artist,'UNKNOWN ARTIST','') + ' - '
++ ifnotempty2(title,'UNKNOWN TITLE','')
 ```
 
 ![SongKong rename settings][songkong.png]
