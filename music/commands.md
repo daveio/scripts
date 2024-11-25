@@ -7,6 +7,7 @@
 - [Commands](#commands)
   - [A Better Finder Rename](#a-better-finder-rename)
   - [XLD](#xld)
+  - [SongKong](#songkong)
   - [Yate](#yate)
   - [Big Mean Folder Machine](#big-mean-folder-machine)
   - [fish](#fish)
