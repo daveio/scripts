@@ -4,12 +4,29 @@ version = "0.1.0"
 description = "Various scripts"
 authors = ["Dave Williams <dave@dave.io>"]
 license = "MIT"
+repository = "https://github.com/daveio/scripts"
 readme = "README.md"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+keywords = []
 
 [tool.poetry.dependencies]
 python = "^3.12"
 mutagen = "^1.47.0"
+picard = "^2.12.3"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+get-audiofile-data = 'scripts:get_audiofile_data_script'
