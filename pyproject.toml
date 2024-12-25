@@ -1,13 +1,14 @@
 [tool.poetry]
-name = "gandi-domain-search"
+name = "scripts"
 version = "0.1.0"
-description = ""
+description = "Various scripts"
 authors = ["Dave Williams <dave@dave.io>"]
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.13"
-
+python = "^3.12"
+mutagen = "^1.47.0"
 
 [build-system]
 requires = ["poetry-core"]
