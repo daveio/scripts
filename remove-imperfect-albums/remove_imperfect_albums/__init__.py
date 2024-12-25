@@ -6,10 +6,9 @@ PLUGIN_API_VERSIONS = ["2.0", "2.1", "2.2", "2.3"]
 PLUGIN_LICENSE = "GPL-2.0"
 PLUGIN_LICENSE_URL = "https://www.gnu.org/licenses/gpl-2.0.html"
 
-from PyQt5.QtCore import QCoreApplication
-
 from picard.album import Album
 from picard.ui.itemviews import BaseAction, register_album_action
+from PyQt5.QtCore import QCoreApplication
 
 
 class RemoveImperfectAlbums(BaseAction):

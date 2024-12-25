@@ -1,9 +1,9 @@
-import xmlrpc.client
-import pprint
-import time
-import sys
 import csv
 import os
+import pprint
+import sys
+import time
+import xmlrpc.client
 
 # Usage:
 # GANDI_XMLRPC_API_KEY=xxxyourapikeyxxx GANDI_DOMAIN_NAME=yourdomain python3 ./gandi_domain_search.py
