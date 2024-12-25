@@ -8,7 +8,7 @@ decoders = {"flac": FLAC, "mp3": MP3, "m4a": MP4}
 
 
 def get_samplerate_bitdepth(directory):
-    for dirpath, dirnames, filenames in os.walk(directory):
+    for dirpath, _, filenames in os.walk(directory):
         for filename in filenames:
             ext = os.path.splitext(filename)[1][1:]
             file_path = os.path.join(dirpath, filename)

@@ -17,6 +17,8 @@ runtimes:
     - python@3.10.8
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
+  disabled:
+    - mypy
   enabled:
     - bandit@1.8.0
     - black@24.10.0

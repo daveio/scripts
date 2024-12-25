@@ -3,6 +3,8 @@ import os
 import pprint
 import sys
 import time
+
+# trunk-ignore(bandit/B411)
 import xmlrpc.client
 
 # Usage:

@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 #
 # SOURCE THIS FILE, DON'T EXECUTE IT.
 #   source /path/to/ghc.sh
@@ -26,20 +26,20 @@ function ghc() {
 	ghc_git=$(command -v git)
 	ghc_startdir=$(pwd)
 	if [[ ${1} =~ "/" ]]; then
-		ghc_user="$(echo ${1} | cut -d / -f 1)"
-		ghc_repo="$(echo ${1} | cut -d / -f 2)"
+		ghc_user="$(echo "${1}" | cut -d / -f 1)"
+		ghc_repo="$(echo "${1}" | cut -d / -f 2)"
 	else
 		ghc_user="${GHC_ME}"
 		ghc_repo="${1}"
 	fi
-	cd "${GHC_ROOT}"
-	[[ -d ${ghc_user} ]] || mkdir ${ghc_user}
-	cd "${ghc_user}"
+	cd "${GHC_ROOT}" || exit
+	[[ -d ${ghc_user} ]] || mkdir "${ghc_user}"
+	cd "${ghc_user}" || exit
 	if [[ -d ${ghc_repo} ]]; then
 		echo "Clone target already exists! Sending you there without cloning anything."
 		ghc_chdir="${GHC_ROOT}/${ghc_user}/${ghc_repo}"
 	else
-		if [[ ${ghc_user} == ${GHC_ME} ]]; then
+		if [[ ${ghc_user} == "${GHC_ME}" ]]; then
 			ghc_proto="${GHC_ME_PROTO}"
 		else
 			ghc_proto="${GHC_OTHER_PROTO}"
@@ -56,12 +56,12 @@ function ghc() {
 			unset ghc_remote
 			;;
 		esac
-		[[ -n ${ghc_remote} ]] && ${ghc_git} clone --recursive ${ghc_remote}
+		[[ -n ${ghc_remote} ]] && ${ghc_git} clone --recursive "${ghc_remote}"
 		if [[ -d ${ghc_repo} ]]; then
 			ghc_chdir="${GHC_ROOT}/${ghc_user}/${ghc_repo}"
 		else
 			ghc_chdir="${ghc_startdir}"
 		fi
 	fi
-	cd ${ghc_chdir}
+	cd "${ghc_chdir}" || return
 }
