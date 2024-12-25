@@ -54,16 +54,26 @@ ifnotempty3(albumartist,artist,'UNKNOWN ARTIST','') + '/'
 Rename with [Yate][link-yate] to
 
 ```text
-❨Album Artist❩ - ❨Album❩ - ❨Year4❩ -
+❨Album Artist❩ - ❨Album❩ - ❨Year4❩ - 
 ❨IfExists Disc❩
     ❨Disc Pad2❩-
 ❨endIf❩
 ❨Track Pad2❩ - ❨Artist❩ - ❨Title❩
+
+❨Folder Start❩
+
+❨Album Artist❩ - ❨Album❩ - ❨Year4❩
+
+❨Folder Start❩
+
+❨Album Artist❩
 ```
 
-Settings are available at [yate_settings.plist][link-yate-settings]
+Then create move action using the button on Settings -> Rename
 
-![Yate rename settings](yate.png)
+Settings are available at [yate_settings.plist][link-yate-settings] [needs updating]
+
+![Yate rename settings](yate.png) [needs updating]
 
 ## Big Mean Folder Machine
 
