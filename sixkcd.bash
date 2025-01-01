@@ -130,7 +130,6 @@ xkcd_siximg="$( fetch_url "$xkcd_imgurl" | magick - -resize 250% - | img2sixel )
 
 # Display (image, alt text)
 
-echo -n "   "
 echo "$xkcd_siximg"
 echo "$xkcd_alt" | wordwrap
 echo
