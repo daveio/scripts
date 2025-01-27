@@ -3,9 +3,12 @@
 require 'json'
 
 begin
-  data = JSON.parse(File.read('ports.json'), symbolize_names: true)
-  items = data.select { |item| item[:rtr] == false }
-  puts items.to_json
+  data = JSON.parse(File.read('ports.json'), symbolize_names: true)[:ports].to_a.map { |item| item[1] }
+  ready_to_run = data.filter { |item| item[:attr][:rtr] }
+  runnable = ready_to_run.filter do |item|
+    item[:attr][:arch].include?('aarch64') || item[:attr][:arch].include?('armhf')
+  end
+  runnable.map { |item| item[:source][:url] }.sort.each { |url| puts url unless url.nil? || url.empty? }
 rescue Errno::ENOENT
   error = { error: 'File not found' }
   puts JSON.generate(error)
