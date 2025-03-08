@@ -17,6 +17,8 @@ runtimes:
     - python@3.10.8
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
+  disabled:
+    - renovate
   enabled:
     - bandit@1.8.3
     - black@25.1.0
@@ -25,7 +27,6 @@ lint:
     - isort@6.0.1
     - markdownlint@0.44.0
     - prettier@3.5.3
-    - renovate@39.188.3
     - ruff@0.9.9
     - shellcheck@0.10.0
     - shfmt@3.6.0
