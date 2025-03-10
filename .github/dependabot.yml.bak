@@ -5,6 +5,6 @@ updates:
     directory: /
     schedule:
       interval: daily
-    open-pull-requests-limit: 10
-    assignees:
+      assignees:
       - daveio
+    open-pull-requests-limit: 10
