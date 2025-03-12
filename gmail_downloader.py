@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+
+# TO USE THIS:
+#
+# 1. Edit line 293 and change the email address.
+# 2. Set your Gmail app-specific password in an environment
+#    variable, GMAIL_PASSWORD.
+# 3. Wait. This script takes a long time. I spun up a GCP
+#    virtual machine to run it, estimate is about two days.
+
 import argparse
 import email
 import email.utils
@@ -8,9 +17,10 @@ import json
 import os
 import sys
 import time
+
+# import datetime
 from email.header import decode_header
 
-from rich import print as rprint
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import (
@@ -21,6 +31,8 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 from rich.text import Text
+
+# from rich import print as rprint
 
 
 def decode_str(s):
@@ -169,13 +181,15 @@ def email_to_json(msg, email_id):
 
     # Parse date if available
     date_str = headers.get("Date")
-    date_tuple = None
     if date_str:
         try:
+            # Parse the date from email headers
             date_tuple = email.utils.parsedate_to_datetime(date_str)
             if date_tuple:
-                headers["Date"] = date_tuple.isoformat()
-        except UnicodeDecodeError:
+                # Convert to string in a format safe for JSON
+                headers["Date"] = date_tuple.strftime("%Y-%m-%d %H:%M:%S %z")
+        except (UnicodeDecodeError, ValueError, TypeError):
+            # Keep the original string if parsing fails
             pass
 
     # Get content
@@ -326,7 +340,7 @@ def main():
                         available_folders.append(folder_name)
                         if "all mail" in folder_name.lower():
                             console.print(
-                                f"[bold green]Found All Mail folder:[/bold green] "
+                                f"[bold green]All Mail folder:[/bold green] "
                                 f"[yellow]{folder_name}[/yellow]"
                             )
                             all_mail_folder = folder_name
@@ -338,7 +352,7 @@ def main():
         # Select folder
         folder = args.folder
         console.print(
-            f"[bold green]Opening folder:[/bold green] " f"[yellow]{folder}[/yellow]"
+            f"[bold green]Opening [/bold green] " f"[yellow]{folder}[/yellow]"
         )
 
         # Try different folder name variations
@@ -347,7 +361,8 @@ def main():
             encode_imap_folder(folder),  # Properly encoded
             f'"{folder}"',  # Quoted
             folder.replace("[Gmail]", "[Google Mail]"),  # Alternative prefix
-            f'"{folder.replace("[Gmail]", "[Google Mail]")}"',  # Alternative quoted
+            # Alternative quoted
+            f'"{folder.replace("[Gmail]", "[Google Mail]")}"',
         ]
 
         status = "BAD"
@@ -375,7 +390,7 @@ def main():
         # If the folder doesn't exist, try the detected All Mail folder
         if status != "OK" and all_mail_folder:
             console.print(
-                f"[bold yellow]Folder not found, trying detected All Mail folder: "
+                f"[bold yellow]Trying detected All Mail folder: "
                 f"[yellow]{all_mail_folder}[/yellow]"
             )
             try:
@@ -496,15 +511,15 @@ def main():
                     Panel(
                         f"[bold green]Size Estimation Results:[/bold green]\n"
                         f"Total emails: [yellow]{email_count}[/yellow]\n"
-                        f"Total size: [yellow]{format_size(total_size)}[/yellow]\n"
-                        f"Average size: [yellow]{format_size(avg_size)}[/yellow]",
+                        f"Total: [yellow]{format_size(total_size)}[/yellow]\n"
+                        f"Average: [yellow]{format_size(avg_size)}[/yellow]",
                         border_style="green",
                     )
                 )
             else:
                 console.print(
                     Panel(
-                        "[bold red]No email size information available[/bold red]",
+                        "[bold red]No email size info available[/bold red]",
                         border_style="red",
                     )
                 )
@@ -534,13 +549,15 @@ def main():
 
                 for response_part in msg_data:
                     try:
-                        # Check if response_part is a tuple and has at least 2 elements
+                        # Check if response_part is a tuple
+                        # and has at least 2 elements
                         if isinstance(response_part, tuple) and len(response_part) > 1:
                             # Extract the email data
                             email_data = response_part[1]
                             msg = email.message_from_bytes(email_data)
 
-                            # Get email ID (use Message-ID or create a unique ID)
+                            # Get email ID (use Message-ID or
+                            # create a unique ID)
                             email_id = msg.get("Message-ID", f"email_{i}").encode()
                             if not email_id:
                                 email_id = f"email_{i}".encode()
@@ -551,22 +568,35 @@ def main():
                             )
                             filename = os.path.join(output_dir, f"{safe_id}.json")
 
-                            # Convert email to JSON
-                            email_json = email_to_json(msg, str(i).encode())
+                            try:
+                                # Convert email to JSON
+                                email_json = email_to_json(msg, str(i).encode())
 
-                            # Save JSON to file
-                            with open(filename, "w", encoding="utf-8") as f:
-                                json.dump(email_json, f, indent=2, ensure_ascii=False)
+                                # Trim the filename
+                                filename = (
+                                    filename[:240] if len(filename) > 240 else filename
+                                )
 
-                            processed += 1
+                                # Save JSON to file
+                                with open(filename, "w", encoding="utf-8") as f:
+                                    json.dump(
+                                        email_json, f, indent=2, ensure_ascii=False
+                                    )
+
+                                processed += 1
+                            except Exception as e:
+                                console.print(f"[yellow]Error with {i}: {e}[/yellow]")
+                                # Continue to next email instead of crashing
+                                continue
 
                             # Update progress bar
                             progress.update(download_task, advance=1)
 
                             # Add a small delay to avoid rate limiting
                             time.sleep(0.1)
-                    except (IndexError, TypeError):
+                    except (IndexError, TypeError) as e:
                         # Skip if response format is not as expected
+                        console.print(f"[yellow]Error with format {i}: {e}[/yellow]")
                         continue
 
         # Logout
