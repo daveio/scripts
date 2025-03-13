@@ -26,7 +26,7 @@ Options:
 
 # TO USE THIS:
 #
-# 1. Edit line 802 and change the email address.
+# 1. Edit line 849 and change the email address.
 # 2. Set your Gmail app-specific password in an environment
 #    variable, GMAIL_PASSWORD.
 # 3. Wait. This script takes a long time. I spun up a GCP
