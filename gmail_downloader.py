@@ -9,6 +9,8 @@ It includes features for handling connection drops, resuming downloads, and robu
 The script can handle various charset encoding issues and maintains state between runs to allow
 resuming after interruptions. It also logs problematic emails rather than failing on them.
 
+It supports multithreaded downloading to significantly speed up the process.
+
 Usage:
     python gmail_downloader.py [options]
 
@@ -19,17 +21,19 @@ Options:
     -s, --size-estimate    Estimate total size without downloading emails
     -r, --resume           Resume from the last downloaded email
     -v, --verbose          Show more detailed progress information
+    -t, --threads          Number of threads to use for downloading (def: 8)
 """
 
 # TO USE THIS:
 #
-# 1. Edit line 293 and change the email address.
+# 1. Edit line 802 and change the email address.
 # 2. Set your Gmail app-specific password in an environment
 #    variable, GMAIL_PASSWORD.
 # 3. Wait. This script takes a long time. I spun up a GCP
 #    virtual machine to run it, estimate is about two days.
 
 import argparse
+import concurrent.futures
 import datetime
 import email
 import email.utils
@@ -40,6 +44,7 @@ import os
 import pickle
 import re
 import sys
+import threading
 import time
 from email.header import decode_header
 
@@ -63,6 +68,12 @@ from rich.text import Text
 # from rich.live import Live
 
 # from rich import print as rprint
+
+# Shared locks for thread safety
+stats_lock = threading.Lock()
+processed_ids_lock = threading.Lock()
+state_lock = threading.Lock()
+console_lock = threading.Lock()
 
 # Maximum number of reconnection attempts
 MAX_RECONNECT_ATTEMPTS = 5
@@ -460,6 +471,324 @@ def format_time_delta(seconds):
         return f"{seconds}s"
 
 
+def worker_process_emails(
+    email_ids,
+    email_address,
+    password,
+    folder,
+    output_dir,
+    processed_ids,
+    progress,
+    download_task,
+    console,
+    args,
+    shared_stats,
+    display_stats_func,
+):
+    """
+    Worker function for processing a batch of emails in a separate thread.
+
+    Args:
+        email_ids: List of email IDs to process
+        email_address: Gmail account email address
+        password: Gmail app password
+        folder: IMAP folder name
+        output_dir: Directory to save emails
+        processed_ids: Set of already processed email IDs
+        progress: Rich progress bar
+        download_task: Task ID for the progress bar
+        console: Rich console for output
+        args: Command-line arguments
+        shared_stats: Dictionary of shared statistics
+        display_stats_func: Function to display statistics
+    """
+    # Thread-local variables
+    thread_processed = 0
+    thread_skipped = 0
+    thread_failed = 0
+    thread_bytes_downloaded = 0
+
+    # Connect to IMAP server
+    with console_lock:
+        console.print("[blue]Thread connecting to IMAP server...[/blue]")
+
+    mail = connect_to_imap(email_address, password, console)
+    if not mail:
+        with console_lock:
+            console.print(
+                "[bold red]Thread failed to connect to IMAP server[/bold red]"
+            )
+        return
+
+    # Select folder
+    status, _ = mail.select(folder)
+    if status != "OK":
+        with console_lock:
+            console.print(f"[bold red]Thread error opening folder: {folder}[/bold red]")
+        return
+
+    # Process emails
+    for i in email_ids:
+        if i <= 0:
+            break
+
+        # Check if already processed
+        with processed_ids_lock:
+            already_processed = False
+            # Check using a pseudo email ID since we don't have the real one yet
+            pseudo_id = f"email_{i}"
+            if pseudo_id in processed_ids:
+                already_processed = True
+
+        if already_processed:
+            with stats_lock:
+                shared_stats["skipped_emails"] += 1
+                thread_skipped += 1
+            progress.update(download_task, advance=1)
+            continue
+
+        # Track if this email should be skipped
+        skip_email = False
+        current_email_size = 0
+
+        # Check connection
+        try:
+            mail.noop()
+        except (imaplib.IMAP4.error, OSError, EOFError):
+            with console_lock:
+                console.print(
+                    "[yellow]Thread lost connection. Reconnecting...[/yellow]"
+                )
+            mail = connect_to_imap(email_address, password, console)
+            if mail:
+                mail.select(folder)
+            else:
+                with console_lock:
+                    console.print(
+                        "[bold red]Thread could not reconnect. Exiting.[/bold red]"
+                    )
+                break
+
+        # Process email
+        try:
+            if args.verbose:
+                with console_lock:
+                    console.print(f"[dim]Thread processing email {i}...[/dim]")
+
+            # Fetch email
+            try:
+                _, msg_data = mail.fetch(str(i).encode(), "(RFC822)")
+            except Exception as e:
+                with console_lock:
+                    console.print(
+                        f"[bold red]Thread failed to fetch email {i}: {e}[/bold red]"
+                    )
+                skip_email = True
+                with stats_lock:
+                    shared_stats["failed_emails"] += 1
+                    thread_failed += 1
+                continue
+
+            if skip_email or not msg_data:
+                with console_lock:
+                    console.print(
+                        f"[yellow]Thread skipping email {i} due to fetch issues[/yellow]"
+                    )
+                with stats_lock:
+                    shared_stats["skipped_emails"] += 1
+                    thread_skipped += 1
+                progress.update(download_task, advance=1)
+                continue
+
+            # Track if we successfully processed this email
+            processed_this_email = False
+
+            for response_part in msg_data:
+                try:
+                    if isinstance(response_part, tuple) and len(response_part) > 1:
+                        # Extract email data
+                        email_data = response_part[1]
+
+                        # Track size
+                        current_email_size = len(email_data)
+                        with stats_lock:
+                            shared_stats["total_bytes_downloaded"] += current_email_size
+                            thread_bytes_downloaded += current_email_size
+
+                        msg = email.message_from_bytes(email_data)
+
+                        # Get email ID
+                        msg_id = msg.get("Message-ID")
+                        email_id = (msg_id or f"email_{i}").encode()
+                        id_str = email_id.decode()
+
+                        # Check if already processed
+                        with processed_ids_lock:
+                            if id_str in processed_ids:
+                                if args.verbose:
+                                    with console_lock:
+                                        console.print(
+                                            f"[blue]Thread skipping already processed email {i}[/blue]"
+                                        )
+                                processed_this_email = True
+                                with stats_lock:
+                                    shared_stats["skipped_emails"] += 1
+                                    thread_skipped += 1
+                                break
+
+                        # Get date for info
+                        date_str = msg.get("Date", "Unknown date")
+                        if args.verbose:
+                            with console_lock:
+                                console.print(
+                                    f"[dim]Thread email {i} dated: {date_str}[/dim]"
+                                )
+
+                        # Create safe filename
+                        safe_id = "".join(c if c.isalnum() else "_" for c in id_str)
+                        filename = os.path.join(output_dir, f"{safe_id}.json")
+
+                        # Convert and save
+                        try:
+                            # Convert email to JSON
+                            email_json = email_to_json(msg, str(i).encode())
+
+                            # Trim filename if too long
+                            filename = (
+                                filename[:240] if len(filename) > 240 else filename
+                            )
+
+                            # Save JSON
+                            with open(filename, "w", encoding="utf-8") as f:
+                                json.dump(email_json, f, indent=2, ensure_ascii=False)
+
+                            # Mark as processed
+                            with processed_ids_lock:
+                                processed_ids.add(id_str)
+
+                            with stats_lock:
+                                shared_stats["processed"] += 1
+                                thread_processed += 1
+                                shared_stats["processed_since_last_stats"] += 1
+
+                            processed_this_email = True
+
+                            # Save state periodically
+                            if (
+                                shared_stats["processed"]
+                                + shared_stats["skipped_emails"]
+                            ) % SAVE_STATE_INTERVAL == 0:
+                                with state_lock:
+                                    save_state(output_dir, processed_ids, i)
+                                if args.verbose:
+                                    with console_lock:
+                                        console.print(
+                                            f"[green]Thread saved state at email {i}.[/green]"
+                                        )
+
+                            # Show processing time if verbose
+                            if args.verbose:
+                                with console_lock:
+                                    console.print(
+                                        f"[dim]Thread processed email {i} ({format_size(current_email_size)})[/dim]"
+                                    )
+
+                        except Exception as e:
+                            with console_lock:
+                                console.print(
+                                    f"[yellow]Thread error processing {i}: {e}[/yellow]"
+                                )
+                            continue
+
+                        # Update progress
+                        progress.update(download_task, advance=1)
+
+                        # Display stats if needed
+                        if shared_stats["processed"] % STATS_INTERVAL == 0:
+                            with stats_lock:
+                                display_stats_func(False)
+
+                except (IndexError, TypeError) as e:
+                    with console_lock:
+                        console.print(
+                            f"[yellow]Thread error with format {i}: {e}[/yellow]"
+                        )
+                    continue
+                except Exception as e:
+                    with console_lock:
+                        console.print(
+                            f"[yellow]Thread unexpected error with email {i}: {e}[/yellow]"
+                        )
+                    continue
+
+            # Handle unprocessed email
+            if not processed_this_email:
+                with console_lock:
+                    console.print(
+                        f"[yellow]Thread email {i} could not be processed.[/yellow]"
+                    )
+                with stats_lock:
+                    shared_stats["failed_emails"] += 1
+                    thread_failed += 1
+
+                try:
+                    with open(
+                        os.path.join(output_dir, "problematic_emails.txt"),
+                        "a",
+                        encoding="utf-8",
+                    ) as f:
+                        f.write(f"{i}\n")
+                except Exception:
+                    pass
+
+        except imaplib.IMAP4.error as e:
+            with console_lock:
+                console.print(
+                    f"[bold red]Thread IMAP Error at email {i}: {e}[/bold red]"
+                )
+            # Try to reconnect
+            mail = connect_to_imap(email_address, password, console)
+            if mail:
+                mail.select(folder)
+                continue
+            else:
+                with console_lock:
+                    console.print(
+                        "[bold red]Thread could not reconnect to IMAP.[/bold red]"
+                    )
+                break
+        except Exception as e:
+            with console_lock:
+                console.print(
+                    f"[bold red]Thread unexpected error at email {i}: {e}[/bold red]"
+                )
+            with stats_lock:
+                shared_stats["failed_emails"] += 1
+                thread_failed += 1
+            try:
+                with open(
+                    os.path.join(output_dir, "problematic_emails.txt"),
+                    "a",
+                    encoding="utf-8",
+                ) as f:
+                    f.write(f"{i} - {str(e)}\n")
+            except Exception:
+                pass
+            continue
+
+    # Cleanup
+    try:
+        mail.close()
+        mail.logout()
+    except Exception:
+        pass
+
+    with console_lock:
+        console.print(
+            f"[green]Thread completed processing {thread_processed} emails (skipped: {thread_skipped}, failed: {thread_failed})[/green]"
+        )
+
+
 def main():
     """
     Main function for downloading Gmail emails and saving them as JSON
@@ -500,6 +829,13 @@ def main():
         "--verbose",
         action="store_true",
         help="Show more detailed progress information",
+    )
+    parser.add_argument(
+        "-t",
+        "--threads",
+        type=int,
+        default=8,
+        help="Number of threads to use for downloading (default: 8)",
     )
     args = parser.parse_args()
 
@@ -679,7 +1015,7 @@ def main():
         else:
             total_emails = messages
 
-        processed = 0
+        # processed = 0
 
         # Size estimation mode
         if args.size_estimate:
@@ -812,9 +1148,9 @@ def main():
             start_time = time.time()
             last_stats_time = start_time
             processed_since_last_stats = 0
-            total_bytes_downloaded = 0
-            failed_emails = 0
-            skipped_emails = 0
+            # total_bytes_downloaded = 0
+            # failed_emails = 0
+            # skipped_emails = 0
 
             # Create a function to display current stats
             def display_stats(force=False):
@@ -827,21 +1163,28 @@ def main():
                 # Only show stats if enough time has passed or forced
                 if (
                     force
-                    or processed % STATS_INTERVAL == 0
+                    or shared_stats["processed"] % STATS_INTERVAL == 0
                     or elapsed_since_last >= STATS_TIME_INTERVAL
                 ):
 
                     # Calculate download rate
-                    emails_per_minute = processed / (elapsed / 60) if elapsed > 0 else 0
+                    emails_per_minute = (
+                        shared_stats["processed"] / (elapsed / 60) if elapsed > 0 else 0
+                    )
                     recent_emails_per_minute = (
-                        processed_since_last_stats / (elapsed_since_last / 60)
+                        shared_stats["processed_since_last_stats"]
+                        / (elapsed_since_last / 60)
                         if elapsed_since_last > 0
                         else 0
                     )
 
                     # Calculate estimated time remaining
                     if emails_per_minute > 0:
-                        remaining_emails = total_emails - processed - skipped_emails
+                        remaining_emails = (
+                            total_emails
+                            - shared_stats["processed"]
+                            - shared_stats["skipped_emails"]
+                        )
                         est_seconds_remaining = (
                             remaining_emails / emails_per_minute
                         ) * 60
@@ -854,7 +1197,9 @@ def main():
 
                     # Calculate percentage complete
                     percent_complete = (
-                        (processed + skipped_emails) / total_emails * 100
+                        (shared_stats["processed"] + shared_stats["skipped_emails"])
+                        / total_emails
+                        * 100
                         if total_emails > 0
                         else 0
                     )
@@ -868,12 +1213,14 @@ def main():
                     table.add_column("Stat", style="cyan")
                     table.add_column("Value", style="green")
 
-                    table.add_row("Emails Downloaded", f"{processed:,}")
-                    table.add_row("Emails Skipped", f"{skipped_emails:,}")
-                    table.add_row("Failed Emails", f"{failed_emails:,}")
+                    table.add_row("Emails Downloaded", f"{shared_stats['processed']:,}")
+                    table.add_row(
+                        "Emails Skipped", f"{shared_stats['skipped_emails']:,}"
+                    )
+                    table.add_row("Failed Emails", f"{shared_stats['failed_emails']:,}")
                     table.add_row(
                         "Total Processed",
-                        f"{(processed + skipped_emails):,} of {total_emails:,}",
+                        f"{(shared_stats['processed'] + shared_stats['skipped_emails']):,} of {total_emails:,}",
                     )
                     table.add_row("Completion", f"{percent_complete:.1f}%")
                     table.add_row(
@@ -882,282 +1229,143 @@ def main():
                     table.add_row(
                         "Recent Rate", f"{recent_emails_per_minute:.1f} emails/min"
                     )
-                    if total_bytes_downloaded > 0:
+                    if shared_stats["total_bytes_downloaded"] > 0:
                         table.add_row(
-                            "Data Downloaded", format_size(total_bytes_downloaded)
+                            "Data Downloaded",
+                            format_size(shared_stats["total_bytes_downloaded"]),
                         )
                     table.add_row("Memory Usage", f"{mem_usage:.1f} MB")
                     table.add_row("Elapsed Time", format_time_delta(elapsed))
                     table.add_row("Est. Time Remaining", time_remaining)
+                    table.add_row("Active Threads", f"{args.threads}")
 
                     console.print(table)
 
                     # Reset counters for next interval
                     last_stats_time = current_time
-                    processed_since_last_stats = 0
+                    shared_stats["processed_since_last_stats"] = 0
 
-            # Process emails from newest to oldest
-            for i in range(start_index, messages - total_emails, -1):
-                if i <= 0:
-                    break
+            # Initialize shared stats dictionary used by all threads
+            shared_stats = {
+                "processed": 0,
+                "processed_since_last_stats": 0,
+                "skipped_emails": 0,
+                "failed_emails": 0,
+                "total_bytes_downloaded": 0,
+            }
 
-                # Track if this email should be skipped completely
-                skip_email = False
-                current_email_size = 0
+            # Determine the number of threads to use
+            num_threads = args.threads
+            if num_threads <= 0:
+                num_threads = 1
+            elif num_threads > 32:
+                console.print(
+                    "[yellow]Warning: Limiting threads to 32 to avoid rate limiting[/yellow]"
+                )
+                num_threads = 32
 
-                # Check if we need to reconnect
-                try:
-                    mail.noop()
-                except (imaplib.IMAP4.error, OSError, EOFError):
+            console.print(
+                f"[bold green]Using {num_threads} threads for downloading[/bold green]"
+            )
+
+            # Divide work among threads
+            start_index = (
+                messages
+                if not (args.resume and last_processed_index > 0)
+                else last_processed_index
+            )
+            end_index = max(1, messages - total_emails + 1)
+
+            # Create batches of email IDs for each thread
+            email_batches = []
+            total_emails_to_process = start_index - end_index + 1
+            batch_size = max(1, total_emails_to_process // num_threads)
+
+            console.print(
+                f"[blue]Dividing {total_emails_to_process} emails into {num_threads} batches[/blue]"
+            )
+
+            for thread_id in range(num_threads):
+                batch_start = start_index - (thread_id * batch_size)
+                if thread_id == num_threads - 1:  # Last thread gets remaining emails
+                    batch_end = end_index
+                else:
+                    batch_end = max(end_index, batch_start - batch_size + 1)
+
+                # Generate list of email IDs for this batch (in reverse order, newest to oldest)
+                batch_ids = list(range(batch_start, batch_end - 1, -1))
+                if batch_ids:
+                    email_batches.append(batch_ids)
                     console.print(
-                        "[yellow]Lost connection to IMAP server. "
-                        "Attempting to reconnect...[/yellow]"
+                        f"[dim]Thread {thread_id+1}: Processing emails {batch_start} to {batch_end}[/dim]"
                     )
-                    mail = connect_to_imap(email_address, password, console)
-                    if mail:
-                        # Reselect the folder
-                        mail.select(folder)
-                    else:
-                        console.print(
-                            "[bold red]Could not reconnect to IMAP server. "
-                            "Saving state and exiting.[/bold red]"
-                        )
-                        save_state(output_dir, processed_ids, i + 1)
-                        break
 
-                # Wrap the entire email processing in a try block
-                # to ensure we never get stuck on a single problematic email
-                try:
-                    if args.verbose:
-                        console.print(
-                            f"[dim]Processing email {i} of {messages}...[/dim]"
+            # Launch thread pool
+            with concurrent.futures.ThreadPoolExecutor(
+                max_workers=num_threads
+            ) as executor:
+                # Submit tasks to the executor
+                futures = []
+                for batch in email_batches:
+                    if batch:  # Only process non-empty batches
+                        future = executor.submit(
+                            worker_process_emails,
+                            batch,
+                            email_address,
+                            password,
+                            folder,
+                            output_dir,
+                            processed_ids,
+                            progress,
+                            download_task,
+                            console,
+                            args,
+                            shared_stats,
+                            display_stats,
                         )
+                        futures.append(future)
 
-                    # Fetch email
+                # Wait for all futures to complete
+                for future in concurrent.futures.as_completed(futures):
                     try:
-                        _, msg_data = mail.fetch(str(i).encode(), "(RFC822)")
+                        # Get any results if the worker returns something
+                        future.result()
                     except Exception as e:
-                        console.print(
-                            f"[bold red]Failed to fetch email {i}: {e}[/bold red]"
-                        )
-                        # Mark this email for retry in the future (don't mark as processed)
-                        save_state(output_dir, processed_ids, i + 1)
-                        skip_email = True
-                        failed_emails += 1
-                        continue
+                        console.print(f"[bold red]Thread error: {e}[/bold red]")
 
-                    if skip_email or not msg_data:
-                        console.print(
-                            f"[yellow]Skipping email {i} due to fetch issues[/yellow]"
-                        )
-                        skipped_emails += 1
-                        continue
-
-                    # Track if we successfully processed this email
-                    processed_this_email = False
-
-                    for response_part in msg_data:
-                        try:
-                            # Check if response_part is a tuple
-                            # and has at least 2 elements
-                            if (
-                                isinstance(response_part, tuple)
-                                and len(response_part) > 1
-                            ):
-                                # Extract the email data
-                                email_data = response_part[1]
-                                # Track size for statistics
-                                current_email_size = len(email_data)
-                                total_bytes_downloaded += current_email_size
-
-                                msg = email.message_from_bytes(email_data)
-
-                                # Get email ID (use Message-ID or unique ID)
-                                msg_id = msg.get("Message-ID")
-                                email_id = (msg_id or f"email_{i}").encode()
-
-                                # Skip if already processed
-                                id_str = email_id.decode()
-                                if id_str in processed_ids:
-                                    if args.verbose:
-                                        console.print(
-                                            f"[blue]Skipping already processed email "
-                                            f"{i}: {id_str[:30]}...[/blue]"
-                                        )
-                                    processed_this_email = True
-                                    skipped_emails += 1
-                                    continue
-
-                                # Get email date for informational purposes
-                                date_str = msg.get("Date", "Unknown date")
-                                if args.verbose:
-                                    console.print(
-                                        f"[dim]Email {i} dated: {date_str}[/dim]"
-                                    )
-
-                                # Create safe filename
-                                safe_id = "".join(
-                                    c if c.isalnum() else "_" for c in id_str
-                                )
-                                filename = os.path.join(output_dir, f"{safe_id}.json")
-
-                                # Convert email to JSON and save
-                                try:
-                                    start_processing = time.time()
-
-                                    # Convert email to JSON
-                                    email_json = email_to_json(msg, str(i).encode())
-
-                                    # Trim the filename
-                                    filename = (
-                                        filename[:240]
-                                        if len(filename) > 240
-                                        else filename
-                                    )
-
-                                    # Save JSON to file
-                                    with open(filename, "w", encoding="utf-8") as f:
-                                        json.dump(
-                                            email_json, f, indent=2, ensure_ascii=False
-                                        )
-
-                                    # Mark as processed
-                                    processed_ids.add(id_str)
-                                    processed += 1
-                                    processed_since_last_stats += 1
-                                    processed_this_email = True
-
-                                    # Save state periodically
-                                    if processed % SAVE_STATE_INTERVAL == 0:
-                                        save_state(output_dir, processed_ids, i)
-                                        if args.verbose:
-                                            console.print(
-                                                f"[green]Saved state at email {i}. "
-                                                f"{processed} emails processed.[/green]"
-                                            )
-
-                                    # Show processing time if verbose
-                                    if args.verbose:
-                                        processing_time = time.time() - start_processing
-                                        console.print(
-                                            f"[dim]Processed email {i} in "
-                                            f"{processing_time:.2f} seconds "
-                                            f"({format_size(current_email_size)})[/dim]"
-                                        )
-
-                                except Exception as e:
-                                    console.print(
-                                        f"[yellow]Error processing {i}: {e}[/yellow]"
-                                    )
-                                    # Continue to next email part instead of crashing
-                                    continue
-
-                                # Update progress bar
-                                progress.update(download_task, advance=1)
-
-                                # Add a small delay to avoid rate limiting
-                                time.sleep(0.1)
-                        except (IndexError, TypeError) as e:
-                            # Skip if response format is not as expected
-                            console.print(
-                                f"[yellow]Error with format {i}: {e}[/yellow]"
-                            )
-                            continue
-                        except Exception as e:
-                            # Catch any other exception when processing response parts
-                            console.print(
-                                f"[yellow]Unexpected error with email {i}: {e}[/yellow]"
-                            )
-                            continue
-
-                    # Show stats periodically
-                    display_stats()
-
-                    # If we couldn't process this email at all, add it to a list of
-                    # problematic emails but continue with the download
-                    if not processed_this_email:
-                        console.print(
-                            f"[yellow]Email {i} could not be processed at all. "
-                            f"Adding to problematic_emails.txt[/yellow]"
-                        )
-                        failed_emails += 1
-                        try:
-                            with open(
-                                os.path.join(output_dir, "problematic_emails.txt"),
-                                "a",
-                                encoding="utf-8",
-                            ) as f:
-                                f.write(f"{i}\n")
-                        except Exception:
-                            # If we can't even write to the file, just continue
-                            pass
-
-                except imaplib.IMAP4.error as e:
-                    console.print(f"[bold red]IMAP Error at email {i}: {e}[/bold red]")
-                    # Save state before attempting to reconnect
-                    save_state(output_dir, processed_ids, i + 1)
-
-                    # Try to reconnect
-                    mail = connect_to_imap(email_address, password, console)
-                    if mail:
-                        # Reselect the folder
-                        mail.select(folder)
-                        # Continue with the next email
-                        continue
-                    else:
-                        console.print(
-                            "[bold red]Could not reconnect to IMAP server. "
-                            "Exiting.[/bold red]"
-                        )
-                        break
-                except Exception as e:
-                    # This is our fallback for any unexpected errors
-                    console.print(
-                        f"[bold red]Unexpected error at email {i}: {e}[/bold red]"
-                    )
-                    # Save state and continue with next email
-                    save_state(output_dir, processed_ids, i)
-                    failed_emails += 1
-
-                    # Log problematic email
-                    try:
-                        with open(
-                            os.path.join(output_dir, "problematic_emails.txt"),
-                            "a",
-                            encoding="utf-8",
-                        ) as f:
-                            f.write(f"{i} - {str(e)}\n")
-                    except Exception:
-                        # If we can't even write to the file, just continue
-                        pass
-
-                    continue
-
-            # Save final state
-            save_state(output_dir, processed_ids, i)
-
-            # Display final statistics
+            # Remove the second progress bar that was causing conflicts
+            # Final display of stats
             display_stats(force=True)
 
             # Calculate overall performance
             total_time = time.time() - start_time
-            emails_per_minute = processed / (total_time / 60) if total_time > 0 else 0
+            emails_per_minute = (
+                shared_stats["processed"] / (total_time / 60) if total_time > 0 else 0
+            )
 
             # Show final download summary
             summary_table = Table(title="Download Summary")
             summary_table.add_column("Metric", style="cyan")
             summary_table.add_column("Value", style="green")
 
-            summary_table.add_row("Total Emails Downloaded", f"{processed:,}")
-            summary_table.add_row("Total Emails Skipped", f"{skipped_emails:,}")
-            summary_table.add_row("Total Failed Emails", f"{failed_emails:,}")
             summary_table.add_row(
-                "Total Data Downloaded", format_size(total_bytes_downloaded)
+                "Total Emails Downloaded", f"{shared_stats['processed']:,}"
+            )
+            summary_table.add_row(
+                "Total Emails Skipped", f"{shared_stats['skipped_emails']:,}"
+            )
+            summary_table.add_row(
+                "Total Failed Emails", f"{shared_stats['failed_emails']:,}"
+            )
+            summary_table.add_row(
+                "Total Data Downloaded",
+                format_size(shared_stats["total_bytes_downloaded"]),
             )
             summary_table.add_row(
                 "Average Download Rate", f"{emails_per_minute:.2f} emails/min"
             )
             summary_table.add_row("Total Download Time", format_time_delta(total_time))
+            summary_table.add_row("Threads Used", f"{num_threads}")
 
             console.print(summary_table)
 
@@ -1171,7 +1379,7 @@ def main():
         console.print(
             Panel(
                 "[bold green]Successfully downloaded "
-                f"{processed} emails to '{output_dir}' directory"
+                f"{shared_stats['processed']} emails to '{output_dir}' directory"
                 "[/bold green]",
                 border_style="green",
             )
