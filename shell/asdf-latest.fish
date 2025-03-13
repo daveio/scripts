@@ -1,3 +1,5 @@
+#!/usr/bin/env fish
+
 function asdf-latest
   echo "updating asdf..." 1>&2
   asdf update --head > /dev/null 2>/dev/null
