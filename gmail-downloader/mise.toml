@@ -1,3 +1,6 @@
 [tools]
 python = "3.13"
 uv = "latest"
+
+[env.'_'.file]
+path = ".env"
