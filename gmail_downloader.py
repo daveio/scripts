@@ -1,5 +1,26 @@
 #!/usr/bin/env python3
 
+"""
+Gmail Downloader
+
+This script downloads all emails from a Gmail account using IMAP and saves them as JSON files.
+It includes features for handling connection drops, resuming downloads, and robust error recovery.
+
+The script can handle various charset encoding issues and maintains state between runs to allow
+resuming after interruptions. It also logs problematic emails rather than failing on them.
+
+Usage:
+    python gmail_downloader.py [options]
+
+Options:
+    -o, --output DIR       Output directory for JSON files (default: emails)
+    -l, --limit NUM        Limit number of emails to download
+    -f, --folder FOLDER    IMAP folder to download (default: [Gmail]/All Mail)
+    -s, --size-estimate    Estimate total size without downloading emails
+    -r, --resume           Resume from the last downloaded email
+    -v, --verbose          Show more detailed progress information
+"""
+
 # TO USE THIS:
 #
 # 1. Edit line 293 and change the email address.
@@ -9,30 +30,50 @@
 #    virtual machine to run it, estimate is about two days.
 
 import argparse
+import datetime
 import email
 import email.utils
 import getpass
 import imaplib
 import json
 import os
+import pickle
+import re
 import sys
 import time
-
-# import datetime
 from email.header import decode_header
 
+import psutil  # For memory usage stats
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import (
     BarColumn,
     Progress,
+    SpinnerColumn,
     TaskProgressColumn,
     TextColumn,
     TimeRemainingColumn,
 )
+from rich.table import Table
 from rich.text import Text
 
+# import datetime
+
+
+# from rich.live import Live
+
 # from rich import print as rprint
+
+# Maximum number of reconnection attempts
+MAX_RECONNECT_ATTEMPTS = 5
+# Time to wait between reconnection attempts (in seconds)
+RECONNECT_DELAY = 5
+# Save state every N emails
+SAVE_STATE_INTERVAL = 50
+# Display stats summary every N emails
+STATS_INTERVAL = 100
+# Display stats summary every N seconds
+STATS_TIME_INTERVAL = 300  # 5 minutes
 
 
 def decode_str(s):
@@ -63,6 +104,40 @@ def decode_str(s):
     return result
 
 
+def clean_charset(charset):
+    """
+    Clean and normalize charset strings that might have additional metadata.
+
+    Args:
+        charset: The charset string that might contain metadata
+
+    Returns:
+        A clean charset string
+    """
+    if not charset:
+        return None
+
+    # Check for common patterns and clean them
+    if ";" in charset:
+        # Handle cases like "text/html; charset=utf-8;"
+        match = re.search(r"charset=([^;]+)", charset)
+        if match:
+            return match.group(1).strip()
+
+    if "," in charset:
+        # Handle cases like "utf-8,text/html"
+        parts = charset.split(",")
+        for part in parts:
+            if "text/" not in part:
+                return part.strip()
+
+    # Handle unknown-8bit by using utf-8 with error handling
+    if "unknown" in charset.lower():
+        return "utf-8"
+
+    return charset
+
+
 def get_email_content(msg):
     """
     Extract email content (text and html) from an email message.
@@ -86,13 +161,18 @@ def get_email_content(msg):
 
             payload = part.get_payload(decode=True)
             if payload:
-                charset = part.get_content_charset()
-                if charset:
-                    try:
-                        decoded_payload = payload.decode(charset)
-                    except UnicodeDecodeError:
+                charset = clean_charset(part.get_content_charset())
+                try:
+                    if charset:
+                        try:
+                            decoded_payload = payload.decode(charset)
+                        except (UnicodeDecodeError, LookupError):
+                            # Handle unknown encoding error
+                            decoded_payload = payload.decode("utf-8", errors="replace")
+                    else:
                         decoded_payload = payload.decode("utf-8", errors="replace")
-                else:
+                except Exception:
+                    # Fallback for any other decoding issues
                     decoded_payload = payload.decode("utf-8", errors="replace")
 
                 if content_type == "text/plain":
@@ -102,13 +182,18 @@ def get_email_content(msg):
     else:
         payload = msg.get_payload(decode=True)
         if payload:
-            charset = msg.get_content_charset()
-            if charset:
-                try:
-                    decoded_payload = payload.decode(charset)
-                except UnicodeDecodeError:
+            charset = clean_charset(msg.get_content_charset())
+            try:
+                if charset:
+                    try:
+                        decoded_payload = payload.decode(charset)
+                    except (UnicodeDecodeError, LookupError):
+                        # Handle unknown encoding error
+                        decoded_payload = payload.decode("utf-8", errors="replace")
+                else:
                     decoded_payload = payload.decode("utf-8", errors="replace")
-            else:
+            except Exception:
+                # Fallback for any other decoding issues
                 decoded_payload = payload.decode("utf-8", errors="replace")
 
             if msg.get_content_type() == "text/plain":
@@ -258,6 +343,123 @@ def encode_imap_folder(folder_name):
     return folder_name
 
 
+def connect_to_imap(email_address, password, console):
+    """
+    Connect to the Gmail IMAP server with retry logic.
+
+    Args:
+        email_address: The Gmail address to connect with
+        password: The app password
+        console: Rich console for output
+
+    Returns:
+        IMAP connection object or None if connection fails after retries
+    """
+    for attempt in range(MAX_RECONNECT_ATTEMPTS):
+        try:
+            console.print(
+                f"[yellow]IMAP connection attempt {attempt + 1}/{MAX_RECONNECT_ATTEMPTS}[/yellow]"
+            )
+            mail = imaplib.IMAP4_SSL("imap.gmail.com")
+            mail.login(email_address, password)
+            console.print("[green]Successfully connected to Gmail IMAP server[/green]")
+            return mail
+        except imaplib.IMAP4.error as e:
+            console.print(f"[bold red]IMAP Error: {e}[/bold red]")
+            if attempt < MAX_RECONNECT_ATTEMPTS - 1:
+                console.print(
+                    f"[yellow]Retrying in {RECONNECT_DELAY} seconds...[/yellow]"
+                )
+                time.sleep(RECONNECT_DELAY)
+            else:
+                console.print(
+                    "[bold red]Failed to connect after "
+                    f"{MAX_RECONNECT_ATTEMPTS} attempts[/bold red]"
+                )
+                return None
+        except Exception as e:
+            console.print(f"[bold red]Connection Error: {e}[/bold red]")
+            if attempt < MAX_RECONNECT_ATTEMPTS - 1:
+                console.print(
+                    f"[yellow]Retrying in {RECONNECT_DELAY} seconds...[/yellow]"
+                )
+                time.sleep(RECONNECT_DELAY)
+            else:
+                console.print(
+                    "[bold red]Failed to connect after "
+                    f"{MAX_RECONNECT_ATTEMPTS} attempts[/bold red]"
+                )
+                return None
+    return None
+
+
+def load_state(output_dir):
+    """
+    Load the download state if it exists.
+
+    Args:
+        output_dir: Directory where the state file is stored
+
+    Returns:
+        A tuple of (processed_ids, last_processed_index)
+    """
+    state_file = os.path.join(output_dir, "download_state.pkl")
+    if os.path.exists(state_file):
+        try:
+            with open(state_file, "rb") as f:
+                state = pickle.load(f)
+                return state.get("processed_ids", set()), state.get("last_index", 0)
+        except Exception:
+            return set(), 0
+    return set(), 0
+
+
+def save_state(output_dir, processed_ids, last_index):
+    """
+    Save the current download state.
+
+    Args:
+        output_dir: Directory to save the state file
+        processed_ids: Set of already processed email IDs
+        last_index: Last email index that was processed
+    """
+    state_file = os.path.join(output_dir, "download_state.pkl")
+    state = {
+        "processed_ids": processed_ids,
+        "last_index": last_index,
+        "timestamp": time.time(),
+    }
+    try:
+        with open(state_file, "wb") as f:
+            pickle.dump(state, f)
+    except Exception as e:
+        print(f"Error saving state: {e}")
+
+
+def format_time_delta(seconds):
+    """
+    Format a time delta in seconds to a human-readable string.
+
+    Args:
+        seconds: Number of seconds
+
+    Returns:
+        Formatted string like "2h 30m 45s"
+    """
+    if seconds < 0:
+        return "unknown"
+
+    hours, remainder = divmod(int(seconds), 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    if hours > 0:
+        return f"{hours}h {minutes}m {seconds}s"
+    elif minutes > 0:
+        return f"{minutes}m {seconds}s"
+    else:
+        return f"{seconds}s"
+
+
 def main():
     """
     Main function for downloading Gmail emails and saving them as JSON
@@ -287,6 +489,18 @@ def main():
         action="store_true",
         help="Estimate total size without downloading emails",
     )
+    parser.add_argument(
+        "-r",
+        "--resume",
+        action="store_true",
+        help="Resume from the last downloaded email",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Show more detailed progress information",
+    )
     args = parser.parse_args()
 
     console = Console()
@@ -312,13 +526,30 @@ def main():
     if not args.size_estimate:
         os.makedirs(output_dir, exist_ok=True)
 
+    # Load state if resuming
+    processed_ids = set()
+    last_processed_index = 0
+    if args.resume:
+        processed_ids, last_processed_index = load_state(output_dir)
+        if processed_ids:
+            console.print(
+                f"[green]Resuming download. {len(processed_ids)} emails "
+                f"already processed.[/green]"
+            )
+        else:
+            console.print(
+                "[yellow]No saved state found. Starting from the beginning.[/yellow]"
+            )
+
     try:
         # Connect to Google Workspace IMAP server
         with console.status(
             "[bold green]Connecting to Google Workspace...[/bold green]"
         ):
-            mail = imaplib.IMAP4_SSL("imap.gmail.com")
-            mail.login(email_address, password)
+            mail = connect_to_imap(email_address, password, console)
+            if not mail:
+                console.print("[bold red]Failed to connect to IMAP server[/bold red]")
+                sys.exit(1)
 
         # List available folders
         console.print("[bold blue]Available folders:[/bold blue]")
@@ -471,32 +702,58 @@ def main():
                     if i <= 0:
                         break
 
-                    # Fetch email size using FETCH with RFC822.SIZE
-                    _, msg_data = mail.fetch(str(i).encode(), "(RFC822.SIZE)")
+                    try:
+                        # Fetch email size using FETCH with RFC822.SIZE
+                        _, msg_data = mail.fetch(str(i).encode(), "(RFC822.SIZE)")
 
-                    for response_part in msg_data:
-                        try:
-                            # Response format is typically like
-                            # b'* 1 FETCH (RFC822.SIZE 2539)'
-                            if isinstance(response_part, bytes):
-                                response_str = response_part.decode("utf-8")
-                                if "RFC822.SIZE" in response_str:
-                                    # Extract the size value
-                                    size_start = response_str.find("RFC822.SIZE") + 11
-                                    size_end = response_str.find(")", size_start)
-                                    if size_end == -1:
-                                        size_end = len(response_str)
-                                    size_str = response_str[size_start:size_end].strip()
-                                    try:
-                                        size = int(size_str)
-                                        total_size += size
-                                        email_count += 1
-                                    except ValueError:
-                                        # If we can't parse the size, just skip
-                                        pass
-                        except Exception:
-                            # Skip if response format is not as expected
-                            continue
+                        for response_part in msg_data:
+                            try:
+                                # Response format is typically like
+                                # b'* 1 FETCH (RFC822.SIZE 2539)'
+                                if isinstance(response_part, bytes):
+                                    response_str = response_part.decode("utf-8")
+                                    if "RFC822.SIZE" in response_str:
+                                        # Extract the size value
+                                        size_start = (
+                                            response_str.find("RFC822.SIZE") + 11
+                                        )
+                                        size_end = response_str.find(")", size_start)
+                                        if size_end == -1:
+                                            size_end = len(response_str)
+                                        size_str = response_str[
+                                            size_start:size_end
+                                        ].strip()
+                                        try:
+                                            size = int(size_str)
+                                            total_size += size
+                                            email_count += 1
+                                        except ValueError:
+                                            # If we can't parse the size, skip
+                                            pass
+                            except Exception:
+                                # Skip if response format is not as expected
+                                continue
+                    except imaplib.IMAP4.error as e:
+                        console.print(
+                            f"[bold red]IMAP Error during size estimation: "
+                            f"{e}[/bold red]"
+                        )
+                        # Try to reconnect
+                        mail = connect_to_imap(email_address, password, console)
+                        if mail:
+                            # Reselect the folder
+                            mail.select(folder)
+                        else:
+                            console.print(
+                                "[bold red]Could not reconnect to IMAP server. "
+                                "Aborting.[/bold red]"
+                            )
+                            break
+                    except Exception as e:
+                        console.print(
+                            f"[bold red]Error during size estimation: {e}[/bold red]"
+                        )
+                        continue
 
                     # Update progress bar
                     progress.update(size_task, advance=1)
@@ -531,77 +788,385 @@ def main():
 
         # Regular download mode (not size estimation)
         with Progress(
+            SpinnerColumn(),
             TextColumn("[bold blue]{task.description}[/bold blue]"),
             BarColumn(bar_width=40),
             TaskProgressColumn(),
             TimeRemainingColumn(),
             console=console,
         ) as progress:
-            download_task = progress.add_task("Downloading emails", total=total_emails)
+            # Adjust total for progress bar based on already processed emails
+            remaining = total_emails - len(processed_ids)
+            download_task = progress.add_task("Downloading emails", total=remaining)
+
+            # Start from last processed index if resuming
+            start_index = messages
+            if args.resume and last_processed_index > 0:
+                start_index = last_processed_index
+
+            console.print(
+                f"[green]Starting download from email index: {start_index}[/green]"
+            )
+
+            # Track download statistics
+            start_time = time.time()
+            last_stats_time = start_time
+            processed_since_last_stats = 0
+            total_bytes_downloaded = 0
+            failed_emails = 0
+            skipped_emails = 0
+
+            # Create a function to display current stats
+            def display_stats(force=False):
+                nonlocal last_stats_time, processed_since_last_stats
+
+                current_time = time.time()
+                elapsed = current_time - start_time
+                elapsed_since_last = current_time - last_stats_time
+
+                # Only show stats if enough time has passed or forced
+                if (
+                    force
+                    or processed % STATS_INTERVAL == 0
+                    or elapsed_since_last >= STATS_TIME_INTERVAL
+                ):
+
+                    # Calculate download rate
+                    emails_per_minute = processed / (elapsed / 60) if elapsed > 0 else 0
+                    recent_emails_per_minute = (
+                        processed_since_last_stats / (elapsed_since_last / 60)
+                        if elapsed_since_last > 0
+                        else 0
+                    )
+
+                    # Calculate estimated time remaining
+                    if emails_per_minute > 0:
+                        remaining_emails = total_emails - processed - skipped_emails
+                        est_seconds_remaining = (
+                            remaining_emails / emails_per_minute
+                        ) * 60
+                        time_remaining = format_time_delta(est_seconds_remaining)
+                    else:
+                        time_remaining = "calculating..."
+
+                    # Get memory usage
+                    mem_usage = psutil.Process().memory_info().rss / (1024 * 1024)  # MB
+
+                    # Calculate percentage complete
+                    percent_complete = (
+                        (processed + skipped_emails) / total_emails * 100
+                        if total_emails > 0
+                        else 0
+                    )
+
+                    # Create and display stats table
+                    table = Table(
+                        title="Download Progress Statistics",
+                        caption=f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                    )
+
+                    table.add_column("Stat", style="cyan")
+                    table.add_column("Value", style="green")
+
+                    table.add_row("Emails Downloaded", f"{processed:,}")
+                    table.add_row("Emails Skipped", f"{skipped_emails:,}")
+                    table.add_row("Failed Emails", f"{failed_emails:,}")
+                    table.add_row(
+                        "Total Processed",
+                        f"{(processed + skipped_emails):,} of {total_emails:,}",
+                    )
+                    table.add_row("Completion", f"{percent_complete:.1f}%")
+                    table.add_row(
+                        "Download Rate", f"{emails_per_minute:.1f} emails/min"
+                    )
+                    table.add_row(
+                        "Recent Rate", f"{recent_emails_per_minute:.1f} emails/min"
+                    )
+                    if total_bytes_downloaded > 0:
+                        table.add_row(
+                            "Data Downloaded", format_size(total_bytes_downloaded)
+                        )
+                    table.add_row("Memory Usage", f"{mem_usage:.1f} MB")
+                    table.add_row("Elapsed Time", format_time_delta(elapsed))
+                    table.add_row("Est. Time Remaining", time_remaining)
+
+                    console.print(table)
+
+                    # Reset counters for next interval
+                    last_stats_time = current_time
+                    processed_since_last_stats = 0
 
             # Process emails from newest to oldest
-            for i in range(messages, messages - total_emails, -1):
+            for i in range(start_index, messages - total_emails, -1):
                 if i <= 0:
                     break
 
-                # Fetch email
-                _, msg_data = mail.fetch(str(i).encode(), "(RFC822)")
+                # Track if this email should be skipped completely
+                skip_email = False
+                current_email_size = 0
 
-                for response_part in msg_data:
+                # Check if we need to reconnect
+                try:
+                    mail.noop()
+                except (imaplib.IMAP4.error, OSError, EOFError):
+                    console.print(
+                        "[yellow]Lost connection to IMAP server. "
+                        "Attempting to reconnect...[/yellow]"
+                    )
+                    mail = connect_to_imap(email_address, password, console)
+                    if mail:
+                        # Reselect the folder
+                        mail.select(folder)
+                    else:
+                        console.print(
+                            "[bold red]Could not reconnect to IMAP server. "
+                            "Saving state and exiting.[/bold red]"
+                        )
+                        save_state(output_dir, processed_ids, i + 1)
+                        break
+
+                # Wrap the entire email processing in a try block
+                # to ensure we never get stuck on a single problematic email
+                try:
+                    if args.verbose:
+                        console.print(
+                            f"[dim]Processing email {i} of {messages}...[/dim]"
+                        )
+
+                    # Fetch email
                     try:
-                        # Check if response_part is a tuple
-                        # and has at least 2 elements
-                        if isinstance(response_part, tuple) and len(response_part) > 1:
-                            # Extract the email data
-                            email_data = response_part[1]
-                            msg = email.message_from_bytes(email_data)
-
-                            # Get email ID (use Message-ID or
-                            # create a unique ID)
-                            email_id = msg.get("Message-ID", f"email_{i}").encode()
-                            if not email_id:
-                                email_id = f"email_{i}".encode()
-
-                            # Create safe filename
-                            safe_id = "".join(
-                                c if c.isalnum() else "_" for c in email_id.decode()
-                            )
-                            filename = os.path.join(output_dir, f"{safe_id}.json")
-
-                            try:
-                                # Convert email to JSON
-                                email_json = email_to_json(msg, str(i).encode())
-
-                                # Trim the filename
-                                filename = (
-                                    filename[:240] if len(filename) > 240 else filename
-                                )
-
-                                # Save JSON to file
-                                with open(filename, "w", encoding="utf-8") as f:
-                                    json.dump(
-                                        email_json, f, indent=2, ensure_ascii=False
-                                    )
-
-                                processed += 1
-                            except Exception as e:
-                                console.print(f"[yellow]Error with {i}: {e}[/yellow]")
-                                # Continue to next email instead of crashing
-                                continue
-
-                            # Update progress bar
-                            progress.update(download_task, advance=1)
-
-                            # Add a small delay to avoid rate limiting
-                            time.sleep(0.1)
-                    except (IndexError, TypeError) as e:
-                        # Skip if response format is not as expected
-                        console.print(f"[yellow]Error with format {i}: {e}[/yellow]")
+                        _, msg_data = mail.fetch(str(i).encode(), "(RFC822)")
+                    except Exception as e:
+                        console.print(
+                            f"[bold red]Failed to fetch email {i}: {e}[/bold red]"
+                        )
+                        # Mark this email for retry in the future (don't mark as processed)
+                        save_state(output_dir, processed_ids, i + 1)
+                        skip_email = True
+                        failed_emails += 1
                         continue
 
+                    if skip_email or not msg_data:
+                        console.print(
+                            f"[yellow]Skipping email {i} due to fetch issues[/yellow]"
+                        )
+                        skipped_emails += 1
+                        continue
+
+                    # Track if we successfully processed this email
+                    processed_this_email = False
+
+                    for response_part in msg_data:
+                        try:
+                            # Check if response_part is a tuple
+                            # and has at least 2 elements
+                            if (
+                                isinstance(response_part, tuple)
+                                and len(response_part) > 1
+                            ):
+                                # Extract the email data
+                                email_data = response_part[1]
+                                # Track size for statistics
+                                current_email_size = len(email_data)
+                                total_bytes_downloaded += current_email_size
+
+                                msg = email.message_from_bytes(email_data)
+
+                                # Get email ID (use Message-ID or unique ID)
+                                msg_id = msg.get("Message-ID")
+                                email_id = (msg_id or f"email_{i}").encode()
+
+                                # Skip if already processed
+                                id_str = email_id.decode()
+                                if id_str in processed_ids:
+                                    if args.verbose:
+                                        console.print(
+                                            f"[blue]Skipping already processed email "
+                                            f"{i}: {id_str[:30]}...[/blue]"
+                                        )
+                                    processed_this_email = True
+                                    skipped_emails += 1
+                                    continue
+
+                                # Get email date for informational purposes
+                                date_str = msg.get("Date", "Unknown date")
+                                if args.verbose:
+                                    console.print(
+                                        f"[dim]Email {i} dated: {date_str}[/dim]"
+                                    )
+
+                                # Create safe filename
+                                safe_id = "".join(
+                                    c if c.isalnum() else "_" for c in id_str
+                                )
+                                filename = os.path.join(output_dir, f"{safe_id}.json")
+
+                                # Convert email to JSON and save
+                                try:
+                                    start_processing = time.time()
+
+                                    # Convert email to JSON
+                                    email_json = email_to_json(msg, str(i).encode())
+
+                                    # Trim the filename
+                                    filename = (
+                                        filename[:240]
+                                        if len(filename) > 240
+                                        else filename
+                                    )
+
+                                    # Save JSON to file
+                                    with open(filename, "w", encoding="utf-8") as f:
+                                        json.dump(
+                                            email_json, f, indent=2, ensure_ascii=False
+                                        )
+
+                                    # Mark as processed
+                                    processed_ids.add(id_str)
+                                    processed += 1
+                                    processed_since_last_stats += 1
+                                    processed_this_email = True
+
+                                    # Save state periodically
+                                    if processed % SAVE_STATE_INTERVAL == 0:
+                                        save_state(output_dir, processed_ids, i)
+                                        if args.verbose:
+                                            console.print(
+                                                f"[green]Saved state at email {i}. "
+                                                f"{processed} emails processed.[/green]"
+                                            )
+
+                                    # Show processing time if verbose
+                                    if args.verbose:
+                                        processing_time = time.time() - start_processing
+                                        console.print(
+                                            f"[dim]Processed email {i} in "
+                                            f"{processing_time:.2f} seconds "
+                                            f"({format_size(current_email_size)})[/dim]"
+                                        )
+
+                                except Exception as e:
+                                    console.print(
+                                        f"[yellow]Error processing {i}: {e}[/yellow]"
+                                    )
+                                    # Continue to next email part instead of crashing
+                                    continue
+
+                                # Update progress bar
+                                progress.update(download_task, advance=1)
+
+                                # Add a small delay to avoid rate limiting
+                                time.sleep(0.1)
+                        except (IndexError, TypeError) as e:
+                            # Skip if response format is not as expected
+                            console.print(
+                                f"[yellow]Error with format {i}: {e}[/yellow]"
+                            )
+                            continue
+                        except Exception as e:
+                            # Catch any other exception when processing response parts
+                            console.print(
+                                f"[yellow]Unexpected error with email {i}: {e}[/yellow]"
+                            )
+                            continue
+
+                    # Show stats periodically
+                    display_stats()
+
+                    # If we couldn't process this email at all, add it to a list of
+                    # problematic emails but continue with the download
+                    if not processed_this_email:
+                        console.print(
+                            f"[yellow]Email {i} could not be processed at all. "
+                            f"Adding to problematic_emails.txt[/yellow]"
+                        )
+                        failed_emails += 1
+                        try:
+                            with open(
+                                os.path.join(output_dir, "problematic_emails.txt"),
+                                "a",
+                                encoding="utf-8",
+                            ) as f:
+                                f.write(f"{i}\n")
+                        except Exception:
+                            # If we can't even write to the file, just continue
+                            pass
+
+                except imaplib.IMAP4.error as e:
+                    console.print(f"[bold red]IMAP Error at email {i}: {e}[/bold red]")
+                    # Save state before attempting to reconnect
+                    save_state(output_dir, processed_ids, i + 1)
+
+                    # Try to reconnect
+                    mail = connect_to_imap(email_address, password, console)
+                    if mail:
+                        # Reselect the folder
+                        mail.select(folder)
+                        # Continue with the next email
+                        continue
+                    else:
+                        console.print(
+                            "[bold red]Could not reconnect to IMAP server. "
+                            "Exiting.[/bold red]"
+                        )
+                        break
+                except Exception as e:
+                    # This is our fallback for any unexpected errors
+                    console.print(
+                        f"[bold red]Unexpected error at email {i}: {e}[/bold red]"
+                    )
+                    # Save state and continue with next email
+                    save_state(output_dir, processed_ids, i)
+                    failed_emails += 1
+
+                    # Log problematic email
+                    try:
+                        with open(
+                            os.path.join(output_dir, "problematic_emails.txt"),
+                            "a",
+                            encoding="utf-8",
+                        ) as f:
+                            f.write(f"{i} - {str(e)}\n")
+                    except Exception:
+                        # If we can't even write to the file, just continue
+                        pass
+
+                    continue
+
+            # Save final state
+            save_state(output_dir, processed_ids, i)
+
+            # Display final statistics
+            display_stats(force=True)
+
+            # Calculate overall performance
+            total_time = time.time() - start_time
+            emails_per_minute = processed / (total_time / 60) if total_time > 0 else 0
+
+            # Show final download summary
+            summary_table = Table(title="Download Summary")
+            summary_table.add_column("Metric", style="cyan")
+            summary_table.add_column("Value", style="green")
+
+            summary_table.add_row("Total Emails Downloaded", f"{processed:,}")
+            summary_table.add_row("Total Emails Skipped", f"{skipped_emails:,}")
+            summary_table.add_row("Total Failed Emails", f"{failed_emails:,}")
+            summary_table.add_row(
+                "Total Data Downloaded", format_size(total_bytes_downloaded)
+            )
+            summary_table.add_row(
+                "Average Download Rate", f"{emails_per_minute:.2f} emails/min"
+            )
+            summary_table.add_row("Total Download Time", format_time_delta(total_time))
+
+            console.print(summary_table)
+
         # Logout
-        mail.close()
-        mail.logout()
+        try:
+            mail.close()
+            mail.logout()
+        except Exception:
+            pass
 
         console.print(
             Panel(
@@ -614,8 +1179,14 @@ def main():
 
     except imaplib.IMAP4.error as e:
         console.print(f"[bold red]IMAP Error: {e}[/bold red]")
+        # Save state before exiting
+        if not args.size_estimate:
+            save_state(output_dir, processed_ids, last_processed_index)
     except Exception as e:
         console.print(f"[bold red]Error: {e}[/bold red]")
+        # Save state before exiting
+        if not args.size_estimate:
+            save_state(output_dir, processed_ids, last_processed_index)
 
 
 if __name__ == "__main__":
