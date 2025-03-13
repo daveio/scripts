@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=76", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gmail-downloader"
+version = "0.1.0"
+description = "Download all emails from a Gmail account using IMAP and save them as JSON files"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { file = "LICENSE" }
+authors = [{ name = "Dave Williams", email = "dave@dave.io" }]
+classifiers = [
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "psutil>=7",
+  "rich>=13",
+  "setuptools>=76",
+  "types-psutil>=7",
+  "types-setuptools>=76",
+  "wheel>=0.45",
+]
+
+[project.optional-dependencies]
+dev = ["black", "isort", "flake8", "pytest", "uv"]
+
+[project.scripts]
+gmail-downloader = "gmail_downloader.main:main"
+
+[tool.black]
+line-length = 120
+target-version = ["py313"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.setuptools]
+packages = ["gmail_downloader"]
