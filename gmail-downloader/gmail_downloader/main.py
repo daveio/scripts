@@ -117,7 +117,10 @@ def decode_str(s):
     return result
 
 
-def clean_charset(charset):
+def clean_charset(
+    charset,
+):  # sourcery skip: assign-if-exp, reintroduce-else, use-getitem-for-re-match-groups
+    # sourcery skip: use-named-expression
     """
     Clean and normalize charset strings that might have additional metadata.
 
@@ -151,7 +154,7 @@ def clean_charset(charset):
     return charset
 
 
-def get_email_content(msg):
+def get_email_content(msg):  # sourcery skip: remove-redundant-exception, use-named-expression
     """
     Extract email content (text and html) from an email message.
 
@@ -249,7 +252,8 @@ def get_attachments_info(msg):
     return attachments
 
 
-def email_to_json(msg, email_id):
+def email_to_json(msg, email_id):  # sourcery skip: inline-immediately-returned-variable, remove-redundant-exception
+    # sourcery skip:use-contextlib-suppress, use-named-expression
     """
     Convert email message to JSON format.
 
@@ -447,7 +451,7 @@ def save_state(output_dir, processed_ids, last_index):
         print(f"System or attribute error saving state: {e}")
 
 
-def format_time_delta(seconds):
+def format_time_delta(seconds):  # sourcery skip: assign-if-exp, reintroduce-else
     """
     Format a time delta in seconds to a human-readable string.
 
@@ -483,7 +487,7 @@ def worker_process_emails(
     args,
     shared_stats,
     display_stats_func,
-):
+):  # sourcery skip: low-code-quality, remove-redundant-exception
     """
     Worker function for processing a batch of emails in a separate thread.
 
@@ -802,6 +806,7 @@ def worker_process_emails(
 
 
 def main() -> None:
+    # sourcery skip: merge-except-handler, use-contextlib-suppress
     """
     Main function for downloading Gmail emails and saving them as JSON
     documents.
