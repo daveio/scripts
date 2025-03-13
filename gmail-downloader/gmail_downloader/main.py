@@ -379,7 +379,7 @@ def connect_to_imap(email_address, password, console):
                 console.print(f"[yellow]Retrying in {RECONNECT_DELAY} seconds...[/yellow]")
                 time.sleep(RECONNECT_DELAY)
             else:
-                console.print("[bold red]Failed to connect after " f"{MAX_RECONNECT_ATTEMPTS} attempts[/bold red]")
+                console.print(f"[bold red]Failed to connect after {MAX_RECONNECT_ATTEMPTS} attempts[/bold red]")
                 return None
         except (ConnectionError, TimeoutError, socket.error) as e:
             console.print(f"[bold red]Connection Error: {e}[/bold red]")
@@ -387,7 +387,7 @@ def connect_to_imap(email_address, password, console):
                 console.print(f"[yellow]Retrying in {RECONNECT_DELAY} seconds...[/yellow]")
                 time.sleep(RECONNECT_DELAY)
             else:
-                console.print("[bold red]Failed to connect after " f"{MAX_RECONNECT_ATTEMPTS} attempts[/bold red]")
+                console.print(f"[bold red]Failed to connect after {MAX_RECONNECT_ATTEMPTS} attempts[/bold red]")
                 return None
     return None
 
@@ -880,7 +880,7 @@ def main() -> None:
     if args.resume:
         processed_ids, last_processed_index = load_state(output_dir)
         if processed_ids:
-            console.print(f"[green]Resuming download. {len(processed_ids)} emails " f"already processed.[/green]")
+            console.print(f"[green]Resuming download. {len(processed_ids)} emails already processed.[/green]")
         else:
             console.print("[yellow]No saved state found. Starting from the beginning.[/yellow]")
 
@@ -907,9 +907,7 @@ def main() -> None:
                         folder_name = folder_parts[3] if len(folder_parts) > 3 else folder_parts[1]
                         available_folders.append(folder_name)
                         if "all mail" in folder_name.lower():
-                            console.print(
-                                f"[bold green]All Mail folder:[/bold green] " f"[yellow]{folder_name}[/yellow]"
-                            )
+                            console.print(f"[bold green]All Mail folder:[/bold green] [yellow]{folder_name}[/yellow]")
                             all_mail_folder = folder_name
 
             # Print all available folders
@@ -918,7 +916,7 @@ def main() -> None:
 
         # Select folder
         folder = args.folder
-        console.print(f"[bold green]Opening [/bold green]" f"[yellow]{folder}[/yellow]")
+        console.print(f"[bold green]Opening [/bold green][yellow]{folder}[/yellow]")
 
         # Try different folder name variations
         folder_variations = [
@@ -935,12 +933,12 @@ def main() -> None:
 
         # Try each variation until one works
         for try_folder in folder_variations:
-            console.print(f"[bold yellow]Trying folder format:[/bold yellow] " f"[yellow]{try_folder}[/yellow]")
+            console.print(f"[bold yellow]Trying folder format:[/bold yellow] [yellow]{try_folder}[/yellow]")
             try:
                 status, messages = mail.select(try_folder)
                 if status == "OK":
                     folder = try_folder
-                    console.print(f"[bold green]Successfully opened:[/bold green] " f"[yellow]{folder}[/yellow]")
+                    console.print(f"[bold green]Successfully opened:[/bold green] [yellow]{folder}[/yellow]")
                     break
             except imaplib.IMAP4.error as e:
                 console.print(f"[yellow]Failed with: {e}[/yellow]")
@@ -948,7 +946,7 @@ def main() -> None:
 
         # If the folder doesn't exist, try the detected All Mail folder
         if status != "OK" and all_mail_folder:
-            console.print(f"[bold yellow]Trying detected All Mail folder: " f"[yellow]{all_mail_folder}[/yellow]")
+            console.print(f"[bold yellow]Trying detected All Mail folder: [yellow]{all_mail_folder}[/yellow]")
             try:
                 encoded_folder = encode_imap_folder(all_mail_folder)
                 status, messages = mail.select(encoded_folder)
@@ -975,7 +973,7 @@ def main() -> None:
             ]
 
             for alt_folder in alternate_folders:
-                console.print(f"[bold yellow]Trying alternate folder:[/bold yellow] " f"[yellow]{alt_folder}[/yellow]")
+                console.print(f"[bold yellow]Trying alternate folder:[/bold yellow] [yellow]{alt_folder}[/yellow]")
                 try:
                     status, messages = mail.select(alt_folder)
                     if status == "OK":
@@ -996,7 +994,7 @@ def main() -> None:
             sys.exit(1)
 
         console.print(
-            f"[bold green]Found[/bold green] " f"[yellow]{messages_count}[/yellow] " f"[bold green]emails[/bold green]"
+            f"[bold green]Found[/bold green] [yellow]{messages_count}[/yellow] [bold green]emails[/bold green]"
         )
 
         if args.limit and args.limit < messages_count:
