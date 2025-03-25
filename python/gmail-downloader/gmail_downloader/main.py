@@ -154,7 +154,9 @@ def clean_charset(
     return charset
 
 
-def get_email_content(msg):  # sourcery skip: remove-redundant-exception, use-named-expression
+def get_email_content(
+    msg,
+):  # sourcery skip: remove-redundant-exception, use-named-expression
     """
     Extract email content (text and html) from an email message.
 
