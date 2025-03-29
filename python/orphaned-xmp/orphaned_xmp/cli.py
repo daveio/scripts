@@ -2,17 +2,15 @@
 
 import argparse
 import os
-import re
+
+# trunk-ignore(bandit/B404)
 import subprocess
 import sys
 import time
-from typing import Dict, List, Set, Tuple
+from typing import List, Tuple
 
 from rich.box import ROUNDED
-from rich.columns import Columns
 from rich.console import Console
-from rich.layout import Layout
-from rich.live import Live
 from rich.panel import Panel
 from rich.progress import (
     BarColumn,
@@ -21,19 +19,17 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
-from rich.style import Style
 from rich.table import Table
-from rich.text import Text
 from rich.traceback import install
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Find orphaned XMP sidecar files without corresponding media files."
+        description="Find orphaned sidecar files without corresponding media files."
     )
     parser.add_argument(
         "directory",
-        help="Directory to search for orphaned XMP files",
+        help="Directory to search for orphaned sidecar files",
         nargs="?",
         default=".",
     )
@@ -45,7 +41,13 @@ def parse_arguments():
     parser.add_argument(
         "--delete",
         action="store_true",
-        help="Delete orphaned XMP files (USE WITH CAUTION)",
+        help="Delete orphaned sidecar files (USE WITH CAUTION)",
+    )
+    parser.add_argument(
+        "--extension",
+        "-e",
+        default="xmp",
+        help="Specify the sidecar file extension (default: xmp)",
     )
     return parser.parse_args()
 
@@ -69,36 +71,38 @@ def print_separator():
 
 
 def print_progress_dot():
-    """Legacy function, kept for compatibility but not used with rich progress bars"""
+    """Legacy function kept for backward compatibility - no longer used with rich progress bars"""
     console.print(".", end="")
     console.flush()
 
 
-def find_all_files(directory: str) -> Tuple[List[str], List[str]]:
+def find_all_files(directory: str, extension: str) -> Tuple[List[str], List[str]]:
     """
-    Use find command to gather all XMP files and potential media files with visual progress
+    Use find command to gather all sidecar files and potential media files with visual progress
     """
     with console.status(
         "[cyan]🔍 Finding all files in the directory...", spinner="dots"
     ) as status:
-        # Find all XMP files
-        xmp_cmd = [
+        # Find all sidecar files
+        sidecar_pattern = f"*.{extension}"
+        sidecar_cmd = [
             "find",
             directory,
             "-type",
             "f",
             "-name",
-            "*.xmp",
+            sidecar_pattern,
             "-not",
             "-path",
-            "*/\\.*",
+            "*/.*",
         ]
-        status.update("[cyan]🔍 Running find for XMP files...")
-        xmp_result = subprocess.run(xmp_cmd, capture_output=True, text=True)
-        xmp_files = xmp_result.stdout.splitlines()
+        status.update(f"[cyan]🔍 Running find for .{extension} sidecar files...")
+        # trunk-ignore(bandit/B603)
+        sidecar_result = subprocess.run(sidecar_cmd, capture_output=True, text=True)
+        sidecar_files = sidecar_result.stdout.splitlines()
 
-        # Find all potential media files (non-XMP files)
-        # This command excludes hidden files and XMP files
+        # Find all potential media files (non-sidecar files)
+        # This command excludes hidden files and sidecar files
         status.update("[cyan]🔍 Running find for media files...")
         media_cmd = [
             "find",
@@ -107,24 +111,25 @@ def find_all_files(directory: str) -> Tuple[List[str], List[str]]:
             "f",
             "-not",
             "-name",
-            "*.xmp",
+            sidecar_pattern,
             "-not",
             "-path",
-            "*/\\.*",
+            "*/.*",
         ]
+        # trunk-ignore(bandit/B603)
         media_result = subprocess.run(media_cmd, capture_output=True, text=True)
         media_files = media_result.stdout.splitlines()
 
     console.print("[cyan]🔍 File discovery complete![/cyan]")
-    return xmp_files, media_files
+    return sidecar_files, media_files
 
 
-def get_base_filename(path: str) -> str:
+def get_base_filename(path: str, extension: str = "xmp") -> str:
     """Extract base filename without extension from a full path"""
     base_name = os.path.basename(path)
-    # For XMP files, remove the .xmp extension
-    if base_name.lower().endswith(".xmp"):
-        # Remove .xmp extension
+    # For sidecar files, remove the extension
+    if base_name.lower().endswith(f".{extension}"):
+        # Remove extension
         base_name = os.path.splitext(base_name)[0]
     else:
         # For media files, remove any extension
@@ -133,8 +138,10 @@ def get_base_filename(path: str) -> str:
     return base_name
 
 
-def process_files(xmp_files: List[str], media_files: List[str]) -> List[str]:
-    """Process files in memory to find orphaned XMP files"""
+def process_files(
+    sidecar_files: List[str], media_files: List[str], extension: str = "xmp"
+) -> List[str]:
+    """Process files in memory to find orphaned sidecar files"""
     console.print("[cyan]📊 Processing files...[/cyan]")
 
     # Create a set of base filenames (without extension) for media files
@@ -160,33 +167,36 @@ def process_files(xmp_files: List[str], media_files: List[str]) -> List[str]:
             progress.update(media_task, advance=1)
 
         # Process XMP files and find orphans with progress bar
-        total_xmp = len(xmp_files)
-        orphaned_xmp_files = []
+        # Process sidecar files and find orphans with progress bar
+        total_sidecar = len(sidecar_files)
+        orphaned_sidecar_files = []
 
-        xmp_task = progress.add_task(
-            "[yellow]Checking XMP files for orphans...", total=total_xmp
+        sidecar_task = progress.add_task(
+            f"[yellow]Checking .{extension} files for orphans...", total=total_sidecar
         )
 
-        for xmp_path in xmp_files:
-            xmp_base_name = get_base_filename(xmp_path)
+        for sidecar_path in sidecar_files:
+            sidecar_base_name = get_base_filename(sidecar_path, extension)
+            # If the sidecar base name doesn't match any media file base name, it's orphaned
+            if sidecar_base_name not in media_base_names:
+                orphaned_sidecar_files.append(sidecar_path)
 
-            # If the XMP base name doesn't match any media file base name, it's orphaned
-            if xmp_base_name not in media_base_names:
-                orphaned_xmp_files.append(xmp_path)
+            progress.update(sidecar_task, advance=1)
 
-            progress.update(xmp_task, advance=1)
-
-    return orphaned_xmp_files
+    return orphaned_sidecar_files
 
 
-def handle_orphaned_files(orphaned_files: List[str], dry_run: bool, delete: bool):
-    """Handle orphaned XMP files based on command-line options"""
+def handle_orphaned_files(
+    orphaned_files: List[str], dry_run: bool, delete: bool, extension: str = "xmp"
+):
+    """Handle orphaned sidecar files based on command-line options"""
     total_orphaned = len(orphaned_files)
 
     if total_orphaned == 0:
         console.print(
             Panel(
-                "[green]✅ No orphaned XMP files found![/green]", border_style="green"
+                f"[green]✅ No orphaned .{extension} files found![/green]",
+                border_style="green",
             )
         )
         return
@@ -211,7 +221,7 @@ def handle_orphaned_files(orphaned_files: List[str], dry_run: bool, delete: bool
     # Display the header with count
     console.print(
         Panel(
-            f"[magenta]📄 Found {total_orphaned} orphaned XMP files[/magenta]",
+            f"[magenta]\U0001f4c4 Found {total_orphaned} orphaned .{extension} files[/magenta]",
             subtitle=mode_text,
             border_style="magenta",
         )
@@ -228,7 +238,7 @@ def handle_orphaned_files(orphaned_files: List[str], dry_run: bool, delete: bool
         ) as progress:
 
             delete_task = progress.add_task(
-                "[red]Deleting orphaned XMP files...", total=total_orphaned
+                f"[red]Deleting orphaned .{extension} files...", total=total_orphaned
             )
 
             for xmp_file in orphaned_files:
@@ -260,14 +270,14 @@ def handle_orphaned_files(orphaned_files: List[str], dry_run: bool, delete: bool
     elif dry_run:
         console.print(
             Panel(
-                f"[yellow]🗑️ Would have deleted {total_orphaned} orphaned XMP files[/yellow]",
+                f"[yellow]🗑️ Would have deleted {total_orphaned} orphaned .{extension} files[/yellow]",
                 border_style="yellow",
             )
         )
     else:
         console.print(
             Panel(
-                f"[green]✅ Deleted {total_orphaned} orphaned XMP files[/green]",
+                f"[green]✅ Deleted {total_orphaned} orphaned .{extension} files[/green]",
                 border_style="green",
             )
         )
@@ -277,16 +287,18 @@ def main():
     # Install rich traceback handler for better error display
     install()
 
-    start_time = time.time()
-    args = parse_arguments()
-    directory = os.path.abspath(args.directory)
-
     try:
+        start_time = time.time()
+        args = parse_arguments()
+        directory = os.path.abspath(args.directory)
+        extension = args.extension
+
         # Display a panel with the target directory information
         console.print(
             Panel(
-                f"[bold cyan]Target Directory:[/bold cyan] [yellow]{directory}[/yellow]",
-                title="🔍 XMP Orphan Finder",
+                f"[bold cyan]Target Directory:[/bold cyan] [yellow]{directory}[/yellow]\n"
+                f"[bold cyan]Sidecar Extension:[/bold cyan] [yellow].{extension}[/yellow]",
+                title="\U0001f50d Sidecar Orphan Finder",
                 border_style="blue",
             )
         )
@@ -294,13 +306,12 @@ def main():
         print_separator()
 
         # Find all files in the directory
-        xmp_files, media_files = find_all_files(directory)
-
+        sidecar_files, media_files = find_all_files(directory, extension)
         # Display stats about found files
         console.print(
             Panel(
                 f"[bold cyan]Found:[/bold cyan]\n"
-                f"[yellow]XMP Files:[/yellow] {len(xmp_files)}\n"
+                f"[yellow]Sidecar Files (.{extension}):[/yellow] {len(sidecar_files)}\n"
                 f"[yellow]Media Files:[/yellow] {len(media_files)}",
                 title="📊 File Statistics",
                 border_style="blue",
@@ -309,13 +320,12 @@ def main():
 
         print_separator()
 
-        # Process files to find orphaned XMP files
-        orphaned_files = process_files(xmp_files, media_files)
-
+        # Process files to find orphaned sidecar files
+        orphaned_files = process_files(sidecar_files, media_files, extension)
         print_separator()
 
         # Handle orphaned files based on command-line options
-        handle_orphaned_files(orphaned_files, args.dry_run, args.delete)
+        handle_orphaned_files(orphaned_files, args.dry_run, args.delete, extension)
 
         # Calculate execution time
         end_time = time.time()
@@ -324,19 +334,27 @@ def main():
         # Display execution summary
         console.print(
             Panel(
-                f"[bold cyan]Operation Summary:[/bold cyan]\n"
-                f"[yellow]Directory Scanned:[/yellow] {directory}\n"
-                f"[yellow]Total XMP Files:[/yellow] {len(xmp_files)}\n"
-                f"[yellow]Total Media Files:[/yellow] {len(media_files)}\n"
-                f"[yellow]Orphaned XMP Files:[/yellow] {len(orphaned_files)}\n"
-                f"[yellow]Delete Mode:[/yellow] {'[red]Enabled[/red]' if args.delete else '[green]Disabled[/green]'}\n"
-                f"[yellow]Dry Run Mode:[/yellow] {'[green]Enabled[/green]' if args.dry_run else '[red]Disabled[/red]'}\n"
-                f"[yellow]Execution Time:[/yellow] {execution_time:.2f} seconds",
+                "\n".join(
+                    [
+                        "[bold cyan]Operation Summary:[/bold cyan]",
+                        f"[yellow]Directory Scanned:[/yellow] {directory}",
+                        f"[yellow]Sidecar Extension:[/yellow] .{extension}",
+                        f"[yellow]Total Sidecar Files:[/yellow] {len(sidecar_files)}",
+                        f"[yellow]Total Media Files:[/yellow] {len(media_files)}",
+                        f"[yellow]Orphaned Sidecar Files:[/yellow] {len(orphaned_files)}",
+                        f"[yellow]Delete Mode:[/yellow] {'[red]Enabled[/red]' if args.delete else '[green]Disabled[/green]'}",
+                        f"[yellow]Dry Run Mode:[/yellow] {'[green]Enabled[/green]' if args.dry_run else '[red]Disabled[/red]'}",
+                        (
+                            f"[yellow]Execution Time:[/yellow] {int(execution_time // 60)} minutes {execution_time % 60:.2f} seconds"
+                            if execution_time >= 60
+                            else f"[yellow]Execution Time:[/yellow] {execution_time:.2f} seconds"
+                        ),
+                    ]
+                ),
                 title="✅ Execution Complete",
                 border_style="green",
             )
         )
-
     except KeyboardInterrupt:
         console.print(
             Panel(
