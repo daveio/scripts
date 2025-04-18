@@ -1,6 +1,9 @@
-[tools]
-python = "3.13"
-uv = "latest"
+[env]
+GMAIL_DOWNLOADER_MISE_ACTIVE = 'true'
 
-[env.'_'.file]
-path = ".env"
+[settings]
+env_file = '.env'
+
+[tools]
+python = '3.13.3'
+uv = '0.6.14'
