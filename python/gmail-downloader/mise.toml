@@ -1,9 +1,0 @@
-[env]
-GMAIL_DOWNLOADER_MISE_ACTIVE = 'true'
-
-[settings]
-env_file = '.env'
-
-[tools]
-python = { version = '3.13.3' }
-uv = { version = '0.6.14' }
