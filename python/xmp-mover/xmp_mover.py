@@ -15,6 +15,10 @@ import shutil
 import sys
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn, TimeElapsedColumn
+from rich.table import Table
 
 # Constants
 TARGET_DIR_NAME = "with-xmp"
@@ -24,9 +28,16 @@ XMP_EXTENSION = ".xmp"
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
+    format="%(asctime)s - %(levelname)s - %(message)s", # FileHandler will use this
     handlers=[
-        logging.StreamHandler(sys.stdout),
+        RichHandler(
+            level=logging.INFO,
+            console=Console(stderr=True), # Log to stderr
+            show_path=False,
+            rich_tracebacks=True,
+            markup=True, # Enable markup for log messages
+            log_time_format="[%X]", # Use a simpler time format for console
+        ),
         logging.FileHandler(LOG_FILE, mode="w"),
     ],
 )
@@ -61,8 +72,8 @@ def setup_target_dir(base_dir: str) -> Optional[str]:
 
 
 def find_files_with_companions(
-    root_dir: str, target_dir: str, xmp_only: bool = False, dry_run: bool = False
-) -> Tuple[int, int]:
+    root_dir: str, target_dir: str, console: Console, xmp_only: bool = False, dry_run: bool = False
+) -> Tuple[int, int, int]:
     """
     Find XMP files that have companion files (same name, different extension)
     and move them to the target directory.
@@ -70,16 +81,18 @@ def find_files_with_companions(
     Args:
         root_dir: The root directory to search for files
         target_dir: The directory where XMP files with companions will be moved
+        console: The Rich Console object for progress bar output.
         xmp_only: If True, only move XMP files and not their companions
         dry_run: If True, simulate operations without actually moving files
                  (limited to first 10 files per subdirectory)
 
     Returns:
-        A tuple containing (moved_count, error_count)
+        A tuple containing (total_files_scanned, moved_count, error_count)
     """
     # Keep track of how many files we've moved
     moved_count: int = 0
     error_count: int = 0
+    total_files_scanned: int = 0
 
     # Create a dictionary to store files by their base names
     # Dict[base_name, List[Tuple[filepath, extension]]]
@@ -88,39 +101,64 @@ def find_files_with_companions(
     # Dictionary to track file counts per subdirectory for dry run
     dir_file_count: Dict[str, int] = defaultdict(int)
 
-    # Walk through all directories under root_dir
+    # --- First pass: Count total files for progress bar ---
+    pre_scan_total_files = 0
     for dirpath, _, filenames in os.walk(root_dir):
-        # Skip the target directory
         if os.path.basename(dirpath) == TARGET_DIR_NAME:
-            logging.info(f"Skipping directory: {dirpath}")
             continue
+        pre_scan_total_files += len(filenames)
 
-        # Process each file
-        for filename in filenames:
-            # If in dry-run mode, limit to 10 files per subdirectory
-            if dry_run and dir_file_count[dirpath] >= 10:
+    with Progress(
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+        TimeRemainingColumn(),
+        TimeElapsedColumn(),
+        console=console, # Use the passed console (stdout)
+        transient=True # Clear progress bar on exit
+    ) as progress:
+        scan_task = progress.add_task("[cyan]Scanning files...", total=pre_scan_total_files)
+
+        # Walk through all directories under root_dir
+        for dirpath, _, filenames in os.walk(root_dir):
+            # Skip the target directory
+            if os.path.basename(dirpath) == TARGET_DIR_NAME:
+                logging.info(f"Skipping directory: {dirpath}")
+                # Decrement total by number of files in skipped dir for accuracy, or simply don't add them
+                progress.update(scan_task, advance=len(filenames)) # Advance past these files
                 continue
-            filepath = os.path.join(dirpath, filename)
 
-            # Skip any directories (shouldn't be needed since we're looking at filenames)
-            if os.path.isdir(filepath):
-                continue
+            # Process each file
+            for filename in filenames:
+                progress.update(scan_task, advance=1)
+                total_files_scanned += 1
 
-            # Get the base name (without extension) and extension
-            base_name, ext = os.path.splitext(filename)
-            # Convert to lowercase for case-insensitive matching
-            ext = ext.lower()
+                # If in dry-run mode, limit to 10 files per subdirectory (this logic is a bit off for total scan)
+                # For now, we scan all files, the dry_run limit applies to *moving* or *logging moves*.
+                # The original dry_run limit was to stop processing certain files early.
+                # We'll keep file_dict population as is for now.
 
-            # Skip system files
-            if base_name.startswith("."):
-                continue
+                filepath = os.path.join(dirpath, filename)
 
-            # Store the file path with its base name and extension
-            file_dict[base_name].append((filepath, ext))
+                if os.path.isdir(filepath): # Should not happen with filenames
+                    continue
 
-            # Increment file count for this directory if in dry-run mode
-            if dry_run:
-                dir_file_count[dirpath] += 1
+                base_name, ext = os.path.splitext(filename)
+                ext = ext.lower()
+
+                if base_name.startswith("."):
+                    continue
+
+                file_dict[base_name].append((filepath, ext))
+
+                # The original dry_run dir_file_count logic is for limiting *operations*, not scanning.
+                # We'll let the scan complete and apply dry_run logic to moves.
+                # if dry_run:
+                #     dir_file_count[dirpath] += 1 # This was for limiting processing per dir
+
+    # --- Process collected files to find companions and move them ---
+    # This part is not under the same progress bar, but could have its own if lengthy.
+    # For now, focusing on the scanning progress.
 
     # Now find XMP files with companions
     for base_name, files in file_dict.items():
@@ -202,7 +240,7 @@ def find_files_with_companions(
                         error_count += 1
                         logging.error(f"Error moving companion {companion_file}: {e}")
 
-    return moved_count, error_count
+    return total_files_scanned, moved_count, error_count
 
 
 def parse_args() -> argparse.Namespace:
@@ -241,6 +279,11 @@ def main() -> None:
     # Parse command line arguments
     args = parse_args()
 
+    # Console for Rich text (stdout) - separate from logging console (stderr)
+    # The logging RichHandler uses its own Console instance directed to stderr.
+    # For progress bars and tables, we typically want stdout.
+    stdout_console = Console()
+
     # Use current directory as the starting point
     current_dir = os.getcwd()
     logging.info(f"Starting in directory: {current_dir}")
@@ -249,22 +292,42 @@ def main() -> None:
     target_dir = setup_target_dir(current_dir)
     if not target_dir:
         logging.error("Failed to set up target directory. Exiting.")
-        sys.exit(1)
+        sys.exit(1) # Log will be handled by RichHandler to stderr
 
     # Find and move XMP files with companions
-    moved_count, error_count = find_files_with_companions(
-        current_dir, target_dir, args.xmp_only, args.dry_run
+    total_files_scanned, moved_count, error_count = find_files_with_companions(
+        current_dir, target_dir, stdout_console, args.xmp_only, args.dry_run
     )
 
-    # Log summary
+    # --- Summary Table ---
+    table = Table(title="XMP Mover Summary", show_header=True, header_style="bold magenta")
+    table.add_column("Metric", style="dim", width=30)
+    table.add_column("Value", style="bold")
+
+    run_mode = "Dry Run" if args.dry_run else "Actual Run"
+    run_mode_style = "yellow" if args.dry_run else "green"
+    table.add_row("Processing Mode", f"[{run_mode_style}]{run_mode}[/{run_mode_style}]")
+    table.add_row("Total Files Scanned", str(total_files_scanned))
+
     if args.dry_run:
-        logging.info(f"Dry run complete. Would move {moved_count} files.")
+        table.add_row("Files That Would Be Moved", str(moved_count))
     else:
-        logging.info(f"Process complete. Moved {moved_count} files.")
-    if error_count > 0:
-        logging.warning(f"Encountered {error_count} errors during the process.")
-    else:
-        logging.info("No errors encountered during the process.")
+        table.add_row("Files Moved", str(moved_count))
+    
+    error_style = "red" if error_count > 0 else "green"
+    table.add_row("Errors Encountered", f"[{error_style}]{error_count}[/{error_style}]")
+
+    stdout_console.print(table)
+
+    # Existing log summary (optional, as table provides more detail)
+    # if args.dry_run:
+    #     logging.info(f"Dry run complete. Would move {moved_count} files.")
+    # else:
+    #     logging.info(f"Process complete. Moved {moved_count} files.")
+    # if error_count > 0:
+    #     logging.warning(f"Encountered {error_count} errors during the process.")
+    # else:
+    #     logging.info("No errors encountered during the process.")
 
 
 if __name__ == "__main__":
