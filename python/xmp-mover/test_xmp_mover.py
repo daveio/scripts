@@ -9,7 +9,6 @@ from unittest.mock import patch, MagicMock
 
 # Add the script's directory to sys.path to ensure xmp_mover can be imported
 import sys
-import os
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 import xmp_mover
