@@ -7,6 +7,10 @@ updates:
     open-pull-requests-limit: 100
     assignees:
       - daveio
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -14,3 +18,7 @@ updates:
     open-pull-requests-limit: 100
     assignees:
       - daveio
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
