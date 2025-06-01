@@ -22,6 +22,7 @@ lint:
     - cspell
     - renovate
   enabled:
+    - sourcery@1.37.0
     - isort@6.0.1
     - semgrep@1.123.0
     - markdownlint-cli2@0.18.1

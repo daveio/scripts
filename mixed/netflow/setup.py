@@ -177,13 +177,12 @@ class NtopngManager:
 
     def check_prerequisites(self) -> Dict[str, bool]:
         """Check if all prerequisites are installed"""
-        checks = {
+        return {
             "Docker": self.check_docker(),
             "Docker Compose": self.check_docker_compose(),
             "Port 3000": self.check_port_available(3000),
             "Port 2055": self.check_port_available(2055),
         }
-        return checks
 
     def check_docker(self) -> bool:
         """Check if Docker is installed and running"""
@@ -217,9 +216,7 @@ class NtopngManager:
         """Get the appropriate docker compose command"""
         # Try docker compose (v2) first
         code, _, _ = self.run_command(["docker", "compose", "version"])
-        if code == 0:
-            return ["docker", "compose"]
-        return ["docker-compose"]
+        return ["docker", "compose"] if code == 0 else ["docker-compose"]
 
     def create_configuration_files(self):
         """Create the configuration files"""
@@ -612,96 +609,116 @@ class NtopngManager:
                     "Failed to parse stats", style="red" if RICH_AVAILABLE else ""
                 )
 
+    def _display_menu_header(self):
+        """Display the menu header with styling"""
+        if RICH_AVAILABLE:
+            self.console.print("\n" + "=" * 60, style="blue")
+            self.console.print(
+                "🌐 ntopng + netflow2ng Manager",
+                style="bold blue",
+                justify="center",
+            )
+            self.console.print("=" * 60, style="blue")
+        else:
+            self.console.print_panel("ntopng + netflow2ng Manager", "Main Menu")
+
+    def _display_service_status(self):
+        """Display the current status of services"""
+        status = self.get_container_status()
+        running = any(s.get("State") == "running" for s in status.values())
+
+        if running:
+            self.console.print(
+                "✅ Services are running", style="green" if RICH_AVAILABLE else ""
+            )
+            self.console.print(
+                "🌐 Web UI: http://localhost:3000\n",
+                style="cyan" if RICH_AVAILABLE else "",
+            )
+        else:
+            self.console.print(
+                "⚠️  Services are not running\n",
+                style="yellow" if RICH_AVAILABLE else "",
+            )
+        return running
+
+    def _display_menu_options(self):
+        """Display the menu options"""
+        options = [
+            "1. Initial Setup / Create Config Files",
+            "2. Start Services",
+            "3. Stop Services",
+            "4. View Service Status",
+            "5. View Logs",
+            "6. Check NetFlow Traffic",
+            "7. Troubleshoot Connectivity",
+            "8. Show Mikrotik Configuration",
+            "9. Performance Statistics",
+            "10. Backup Data",
+            "11. Advanced Options",
+            "0. Exit",
+        ]
+
+        for option in options:
+            self.console.print(option)
+
+    def _get_user_choice(self):
+        """Get the user's menu choice"""
+        if RICH_AVAILABLE:
+            return Prompt.ask("\nSelect an option", choices=[str(i) for i in range(12)])
+        else:
+            return self.console.input("\nSelect an option")
+
+    def _process_user_choice(self, choice):
+        """Process the user's menu choice"""
+        if choice == "0":
+            self.console.print(
+                "\n👋 Goodbye! May your packets flow smoothly.",
+                style="bold green" if RICH_AVAILABLE else "",
+            )
+            return False  # Signal to exit the main loop
+
+        # Map choices to their corresponding methods
+        choice_handlers = {
+            "1": self.setup_wizard,
+            "2": self.start_services,
+            "3": self.stop_services,
+            "4": self.show_status,
+            "5": self.logs_menu,
+            "6": self.check_netflow_traffic,
+            "7": self.troubleshoot_connectivity,
+            "8": self.show_mikrotik_config,
+            "9": self.show_performance_stats,
+            "10": self.backup_data,
+            "11": self.advanced_menu,
+        }
+
+        # Execute the corresponding method if a valid choice was made
+        if choice in choice_handlers:
+            choice_handlers[choice]()
+
+        return True  # Continue the main loop
+
+    def _wait_for_user(self):
+        """Wait for the user to press Enter before continuing"""
+        if RICH_AVAILABLE:
+            Prompt.ask("\nPress Enter to continue")
+        else:
+            input("\nPress Enter to continue...")
+
     def main_menu(self):
         """Display main menu"""
         while True:
-            if RICH_AVAILABLE:
-                self.console.print("\n" + "=" * 60, style="blue")
-                self.console.print(
-                    "🌐 ntopng + netflow2ng Manager",
-                    style="bold blue",
-                    justify="center",
-                )
-                self.console.print("=" * 60, style="blue")
-            else:
-                self.console.print_panel("ntopng + netflow2ng Manager", "Main Menu")
+            self._display_menu_header()
+            self._display_service_status()
+            self._display_menu_options()
 
-            # Check current status
-            status = self.get_container_status()
-            running = any(s.get("State") == "running" for s in status.values())
+            choice = self._get_user_choice()
 
-            if running:
-                self.console.print(
-                    "✅ Services are running", style="green" if RICH_AVAILABLE else ""
-                )
-                self.console.print(
-                    "🌐 Web UI: http://localhost:3000\n",
-                    style="cyan" if RICH_AVAILABLE else "",
-                )
-            else:
-                self.console.print(
-                    "⚠️  Services are not running\n",
-                    style="yellow" if RICH_AVAILABLE else "",
-                )
-
-            options = [
-                "1. Initial Setup / Create Config Files",
-                "2. Start Services",
-                "3. Stop Services",
-                "4. View Service Status",
-                "5. View Logs",
-                "6. Check NetFlow Traffic",
-                "7. Troubleshoot Connectivity",
-                "8. Show Mikrotik Configuration",
-                "9. Performance Statistics",
-                "10. Backup Data",
-                "11. Advanced Options",
-                "0. Exit",
-            ]
-
-            for option in options:
-                self.console.print(option)
-
-            if RICH_AVAILABLE:
-                choice = Prompt.ask(
-                    "\nSelect an option", choices=[str(i) for i in range(12)]
-                )
-            else:
-                choice = self.console.input("\nSelect an option")
-
-            if choice == "0":
-                self.console.print(
-                    "\n👋 Goodbye! May your packets flow smoothly.",
-                    style="bold green" if RICH_AVAILABLE else "",
-                )
+            if not self._process_user_choice(choice):
                 break
-            elif choice == "1":
-                self.setup_wizard()
-            elif choice == "2":
-                self.start_services()
-            elif choice == "3":
-                self.stop_services()
-            elif choice == "4":
-                self.show_status()
-            elif choice == "5":
-                self.logs_menu()
-            elif choice == "6":
-                self.check_netflow_traffic()
-            elif choice == "7":
-                self.troubleshoot_connectivity()
-            elif choice == "8":
-                self.show_mikrotik_config()
-            elif choice == "9":
-                self.show_performance_stats()
-            elif choice == "10":
-                self.backup_data()
-            elif choice == "11":
-                self.advanced_menu()
 
-            if RICH_AVAILABLE:
-                Prompt.ask("\nPress Enter to continue")
-            else:
-                input("\nPress Enter to continue...")
+            self._wait_for_user()
 
     def setup_wizard(self):
         """Run the setup wizard"""
@@ -733,9 +750,8 @@ class NtopngManager:
             if RICH_AVAILABLE:
                 if not Confirm.ask("Continue anyway?"):
                     return
-            else:
-                if not self.console.confirm("Continue anyway?"):
-                    return
+            elif not self.console.confirm("Continue anyway?"):
+                return
 
         # Create configuration files
         if DOCKER_COMPOSE_FILE.exists():
@@ -746,9 +762,8 @@ class NtopngManager:
             if RICH_AVAILABLE:
                 if not Confirm.ask("Overwrite existing files?"):
                     return
-            else:
-                if not self.console.confirm("Overwrite existing files?"):
-                    return
+            elif not self.console.confirm("Overwrite existing files?"):
+                return
 
         self.create_configuration_files()
 
