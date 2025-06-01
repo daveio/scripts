@@ -168,8 +168,7 @@ class NtopngManager:
     ) -> Tuple[int, str, str]:
         """Run a shell command and return exit code, stdout, stderr"""
         try:
-            # trunk-ignore(bandit/B603)
-            result = subprocess.run(
+            result = subprocess.run(  # trunk-ignore(bandit/B603)
                 command, capture_output=capture_output, text=True, check=False
             )
             return result.returncode, result.stdout, result.stderr
@@ -207,7 +206,7 @@ class NtopngManager:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.bind(("", port))
                 return True
-        except:
+        except socket.error:
             return False
 
     def check_setup_status(self) -> bool:
@@ -261,7 +260,7 @@ class NtopngManager:
             # Parse JSON output
             containers = json.loads(stdout)
             return {c["Service"]: c for c in containers}
-        except:
+        except json.JSONDecodeError:
             # Fallback to parsing text output
             return self._parse_compose_ps_text()
 
@@ -458,7 +457,7 @@ class NtopngManager:
         hostname = socket.gethostname()
         try:
             local_ip = socket.gethostbyname(hostname)
-        except:
+        except socket.error:
             local_ip = "YOUR-DOCKER-HOST-IP"
 
         config = MIKROTIK_CLI_COMMANDS.format(docker_host_ip=local_ip)
@@ -608,7 +607,7 @@ class NtopngManager:
                             self.console.print(
                                 f"    Network: {stat.get('NetIO', 'N/A')}"
                             )
-            except:
+            except (json.JSONDecodeError, ValueError):
                 self.console.print(
                     "Failed to parse stats", style="red" if RICH_AVAILABLE else ""
                 )
