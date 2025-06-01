@@ -60,7 +60,7 @@ Each directory contains specific utilities with their own usage instructions. Fo
 
 The repository uses several code quality tools because I like to pretend my haphazard collection of scripts is actually professional-grade software:
 
-- [Ruff](https://github.com/charliermarsh/ruff) and Black for Python linting
+- [Ruff](https://github.com/charliermarsh/ruff) and [Black](https://github.com/psf/black) for Python linting
 - [Sourcery](https://sourcery.ai/) for code quality suggestions (because having an AI tell me my code is bad is somehow less painful)
 - The [Trunk](https://trunk.io/) metalinter
 
