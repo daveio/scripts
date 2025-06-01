@@ -1,21 +1,46 @@
-version: "3.8"
 services:
-  redis:
-    image: redis:alpine
-    container_name: ntopng-redis
-    restart: unless-stopped
-    read_only: true
-    security_opt: [no-new-privileges:true]
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     volumes:
-      - redis_data:/data
+      - elasticsearch:/usr/share/elasticsearch/data
     networks:
-      - ntopng-network
+      - ntopng
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - 3001:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - ntopng
+    depends_on:
+      - influxdb
+  influxdb:
+    image: influxdb:2.7
+    restart: unless-stopped
+    volumes:
+      - influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=ntopng
+    networks:
+      - ntopng
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - ntopng
+    depends_on:
+      - elasticsearch
   netflow2ng:
     image: synfinatic/netflow2ng:latest
-    container_name: netflow2ng
     restart: unless-stopped
-    read_only: true
-    security_opt: [no-new-privileges:true]
     command:
       [
         --zmq-output=tcp://ntopng:5556,
@@ -28,18 +53,17 @@ services:
       - 2055:2055/udp
       - 9100:9100
     networks:
-      - ntopng-network
+      - ntopng
     depends_on:
       - ntopng
   ntopng:
+    networks:
+      - ntopng
     image: ntop/ntopng:stable
-    container_name: ntopng
     restart: unless-stopped
-    read_only: true
-    security_opt: [no-new-privileges:true]
     network_mode: host
     volumes:
-      - ntopng_data:/var/lib/ntopng
+      - ntopng:/var/lib/ntopng
       - ./ntopng.conf:/etc/ntopng/ntopng.conf:ro
     environment:
       - REDIS_SERVER=redis
@@ -50,15 +74,27 @@ services:
         -r,
         redis,
         --http-port,
-        3000, # Binds to all interfaces including IPv6
+        "3000", # Binds to all interfaces including IPv6
       ]
     depends_on:
       - redis
+      - influxdb
+      - elasticsearch
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+    networks:
+      - ntopng
 volumes:
-  ntopng_data:
-  redis_data:
+  elasticsearch:
+  grafana:
+  influxdb:
+  ntopng:
+  redis:
 networks:
-  ntopng-network:
+  ntopng:
     driver: bridge
     enable_ipv6: true # Enable IPv6 on the bridge network
     ipam:

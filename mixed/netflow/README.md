@@ -22,61 +22,103 @@ Before we dive into the deep end, make sure you have:
 First, let's create a nice, tidy `docker-compose.yml` file. Because clicking around in Docker Desktop is for people who don't appreciate the beauty of YAML:
 
 ```yaml
-version: "3.8"
 services:
-  redis:
-    image: redis:alpine
-    container_name: ntopng-redis
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - ntopng
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - 3001:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - ntopng
+    depends_on:
+      - influxdb
+  influxdb:
+    image: influxdb:2.7
     restart: unless-stopped
     volumes:
-      - redis_data:/data
+      - influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=ntopng
     networks:
-      - ntopng-network
+      - ntopng
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - ntopng
+    depends_on:
+      - elasticsearch
   netflow2ng:
     image: synfinatic/netflow2ng:latest
-    container_name: netflow2ng
     restart: unless-stopped
     command:
       [
-        "--zmq-output=tcp://ntopng:5556",
-        "--netflow-port=2055",
-        "--metrics-addr=:9100",
-        "--log-level=info",
+        --zmq-output=tcp://ntopng:5556,
+        --netflow-port=2055,
+        --metrics-addr=:9100,
+        --log-level=info,
       ]
     ports:
       # This will bind to both IPv4 and IPv6
-      - "2055:2055/udp"
-      - "9100:9100"
+      - 2055:2055/udp
+      - 9100:9100
     networks:
-      - ntopng-network
+      - ntopng
     depends_on:
       - ntopng
   ntopng:
+    networks:
+      - ntopng
     image: ntop/ntopng:stable
-    container_name: ntopng
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     volumes:
-      - ntopng_data:/var/lib/ntopng
+      - ntopng:/var/lib/ntopng
       - ./ntopng.conf:/etc/ntopng/ntopng.conf:ro
     environment:
       - REDIS_SERVER=redis
     command: [
-        "--community",
-        "-i",
-        "tcp://127.0.0.1:5556",
-        "-r",
-        "redis",
-        "--http-port",
+        --community,
+        -i,
+        tcp://127.0.0.1:5556,
+        -r,
+        redis,
+        --http-port,
         "3000", # Binds to all interfaces including IPv6
       ]
     depends_on:
       - redis
+      - influxdb
+      - elasticsearch
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+    networks:
+      - ntopng
 volumes:
-  ntopng_data:
-  redis_data:
+  elasticsearch:
+  grafana:
+  influxdb:
+  ntopng:
+  redis:
 networks:
-  ntopng-network:
+  ntopng:
     driver: bridge
     enable_ipv6: true # Enable IPv6 on the bridge network
     ipam:
@@ -111,6 +153,12 @@ Create an `ntopng.conf` file in the same directory:
 # Data retention (adjust based on your disk space and paranoia level)
 --max-num-flows=200000
 --max-num-hosts=100000
+
+# SNMP settings (optional, if you want to monitor devices via SNMP)
+--snmp-community=public
+--snmp-poll-interval=300
+
+-F="influxdb;ntopng;30;http://influxdb:8086"
 
 # Optional: Enable if you want to dump flows to ES/MySQL/etc
 # -F=es;ntopng;ntopng-%Y.%m.%d;http://elasticsearch:9200/_bulk
@@ -222,112 +270,12 @@ If flows aren't showing up:
    - Select the `tcp://127.0.0.1:5556` interface from the dropdown
    - You should see flows appearing in real-time
 
-## Part 4: Expansion Options (Because Basic is Boring)
-
-### Option 1: Add Persistent Storage and Backups
-
-Modify your `docker-compose.yml` to add proper volume mounts:
-
-```yaml
-volumes:
-  - ./data/ntopng:/var/lib/ntopng
-  - ./data/redis:/data
-  - ./backups:/backups
-```
-
-### Option 2: Integrate with Grafana
-
-Because what's monitoring without pretty graphs?
-
-1. **Add InfluxDB to your stack:**
-
-```yaml
-influxdb:
-  image: influxdb:1.8
-  container_name: ntopng-influxdb
-  restart: unless-stopped
-  volumes:
-    - influxdb_data:/var/lib/influxdb
-  environment:
-    - INFLUXDB_DB=ntopng
-  networks:
-    - ntopng-network
-```
-
-2. **Configure ntopng to export to InfluxDB:**
-
-```bash
-# Add to ntopng command or config
--F="influxdb;ntopng;30;http://influxdb:8086"
-```
-
-3. **Add Grafana:**
-
-```yaml
-grafana:
-  image: grafana/grafana:latest
-  container_name: ntopng-grafana
-  restart: unless-stopped
-  ports:
-    - "3001:3000"
-  volumes:
-    - grafana_data:/var/lib/grafana
-  networks:
-    - ntopng-network
-```
-
-### Option 3: ElasticSearch Integration
-
-For when you need to search through flows like a boss:
-
-```yaml
-elasticsearch:
-  image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
-  container_name: ntopng-elasticsearch
-  environment:
-    - discovery.type=single-node
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  volumes:
-    - es_data:/usr/share/elasticsearch/data
-  networks:
-    - ntopng-network
-
-kibana:
-  image: docker.elastic.co/kibana/kibana:7.17.0
-  container_name: ntopng-kibana
-  ports:
-    - "5601:5601"
-  environment:
-    - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-  networks:
-    - ntopng-network
-```
-
-### Option 4: Add Authentication
+## Part 4: Add Authentication
 
 Because leaving ntopng open to the world is asking for trouble:
 
 1. Remove `--disable-login` from the config
-2. Mount a users file:
-
-```yaml
-volumes:
-  - ./users.ntopng:/var/lib/ntopng/users.ntopng
-```
-
-### Option 5: Multiple Router Support
-
-Got more routers? Just point them all at port 2055. Netflow2ng will handle them all and pass the data to ntopng with source information intact.
-
-### Option 6: Add SNMP Monitoring
-
-Because why stop at flows?
-
-```bash
-# In ntopng config, add:
---snmp-community=public
---snmp-poll-interval=300
-```
+2. Mount a users file to `/var/lib/ntopng/users.ntopng`
 
 ## Part 5: Maintenance and Best Practices
 
@@ -413,5 +361,3 @@ Happy monitoring, and may your flows be forever in your favor!
 You've just built a professional-grade network monitoring solution using open-source tools and some Docker magic. Pat yourself on the back, grab your beverage of choice, and enjoy watching the packets flow by.
 
 Remember: With great monitoring comes great responsibility. Use your newfound powers wisely, and try not to become that person who obsessively watches network graphs all day. (But we won't judge if you do.)
-
-_P.S. - If this guide saved you 300 EUR, consider donating to the netflow2ng project. Open source developers run on coffee and appreciation._
