@@ -14,15 +14,15 @@ services:
     restart: unless-stopped
     command:
       [
-        "--zmq-output=tcp://ntopng:5556",
-        "--netflow-port=2055",
-        "--metrics-addr=:9100",
-        "--log-level=info",
+        --zmq-output=tcp://ntopng:5556,
+        --netflow-port=2055,
+        --metrics-addr=:9100,
+        --log-level=info,
       ]
     ports:
       # This will bind to both IPv4 and IPv6
-      - "2055:2055/udp"
-      - "9100:9100"
+      - 2055:2055/udp
+      - 9100:9100
     networks:
       - ntopng-network
     depends_on:
@@ -31,20 +31,20 @@ services:
     image: ntop/ntopng:stable
     container_name: ntopng
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     volumes:
       - ntopng_data:/var/lib/ntopng
       - ./ntopng.conf:/etc/ntopng/ntopng.conf:ro
     environment:
       - REDIS_SERVER=redis
     command: [
-        "--community",
-        "-i",
-        "tcp://127.0.0.1:5556",
-        "-r",
-        "redis",
-        "--http-port",
-        "3000", # Binds to all interfaces including IPv6
+        --community,
+        -i,
+        tcp://127.0.0.1:5556,
+        -r,
+        redis,
+        --http-port,
+        3000, # Binds to all interfaces including IPv6
       ]
     depends_on:
       - redis

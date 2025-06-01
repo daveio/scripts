@@ -4,26 +4,26 @@ ntopng + netflow2ng Docker Setup and Management Tool
 A slightly sarcastic but helpful network monitoring assistant
 """
 
-import os
-import sys
-import time
 import json
-import subprocess
-import socket
+import os
 import shutil
-from pathlib import Path
+import socket
+
+# trunk-ignore(bandit/B404)
+import subprocess
+import sys
 from datetime import datetime
-from typing import Optional, List, Dict, Tuple
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 # Try to import rich for pretty UI, fall back to basic if not available
 try:
     from rich.console import Console
-    from rich.table import Table
     from rich.panel import Panel
-    from rich.prompt import Prompt, Confirm
     from rich.progress import Progress, SpinnerColumn, TextColumn
+    from rich.prompt import Confirm, Prompt
     from rich.syntax import Syntax
-    from rich.markdown import Markdown
+    from rich.table import Table
 
     RICH_AVAILABLE = True
     console = Console()
@@ -168,6 +168,7 @@ class NtopngManager:
     ) -> Tuple[int, str, str]:
         """Run a shell command and return exit code, stdout, stderr"""
         try:
+            # trunk-ignore(bandit/B603)
             result = subprocess.run(
                 command, capture_output=capture_output, text=True, check=False
             )
@@ -844,6 +845,7 @@ class NtopngManager:
         compose_cmd = self.get_docker_compose_command()
 
         try:
+            # trunk-ignore(bandit/B603)
             subprocess.run(compose_cmd + ["logs", "-f"])
         except KeyboardInterrupt:
             self.console.print(
@@ -896,6 +898,7 @@ class NtopngManager:
         editor = os.environ.get("EDITOR", "nano")
 
         if shutil.which(editor):
+            # trunk-ignore(bandit/B603)
             subprocess.run([editor, str(filepath)])
         else:
             self.console.print(
@@ -975,7 +978,7 @@ class NtopngManager:
         es_config = f'-F="es;ntopng;ntopng-%Y.%m.%d;http://{es_host}:{es_port}/_bulk"'
 
         self.console.print(
-            f"\n📝 Add this to your ntopng.conf or docker-compose.yml command:"
+            "\n📝 Add this to your ntopng.conf or docker-compose.yml command:"
         )
         if RICH_AVAILABLE:
             self.console.print(Panel(es_config, expand=False))

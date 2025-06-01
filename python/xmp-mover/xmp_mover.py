@@ -15,9 +15,16 @@ import shutil
 import sys
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
+
 from rich.console import Console
 from rich.logging import RichHandler
-from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn, TimeElapsedColumn
+from rich.progress import (
+    BarColumn,
+    Progress,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from rich.table import Table
 
 # Constants
@@ -28,15 +35,15 @@ XMP_EXTENSION = ".xmp"
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s", # FileHandler will use this
+    format="%(asctime)s - %(levelname)s - %(message)s",  # FileHandler will use this
     handlers=[
         RichHandler(
             level=logging.INFO,
-            console=Console(stderr=True), # Log to stderr
+            console=Console(stderr=True),  # Log to stderr
             show_path=False,
             rich_tracebacks=True,
-            markup=True, # Enable markup for log messages
-            log_time_format="[%X]", # Use a simpler time format for console
+            markup=True,  # Enable markup for log messages
+            log_time_format="[%X]",  # Use a simpler time format for console
         ),
         logging.FileHandler(LOG_FILE, mode="w"),
     ],
@@ -72,7 +79,11 @@ def setup_target_dir(base_dir: str) -> Optional[str]:
 
 
 def find_files_with_companions(
-    root_dir: str, target_dir: str, console: Console, xmp_only: bool = False, dry_run: bool = False
+    root_dir: str,
+    target_dir: str,
+    console: Console,
+    xmp_only: bool = False,
+    dry_run: bool = False,
 ) -> Tuple[int, int, int]:
     """
     Find XMP files that have companion files (same name, different extension)
@@ -99,7 +110,7 @@ def find_files_with_companions(
     file_dict: Dict[str, List[Tuple[str, str]]] = defaultdict(list)
 
     # Dictionary to track file counts per subdirectory for dry run
-    dir_file_count: Dict[str, int] = defaultdict(int)
+    defaultdict(int)
 
     # --- First pass: Count total files for progress bar ---
     pre_scan_total_files = 0
@@ -114,10 +125,12 @@ def find_files_with_companions(
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         TimeRemainingColumn(),
         TimeElapsedColumn(),
-        console=console, # Use the passed console (stdout)
-        transient=True # Clear progress bar on exit
+        console=console,  # Use the passed console (stdout)
+        transient=True,  # Clear progress bar on exit
     ) as progress:
-        scan_task = progress.add_task("[cyan]Scanning files...", total=pre_scan_total_files)
+        scan_task = progress.add_task(
+            "[cyan]Scanning files...", total=pre_scan_total_files
+        )
 
         # Walk through all directories under root_dir
         for dirpath, _, filenames in os.walk(root_dir):
@@ -125,7 +138,9 @@ def find_files_with_companions(
             if os.path.basename(dirpath) == TARGET_DIR_NAME:
                 logging.info(f"Skipping directory: {dirpath}")
                 # Decrement total by number of files in skipped dir for accuracy, or simply don't add them
-                progress.update(scan_task, advance=len(filenames)) # Advance past these files
+                progress.update(
+                    scan_task, advance=len(filenames)
+                )  # Advance past these files
                 continue
 
             # Process each file
@@ -140,7 +155,7 @@ def find_files_with_companions(
 
                 filepath = os.path.join(dirpath, filename)
 
-                if os.path.isdir(filepath): # Should not happen with filenames
+                if os.path.isdir(filepath):  # Should not happen with filenames
                     continue
 
                 base_name, ext = os.path.splitext(filename)
@@ -292,7 +307,7 @@ def main() -> None:
     target_dir = setup_target_dir(current_dir)
     if not target_dir:
         logging.error("Failed to set up target directory. Exiting.")
-        sys.exit(1) # Log will be handled by RichHandler to stderr
+        sys.exit(1)  # Log will be handled by RichHandler to stderr
 
     # Find and move XMP files with companions
     total_files_scanned, moved_count, error_count = find_files_with_companions(
@@ -300,7 +315,9 @@ def main() -> None:
     )
 
     # --- Summary Table ---
-    table = Table(title="XMP Mover Summary", show_header=True, header_style="bold magenta")
+    table = Table(
+        title="XMP Mover Summary", show_header=True, header_style="bold magenta"
+    )
     table.add_column("Metric", style="dim", width=30)
     table.add_column("Value", style="bold")
 
@@ -313,7 +330,7 @@ def main() -> None:
         table.add_row("Files That Would Be Moved", str(moved_count))
     else:
         table.add_row("Files Moved", str(moved_count))
-    
+
     error_style = "red" if error_count > 0 else "green"
     table.add_row("Errors Encountered", f"[{error_style}]{error_count}[/{error_style}]")
 
