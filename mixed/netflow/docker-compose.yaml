@@ -49,20 +49,15 @@ services:
     network_mode: host
     command:
       [
-        --zmq-output=tcp://ntopng:5556,
+        --zmq-output=tcp://localhost:5556,
         --netflow-port=2055,
         --metrics-addr=:9101,
         --log-level=info,
       ]
-    ports:
-      # This will bind to both IPv4 and IPv6
-      - 2055:2055/udp
-      - 9101:9101
     depends_on:
       - ntopng
   ntopng:
-    networks:
-      - ntopng
+    network_mode: host
     # Version: latest
     image: ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     restart: unless-stopped
@@ -74,7 +69,7 @@ services:
     command: [
         --community,
         -i,
-        tcp://127.0.0.1:5556,
+        tcp://localhost:5556,
         -r,
         redis,
         --http-port,
