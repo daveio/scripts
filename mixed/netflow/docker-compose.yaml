@@ -1,3 +1,17 @@
+configs:
+  ntopng:
+    content: |
+      -G=/var/lib/ntopng/ntopng.pid
+      --community
+      -i="tcp://127.0.0.1:5556"
+      --disable-autologout
+      --disable-login=1  # Living dangerously! Add authentication in production
+      --redis=localhost:8846
+      --http-port=8849
+      --max-num-flows=200000
+      --max-num-hosts=100000
+      -m="10.0.99.0/24,10.0.98.0/24"
+      --packet-filter="not ((src net 10.0.99.0/24 and dst net 10.0.99.0/24) or (src net 10.0.99.0/24 and dst net 10.0.98.0/24) or (src net 10.0.98.0/24 and dst net 10.0.99.0/24) or (src net 10.0.98.0/24 and dst net 10.0.98.0/24))"
 services:
   netflow2ng:
     container_name: netflow2ng
@@ -13,18 +27,10 @@ services:
   ntopng:
     container_name: ntopng
     user: root
-    command:
-      - -G /var/lib/ntopng/ntopng.pid
-      - -i eth1
-      - --community
-      - --disable-autologout
-      - --disable-login=1  # Living dangerously! Add authentication in production
-      - -m 10.0.98.0/24
-      - -m 10.0.99.0/24
-      - --redis=localhost:8846
-      - --http-port=8849
-      - --max-num-flows=200000
-      - --max-num-hosts=100000
+    configs:
+      - source: ntopng
+        target: /etc/ntopng/ntopng.conf
+    command: /etc/ntopng/ntopng.conf
     image: >-
       ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     network_mode: host
