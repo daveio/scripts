@@ -15,7 +15,7 @@ services:
     user: root
     command:
       - -G /var/lib/ntopng/ntopng.pid
-      - -i eth1.1
+      - -i eth1
       - --community
       - --disable-autologout
       - --disable-login=1  # Living dangerously! Add authentication in production
