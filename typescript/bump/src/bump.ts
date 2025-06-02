@@ -1,4 +1,14 @@
 #!/usr/bin/env bun
+/**
+ * Bump - A dependency manager that updates packages across multiple repositories
+ *
+ * Features:
+ * - Processes all repos under `/Users/dave/src/github.com/daveio/` or a specific one
+ * - Handles dependencies from JavaScript/TypeScript, Python, and Ruby projects
+ * - Applies smart version bumping based on semver rules
+ * - Efficiently batches API calls to package registries with retry logic
+ * - Provides beautiful terminal UI with detailed progress information
+ */
 
 import { exec as execCallback } from "child_process";
 import * as path from "path";
@@ -486,7 +496,240 @@ async function readGemspecDependencies(
 	return dependencies;
 }
 
-// Check for updates using package manager APIs
+// Utility function to chunk an array into batches
+function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+	const chunks: T[][] = [];
+	for (let i = 0; i < array.length; i += chunkSize) {
+		chunks.push(array.slice(i, i + chunkSize));
+	}
+	return chunks;
+}
+
+// Sleep function for implementing delays in retries
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Retry function with exponential backoff
+async function retryWithBackoff<T>(
+	fn: () => Promise<T>,
+	retries = 3,
+	initialDelay = 1000,
+	maxDelay = 10000,
+): Promise<T> {
+	let delay = initialDelay;
+	let attempt = 0;
+
+	while (true) {
+		try {
+			return await fn();
+		} catch (error: any) {
+			attempt++;
+
+			// Check if we've exhausted our retries
+			if (attempt >= retries) {
+				throw error;
+			}
+
+			// Check if the error is due to rate limiting
+			const isRateLimit =
+				error.response?.status === 429 ||
+				(error.message && error.message.includes("rate limit"));
+
+			// If it's a rate limit error, use a longer delay
+			if (isRateLimit) {
+				const retryAfter = error.response?.headers?.["retry-after"];
+				if (retryAfter && !isNaN(Number.parseInt(retryAfter))) {
+					delay = Number.parseInt(retryAfter) * 1000;
+				} else {
+					delay = Math.min(delay * 2, maxDelay); // Exponential backoff
+				}
+
+				console.log(
+					chalk.yellow(
+						`Rate limit hit, retrying in ${delay / 1000}s (attempt ${attempt}/${retries})...`,
+					),
+				);
+			} else {
+				// For other errors, use standard exponential backoff
+				delay = Math.min(delay * 1.5, maxDelay);
+				console.log(
+					chalk.yellow(
+						`Request failed, retrying in ${delay / 1000}s (attempt ${attempt}/${retries})...`,
+					),
+				);
+			}
+
+			// Wait before retrying
+			await sleep(delay);
+		}
+	}
+}
+
+// Process npm dependencies in batches
+async function processNpmDependenciesBatch(
+	deps: Dependency[],
+	batchSize: number,
+): Promise<void> {
+	const batches = chunkArray(deps, batchSize);
+	console.log(
+		`Processing ${deps.length} npm dependencies in ${batches.length} batches of up to ${batchSize} packages each`,
+	);
+
+	for (const [batchIndex, batch] of batches.entries()) {
+		const batchSpinner = ora(
+			`Processing npm batch ${batchIndex + 1}/${batches.length} (${batch.length} packages)`,
+		).start();
+
+		try {
+			await Promise.all(
+				batch.map(async (dep) => {
+					try {
+						await retryWithBackoff(async () => {
+							const response = await axios.get(
+								`https://registry.npmjs.org/${encodeURIComponent(dep.name)}`,
+								{ timeout: 15000 }, // 15 second timeout
+							);
+							const latestVersion = response.data["dist-tags"]?.latest;
+
+							if (latestVersion) {
+								dep.latestVersion = latestVersion;
+								dep.updateType = determineUpdateType(
+									dep.currentVersion,
+									latestVersion,
+								);
+							}
+						});
+					} catch (error) {
+						console.error(
+							`Error fetching npm package ${chalk.yellow(dep.name)} after retries:`,
+							error,
+						);
+					}
+				}),
+			);
+
+			batchSpinner.succeed(
+				`Completed npm batch ${batchIndex + 1}/${batches.length}`,
+			);
+		} catch (error) {
+			batchSpinner.fail(
+				`Failed to process npm batch ${batchIndex + 1}/${batches.length}`,
+			);
+			console.error(error);
+		}
+	}
+}
+
+// Process PyPI dependencies in batches
+async function processPypiDependenciesBatch(
+	deps: Dependency[],
+	batchSize: number,
+): Promise<void> {
+	const batches = chunkArray(deps, batchSize);
+	console.log(
+		`Processing ${deps.length} PyPI dependencies in ${batches.length} batches of up to ${batchSize} packages each`,
+	);
+
+	for (const [batchIndex, batch] of batches.entries()) {
+		const batchSpinner = ora(
+			`Processing PyPI batch ${batchIndex + 1}/${batches.length} (${batch.length} packages)`,
+		).start();
+
+		try {
+			await Promise.all(
+				batch.map(async (dep) => {
+					try {
+						await retryWithBackoff(async () => {
+							const response = await axios.get(
+								`https://pypi.org/pypi/${encodeURIComponent(dep.name)}/json`,
+								{ timeout: 15000 }, // 15 second timeout
+							);
+							const latestVersion = response.data.info.version;
+
+							if (latestVersion) {
+								dep.latestVersion = latestVersion;
+								dep.updateType = determineUpdateType(
+									extractVersionFromConstraint(dep.currentVersion),
+									latestVersion,
+								);
+							}
+						});
+					} catch (error) {
+						console.error(
+							`Error fetching PyPI package ${chalk.yellow(dep.name)} after retries:`,
+							error,
+						);
+					}
+				}),
+			);
+
+			batchSpinner.succeed(
+				`Completed PyPI batch ${batchIndex + 1}/${batches.length}`,
+			);
+		} catch (error) {
+			batchSpinner.fail(
+				`Failed to process PyPI batch ${batchIndex + 1}/${batches.length}`,
+			);
+			console.error(error);
+		}
+	}
+}
+
+// Process RubyGems dependencies in batches
+async function processRubygemsDependenciesBatch(
+	deps: Dependency[],
+	batchSize: number,
+): Promise<void> {
+	const batches = chunkArray(deps, batchSize);
+	console.log(
+		`Processing ${deps.length} RubyGems dependencies in ${batches.length} batches of up to ${batchSize} packages each`,
+	);
+
+	for (const [batchIndex, batch] of batches.entries()) {
+		const batchSpinner = ora(
+			`Processing RubyGems batch ${batchIndex + 1}/${batches.length} (${batch.length} packages)`,
+		).start();
+
+		try {
+			await Promise.all(
+				batch.map(async (dep) => {
+					try {
+						await retryWithBackoff(async () => {
+							const response = await axios.get(
+								`https://rubygems.org/api/v1/gems/${encodeURIComponent(dep.name)}.json`,
+								{ timeout: 15000 }, // 15 second timeout
+							);
+							const latestVersion = response.data.version;
+
+							if (latestVersion) {
+								dep.latestVersion = latestVersion;
+								dep.updateType = determineUpdateType(
+									extractVersionFromConstraint(dep.currentVersion),
+									latestVersion,
+								);
+							}
+						});
+					} catch (error) {
+						console.error(
+							`Error fetching RubyGems package ${chalk.yellow(dep.name)} after retries:`,
+							error,
+						);
+					}
+				}),
+			);
+
+			batchSpinner.succeed(
+				`Completed RubyGems batch ${batchIndex + 1}/${batches.length}`,
+			);
+		} catch (error) {
+			batchSpinner.fail(
+				`Failed to process RubyGems batch ${batchIndex + 1}/${batches.length}`,
+			);
+			console.error(error);
+		}
+	}
+}
+
+// Check for updates using package manager APIs with batching
 async function checkForUpdates(
 	dependencies: Dependency[],
 ): Promise<Dependency[]> {
@@ -500,68 +743,95 @@ async function checkForUpdates(
 			(dep) => dep.manager === "rubygems",
 		);
 
-		// Process npm dependencies
-		for (const dep of npmDeps) {
-			try {
-				const response = await axios.get(
-					`https://registry.npmjs.org/${encodeURIComponent(dep.name)}`,
-				);
-				const latestVersion = response.data["dist-tags"]?.latest;
+		// Deduplicate dependencies by name to reduce API calls even further
+		const uniqueNpmDeps = Array.from(
+			new Map(npmDeps.map((dep) => [dep.name, dep])).values(),
+		);
+		const uniquePypiDeps = Array.from(
+			new Map(pypiDeps.map((dep) => [dep.name, dep])).values(),
+		);
+		const uniqueRubygemsDeps = Array.from(
+			new Map(rubygemsDeps.map((dep) => [dep.name, dep])).values(),
+		);
 
-				if (latestVersion) {
-					dep.latestVersion = latestVersion;
-					dep.updateType = determineUpdateType(
-						dep.currentVersion,
-						latestVersion,
-					);
-				}
-			} catch (error) {
-				console.error(`Error fetching npm package ${dep.name}:`, error);
-			}
+		// Log the deduplication results
+		if (npmDeps.length > uniqueNpmDeps.length) {
+			console.log(
+				chalk.green(
+					`Deduplicated npm dependencies: ${npmDeps.length} → ${uniqueNpmDeps.length}`,
+				),
+			);
+		}
+		if (pypiDeps.length > uniquePypiDeps.length) {
+			console.log(
+				chalk.green(
+					`Deduplicated PyPI dependencies: ${pypiDeps.length} → ${uniquePypiDeps.length}`,
+				),
+			);
+		}
+		if (rubygemsDeps.length > uniqueRubygemsDeps.length) {
+			console.log(
+				chalk.green(
+					`Deduplicated RubyGems dependencies: ${rubygemsDeps.length} → ${uniqueRubygemsDeps.length}`,
+				),
+			);
 		}
 
-		// Process PyPI dependencies
-		for (const dep of pypiDeps) {
-			try {
-				const response = await axios.get(
-					`https://pypi.org/pypi/${encodeURIComponent(dep.name)}/json`,
-				);
-				const latestVersion = response.data.info.version;
+		// Configure batch sizes - increased for efficiency
+		const npmBatchSize = 20; // npm registry can handle larger batches
+		const pypiBatchSize = 10; // PyPI has stricter rate limits
+		const rubygemsBatchSize = 10; // RubyGems has stricter rate limits
 
-				if (latestVersion) {
-					dep.latestVersion = latestVersion;
-					dep.updateType = determineUpdateType(
-						extractVersionFromConstraint(dep.currentVersion),
-						latestVersion,
-					);
-				}
-			} catch (error) {
-				console.error(`Error fetching PyPI package ${dep.name}:`, error);
+		// Process all package managers in parallel
+		spinner.text = "Checking for updates in parallel batches...";
+
+		const startTime = Date.now();
+
+		await Promise.all([
+			// Process npm dependencies in batches
+			processNpmDependenciesBatch(uniqueNpmDeps, npmBatchSize),
+
+			// Process PyPI dependencies in batches
+			processPypiDependenciesBatch(uniquePypiDeps, pypiBatchSize),
+
+			// Process RubyGems dependencies in batches
+			processRubygemsDependenciesBatch(uniqueRubygemsDeps, rubygemsBatchSize),
+		]);
+
+		// Apply version information from unique dependencies back to all dependencies
+		const versionMap = new Map<
+			string,
+			{
+				latestVersion?: string;
+				updateType?: "none" | "patch" | "minor" | "major";
 			}
-		}
+		>();
 
-		// Process RubyGems dependencies
-		for (const dep of rubygemsDeps) {
-			try {
-				const response = await axios.get(
-					`https://rubygems.org/api/v1/gems/${encodeURIComponent(dep.name)}.json`,
-				);
-				const latestVersion = response.data.version;
-
-				if (latestVersion) {
-					dep.latestVersion = latestVersion;
-					dep.updateType = determineUpdateType(
-						extractVersionFromConstraint(dep.currentVersion),
-						latestVersion,
-					);
+		// Collect version info from unique dependencies
+		[...uniqueNpmDeps, ...uniquePypiDeps, ...uniqueRubygemsDeps].forEach(
+			(dep) => {
+				if (dep.latestVersion) {
+					versionMap.set(`${dep.manager}:${dep.name}`, {
+						latestVersion: dep.latestVersion,
+						updateType: dep.updateType,
+					});
 				}
-			} catch (error) {
-				console.error(`Error fetching RubyGems package ${dep.name}:`, error);
-			}
-		}
+			},
+		);
 
+		// Apply collected version info to all dependencies
+		dependencies.forEach((dep) => {
+			const key = `${dep.manager}:${dep.name}`;
+			const versionInfo = versionMap.get(key);
+			if (versionInfo) {
+				dep.latestVersion = versionInfo.latestVersion;
+				dep.updateType = versionInfo.updateType;
+			}
+		});
+
+		const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 		spinner.succeed(
-			`Checked ${chalk.green(dependencies.length)} dependencies for updates.`,
+			`Checked ${chalk.green(dependencies.length)} dependencies for updates in ${chalk.blue(duration)}s.`,
 		);
 		return dependencies;
 	} catch (error) {
@@ -1171,38 +1441,94 @@ async function main() {
 	options.repo = program.args[0];
 
 	try {
+		const startTime = Date.now();
+		const mainSpinner = ora("Starting dependency update process...").start();
+
 		// Discover repositories to process
+		mainSpinner.text = "Discovering repositories...";
 		const repoPaths = await discoverRepositories(options.repo);
+		mainSpinner.succeed(
+			`Found ${chalk.green(repoPaths.length)} repositories to process.`,
+		);
 
-		// Sync git repositories
-		await syncGitRepositories(repoPaths, options.pull);
-
-		// Read dependencies from different file types
+		// Read ALL dependencies up front from all repositories - this is key for efficient batching
+		const depsSpinner = ora(
+			"Reading all dependencies from all repositories...",
+		).start();
 		const dependencies = await readDependencies(repoPaths);
 
-		// Check for updates using package manager APIs
+		// Log statistics about discovered dependencies
+		const npmDeps = dependencies.filter((dep) => dep.manager === "npm");
+		const pypiDeps = dependencies.filter((dep) => dep.manager === "pypi");
+		const rubygemsDeps = dependencies.filter(
+			(dep) => dep.manager === "rubygems",
+		);
+
+		depsSpinner.succeed(
+			`Found ${chalk.green(dependencies.length)} dependencies across ${chalk.blue(repoPaths.length)} repositories.\n` +
+				`  • ${chalk.yellow(npmDeps.length)} npm packages\n` +
+				`  • ${chalk.yellow(pypiDeps.length)} PyPI packages\n` +
+				`  • ${chalk.yellow(rubygemsDeps.length)} RubyGems packages`,
+		);
+
+		// Git operations only after we've read all dependencies
+		if (options.pull) {
+			const gitSpinner = ora("Syncing git repositories...").start();
+			await syncGitRepositories(repoPaths, options.pull);
+			gitSpinner.succeed(
+				`Synced ${chalk.green(repoPaths.length)} git repositories.`,
+			);
+		} else {
+			console.log(chalk.yellow("Git operations skipped (--no-pull)."));
+		}
+
+		// Check for updates using package manager APIs with batching
+		console.log(chalk.blue.bold("\nChecking for dependency updates:"));
 		const depsWithUpdates = await checkForUpdates(dependencies);
 
 		// Apply updates according to version bump rules
+		const updateSpinner = ora("Applying dependency updates...").start();
 		const updatedDependencies = await applyUpdates(depsWithUpdates, options);
+		updateSpinner.succeed(
+			`Applied ${chalk.green(updatedDependencies.length)} dependency updates.`,
+		);
 
 		// Update lockfiles
 		if (!options.dryRun) {
-			await updateLockfiles(repoPaths, options.install);
+			if (options.install) {
+				const lockSpinner = ora("Updating lockfiles...").start();
+				await updateLockfiles(repoPaths, options.install);
+				lockSpinner.succeed("Updated lockfiles for all repositories.");
+			} else {
+				console.log(chalk.yellow("Lockfile updates skipped (--no-install)."));
+			}
 		}
 
 		// Commit and push changes
 		if (!options.dryRun) {
-			await commitAndPush(repoPaths, options.commit, options.push);
+			if (options.commit) {
+				const commitSpinner = ora("Committing changes...").start();
+				await commitAndPush(repoPaths, options.commit, options.push);
+				commitSpinner.succeed(
+					`Committed changes${options.push ? " and pushed" : ""}.`,
+				);
+			} else {
+				console.log(
+					chalk.yellow("Git commit operations skipped (--no-commit)."),
+				);
+			}
 		}
 
 		// Print summary of dependency updates
 		printUpdateSummary(depsWithUpdates, updatedDependencies, options);
+
+		// Print total execution time
+		const totalTime = ((Date.now() - startTime) / 1000).toFixed(2);
+		console.log(`\nTotal execution time: ${chalk.blue(totalTime)}s`);
 	} catch (error) {
 		console.error(chalk.red("Error:"), error);
 		process.exit(1);
 	}
 }
-
 // Call the main function
 main();
