@@ -1,0 +1,7 @@
+#!/usr/bin/env fish
+
+set script_dir (dirname (realpath (status -f)))
+set dist_path "$script_dir/../dist/bump.js"
+
+bun "$dist_path" $argv
+
