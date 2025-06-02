@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNU find Command - Synthwave Edition</title>
+    <style>
+        /* Synthwave '84 Theme */
+        :root {
+            --bg-color: #241b2f;
+            --grid-color: rgba(33, 68, 116, 0.15);
+            --neon-pink: #ff2b9e;
+            --neon-blue: #36f9f6;
+            --neon-purple: #b967ff;
+            --glow-pink: 0 0 7px #ff2b9e, 0 0 10px #ff2b9e, 0 0 21px #ff2b9e;
+            --glow-blue: 0 0 7px #36f9f6, 0 0 10px #36f9f6, 0 0 21px #36f9f6;
+            --glow-purple: 0 0 7px #b967ff, 0 0 10px #b967ff, 0 0 21px #b967ff;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink); }
+            50% { text-shadow: 0 0 15px var(--neon-blue), 0 0 25px var(--neon-blue); }
+            100% { text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink); }
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.4;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, var(--grid-color) 25%, var(--grid-color) 26%, transparent 27%, transparent 74%, var(--grid-color) 75%, var(--grid-color) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, var(--grid-color) 25%, var(--grid-color) 26%, transparent 27%, transparent 74%, var(--grid-color) 75%, var(--grid-color) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Scanline effect */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            position: relative;
+            border: 2px solid var(--neon-pink);
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--neon-pink);
+            background-color: rgba(36, 27, 47, 0.7);
+        }
+        
+        h1 {
+            font-size: 36px;
+            color: var(--neon-blue);
+            text-shadow: var(--glow-blue);
+            margin: 0;
+            animation: pulse 3s infinite;
+        }
+        
+        .tagline {
+            font-style: italic;
+            margin-top: 10px;
+            color: var(--neon-pink);
+            text-shadow: var(--glow-pink);
+            font-size: 16px;
+        }
+        
+        .emoji {
+            font-size: 24px;
+            display: inline-block;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .column {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section {
+            background-color: rgba(36, 27, 47, 0.7);
+            border: 2px solid var(--neon-purple);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px var(--neon-purple);
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px var(--neon-pink), 0 0 20px var(--neon-blue);
+        }
+        
+        .section-title {
+            color: var(--neon-blue);
+            text-shadow: var(--glow-blue);
+            font-size: 18px;
+            border-bottom: 2px solid var(--neon-pink);
+            padding-bottom: 5px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .commands {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .command-row {
+            display: flex;
+            border-bottom: 1px dotted var(--neon-pink);
+            padding-bottom: 8px;
+        }
+        
+        .cmd {
+            flex: 1;
+            background-color: rgba(54, 249, 246, 0.1);
+            padding: 6px 10px;
+            border-radius: 4px;
+            border-left: 2px solid var(--neon-blue);
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--neon-blue);
+            margin-right: 10px;
+        }
+        
+        .desc {
+            flex: 1;
+            padding: 6px 0;
+            color: #ffffff;
+        }
+        
+        .examples {
+            margin-top: 15px;
+        }
+        
+        .example {
+            background-color: rgba(255, 43, 158, 0.1);
+            border-left: 3px solid var(--neon-pink);
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .example-cmd {
+            background-color: rgba(36, 27, 47, 0.9);
+            color: var(--neon-blue);
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 5px var(--neon-blue);
+        }
+        
+        .find-syntax {
+            background-color: rgba(36, 27, 47, 0.9);
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: center;
+            margin: 15px 0;
+            border: 1px solid var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        .highlight {
+            color: var(--neon-blue);
+            font-weight: bold;
+            text-shadow: var(--glow-blue);
+        }
+        
+        .quick-reference {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .ref-item {
+            background-color: rgba(255, 43, 158, 0.2);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            flex: 1 0 auto;
+            border: 1px solid var(--neon-pink);
+            transition: all 0.2s ease;
+        }
+        
+        .ref-item:hover {
+            background-color: rgba(255, 43, 158, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 0 8px var(--neon-pink);
+        }
+        
+        .tips-list {
+            margin: 10px 0;
+            padding-left: 20px;
+            list-style-type: none;
+        }
+        
+        .tips-list li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .tips-list li::before {
+            content: "→";
+            color: var(--neon-pink);
+            position: absolute;
+            left: 0;
+        }
+        
+        .tips-list strong {
+            color: var(--neon-blue);
+            text-shadow: 0 0 3px var(--neon-blue);
+        }
+        
+        .diagram-title {
+            color: var(--neon-blue);
+            text-shadow: var(--glow-blue);
+            font-size: 18px;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .diagram-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .sun {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--neon-pink) 0%, rgba(36, 27, 47, 0) 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+        
+        .grid-horizon {
+            height: 130px;
+            background: linear-gradient(to bottom, rgba(36, 27, 47, 0) 0%, var(--neon-pink) 100%);
+            position: relative;
+            margin-top: 20px;
+            border-bottom: 2px solid var(--neon-blue);
+            overflow: hidden;
+        }
+        
+        .grid-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to bottom, rgba(54, 249, 246, 0.3) 1px, transparent 1px),
+                linear-gradient(to right, rgba(54, 249, 246, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            perspective: 500px;
+            transform: rotateX(60deg);
+            transform-origin: bottom;
+        }
+        
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            height: 60px;
+            width: 100%;
+            background: var(--bg-color);
+            clip-path: polygon(0% 100%, 20% 50%, 40% 70%, 60% 40%, 80% 80%, 100% 60%, 100% 100%);
+        }
+        
+        .mountain::after {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--neon-purple);
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+        
+        .command-boxes {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .cmd-box {
+            flex: 1;
+            background-color: rgba(36, 27, 47, 0.7);
+            border: 1px solid var(--neon-blue);
+            border-radius: 4px;
+            padding: 10px;
+            margin: 0 5px;
+            box-shadow: 0 0 5px var(--neon-blue);
+            text-align: center;
+        }
+        
+        .cmd-box-title {
+            color: var(--neon-blue);
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .cmd-examples {
+            margin-top: 10px;
+            font-size: 10px;
+        }
+        
+        .cmd-example {
+            margin-top: 3px;
+            color: #ffffff;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            color: var(--neon-blue);
+            font-size: 14px;
+            border-top: 2px solid var(--neon-pink);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        
+        .footer-emoji {
+            font-size: 18px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span class="emoji">👾</span> GNU find Command Cheatsheet <span class="emoji">👾</span></h1>
+        <div class="tagline"><span class="emoji">🔍</span> Finding files like a cyber-detective since 1990 <span class="emoji">💾</span></div>
+    </div>
+    
+    <div class="content">
+        <div class="column">
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">🚀</span> Basic Usage</h2>
+                <div class="commands">
+                    <div class="command-row">
+                        <div class="cmd">find [path]</div>
+                        <div class="desc">Find all files in path</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -name "pattern"</div>
+                        <div class="desc">Case-sensitive name match</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -iname "pattern"</div>
+                        <div class="desc">Case-insensitive name match</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -path "pattern"</div>
+                        <div class="desc">Match on full path</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -regex "pattern"</div>
+                        <div class="desc">Match using regex</div>
+                    </div>
+                </div>
+                <div class="examples">
+                    <div class="example">
+                        Find all Python files in current directory:
+                        <code class="example-cmd">find . -name "*.py"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">📁</span> File Types</h2>
+                <div class="commands">
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type f</div>
+                        <div class="desc">Regular files</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type d</div>
+                        <div class="desc">Directories</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type l</div>
+                        <div class="desc">Symbolic links</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type b</div>
+                        <div class="desc">Block devices</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type c</div>
+                        <div class="desc">Character devices</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type s</div>
+                        <div class="desc">Sockets</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -type p</div>
+                        <div class="desc">Named pipes</div>
+                    </div>
+                </div>
+                <div class="examples">
+                    <div class="example">
+                        Find all empty directories:
+                        <code class="example-cmd">find /path -type d -empty</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">🚄</span> Performance Tips</h2>
+                <ul class="tips-list">
+                    <li><strong>-xdev</strong>: Don't descend directories on other filesystems</li>
+                    <li><strong>-maxdepth n</strong>: Limit directory traversal depth</li>
+                    <li><strong>-mindepth n</strong>: Skip shallow matches</li>
+                    <li><strong>-prune</strong>: Don't descend into current directory</li>
+                    <li>Order tests from most likely to fail to least likely to fail</li>
+                    <li>Put cheap tests (like -name) before expensive tests (-exec)</li>
+                    <li>Use <strong>-exec cmd {} \+</strong> instead of <strong>\;</strong> when possible</li>
+                    <li>Combine <strong>find</strong> with <strong>xargs</strong> for processing many files</li>
+                </ul>
+                <div class="example">
+                    <div>Skip .git directories when searching:</div>
+                    <code class="example-cmd">find . -path "*.git*" -prune -o -name "*.js" -print</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="column">
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">⏰</span> Time Conditions</h2>
+                <div class="commands">
+                    <div class="command-row">
+                        <div class="cmd">find [path] -mtime n</div>
+                        <div class="desc">Modified exactly n days ago</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -mtime +n</div>
+                        <div class="desc">Modified > n days ago</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -mtime -n</div>
+                        <div class="desc">Modified < n days ago</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -mmin n</div>
+                        <div class="desc">Modified n minutes ago</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -ctime n</div>
+                        <div class="desc">Status changed n days ago</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -atime n</div>
+                        <div class="desc">Accessed n days ago</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -newer file</div>
+                        <div class="desc">Newer than reference file</div>
+                    </div>
+                </div>
+                <div class="examples">
+                    <div class="example">
+                        Find files modified in last 7 days:
+                        <code class="example-cmd">find /home/user -mtime -7</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">📏</span> Size & Permissions</h2>
+                <div class="commands">
+                    <div class="command-row">
+                        <div class="cmd">find [path] -size n[unit]</div>
+                        <div class="desc">Size n (c:bytes, k:KB, M:MB, G:GB)</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -size +n[unit]</div>
+                        <div class="desc">Larger than n units</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -size -n[unit]</div>
+                        <div class="desc">Smaller than n units</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -empty</div>
+                        <div class="desc">Empty files or directories</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -perm mode</div>
+                        <div class="desc">Exact permissions (octal or symbolic)</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -perm -mode</div>
+                        <div class="desc">At least these permissions</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -perm /mode</div>
+                        <div class="desc">Any of these permissions</div>
+                    </div>
+                </div>
+                <div class="examples">
+                    <div class="example">
+                        Find files larger than 100MB:
+                        <code class="example-cmd">find /var/log -size +100M</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">🧠</span> Logical Operators</h2>
+                <div class="commands">
+                    <div class="command-row">
+                        <div class="cmd">find [path] -a / -and</div>
+                        <div class="desc">Logical AND (default)</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -o / -or</div>
+                        <div class="desc">Logical OR</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -not / !</div>
+                        <div class="desc">Logical NOT</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] \( ... \)</div>
+                        <div class="desc">Group expressions</div>
+                    </div>
+                </div>
+                <div class="examples">
+                    <div class="example">
+                        Find PNG or JPG files:
+                        <code class="example-cmd">find . \( -name "*.png" -o -name "*.jpg" \)</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="column">
+            <div class="section">
+                <h2 class="diagram-title"><span class="emoji">🌐</span> find Command Structure</h2>
+                <div class="diagram-container">
+                    <div class="sun"></div>
+                    <div class="find-syntax">
+                        <span class="highlight">find</span> /path 
+                        <span class="highlight">-type</span> f 
+                        <span class="highlight">-name</span> "*.txt" 
+                        <span class="highlight">-mtime</span> -7 
+                        <span class="highlight">-exec</span> grep "pattern" {} \;
+                    </div>
+                    
+                    <div class="grid-horizon">
+                        <div class="grid-lines"></div>
+                        <div class="mountain"></div>
+                    </div>
+                    
+                    <div class="command-boxes">
+                        <div class="cmd-box">
+                            <div class="cmd-box-title">Path Selection</div>
+                            <div class="cmd-examples">
+                                <div class="cmd-example">. (current dir)</div>
+                                <div class="cmd-example">/home/user</div>
+                                <div class="cmd-example">/var/log</div>
+                            </div>
+                        </div>
+                        <div class="cmd-box">
+                            <div class="cmd-box-title">Tests & Conditions</div>
+                            <div class="cmd-examples">
+                                <div class="cmd-example">-name "*.txt"</div>
+                                <div class="cmd-example">-type f</div>
+                                <div class="cmd-example">-mtime -7</div>
+                            </div>
+                        </div>
+                        <div class="cmd-box">
+                            <div class="cmd-box-title">Actions</div>
+                            <div class="cmd-examples">
+                                <div class="cmd-example">-print</div>
+                                <div class="cmd-example">-delete</div>
+                                <div class="cmd-example">-exec {} \;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 class="diagram-title"><span class="emoji">⚡</span> Quick Reference</h3>
+                <div class="quick-reference">
+                    <div class="ref-item">-type d</div>
+                    <div class="ref-item">-type f</div>
+                    <div class="ref-item">-type l</div>
+                    <div class="ref-item">-empty</div>
+                    <div class="ref-item">-executable</div>
+                    <div class="ref-item">-readable</div>
+                    <div class="ref-item">-writable</div>
+                    <div class="ref-item">-user name</div>
+                    <div class="ref-item">-group name</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">🔧</span> Actions & Execution</h2>
+                <div class="commands">
+                    <div class="command-row">
+                        <div class="cmd">find [path] -print</div>
+                        <div class="desc">Print file paths (default)</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -ls</div>
+                        <div class="desc">Print detailed info (like ls -l)</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -delete</div>
+                        <div class="desc">Delete matching files</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -exec cmd {} \;</div>
+                        <div class="desc">Run command on each file</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -exec cmd {} \+</div>
+                        <div class="desc">Run command with all files at once</div>
+                    </div>
+                    <div class="command-row">
+                        <div class="cmd">find [path] -ok cmd {} \;</div>
+                        <div class="desc">Like -exec but prompts for confirmation</div>
+                    </div>
+                </div>
+                <div class="examples">
+                    <div class="example">
+                        Find and delete temp files older than 7 days:
+                        <code class="example-cmd">find /tmp -name "*.tmp" -mtime +7 -delete</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title"><span class="emoji">🔥</span> Advanced Examples</h2>
+                <div class="examples">
+                    <div class="example">
+                        Find files between 100MB and 1GB:
+                        <code class="example-cmd">find /data -type f -size +100M -size -1G</code>
+                    </div>
+                    <div class="example">
+                        Find files owned by user "john":
+                        <code class="example-cmd">find /home -user john -ls</code>
+                    </div>
+                    <div class="example">
+                        Find files modified in the last hour:
+                        <code class="example-cmd">find /path -type f -mmin -60</code>
+                    </div>
+                    <div class="example">
+                        Find and rename .txt files to .md:
+                        <code class="example-cmd">find . -name "*.txt" -exec bash -c 'mv "$0" "${0%.txt}.md"' {} \;</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <span class="footer-emoji">🌴</span> GNU find is part of the GNU findutils package <span class="footer-emoji">🌴</span>
+        <div>Hack the planet! <span class="footer-emoji">🎮</span> findutils.sourceforge.io</div>
+    </div>
+</body>
+</html>

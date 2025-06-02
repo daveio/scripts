@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: ntopng & Mikrotik NetFlow with AI Assist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            z-index: 10;
+        }
+        .ai-button {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table-responsive table {
+            width: 100%;
+            min-width: 600px; 
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .architecture-box {
+            border: 2px solid #0ea5e9; 
+            padding: 1rem;
+            margin: 0.5rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            background-color: #f0f9ff; 
+        }
+        .arrow {
+            font-size: 2rem;
+            color: #0ea5e9; 
+            margin: 0 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 100; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5); 
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 700px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .modal-header {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .modal-body {
+            padding-top: 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+            white-space: pre-wrap; /* To respect newlines from API */
+            word-wrap: break-word;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .loader {
+            border: 5px solid #f3f3f3; /* Light grey */
+            border-top: 5px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-700">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-slate-800 text-slate-200 p-4 space-y-2 fixed top-0 left-0 h-full overflow-y-auto">
+            <h1 class="text-xl font-bold text-white mb-6 border-b border-slate-700 pb-2">Setup Guide Menu</h1>
+            <nav>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link active-nav" data-section="overview">Overview & Architecture</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="prerequisites">Prerequisites & Ports</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="mikrotik">Mikrotik Configuration</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="docker">Docker Environment</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="deployment">Deployment & Verification</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="troubleshooting">Troubleshooting</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="further">Further Considerations</a>
+                <a href="#" class="block py-2 px-3 rounded hover:bg-slate-700 nav-link" data-section="conclusion">Conclusion</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 ml-64 p-6 sm:p-8 md:p-10 overflow-y-auto">
+            <header class="mb-8">
+                <h1 id="main-title" class="text-3xl font-bold text-sky-800">Overview & Architecture</h1>
+            </header>
+
+            <section id="overview" class="content-section active space-y-6">
+                <p class="text-lg leading-relaxed">This guide provides a comprehensive, step-by-step walkthrough for establishing a robust network traffic analysis solution. You'll learn how to configure a Mikrotik RouterOS 7 device as a NetFlow exporter and deploy `netflow2ng` and `ntopng` within Docker containers. This setup leverages open-source tools to deliver detailed network visibility.</p>
+                
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">System Architecture</h2>
+                <p class="mb-4">The system involves the Mikrotik router exporting NetFlow data to `netflow2ng`, which then forwards it to `ntopng` for analysis and visualization via a web interface. Docker Compose simplifies the management of these services.</p>
+                <div class="flex flex-col md:flex-row items-center justify-center p-4 bg-white rounded-lg shadow">
+                    <div class="architecture-box">
+                        <h3 class="font-semibold">Mikrotik Router</h3>
+                        <p class="text-sm">(RouterOS 7)</p>
+                        <p class="text-xs mt-1">Exports NetFlow v9</p>
+                    </div>
+                    <div class="arrow transform md:rotate-0 rotate-90">&rarr;</div>
+                    <div class="architecture-box">
+                        <h3 class="font-semibold">netflow2ng</h3>
+                        <p class="text-sm">(Docker Container)</p>
+                        <p class="text-xs mt-1">Collects NetFlow, Publishes ZMQ</p>
+                    </div>
+                    <div class="arrow transform md:rotate-0 rotate-90">&rarr;</div>
+                    <div class="architecture-box">
+                        <h3 class="font-semibold">ntopng</h3>
+                        <p class="text-sm">(Docker Container)</p>
+                        <p class="text-xs mt-1">Subscribes ZMQ, Web UI Analysis</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-6 mb-2">Key Technologies</h3>
+                <ul class="list-disc list-inside space-y-1 pl-4">
+                    <li><strong>NetFlow:</strong> Protocol for collecting IP traffic information. Mikrotik's "Traffic Flow" implements this.</li>
+                    <li><strong>netflow2ng:</strong> Open-source NetFlow v9/sFlow collector, forwards data via ZMQ.</li>
+                    <li><strong>ntopng:</strong> Web-based network traffic probe and analyzer.</li>
+                    <li><strong>ZMQ (ZeroMQ):</strong> Messaging library for high-performance data transfer between `netflow2ng` and `ntopng`.</li>
+                    <li><strong>Docker & Docker Compose:</strong> Platform for containerizing and managing the applications.</li>
+                </ul>
+            </section>
+
+            <section id="prerequisites" class="content-section space-y-6">
+                 <p class="text-lg leading-relaxed">Before you begin, ensure you have the following prerequisites in place. This section also details the crucial network ports used in this setup, which is vital for configuration and firewall rules.</p>
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Prerequisites</h2>
+                <ul class="list-disc list-inside space-y-1 pl-4 bg-white p-4 rounded-lg shadow">
+                    <li>Docker Engine and Docker Compose v2 installed on a host machine (Linux recommended).</li>
+                    <li>A Mikrotik RouterOS 7 device with basic network connectivity, accessible for configuration.</li>
+                    <li>The IP address of the Docker host machine (known and reachable from the Mikrotik router).</li>
+                    <li>Basic understanding of IP networking, CLI usage, and text file editing.</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Port Mapping Overview (Table 1)</h2>
+                <p class="mb-2">Understanding these port mappings is essential for successful deployment and troubleshooting.</p>
+                <div class="table-responsive bg-white p-1 rounded-lg shadow">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Service</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Docker Host Connection Point</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Container Port (Internal)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Protocol</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Purpose</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">Mikrotik (Target)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>DOCKER_HOST_IP</code></td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>NETFLOW_PORT</code> (e.g., 2055)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">UDP</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">NetFlow Export Destination</td>
+                                <td class="px-4 py-3 text-sm text-slate-600">Mikrotik sends NetFlow data to the Docker Host's IP and port.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>netflow2ng</code> (UDP)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>2055</code> (Host)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>2055</code> (Container)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">UDP</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">NetFlow Collection</td>
+                                <td class="px-4 py-3 text-sm text-slate-600">Exposed on Docker Host to receive data from Mikrotik.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>netflow2ng</code> (ZMQ)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">N/A (Internal)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>5556</code> (Container)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">TCP</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">ZMQ Publishing flows to <code>ntopng</code></td>
+                                <td class="px-4 py-3 text-sm text-slate-600">Internal to the Docker network; not exposed on the host.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>ntopng</code> (Web UI)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>3000</code> (Host)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>3000</code> (Container)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">TCP</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">Access to <code>ntopng</code> Web UI</td>
+                                <td class="px-4 py-3 text-sm text-slate-600">Exposed on Docker Host for user access.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600"><code>ntopng</code> (ZMQ)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">N/A (Internal)</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">Connects to <code>netflow2ng:5556</code></td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">TCP</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">ZMQ Subscription for flows</td>
+                                <td class="px-4 py-3 text-sm text-slate-600">Internal to Docker network.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="mikrotik" class="content-section space-y-6">
+                <p class="text-lg leading-relaxed">This section guides you through configuring your Mikrotik RouterOS 7 device to export NetFlow v9 data. These CLI commands should be executed on your Mikrotik router (via SSH or Winbox terminal).</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">1.1. Enabling Traffic Flow</h3>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow set enabled=yes</code></pre>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">1.2. Configuring Traffic Flow Targets</h3>
+                <p>Replace <code>&lt;DOCKER_HOST_IP&gt;</code> with your Docker host's IP and <code>&lt;NETFLOW_PORT&gt;</code> with the UDP port (usually <code>2055</code>).</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow target add address=&lt;DOCKER_HOST_IP&gt;:&lt;NETFLOW_PORT&gt; version=9</code></pre>
+                </div>
+                <p>Configure v9 template transmission:</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow target set v9-template-refresh=20 v9-template-timeout=1m</code></pre>
+                </div>
+                <p>Optionally, set the source address (replace <code>&lt;MIKROTIK_ROUTER_IP&gt;</code>):</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow target set src-address=&lt;MIKROTIK_ROUTER_IP&gt;</code></pre>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">1.3. Specifying Monitored Interfaces</h3>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow set interfaces=all</code></pre>
+                </div>
+                <p class="text-sm">Consider specifying interfaces (e.g., <code>interfaces=ether1,bridge_lan</code>) on busy routers.</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">1.4. Adjusting Cache Settings</h3>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow set active-flow-timeout=1m inactive-flow-timeout=15s cache-entries=4k</code></pre>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">1.5. Consideration for Bridged Traffic (RouterOS 7)</h3>
+                <p>If bridged traffic is missing, you might need:</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/interface bridge settings set use-ip-firewall=yes</code></pre>
+                </div>
+                <p class="text-sm">Test without this first, as it can increase CPU load.</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">1.6. Verifying Mikrotik Configuration</h3>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-routeros">/ip traffic-flow print
+/ip traffic-flow target print detail</code></pre>
+                </div>
+
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Mikrotik Traffic-Flow Configuration Summary (Table 2)</h2>
+                <div class="table-responsive bg-white p-1 rounded-lg shadow">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Parameter</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">CLI Path</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Example Value</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Recommended Value/Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Enable Traffic Flow</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>set enabled=yes</code></td><td class="px-4 py-3 text-sm text-slate-600">Mandatory.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Target IP & Port</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow target</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>add address=192.168.88.100:2055...</code></td><td class="px-4 py-3 text-sm text-slate-600">Docker host IP & UDP port (e.g., 2055).</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">NetFlow Version</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow target</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>... version=9</code></td><td class="px-4 py-3 text-sm text-slate-600">Use <code>9</code> for <code>netflow2ng</code>.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">v9 Template Refresh</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow target</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>... v9-template-refresh=20</code></td><td class="px-4 py-3 text-sm text-slate-600">(Packets) Default is 20.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">v9 Template Timeout</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow target</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>... v9-template-timeout=1m</code></td><td class="px-4 py-3 text-sm text-slate-600">(Time) <code>1m</code> recommended.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Monitored Interfaces</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>set interfaces=all</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>all</code> or specific interfaces.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Active Flow Timeout</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>set active-flow-timeout=1m</code></td><td class="px-4 py-3 text-sm text-slate-600">Shorter (<code>1m-5m</code>) for more real-time data.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Inactive Flow Timeout</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>set inactive-flow-timeout=15s</code></td><td class="px-4 py-3 text-sm text-slate-600">Default 15s is usually fine.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Cache Entries</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>set cache-entries=4k</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>4k</code> to <code>64k+</code> based on router/traffic.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Source Address (Opt.)</td><td class="px-4 py-3 text-sm text-slate-600"><code>/ip traffic-flow target</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>... src-address=192.168.88.1</code></td><td class="px-4 py-3 text-sm text-slate-600">Router's source IP for flows.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Bridged Traffic (Cond.)</td><td class="px-4 py-3 text-sm text-slate-600"><code>/interface bridge settings</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>set use-ip-firewall=yes</code></td><td class="px-4 py-3 text-sm text-slate-600">May be needed for intra-bridge traffic. Test first.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="docker" class="content-section space-y-6">
+                <p class="text-lg leading-relaxed">Now, prepare your Docker environment. This involves creating a project directory and a `docker-compose.yml` file to define the `netflow2ng` and `ntopng` services.</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">2.1. Creating a Project Directory</h3>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-bash">mkdir ntopng-stack
+cd ntopng-stack</code></pre>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">2.2. Creating `docker-compose.yml`</h3>
+                <p>Create a file named <code>docker-compose.yml</code> in the <code>ntopng-stack</code> directory with the following content. Remember to adjust the <code>-m "..."</code> local networks parameter for `ntopng` to match your actual network(s), and set the <code>TZ</code> environment variable to your local timezone.</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow" style="max-height: 500px; overflow-y: auto;">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code id="docker-compose-code" class="language-yaml">version: '3.8'
+
+services:
+  netflow2ng:
+    image: synfinatic/netflow2ng:latest
+    container_name: netflow2ng
+    command:
+      - "-listen-udp=:2055"
+      - "-zmq-uri=tcp://0.0.0.0:5556"
+    ports:
+      - "2055:2055/udp"
+    networks:
+      - monitoring_net
+    restart: unless-stopped
+
+  ntopng:
+    image: ntop/ntopng:stable
+    container_name: ntopng
+    command:
+      - "-i"
+      - "tcp://netflow2ng:5556"
+      - "--community"
+      - "-m"
+      - "192.168.0.0/16,172.16.0.0/12,10.0.0.0/8" # Adjust to your local network(s)
+    ports:
+      - "3000:3000"
+    volumes:
+      - ntopng_data_vol:/var/lib/ntopng # Using a named volume
+      # Alternatively, use a bind mount:
+      # - ./ntopng_data:/var/lib/ntopng
+    networks:
+      - monitoring_net
+    depends_on:
+      - netflow2ng
+    restart: unless-stopped
+    environment:
+      - TZ=Etc/UTC # Example: Set to your local timezone, e.g., "America/New_York"
+
+networks:
+  monitoring_net:
+    driver: bridge
+
+volumes:
+  ntopng_data_vol: # Definition for the named volume</code></pre>
+                </div>
+                <button id="explain-docker-compose" class="ai-button bg-sky-500 hover:bg-sky-600 text-white">Explain with AI ✨</button>
+                
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">2.3. Explanation of `docker-compose.yml`</h3>
+                <ul class="list-disc list-inside space-y-1 pl-4 bg-white p-4 rounded-lg shadow">
+                    <li><strong>`netflow2ng` service:</strong> Collects NetFlow on UDP 2055, publishes ZMQ on TCP 5556. Port 2055/udp is exposed on the host.</li>
+                    <li><strong>`ntopng` service:</strong> Subscribes to `netflow2ng`'s ZMQ feed. Runs in community mode. Defines local networks with `-m`. Exposes web UI on TCP 3000. Persists data using the `ntopng_data_vol` volume. `TZ` sets the timezone.</li>
+                    <li><strong>`monitoring_net` network:</strong> Custom bridge network for inter-container communication and DNS resolution by service name.</li>
+                    <li><strong>`ntopng_data_vol` volume:</strong> Named volume for `ntopng` data persistence.</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Key `docker-compose.yml` Parameters (Table 3)</h2>
+                <div class="table-responsive bg-white p-1 rounded-lg shadow">
+                     <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Service</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Parameter</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Value</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>netflow2ng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>image</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>synfinatic/netflow2ng:latest</code></td><td class="px-4 py-3 text-sm text-slate-600">NetFlow collector image.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>netflow2ng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>command</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>["-listen-udp=:2055", "-zmq-uri=tcp://0.0.0.0:5556"]</code></td><td class="px-4 py-3 text-sm text-slate-600">Listen UDP 2055, publish ZMQ TCP 5556.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>netflow2ng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>ports</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>["2055:2055/udp"]</code></td><td class="px-4 py-3 text-sm text-slate-600">Expose UDP 2055 on host.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>ntopng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>image</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>ntop/ntopng:stable</code></td><td class="px-4 py-3 text-sm text-slate-600">ntopng analyzer image.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>ntopng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>command</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>["-i", "tcp://netflow2ng:5556", "--community", "-m", "..."]</code></td><td class="px-4 py-3 text-sm text-slate-600">Connect to ZMQ, community mode, local nets.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>ntopng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>ports</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>["3000:3000"]</code></td><td class="px-4 py-3 text-sm text-slate-600">Expose Web UI TCP 3000 on host.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>ntopng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>volumes</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>["ntopng_data_vol:/var/lib/ntopng"]</code></td><td class="px-4 py-3 text-sm text-slate-600">Persist ntopng data.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>ntopng</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>environment</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>["TZ=Etc/UTC"]</code></td><td class="px-4 py-3 text-sm text-slate-600">Set container timezone.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600"><code>networks</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>monitoring_net</code></td><td class="px-4 py-3 text-sm text-slate-600"><code>driver: bridge</code></td><td class="px-4 py-3 text-sm text-slate-600">Custom network for services.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="deployment" class="content-section space-y-6">
+                <p class="text-lg leading-relaxed">With the `docker-compose.yml` file ready, you can launch the containers and then perform the initial ntopng setup and verification.</p>
+
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Step 3: Launching the Docker Containers</h2>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">3.1. Command to Start Services</h3>
+                <p>Navigate to your <code>ntopng-stack</code> directory and run:</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-bash">docker-compose up -d</code></pre>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">3.2. Checking Container Status</h3>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-bash">docker-compose ps</code></pre>
+                </div>
+                <p>Or:</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-bash">docker ps</code></pre>
+                </div>
+                <p>Both containers should show as 'Up' or 'Running'.</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">3.3. Viewing Logs (Initial Check)</h3>
+                <p>For <code>netflow2ng</code>:</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-bash">docker-compose logs netflow2ng</code></pre>
+                </div>
+                <p class="text-sm">Look for: <code>INFO Listening for netflow on UDP :2055</code> and <code>INFO ZMQ Publisher running on tcp://0.0.0.0:5556</code>.</p>
+                <p>For <code>ntopng</code>:</p>
+                <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow">
+                    <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
+                    <pre><code class="language-bash">docker-compose logs ntopng</code></pre>
+                </div>
+                <p class="text-sm">Look for successful ZMQ connection to <code>tcp://netflow2ng:5556</code>.</p>
+
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Step 4: Initial ntopng Setup and Verification</h2>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">4.1. Accessing ntopng Web UI</h3>
+                <p>Open your browser and go to: <code>http://&lt;DOCKER_HOST_IP&gt;:3000</code> (replace <code>&lt;DOCKER_HOST_IP&gt;</code>).</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">4.2. Default Login and Password Change</h3>
+                <ul class="list-disc list-inside pl-4">
+                    <li>Default Username: <code>admin</code></li>
+                    <li>Default Password: <code>admin</code></li>
+                </ul>
+                <p>You will be prompted to change the password immediately. Choose a strong, unique password.</p>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">4.3. Verifying Flow Data Reception</h3>
+                <ul class="list-disc list-inside pl-4">
+                    <li><strong>Check Interfaces:</strong> In ntopng UI (System/Admin > Interfaces), look for the ZMQ interface (e.g., <code>tcp://netflow2ng:5556</code>).</li>
+                    <li><strong>View Flows:</strong> Go to the "Flows" tab. Data may take a few minutes to appear due to Mikrotik timeouts.</li>
+                    <li><strong>Dashboard:</strong> The main dashboard should start populating with charts.</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">4.4. Basic ntopng Configuration (Post-Setup)</h3>
+                <ul class="list-disc list-inside pl-4">
+                    <li><strong>Local Networks:</strong> Verify networks from <code>-m</code> option are correct.</li>
+                    <li><strong>Timezone:</strong> Check and adjust ntopng's timezone settings if needed.</li>
+                    <li><strong>Enable Features:</strong> Explore and enable desired community features in settings.</li>
+                </ul>
+            </section>
+
+            <section id="troubleshooting" class="content-section space-y-6">
+                <p class="text-lg leading-relaxed">If you encounter issues, this section provides common troubleshooting steps. A systematic approach, checking each component, is key.</p>
+
+                <div id="no-flows-problem-area">
+                    <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">5.1. No Flows in ntopng</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4 bg-white p-4 rounded-lg shadow">
+                        <li><strong>Mikrotik Router:</strong>
+                            <ul class="list-circle list-inside pl-6 space-y-1">
+                                <li>Verify <code>/ip traffic-flow print</code> (enabled: yes).</li>
+                                <li>Verify <code>/ip traffic-flow target print detail</code> (correct <code>dst-address</code>, <code>port</code>, <code>version: 9</code>).</li>
+                                <li>Check if <code>flows-sent</code> counter is increasing.</li>
+                                <li>Ensure Mikrotik can reach Docker host IP (<code>/ping &lt;DOCKER_HOST_IP&gt;</code>).</li>
+                                <li>Use <code>/tool sniffer</code> or <code>torch</code> to see if UDP packets are sent to Docker host on the NetFlow port.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Docker Host Firewall:</strong> Allow incoming UDP on NetFlow port (e.g., 2055) from Mikrotik IP.
+                            <br>(Example ufw: <code>sudo ufw allow from &lt;MIKROTIK_IP&gt; to any port 2055 proto udp</code>).
+                            <br>Use <code>tcpdump</code> on host: <code>sudo tcpdump -i &lt;interface&gt; udp port 2055 and host &lt;MIKROTIK_IP&gt; -n -v</code>.
+                        </li>
+                        <li><strong><code>netflow2ng</code> Logs:</strong> <code>docker-compose logs netflow2ng</code>. Look for listening and ZMQ publisher messages.</li>
+                        <li><strong><code>ntopng</code> Logs:</strong> <code>docker-compose logs ntopng</code>. Look for ZMQ connection errors. Check ZMQ interface status in UI.</li>
+                        <li><strong>Docker Networking:</strong>
+                            <ul class="list-circle list-inside pl-6 space-y-1">
+                                <li><code>docker network inspect monitoring_net</code> (both containers should be listed).</li>
+                                <li>Test connectivity from ntopng to netflow2ng: <code>docker exec -it ntopng bash</code> then <code>ping netflow2ng</code> or <code>nc -vz netflow2ng 5556</code>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <button id="troubleshoot-no-flows" class="ai-button bg-amber-500 hover:bg-amber-600 text-white">Get AI Troubleshooting Help ✨</button>
+                </div>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">5.2. Container Crashing or Not Starting</h3>
+                <ul class="list-disc list-inside space-y-2 pl-4 bg-white p-4 rounded-lg shadow">
+                    <li><strong>Check Logs:</strong> <code>docker-compose logs &lt;container_name&gt;</code>.</li>
+                    <li><strong>Port Conflicts:</strong> Ensure UDP 2055 / TCP 3000 are free on host (<code>sudo netstat -tulnp | grep &lt;port&gt;</code>).</li>
+                    <li><strong>Incorrect Arguments:</strong> Double-check <code>command</code> in <code>docker-compose.yml</code>.</li>
+                    <li><strong>Volume Permissions (ntopng):</strong> Usually not an issue with named volumes. If using bind mounts, check host directory permissions.</li>
+                    <li><strong>Resource Limits:</strong> Check <code>dmesg</code> for OOM errors on low-resource systems.</li>
+                    <li><strong>License Issues (ntopng):</strong> Ensure <code>--community</code> flag is used.</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">5.3. High CPU Usage on Mikrotik Router</h3>
+                <ul class="list-disc list-inside space-y-2 pl-4 bg-white p-4 rounded-lg shadow">
+                    <li><strong>Aggressive Settings:</strong> Try more conservative <code>active-flow-timeout</code> (e.g., <code>5m</code>), <code>cache-entries</code>.</li>
+                    <li><strong>Monitoring All Interfaces:</strong> On busy routers, specify only essential interfaces.</li>
+                    <li><strong>Packet Sampling:</strong> Consider <code>/ip traffic-flow set packet-sampling=yes sampling-interval=&lt;N&gt;</code> (reduces accuracy).</li>
+                    <li><strong>Hardware Limits:</strong> Older/lower-end models might struggle.</li>
+                </ul>
+                
+                <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Troubleshooting Checklist (Table 4)</h2>
+                <div class="table-responsive bg-white p-1 rounded-lg shadow">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Symptom</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Potential Cause(s)</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Key Verification/Solution Steps</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">No flows in `ntopng`</td><td class="px-4 py-3 text-sm text-slate-600">Mikrotik not sending (config error, disabled).</td><td class="px-4 py-3 text-sm text-slate-600">Check Mikrotik `/ip traffic-flow print` & `target print detail`. Verify target IP/port, version, `enabled=yes`, `flows-sent`.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">...</td><td class="px-4 py-3 text-sm text-slate-600">Docker host firewall blocking UDP.</td><td class="px-4 py-3 text-sm text-slate-600">Check host firewall. Allow UDP (e.g., 2055) from Mikrotik. `tcpdump` on host.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">...</td><td class="px-4 py-3 text-sm text-slate-600">`netflow2ng` not receiving/processing.</td><td class="px-4 py-3 text-sm text-slate-600">`docker-compose logs netflow2ng`. Check listen/receipt messages.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">...</td><td class="px-4 py-3 text-sm text-slate-600">`ntopng` not connecting to ZMQ.</td><td class="px-4 py-3 text-sm text-slate-600">`docker-compose logs ntopng`. Check ZMQ errors. Verify ZMQ URI. Test inter-container net.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">Container fails/crashes</td><td class="px-4 py-3 text-sm text-slate-600">Port conflict on host.</td><td class="px-4 py-3 text-sm text-slate-600">`sudo netstat -tulnp` for port 2055/udp or 3000/tcp.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">...</td><td class="px-4 py-3 text-sm text-slate-600">Incorrect `command` args.</td><td class="px-4 py-3 text-sm text-slate-600">Review `docker-compose.yml` `command` sections.</td></tr>
+                             <tr><td class="px-4 py-3 text-sm text-slate-600">High CPU on Mikrotik</td><td class="px-4 py-3 text-sm text-slate-600">Aggressive flow export settings.</td><td class="px-4 py-3 text-sm text-slate-600">Increase `active-flow-timeout`, adjust `cache-entries`.</td></tr>
+                            <tr><td class="px-4 py-3 text-sm text-slate-600">...</td><td class="px-4 py-3 text-sm text-slate-600">Monitoring `all` interfaces on busy router.</td><td class="px-4 py-3 text-sm text-slate-600">Specify only necessary interfaces.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="further" class="content-section space-y-6">
+                <p class="text-lg leading-relaxed">With your setup operational, consider these points for security, data integrity, performance, and exploring ntopng's capabilities.</p>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.1. Securing ntopng Access</h3>
+                <ul class="list-disc list-inside pl-4">
+                    <li>Use a strong admin password (set during initial setup).</li>
+                    <li>Consider a reverse proxy (Nginx, Traefik) with SSL/TLS for HTTPS access.</li>
+                    <li>Use ntopng's user management for multiple users.</li>
+                    <li>Restrict access to port 3000 via host firewall.</li>
+                    <li>Use the `-l` (disable login) option with extreme caution in isolated labs only.</li>
+                </ul>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.2. Data Persistence and Backups</h3>
+                <p>Regularly back up the `ntopng_data_vol` volume (or bind mount directory) to prevent data loss.</p>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.3. Tuning Performance</h3>
+                <ul class="list-disc list-inside pl-4">
+                    <li><strong>Mikrotik:</strong> Monitor CPU/memory. Adjust flow timeouts/cache settings.</li>
+                    <li><strong>Docker Host/Containers:</strong> Monitor with `docker stats`. Ensure sufficient host resources. `ntopng --limit-resources` if needed.</li>
+                </ul>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.4. Exploring ntopng Features</h3>
+                <p>Dive into: Dashboard, Flow Analysis, Host Analysis, Application Protocol Detection (nDPI), Historical Data, Alerts (community features).</p>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.5. Alternatives and Future Growth</h3>
+                <ul class="list-disc list-inside pl-4">
+                    <li><strong>nProbe:</strong> Commercial probe from ntop for advanced features/scalability.</li>
+                    <li><strong>Other Solutions:</strong> ElastiFlow, Prometheus + Grafana.</li>
+                </ul>
+            </section>
+
+            <section id="conclusion" class="content-section space-y-6">
+                <p class="text-lg leading-relaxed">This guide detailed setting up a network traffic monitoring system with Mikrotik, `netflow2ng`, and `ntopng` in Docker. By following these steps, you can gain significant network visibility.</p>
+                <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">Key Elements for Success:</h3>
+                <ul class="list-disc list-inside space-y-1 pl-4 bg-white p-4 rounded-lg shadow">
+                    <li>Accurate Mikrotik NetFlow configuration (target IP/port 2055, version 9, appropriate timeouts/cache).</li>
+                    <li>Robust Docker Compose setup (correct images, ZMQ command args, port maps, ntopng volume).</li>
+                    <li>Understanding the NetFlow data path.</li>
+                    <li>Systematic verification and troubleshooting (logs, Mikrotik stats, firewall).</li>
+                </ul>
+                <p>This open-source, containerized solution offers a flexible and powerful approach to network monitoring.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="aiResponseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modalTitle">AI Assistant</span>
+                <span class="close-button" id="closeModalButton">&times;</span>
+            </div>
+            <div class="modal-body" id="aiResponseContent">
+                <div class="loader" id="aiLoadingIndicator"></div>
+                <p id="aiResponseText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const mainTitle = document.getElementById('main-title');
+
+            const aiResponseModal = document.getElementById('aiResponseModal');
+            const closeModalButton = document.getElementById('closeModalButton');
+            const aiResponseContent = document.getElementById('aiResponseContent');
+            const aiResponseText = document.getElementById('aiResponseText');
+            const aiLoadingIndicator = document.getElementById('aiLoadingIndicator');
+            const modalTitle = document.getElementById('modalTitle');
+
+            const explainDockerComposeButton = document.getElementById('explain-docker-compose');
+            const troubleshootNoFlowsButton = document.getElementById('troubleshoot-no-flows');
+
+            function showSection(sectionId, sectionTitleText) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                const activeSection = document.getElementById(sectionId);
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                }
+                mainTitle.textContent = sectionTitleText;
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-nav', 'bg-sky-700', 'text-white');
+                    link.classList.add('text-slate-200', 'hover:bg-slate-700');
+                    if (link.dataset.section === sectionId) {
+                        link.classList.add('active-nav', 'bg-sky-700', 'text-white');
+                        link.classList.remove('text-slate-200', 'hover:bg-slate-700');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const sectionId = this.dataset.section;
+                    const sectionTitleText = this.textContent;
+                    showSection(sectionId, sectionTitleText);
+                    document.querySelector('main').scrollTop = 0;
+                });
+            });
+
+            if (navLinks.length > 0) {
+                 showSection(navLinks[0].dataset.section, navLinks[0].textContent);
+            }
+
+            document.querySelectorAll('.copy-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    const codeBlock = this.parentElement;
+                    const codeElement = codeBlock.querySelector('code');
+                    const textToCopy = codeElement.innerText;
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            button.textContent = 'Copied!';
+                            setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                        }).catch(err => {
+                            console.warn('Async clipboard copy failed, falling back.', err);
+                            fallbackCopyTextToClipboard(textToCopy, button);
+                        });
+                    } else {
+                        fallbackCopyTextToClipboard(textToCopy, button);
+                    }
+                });
+            });
+
+            function fallbackCopyTextToClipboard(text, button) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    } else {
+                        button.textContent = 'Failed';
+                         setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    }
+                } catch (err) {
+                    button.textContent = 'Failed';
+                    setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            // AI Modal functions
+            function openModal(title) {
+                modalTitle.textContent = title;
+                aiResponseText.textContent = '';
+                aiLoadingIndicator.style.display = 'block';
+                aiResponseModal.style.display = 'block';
+            }
+
+            function closeModal() {
+                aiResponseModal.style.display = 'none';
+            }
+
+            closeModalButton.onclick = closeModal;
+            window.onclick = function(event) {
+                if (event.target == aiResponseModal) {
+                    closeModal();
+                }
+            }
+
+            async function callGeminiAPI(prompt) {
+                openModal("AI Assistant is thinking...");
+                const apiKey = ""; // Provided by Canvas environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Gemini API Error:', errorData);
+                        throw new Error(`API request failed with status ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    aiLoadingIndicator.style.display = 'none';
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        aiResponseText.textContent = text;
+                    } else {
+                        aiResponseText.textContent = "Sorry, I couldn't get a helpful response. The response structure was unexpected.";
+                        console.error("Unexpected API response structure:", result);
+                    }
+                } catch (error) {
+                    aiLoadingIndicator.style.display = 'none';
+                    aiResponseText.textContent = `An error occurred: ${error.message}. Please check the console for more details. Make sure you have a valid API key if you are not using gemini-2.0-flash.`;
+                    console.error('Error calling Gemini API:', error);
+                }
+            }
+
+            if (explainDockerComposeButton) {
+                explainDockerComposeButton.addEventListener('click', () => {
+                    const dockerComposeCodeElement = document.getElementById('docker-compose-code');
+                    if (dockerComposeCodeElement) {
+                        const dockerComposeCode = dockerComposeCodeElement.innerText;
+                        const prompt = `Explain the following docker-compose.yml file. Describe what each service (netflow2ng, ntopng) does, explain the key parameters (like image, command, ports, volumes, networks, environment variables such as TZ), and how these services interact. The context is setting up a network monitoring solution with Mikrotik NetFlow. \n\n\`\`\`yaml\n${dockerComposeCode}\n\`\`\``;
+                        callGeminiAPI(prompt);
+                        modalTitle.textContent = "AI Docker Compose Explainer ✨";
+                    } else {
+                        alert("Could not find the Docker Compose code to explain.");
+                    }
+                });
+            }
+
+            if (troubleshootNoFlowsButton) {
+                troubleshootNoFlowsButton.addEventListener('click', () => {
+                    const problemArea = document.getElementById('no-flows-problem-area');
+                    let problemDescription = "Symptom: No flows are appearing in ntopng.\n\n";
+                    if (problemArea) {
+                        const heading = problemArea.querySelector('h3');
+                        const listItems = problemArea.querySelectorAll('ul li');
+                        if (heading) problemDescription += `Problem Context: ${heading.innerText}\n`;
+                        problemDescription += "Current troubleshooting steps considered:\n";
+                        listItems.forEach(li => {
+                            problemDescription += `- ${li.innerText}\n`;
+                        });
+                    }
+                    
+                    const prompt = `I'm troubleshooting an issue where no NetFlow data is appearing in ntopng, after setting it up with netflow2ng and a Mikrotik router. Here's the situation and what I've checked:\n\n${problemDescription}\n\nBased on this, please provide:
+1.  A brief, simplified explanation of why this problem (no flows) might be occurring in this specific setup (Mikrotik -> netflow2ng -> ntopng).
+2.  Suggest 2-3 additional, specific diagnostic questions I can ask myself or checks I can perform that are not already listed, to help pinpoint the failure (e.g., specific commands to run on the Docker host or Mikrotik, or specific things to look for in logs).
+3.  Are there any common misconfigurations in the Mikrotik NetFlow export or the docker-compose setup for netflow2ng/ntopng that frequently cause this?
+4.  What are 2-3 advanced troubleshooting techniques or tools I could use if the basic checks don't reveal the issue?`;
+                    callGeminiAPI(prompt);
+                    modalTitle.textContent = "AI Troubleshooting Assistant ✨";
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

@@ -14,6 +14,16 @@ This repository follows a modular structure where each utility is self-contained
 
 ## Repository Structure
 
+### Images Directory (`/images`)
+
+Contains image resources organized into subdirectories:
+
+- **multipurpose**: Generic images that can be used across various projects and contexts.
+
+- **projects**: Project-specific images organized by use case:
+  - **social**: Social media graphics divided into JPEG and PNG formats
+  - **square**: Square-format images for profile pictures and icons
+
 ### Python Directory (`/python`)
 
 Contains Python utilities organized into separate projects:
@@ -40,11 +50,42 @@ Contains guides and configurations involving multiple technologies:
 
 - **netflow**: A comprehensive guide for setting up network flow monitoring using ntopng with netflow2ng in Docker and Mikrotik RouterOS 7. Includes Docker configuration, router setup, and troubleshooting information.
 
+### Research Directory (`/research`)
+
+Contains research notes, experiments, and documentation on various topics:
+
+- **catppuccin**: Research on the Catppuccin color scheme and its application across different tools and environments.
+
+- **cloudflare**: Notes and configurations related to Cloudflare services and APIs.
+
+- **dependabot**: Research on GitHub Dependabot configuration and automation.
+
+- **eve-online**: Documentation related to EVE Online gameplay and tools.
+
+- **gnu-find**: Advanced usage patterns and examples for the GNU find command.
+
+- **javascript**: Research on JavaScript patterns, frameworks, and libraries.
+
+- **roadman-dialect**: Linguistic research on the roadman dialect and its characteristics.
+
+- **traffic-analysis**: Network traffic analysis techniques and tools.
+
+### TypeScript Directory (`/typescript`)
+
+Contains TypeScript projects and utilities:
+
+- **bump**: A dependency management tool that updates packages across multiple repositories and programming languages with intelligent version bumping. Features include:
+  - Multi-repository and multi-language support (JavaScript/TypeScript, Python, Ruby)
+  - Smart version bumping based on semantic versioning rules
+  - Git integration for handling repository changes
+  - Terminal UI with progress indicators and formatted output
+
 ### Development Tools
 
 The repository uses several code quality tools:
 
-- Ruff for Python linting
+- Ruff and Black for Python linting
+- Biome for TypeScript and JavaScript linting
 - Sourcery for code quality suggestions
 - Trunk for developer tooling
 
@@ -84,6 +125,23 @@ The configuration guides like the netflow documentation:
 - Offer troubleshooting guidance
 - Present multiple options based on user preferences
 
+### TypeScript Utilities
+
+The TypeScript utilities in the repository:
+
+- Are built with modern TypeScript features and practices
+- Often involve automation of development workflows
+- Include comprehensive command-line interfaces with multiple options
+- May integrate with external APIs and services
+
+### Image Resources
+
+The image resources in the repository:
+
+- Are organized by purpose and format
+- Include both project-specific and multipurpose images
+- May require specific software to view or edit (e.g., Adobe Photoshop, Figma)
+
 ## Assisting with Common Tasks
 
 ### For Python Utilities
@@ -121,6 +179,24 @@ The configuration guides like the netflow documentation:
    - Help with modifying script variables for different behaviors
    - Explain how to adapt scripts to user environments
 
+### For TypeScript Utilities
+
+1. **Installation and Setup**:
+
+   - Guide users on installing dependencies: `bun install` or `npm install`
+   - Explain how to build TypeScript projects: `bun run build` or `npm run build`
+   - Advise on creating symlinks for easier access
+
+2. **Usage Guidance**:
+
+   - Explain command-line options and their effects
+   - Provide examples for common use cases
+   - Suggest appropriate flags based on user's needs
+
+3. **Customization**:
+   - Help with modifying configuration options
+   - Explain how to extend functionality for specific needs
+
 ### For Configuration Guides
 
 1. **Implementation**:
@@ -155,11 +231,13 @@ The configuration guides like the netflow documentation:
    - Recommend implementing new features as separate functions
    - Suggest maintaining the existing error handling patterns
    - For Python tools, follow the Rich library patterns for consistent UI
+   - For TypeScript tools, maintain type safety and follow existing patterns
 
 4. **Testing Suggestions**:
    - Recommend testing file operations in dry-run mode first
    - Suggest validating input data before operations
    - For Fish scripts, propose echo statements to trace execution
+   - For TypeScript tools, recommend using the `--dry-run` flag if available
 
 ## Example Responses
 
@@ -254,6 +332,51 @@ The most common issues are:
 - Missing volumes for persistent data
 
 Would you like me to help with any specific part of this setup?
+
+```
+
+### Example 4: User asking about the bump utility
+
+```
+To use the bump utility for updating dependencies across your repositories:
+
+1. Basic usage:
+   ```bash
+   # Update all repositories
+   bump
+   
+   # Update a specific repository
+   bump your-repo-name
+   ```
+
+2. If you want to see what would be updated without making changes:
+   ```bash
+   bump --dry-run
+   ```
+
+3. To update all dependencies including major versions (which are skipped by default):
+   ```bash
+   bump --unsafe
+   ```
+
+4. To skip certain git operations:
+   ```bash
+   # Skip committing changes
+   bump --no-commit
+   
+   # Skip pushing changes
+   bump --no-push
+   ```
+
+The tool will:
+- Find repositories to process
+- Check for outdated dependencies
+- Apply updates based on semantic versioning rules
+- Update lockfiles
+- Commit and push changes (unless disabled)
+
+It supports JavaScript/TypeScript (package.json), Python (pyproject.toml), and Ruby (Gemfile, gemspec) projects.
+```
 
 ```markdown
 ## Final Notes

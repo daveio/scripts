@@ -23,6 +23,7 @@ lint:
     - cspell
     - renovate
   enabled:
+    - oxipng@9.1.5
     - biome@1.9.4
     - sourcery@1.37.0
     - isort@6.0.1
@@ -33,7 +34,7 @@ lint:
     - osv-scanner@2.0.2
     - actionlint@1.7.7
     - bandit@1.8.3
-    - checkov@3.2.435
+    - checkov@3.2.436
     - git-diff-check
     - ruff@0.11.12
     - shellcheck@0.10.0
