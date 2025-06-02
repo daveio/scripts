@@ -12,11 +12,15 @@ services:
       - ntopng
   ntopng:
     container_name: ntopng
+    user: root
     command:
       - -G /var/lib/ntopng/ntopng.pid
+      - -i eth1.1
       - --community
       - --disable-autologout
       - --disable-login=1  # Living dangerously! Add authentication in production
+      - -m 10.0.98.0/24
+      - -m 10.0.99.0/24
       - --redis=localhost:8846
       - --http-port=8849
       - --max-num-flows=200000
