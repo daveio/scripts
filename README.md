@@ -2,6 +2,8 @@
 
 Welcome to `myriad`. This is my glorious dumping ground of miscellaneous utilities, scripts, and guides that I've cobbled together over the years. Think of it as that drawer in your kitchen filled with random useful stuff that you can never find when you actually need it.
 
+![the Myriad codec in Star Trek Picard](images/myriad/myriad.jpg)
+
 ## Overview
 
 `myriad` contains a hodgepodge of tools organized by language or technology — because some semblance of order is better than none:
