@@ -1,103 +1,31 @@
 services:
-  elasticsearch:
-    # Version: 9.0.1
-    image: docker.elastic.co/elasticsearch/elasticsearch@sha256:9244a573c48bc120c8ac4daf61d48dcda48db2b25fd1b3c4cbeb01aa175a8495
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    volumes:
-      - elasticsearch:/usr/share/elasticsearch/data
-    networks:
-      - ntopng
-  grafana:
-    # Version: 12.0.1
-    image: grafana/grafana@sha256:06dc8d60e184705e5dc00e051a6d92342a44010d7d5e538d0a36339e85abb9b7
-    restart: unless-stopped
-    ports:
-      - 3001:3000
-    volumes:
-      - grafana:/var/lib/grafana
-    networks:
-      - ntopng
-    depends_on:
-      - influxdb
-  influxdb:
-    # Version: 3.1.0-core
-    image: influxdb@sha256:a892c81c06734e1655327cfdea95ac6d1b18984db22a4bae3528f96792611f66
-    restart: unless-stopped
-    volumes:
-      - influxdb:/var/lib/influxdb
-    environment:
-      - INFLUXDB_DB=ntopng
-    networks:
-      - ntopng
-  kibana:
-    # Version: 9.0.1
-    image: docker.elastic.co/kibana/kibana@sha256:8298fac9df65785fdd8f00f977d2484ecfed8d1c2172730d43ee33d092b45a3f
-    ports:
-      - 5601:5601
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    networks:
-      - ntopng
-    depends_on:
-      - elasticsearch
   netflow2ng:
-    # Version: v0.0.5
-    image: synfinatic/netflow2ng@sha256:d3a91dee9f2dd99f5b9bad48d3de5409e19cf0f61a571cf7dc1460cbe0937885
+    container_name: netflow2ng
     restart: unless-stopped
-    network_mode: host
+    image: synfinatic/netflow2ng@sha256:d3a91dee9f2dd99f5b9bad48d3de5409e19cf0f61a571cf7dc1460cbe0937885
+    entrypoint: /netflow2ng
     command:
-      [
-        --zmq-output=tcp://localhost:5556,
-        --netflow-port=2055,
-        --metrics-addr=:9101,
-        --log-level=info,
-      ]
+      - --metrics=:9101
+      - --log-level=info
+    network_mode: host
     depends_on:
       - ntopng
   ntopng:
+    container_name: ntopng
+    command:
+      - -G /var/lib/ntopng/ntopng.pid
+      - --community
+      - --disable-autologout
+      - --disable-login=1  # Living dangerously! Add authentication in production
+      - --redis=localhost:8846
+      - --http-port=8849
+      - --max-num-flows=200000
+      - --max-num-hosts=100000
+    image: >-
+      ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     network_mode: host
-    # Version: latest
-    image: ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     restart: unless-stopped
     volumes:
       - ntopng:/var/lib/ntopng
-      - ./ntopng.conf:/etc/ntopng/ntopng.conf:ro
-    environment:
-      - REDIS_SERVER=redis
-    command: [
-        --community,
-        -i,
-        tcp://localhost:5556,
-        -r,
-        redis,
-        --http-port,
-        "3000", # Binds to all interfaces including IPv6
-      ]
-    depends_on:
-      - redis
-      - influxdb
-      - elasticsearch
-  redis:
-    # Version: 7.4.4-alpine3.21
-    image: redis@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273
-    restart: unless-stopped
-    volumes:
-      - redis:/data
-    networks:
-      - ntopng
 volumes:
-  elasticsearch:
-  grafana:
-  influxdb:
-  ntopng:
-  redis:
-networks:
-  ntopng:
-    driver: bridge
-    enable_ipv6: true # Enable IPv6 on the bridge network
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-        - subnet: 2001:db8:1::/64 # IPv6 subnet
+  ntopng: null
