@@ -2,8 +2,8 @@ configs:
   ntopng:
     content: |
       -G=/var/lib/ntopng/ntopng.pid
-      --community
       -i="tcp://127.0.0.1:5556"
+      --community
       --disable-autologout
       --disable-login=1  # Living dangerously! Add authentication in production
       --redis=localhost:8846
