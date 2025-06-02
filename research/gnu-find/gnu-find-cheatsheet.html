@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GNU find Command - Synthwave Edition</title>
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GNU find Command - Synthwave Edition</title>
+        <style>
         /* Synthwave '84 Theme */
         :root {
             --bg-color: #241b2f;
@@ -368,340 +368,367 @@
             font-size: 18px;
             margin: 0 5px;
         }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1><span class="emoji">👾</span> GNU find Command Cheatsheet <span class="emoji">👾</span></h1>
-        <div class="tagline"><span class="emoji">🔍</span> Finding files like a cyber-detective since 1990 <span class="emoji">💾</span></div>
-    </div>
-    
-    <div class="content">
-        <div class="column">
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">🚀</span> Basic Usage</h2>
-                <div class="commands">
-                    <div class="command-row">
-                        <div class="cmd">find [path]</div>
-                        <div class="desc">Find all files in path</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -name "pattern"</div>
-                        <div class="desc">Case-sensitive name match</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -iname "pattern"</div>
-                        <div class="desc">Case-insensitive name match</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -path "pattern"</div>
-                        <div class="desc">Match on full path</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -regex "pattern"</div>
-                        <div class="desc">Match using regex</div>
-                    </div>
-                </div>
-                <div class="examples">
-                    <div class="example">
-                        Find all Python files in current directory:
-                        <code class="example-cmd">find . -name "*.py"</code>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">📁</span> File Types</h2>
-                <div class="commands">
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type f</div>
-                        <div class="desc">Regular files</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type d</div>
-                        <div class="desc">Directories</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type l</div>
-                        <div class="desc">Symbolic links</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type b</div>
-                        <div class="desc">Block devices</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type c</div>
-                        <div class="desc">Character devices</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type s</div>
-                        <div class="desc">Sockets</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -type p</div>
-                        <div class="desc">Named pipes</div>
-                    </div>
-                </div>
-                <div class="examples">
-                    <div class="example">
-                        Find all empty directories:
-                        <code class="example-cmd">find /path -type d -empty</code>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">🚄</span> Performance Tips</h2>
-                <ul class="tips-list">
-                    <li><strong>-xdev</strong>: Don't descend directories on other filesystems</li>
-                    <li><strong>-maxdepth n</strong>: Limit directory traversal depth</li>
-                    <li><strong>-mindepth n</strong>: Skip shallow matches</li>
-                    <li><strong>-prune</strong>: Don't descend into current directory</li>
-                    <li>Order tests from most likely to fail to least likely to fail</li>
-                    <li>Put cheap tests (like -name) before expensive tests (-exec)</li>
-                    <li>Use <strong>-exec cmd {} \+</strong> instead of <strong>\;</strong> when possible</li>
-                    <li>Combine <strong>find</strong> with <strong>xargs</strong> for processing many files</li>
-                </ul>
-                <div class="example">
-                    <div>Skip .git directories when searching:</div>
-                    <code class="example-cmd">find . -path "*.git*" -prune -o -name "*.js" -print</code>
-                </div>
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>
+                <span class="emoji">👾</span> GNU find Command Cheatsheet <span class="emoji">👾</span>
+            </h1>
+            <div class="tagline">
+                <span class="emoji">🔍</span> Finding files like a cyber-detective since 1990 <span class="emoji">💾</span>
             </div>
         </div>
-        
-        <div class="column">
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">⏰</span> Time Conditions</h2>
-                <div class="commands">
-                    <div class="command-row">
-                        <div class="cmd">find [path] -mtime n</div>
-                        <div class="desc">Modified exactly n days ago</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -mtime +n</div>
-                        <div class="desc">Modified > n days ago</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -mtime -n</div>
-                        <div class="desc">Modified < n days ago</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -mmin n</div>
-                        <div class="desc">Modified n minutes ago</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -ctime n</div>
-                        <div class="desc">Status changed n days ago</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -atime n</div>
-                        <div class="desc">Accessed n days ago</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -newer file</div>
-                        <div class="desc">Newer than reference file</div>
-                    </div>
-                </div>
-                <div class="examples">
-                    <div class="example">
-                        Find files modified in last 7 days:
-                        <code class="example-cmd">find /home/user -mtime -7</code>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">📏</span> Size & Permissions</h2>
-                <div class="commands">
-                    <div class="command-row">
-                        <div class="cmd">find [path] -size n[unit]</div>
-                        <div class="desc">Size n (c:bytes, k:KB, M:MB, G:GB)</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -size +n[unit]</div>
-                        <div class="desc">Larger than n units</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -size -n[unit]</div>
-                        <div class="desc">Smaller than n units</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -empty</div>
-                        <div class="desc">Empty files or directories</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -perm mode</div>
-                        <div class="desc">Exact permissions (octal or symbolic)</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -perm -mode</div>
-                        <div class="desc">At least these permissions</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -perm /mode</div>
-                        <div class="desc">Any of these permissions</div>
-                    </div>
-                </div>
-                <div class="examples">
-                    <div class="example">
-                        Find files larger than 100MB:
-                        <code class="example-cmd">find /var/log -size +100M</code>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">🧠</span> Logical Operators</h2>
-                <div class="commands">
-                    <div class="command-row">
-                        <div class="cmd">find [path] -a / -and</div>
-                        <div class="desc">Logical AND (default)</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -o / -or</div>
-                        <div class="desc">Logical OR</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -not / !</div>
-                        <div class="desc">Logical NOT</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] \( ... \)</div>
-                        <div class="desc">Group expressions</div>
-                    </div>
-                </div>
-                <div class="examples">
-                    <div class="example">
-                        Find PNG or JPG files:
-                        <code class="example-cmd">find . \( -name "*.png" -o -name "*.jpg" \)</code>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="column">
-            <div class="section">
-                <h2 class="diagram-title"><span class="emoji">🌐</span> find Command Structure</h2>
-                <div class="diagram-container">
-                    <div class="sun"></div>
-                    <div class="find-syntax">
-                        <span class="highlight">find</span> /path 
-                        <span class="highlight">-type</span> f 
-                        <span class="highlight">-name</span> "*.txt" 
-                        <span class="highlight">-mtime</span> -7 
-                        <span class="highlight">-exec</span> grep "pattern" {} \;
-                    </div>
-                    
-                    <div class="grid-horizon">
-                        <div class="grid-lines"></div>
-                        <div class="mountain"></div>
-                    </div>
-                    
-                    <div class="command-boxes">
-                        <div class="cmd-box">
-                            <div class="cmd-box-title">Path Selection</div>
-                            <div class="cmd-examples">
-                                <div class="cmd-example">. (current dir)</div>
-                                <div class="cmd-example">/home/user</div>
-                                <div class="cmd-example">/var/log</div>
-                            </div>
+        <div class="content">
+            <div class="column">
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">🚀</span> Basic Usage
+                    </h2>
+                    <div class="commands">
+                        <div class="command-row">
+                            <div class="cmd">find [path]</div>
+                            <div class="desc">Find all files in path</div>
                         </div>
-                        <div class="cmd-box">
-                            <div class="cmd-box-title">Tests & Conditions</div>
-                            <div class="cmd-examples">
-                                <div class="cmd-example">-name "*.txt"</div>
-                                <div class="cmd-example">-type f</div>
-                                <div class="cmd-example">-mtime -7</div>
-                            </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -name "pattern"</div>
+                            <div class="desc">Case-sensitive name match</div>
                         </div>
-                        <div class="cmd-box">
-                            <div class="cmd-box-title">Actions</div>
-                            <div class="cmd-examples">
-                                <div class="cmd-example">-print</div>
-                                <div class="cmd-example">-delete</div>
-                                <div class="cmd-example">-exec {} \;</div>
-                            </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -iname "pattern"</div>
+                            <div class="desc">Case-insensitive name match</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -path "pattern"</div>
+                            <div class="desc">Match on full path</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -regex "pattern"</div>
+                            <div class="desc">Match using regex</div>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <div class="example">
+                            Find all Python files in current directory:
+                            <code class="example-cmd">find . -name "*.py"</code>
                         </div>
                     </div>
                 </div>
-                
-                <h3 class="diagram-title"><span class="emoji">⚡</span> Quick Reference</h3>
-                <div class="quick-reference">
-                    <div class="ref-item">-type d</div>
-                    <div class="ref-item">-type f</div>
-                    <div class="ref-item">-type l</div>
-                    <div class="ref-item">-empty</div>
-                    <div class="ref-item">-executable</div>
-                    <div class="ref-item">-readable</div>
-                    <div class="ref-item">-writable</div>
-                    <div class="ref-item">-user name</div>
-                    <div class="ref-item">-group name</div>
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">📁</span> File Types
+                    </h2>
+                    <div class="commands">
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type f</div>
+                            <div class="desc">Regular files</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type d</div>
+                            <div class="desc">Directories</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type l</div>
+                            <div class="desc">Symbolic links</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type b</div>
+                            <div class="desc">Block devices</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type c</div>
+                            <div class="desc">Character devices</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type s</div>
+                            <div class="desc">Sockets</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -type p</div>
+                            <div class="desc">Named pipes</div>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <div class="example">
+                            Find all empty directories:
+                            <code class="example-cmd">find /path -type d -empty</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">🚄</span> Performance Tips
+                    </h2>
+                    <ul class="tips-list">
+                        <li>
+                            <strong>-xdev</strong>: Don't descend directories on other filesystems
+                        </li>
+                        <li>
+                            <strong>-maxdepth n</strong>: Limit directory traversal depth
+                        </li>
+                        <li>
+                            <strong>-mindepth n</strong>: Skip shallow matches
+                        </li>
+                        <li>
+                            <strong>-prune</strong>: Don't descend into current directory
+                        </li>
+                        <li>Order tests from most likely to fail to least likely to fail</li>
+                        <li>Put cheap tests (like -name) before expensive tests (-exec)</li>
+                        <li>
+                            Use <strong>-exec cmd {} \+</strong> instead of <strong>\;</strong> when possible
+                        </li>
+                        <li>
+                            Combine <strong>find</strong> with <strong>xargs</strong> for processing many files
+                        </li>
+                    </ul>
+                    <div class="example">
+                        <div>Skip .git directories when searching:</div>
+                        <code class="example-cmd">find . -path "*.git*" -prune -o -name "*.js" -print</code>
+                    </div>
                 </div>
             </div>
-            
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">🔧</span> Actions & Execution</h2>
-                <div class="commands">
-                    <div class="command-row">
-                        <div class="cmd">find [path] -print</div>
-                        <div class="desc">Print file paths (default)</div>
+            <div class="column">
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">⏰</span> Time Conditions
+                    </h2>
+                    <div class="commands">
+                        <div class="command-row">
+                            <div class="cmd">find [path] -mtime n</div>
+                            <div class="desc">Modified exactly n days ago</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -mtime +n</div>
+                            <div class="desc">Modified > n days ago</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -mtime -n</div>
+                            <div class="desc">
+                                Modified < n days ago
+                            </div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -mmin n</div>
+                            <div class="desc">Modified n minutes ago</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -ctime n</div>
+                            <div class="desc">Status changed n days ago</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -atime n</div>
+                            <div class="desc">Accessed n days ago</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -newer file</div>
+                            <div class="desc">Newer than reference file</div>
+                        </div>
                     </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -ls</div>
-                        <div class="desc">Print detailed info (like ls -l)</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -delete</div>
-                        <div class="desc">Delete matching files</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -exec cmd {} \;</div>
-                        <div class="desc">Run command on each file</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -exec cmd {} \+</div>
-                        <div class="desc">Run command with all files at once</div>
-                    </div>
-                    <div class="command-row">
-                        <div class="cmd">find [path] -ok cmd {} \;</div>
-                        <div class="desc">Like -exec but prompts for confirmation</div>
+                    <div class="examples">
+                        <div class="example">
+                            Find files modified in last 7 days:
+                            <code class="example-cmd">find /home/user -mtime -7</code>
+                        </div>
                     </div>
                 </div>
-                <div class="examples">
-                    <div class="example">
-                        Find and delete temp files older than 7 days:
-                        <code class="example-cmd">find /tmp -name "*.tmp" -mtime +7 -delete</code>
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">📏</span> Size & Permissions
+                    </h2>
+                    <div class="commands">
+                        <div class="command-row">
+                            <div class="cmd">find [path] -size n[unit]</div>
+                            <div class="desc">Size n (c:bytes, k:KB, M:MB, G:GB)</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -size +n[unit]</div>
+                            <div class="desc">Larger than n units</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -size -n[unit]</div>
+                            <div class="desc">Smaller than n units</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -empty</div>
+                            <div class="desc">Empty files or directories</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -perm mode</div>
+                            <div class="desc">Exact permissions (octal or symbolic)</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -perm -mode</div>
+                            <div class="desc">At least these permissions</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -perm /mode</div>
+                            <div class="desc">Any of these permissions</div>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <div class="example">
+                            Find files larger than 100MB:
+                            <code class="example-cmd">find /var/log -size +100M</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">🧠</span> Logical Operators
+                    </h2>
+                    <div class="commands">
+                        <div class="command-row">
+                            <div class="cmd">find [path] -a / -and</div>
+                            <div class="desc">Logical AND (default)</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -o / -or</div>
+                            <div class="desc">Logical OR</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -not / !</div>
+                            <div class="desc">Logical NOT</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] \( ... \)</div>
+                            <div class="desc">Group expressions</div>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <div class="example">
+                            Find PNG or JPG files:
+                            <code class="example-cmd">find . \( -name "*.png" -o -name "*.jpg" \)</code>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="section">
-                <h2 class="section-title"><span class="emoji">🔥</span> Advanced Examples</h2>
-                <div class="examples">
-                    <div class="example">
-                        Find files between 100MB and 1GB:
-                        <code class="example-cmd">find /data -type f -size +100M -size -1G</code>
+            <div class="column">
+                <div class="section">
+                    <h2 class="diagram-title">
+                        <span class="emoji">🌐</span> find Command Structure
+                    </h2>
+                    <div class="diagram-container">
+                        <div class="sun"></div>
+                        <div class="find-syntax">
+                            <span class="highlight">find</span> /path
+                            <span class="highlight">-type</span> f
+                            <span class="highlight">-name</span> "*.txt"
+                            <span class="highlight">-mtime</span> -7
+                            <span class="highlight">-exec</span> grep "pattern" {} \;
+                        </div>
+                        <div class="grid-horizon">
+                            <div class="grid-lines"></div>
+                            <div class="mountain"></div>
+                        </div>
+                        <div class="command-boxes">
+                            <div class="cmd-box">
+                                <div class="cmd-box-title">Path Selection</div>
+                                <div class="cmd-examples">
+                                    <div class="cmd-example">. (current dir)</div>
+                                    <div class="cmd-example">/home/user</div>
+                                    <div class="cmd-example">/var/log</div>
+                                </div>
+                            </div>
+                            <div class="cmd-box">
+                                <div class="cmd-box-title">Tests & Conditions</div>
+                                <div class="cmd-examples">
+                                    <div class="cmd-example">-name "*.txt"</div>
+                                    <div class="cmd-example">-type f</div>
+                                    <div class="cmd-example">-mtime -7</div>
+                                </div>
+                            </div>
+                            <div class="cmd-box">
+                                <div class="cmd-box-title">Actions</div>
+                                <div class="cmd-examples">
+                                    <div class="cmd-example">-print</div>
+                                    <div class="cmd-example">-delete</div>
+                                    <div class="cmd-example">-exec {} \;</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="example">
-                        Find files owned by user "john":
-                        <code class="example-cmd">find /home -user john -ls</code>
+                    <h3 class="diagram-title">
+                        <span class="emoji">⚡</span> Quick Reference
+                    </h3>
+                    <div class="quick-reference">
+                        <div class="ref-item">-type d</div>
+                        <div class="ref-item">-type f</div>
+                        <div class="ref-item">-type l</div>
+                        <div class="ref-item">-empty</div>
+                        <div class="ref-item">-executable</div>
+                        <div class="ref-item">-readable</div>
+                        <div class="ref-item">-writable</div>
+                        <div class="ref-item">-user name</div>
+                        <div class="ref-item">-group name</div>
                     </div>
-                    <div class="example">
-                        Find files modified in the last hour:
-                        <code class="example-cmd">find /path -type f -mmin -60</code>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">🔧</span> Actions & Execution
+                    </h2>
+                    <div class="commands">
+                        <div class="command-row">
+                            <div class="cmd">find [path] -print</div>
+                            <div class="desc">Print file paths (default)</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -ls</div>
+                            <div class="desc">Print detailed info (like ls -l)</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -delete</div>
+                            <div class="desc">Delete matching files</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -exec cmd {} \;</div>
+                            <div class="desc">Run command on each file</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -exec cmd {} \+</div>
+                            <div class="desc">Run command with all files at once</div>
+                        </div>
+                        <div class="command-row">
+                            <div class="cmd">find [path] -ok cmd {} \;</div>
+                            <div class="desc">Like -exec but prompts for confirmation</div>
+                        </div>
                     </div>
-                    <div class="example">
-                        Find and rename .txt files to .md:
-                        <code class="example-cmd">find . -name "*.txt" -exec bash -c 'mv "$0" "${0%.txt}.md"' {} \;</code>
+                    <div class="examples">
+                        <div class="example">
+                            Find and delete temp files older than 7 days:
+                            <code class="example-cmd">find /tmp -name "*.tmp" -mtime +7 -delete</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="emoji">🔥</span> Advanced Examples
+                    </h2>
+                    <div class="examples">
+                        <div class="example">
+                            Find files between 100MB and 1GB:
+                            <code class="example-cmd">find /data -type f -size +100M -size -1G</code>
+                        </div>
+                        <div class="example">
+                            Find files owned by user "john":
+                            <code class="example-cmd">find /home -user john -ls</code>
+                        </div>
+                        <div class="example">
+                            Find files modified in the last hour:
+                            <code class="example-cmd">find /path -type f -mmin -60</code>
+                        </div>
+                        <div class="example">
+                            Find and rename .txt files to .md:
+                            <code class="example-cmd">find . -name "*.txt" -exec bash -c 'mv "$0" "${0%.txt}.md"' {} \;</code>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="footer">
-        <span class="footer-emoji">🌴</span> GNU find is part of the GNU findutils package <span class="footer-emoji">🌴</span>
-        <div>Hack the planet! <span class="footer-emoji">🎮</span> findutils.sourceforge.io</div>
-    </div>
-</body>
+        <div class="footer">
+            <span class="footer-emoji">🌴</span> GNU find is part of the GNU findutils package <span class="footer-emoji">🌴</span>
+            <div>
+                Hack the planet! <span class="footer-emoji">🎮</span> findutils.sourceforge.io
+            </div>
+        </div>
+    </body>
 </html>

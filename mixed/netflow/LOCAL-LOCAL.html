@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Interactive ntopng Local Traffic Filter Guide</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .config-block {
+            background-color: #1f2937;
+            color: #d1d5db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4b5563;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .copy-btn:hover {
+            background-color: #6b7280;
+        }
+        .tab {
+            transition: all 0.3s ease;
+        }
+        .tab.active {
+            border-color: #0891b2;
+            color: #0891b2;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .flow-diagram-box {
+            border: 2px solid #9ca3af;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            background-color: #f9fafb;
+        }
+        .flow-diagram-arrow {
+            position: relative;
+            width: 100%;
+            height: 2px;
+            background-color: #6b7280;
+            margin: 2rem 0;
+        }
+        .flow-diagram-arrow::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -5px;
+            border: solid #6b7280;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 5px;
+            transform: rotate(-45deg);
+        }
+        </style>
+    </head>
+    <body class="bg-slate-50 text-slate-800">
+        <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+            <header class="text-center mb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Interactive ntopng Local Traffic Filter Guide</h1>
+                <p class="mt-2 text-lg text-slate-600">Visually build and understand the commands to isolate external traffic.</p>
+            </header>
+            <section id="introduction" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-slate-900">The Goal: Focus on External Traffic</h2>
+                <p class="text-slate-700 leading-relaxed mb-6">
+                    This guide explains how to configure ntopng to hide or ignore traffic that occurs *between* your local networks. The result is a cleaner view that focuses only on traffic entering or leaving your network (local-to-remote and remote-to-local), which is essential for monitoring security and internet usage. This is achieved through two key steps:
+                </p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                        <h3 class="font-semibold text-lg text-cyan-700 mb-2">1. Define Local Networks</h3>
+                        <p class="text-slate-600">
+                            First, you must explicitly tell ntopng which IP address ranges belong to your internal network. Without this context, ntopng cannot distinguish local from remote traffic.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                        <h3 class="font-semibold text-lg text-cyan-700 mb-2">2. Apply a BPF Packet Filter</h3>
+                        <p class="text-slate-600">
+                            Second, you apply a Berkeley Packet Filter (BPF) to instruct ntopng to drop packets where both the source and destination are local, before they are ever processed.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <section id="config-builder" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-6 text-slate-900">Interactive Config Builder</h2>
+                <div class="bg-white p-6 md:p-8 rounded-lg border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-semibold mb-2">Step 1: Specify Your Local Networks</h3>
+                    <p class="mb-4 text-slate-600">
+                        Enter your local networks below, separated by commas. Use CIDR notation (e.g., 192.168.1.0/24).
+                    </p>
+                    <textarea id="localNetworksInput"
+                              class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                              rows="2">10.0.99.0/24, 10.0.98.0/24</textarea>
+                    <div class="mt-6">
+                        <h4 class="font-semibold text-lg mb-2">Generated Configuration:</h4>
+                        <p class="text-sm text-slate-500 mb-4">
+                            The command-line arguments and configuration file entries will update automatically as you type.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">Command-Line Argument</label>
+                                <div class="config-block">
+                                    <button class="copy-btn" data-target="m_option_output">Copy</button>
+                                    <code id="m_option_output"></code>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-700 mb-1">ntopng.conf Entry</label>
+                                <div class="config-block">
+                                    <button class="copy-btn" data-target="m_conf_output">Copy</button>
+                                    <code id="m_conf_output"></code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-8 border-slate-200">
+                    <h3 class="text-xl font-semibold mb-2">Step 2: Build the BPF Packet Filter</h3>
+                    <p class="mb-4 text-slate-600">
+                        Based on the networks you provided, here is the BPF filter to exclude all local-to-local traffic. This includes traffic within the same subnet and between your specified local subnets.
+                    </p>
+                    <div id="bpfBreakdown"
+                         class="space-y-2 mb-6 p-4 bg-slate-50 rounded-md border border-slate-200"></div>
+                    <h4 class="font-semibold text-lg mb-2">Generated BPF Filter:</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block font-medium text-slate-700 mb-1">Command-Line Argument</label>
+                            <div class="config-block">
+                                <button class="copy-btn" data-target="bpf_option_output">Copy</button>
+                                <code id="bpf_option_output"></code>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-700 mb-1">ntopng.conf Entry</label>
+                            <div class="config-block">
+                                <button class="copy-btn" data-target="bpf_conf_output">Copy</button>
+                                <code id="bpf_conf_output"></code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="full-config" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-6 text-slate-900">Complete Configuration</h2>
+                <div class="bg-white p-6 md:p-8 rounded-lg border border-slate-200 shadow-sm">
+                    <p class="mb-6 text-slate-600">
+                        Here are the full commands and configuration file contents, combining both steps. Remember to replace `-i eth0` with your actual monitoring interface.
+                    </p>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Full Startup Command</label>
+                        <div class="config-block">
+                            <button class="copy-btn" data-target="full_command_output">Copy</button>
+                            <code id="full_command_output"></code>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label class="block font-medium text-slate-700 mb-1">Complete ntopng.conf</label>
+                        <div class="config-block">
+                            <button class="copy-btn" data-target="full_conf_output">Copy</button>
+                            <code id="full_conf_output"></code>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="diagram" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-6 text-slate-900">How The Filter Works</h2>
+                <div class="bg-white p-6 md:p-8 rounded-lg border border-slate-200 shadow-sm">
+                    <p class="mb-8 text-slate-600 text-center max-w-2xl mx-auto">
+                        The BPF filter acts as a gatekeeper at the very beginning of the ntopng processing pipeline. It inspects each packet and drops any that match the "local-to-local" criteria, preventing them from being analyzed or displayed.
+                    </p>
+                    <div class="flex flex-col items-center">
+                        <div class="flow-diagram-box w-full md:w-1/2">
+                            <h4 class="font-semibold">All Network Traffic</h4>
+                            <p class="text-sm text-slate-500">(from Mirrored Port / Interface)</p>
+                        </div>
+                        <div class="w-24">
+                            <div class="flow-diagram-arrow"></div>
+                        </div>
+                        <div class="flow-diagram-box w-full md:w-1/2 border-cyan-500 border-2">
+                            <h4 class="font-semibold text-cyan-700">BPF Packet Filter Gate</h4>
+                            <p class="text-sm text-slate-500">`--packet-filter "..."`</p>
+                        </div>
+                        <div class="flex w-full mt-8 gap-4">
+                            <div class="w-1/2 flex flex-col items-center">
+                                <div class="flow-diagram-arrow"></div>
+                                <div class="flow-diagram-box w-full bg-green-50 border-green-400">
+                                    <h4 class="font-semibold text-green-800">Allowed Traffic</h4>
+                                    <p class="text-sm text-slate-500 mt-2">Local ↔ Remote</p>
+                                </div>
+                                <div class="w-16">
+                                    <div class="flow-diagram-arrow"></div>
+                                </div>
+                                <div class="flow-diagram-box w-full">
+                                    <h4 class="font-semibold">ntopng Analysis & UI</h4>
+                                </div>
+                            </div>
+                            <div class="w-1/2 flex flex-col items-end">
+                                <div class="flow-diagram-arrow"
+                                     style="transform: rotate(45deg);
+                                            width: 50%;
+                                            top: -1rem;
+                                            right: -25%"></div>
+                                <div class="flow-diagram-box w-full mt-8 bg-red-50 border-red-400">
+                                    <h4 class="font-semibold text-red-800">Ignored Traffic</h4>
+                                    <p class="text-sm text-slate-500 mt-2">Local → Local</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="details">
+                <h2 class="text-2xl font-semibold mb-6 text-slate-900">Further Details</h2>
+                <div class="bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <div class="border-b border-slate-200">
+                        <nav class="flex -mb-px px-6" aria-label="Tabs">
+                            <button class="tab active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+                                    data-target="tab-verify">Verification</button>
+                            <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 ml-8"
+                                    data-target="tab-troubleshoot">Troubleshooting</button>
+                            <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 ml-8"
+                                    data-target="tab-alternatives">Alternatives</button>
+                        </nav>
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <div id="tab-verify"
+                             class="tab-content active prose prose-slate max-w-none">
+                            <p>After applying the configuration, you must verify it's working correctly.</p>
+                            <ol>
+                                <li>
+                                    <strong>Restart ntopng:</strong> Apply changes by restarting the service, e.g., <code>sudo systemctl restart ntopng</code>.
+                                </li>
+                                <li>
+                                    <strong>Check Logs:</strong> Review ntopng's startup logs for messages confirming the local networks and the applied packet filter. Look for any BPF syntax errors.
+                                </li>
+                                <li>
+                                    <strong>Observe UI:</strong> Generate test traffic. Pings or file transfers between two local hosts should NOT appear in the ntopng "Flows" view. Traffic from a local host to the internet SHOULD appear.
+                                </li>
+                                <li>
+                                    <strong>Test with tcpdump (Recommended):</strong> Before using the filter in ntopng, test it with <code>tcpdump</code> to see exactly which packets it passes. Run <code>sudo tcpdump -i eth0 -n 'your_bpf_filter'</code>. This command should only show you the local-to-remote and remote-to-local traffic.
+                                </li>
+                            </ol>
+                        </div>
+                        <div id="tab-troubleshoot"
+                             class="tab-content prose prose-slate max-w-none">
+                            <h4>Common Issues & Solutions</h4>
+                            <ul>
+                                <li>
+                                    <strong>Incorrect BPF Syntax:</strong> ntopng fails to start or logs a BPF error. Double-check your parentheses and logic. Use <code>tcpdump</code> to validate the filter string syntax before applying it to ntopng.
+                                </li>
+                                <li>
+                                    <strong>Filter Doesn't Seem to Work:</strong> This is almost always because the local networks were not defined first with the <code>-m</code> option. ntopng needs that context to understand what "local-to-local" means.
+                                </li>
+                                <li>
+                                    <strong>Only One Filter Works:</strong> If you specify <code>--packet-filter</code> multiple times, only the last one is used. You must combine all conditions into a single BPF string.
+                                </li>
+                                <li>
+                                    <strong>Quoting Issues:</strong> When running from a shell, always wrap the BPF filter in double quotes (<code>"..."</code>) to prevent the shell from misinterpreting special characters.
+                                </li>
+                                <li>
+                                    <strong>VLAN Tagged Traffic:</strong> If your traffic uses VLANs, the filter may need to be modified to <code>not (vlan and (...))</code> to correctly parse the encapsulated packets.
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="tab-alternatives"
+                             class="tab-content prose prose-slate max-w-none">
+                            <h4>Are there other ways to do this?</h4>
+                            <p>
+                                While BPF is the most efficient method, other mechanisms exist in ntopng, though they are less suitable for this specific goal:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>UI Display Filters:</strong> The search boxes in the ntopng web interface can hide flows, but this happens *after* the traffic has already been processed and stored. This is inefficient and doesn't truly "ignore" the traffic. It's best for temporary analysis, not permanent filtering.
+                                </li>
+                                <li>
+                                    <strong>LUA Scripting:</strong> While powerful, using LUA to remove flows from the UI is complex and not a standard or recommended method for this task in the open-source version. It's better suited for custom alerts or adding new logic.
+                                </li>
+                                <li>
+                                    <strong>Host Pools:</strong> You can group hosts into pools, but in the open-source version, there isn't a simple feature to hide all traffic between pools from the main flow view. This is more for organization and reporting.
+                                </li>
+                            </ul>
+                            <p>
+                                <strong>Conclusion:</strong> For truly *ignoring* traffic at the source, the BPF filter method is the correct and most efficient solution.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="text-center mt-12 text-sm text-slate-500">
+                <p>This interactive guide was generated to simplify ntopng configuration.</p>
+            </footer>
+        </div>
+        <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const localNetworksInput = document.getElementById('localNetworksInput');
+    const mOptionOutput = document.getElementById('m_option_output');
+    const mConfOutput = document.getElementById('m_conf_output');
+    const bpfBreakdown = document.getElementById('bpfBreakdown');
+    const bpfOptionOutput = document.getElementById('bpf_option_output');
+    const bpfConfOutput = document.getElementById('bpf_conf_output');
+    const fullCommandOutput = document.getElementById('full_command_output');
+    const fullConfOutput = document.getElementById('full_conf_output');
+
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    function parseNetworks(input) {
+        return input.split(',')
+            .map(s => s.trim())
+            .filter(s => s.match(/^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/));
+    }
+
+    function generateBpf(networks) {
+        if (networks.length === 0) {
+            return { breakdown: [], filter: '' };
+        }
+
+        const conditions = [];
+        const breakdownItems = [];
+
+        for (let i = 0; i < networks.length; i++) {
+            const net1 = networks[i];
+            const intraCondition = `(src net ${net1} and dst net ${net1})`;
+            conditions.push(intraCondition);
+            breakdownItems.push({label: `Traffic within ${net1}`, code: intraCondition});
+
+            for (let j = i; j < networks.length; j++) {
+                if (i === j) continue;
+                const net2 = networks[j];
+                const interCondition1 = `(src net ${net1} and dst net ${net2})`;
+                const interCondition2 = `(src net ${net2} and dst net ${net1})`;
+                conditions.push(interCondition1);
+                conditions.push(interCondition2);
+                breakdownItems.push({label: `Traffic between ${net1} and ${net2}`, code: `${interCondition1} or ${interCondition2}`});
+            }
+        }
+        
+        const combined = conditions.join(' or ');
+        const finalFilter = `not (${combined})`;
+
+        return { breakdown: breakdownItems, filter: finalFilter };
+    }
+
+    function updateDisplay() {
+        const networks = parseNetworks(localNetworksInput.value);
+        
+        const mOption = networks.length > 0 ? `-m "${networks.join(',')}"` : '# No local networks defined';
+        mOptionOutput.textContent = mOption;
+        
+        const mConf = networks.length > 0 ? `--local-networks=${networks.join(',')}` : '# No local networks defined';
+        mConfOutput.textContent = mConf;
+
+        const { breakdown, filter } = generateBpf(networks);
+
+        if (networks.length > 0) {
+            bpfBreakdown.innerHTML = breakdown.map(item => `
+                <div>
+                    <p class="text-sm font-medium text-slate-600">${item.label}:</p>
+                    <p class="text-xs text-slate-500 font-mono bg-white p-1 rounded">${item.code}</p>
+                </div>
+            `).join('');
+
+            const bpfOption = `--packet-filter "${filter}"`;
+            bpfOptionOutput.textContent = bpfOption;
+
+            const bpfConf = `--packet-filter="${filter}"`;
+            bpfConfOutput.textContent = bpfConf;
+
+            fullCommandOutput.textContent = `ntopng -i eth0 ${mOption} ${bpfOption}`;
+            fullConfOutput.textContent = `# ntopng Configuration File\n\n# Step 1: Define local networks\n${mConf}\n\n# Step 2: Add BPF to ignore local traffic\n${bpfConf}\n\n# Step 3: Define interface (replace with yours)\n-i=eth0`;
+        } else {
+            bpfBreakdown.innerHTML = '<p class="text-sm text-slate-500">Enter valid networks to generate the BPF filter.</p>';
+            bpfOptionOutput.textContent = '# BPF filter requires defined local networks';
+            bpfConfOutput.textContent = '# BPF filter requires defined local networks';
+            fullCommandOutput.textContent = '# Waiting for valid network configuration...';
+            fullConfOutput.textContent = '# Waiting for valid network configuration...';
+        }
+    }
+
+    function handleCopy(e) {
+        const targetId = e.target.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            e.target.textContent = 'Copied!';
+            setTimeout(() => { e.target.textContent = 'Copy'; }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function handleTabClick(e) {
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
+        e.target.classList.add('active');
+
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
+        const targetContent = document.getElementById(e.target.dataset.target);
+        if (targetContent) {
+            targetContent.classList.add('active');
+        }
+    }
+
+    localNetworksInput.addEventListener('input', updateDisplay);
+    copyButtons.forEach(btn => btn.addEventListener('click', handleCopy));
+    tabs.forEach(tab => tab.addEventListener('click', handleTabClick));
+
+    updateDisplay();
+});
+        </script>
+    </body>
+</html>

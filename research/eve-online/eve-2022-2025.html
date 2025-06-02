@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Eden Comms Network (NCN) - Cluster Report</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Eden Comms Network (NCN) - Cluster Report</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+        <style>
         /* Base styles */
         body {
             font-family: 'Inter', sans-serif;
@@ -136,331 +136,610 @@
         button[data-theme="gallente"] { background-color: #4CAF50; color: #FFFFFF; border-color: #81C784;}
         button[data-theme="minmatar"] { background-color: #FF7043; color: #FFFFFF; border-color: #FF8A65;}
 
-    </style>
-</head>
-<body class="theme-caldari"> <header class="header p-4 shadow-md sticky top-0 z-50 border-b-2">
-        <div class="container mx-auto flex flex-wrap justify-between items-center">
-            <div class="faction-logo-container flex items-center mb-2 sm:mb-0">
+        </style>
+    </head>
+    <body class="theme-caldari">
+        <header class="header p-4 shadow-md sticky top-0 z-50 border-b-2">
+            <div class="container mx-auto flex flex-wrap justify-between items-center">
+                <div class="faction-logo-container flex items-center mb-2 sm:mb-0"></div>
+                <h1 class="text-xl sm:text-2xl font-bold order-first sm:order-none w-full sm:w-auto text-center sm:text-left mb-2 sm:mb-0">
+                    New Eden Comms Network
+                </h1>
+                <div id="theme-selector" class="flex space-x-1 sm:space-x-2">
+                    <button data-theme="amarr" class="theme-button">Amarr</button>
+                    <button data-theme="caldari" class="theme-button">Caldari</button>
+                    <button data-theme="gallente" class="theme-button">Gallente</button>
+                    <button data-theme="minmatar" class="theme-button">Minmatar</button>
                 </div>
-            <h1 class="text-xl sm:text-2xl font-bold order-first sm:order-none w-full sm:w-auto text-center sm:text-left mb-2 sm:mb-0">New Eden Comms Network</h1>
-            <div id="theme-selector" class="flex space-x-1 sm:space-x-2">
-                <button data-theme="amarr" class="theme-button">Amarr</button>
-                <button data-theme="caldari" class="theme-button">Caldari</button>
-                <button data-theme="gallente" class="theme-button">Gallente</button>
-                <button data-theme="minmatar" class="theme-button">Minmatar</button>
             </div>
-        </div>
-    </header>
-
-    <main class="container mx-auto p-4 mt-4">
-        <section class="text-center my-8">
-            <h1 class="text-4xl md:text-5xl font-bold mb-2">Cluster in Turmoil: Three Years of Shifting Power and Ancient Echoes</h1>
-            <p class="text-lg opacity-80">An NCN Special Report: YC124 - YC127</p>
-            <p class="text-sm opacity-60">Dateline: Jita 4-4, Secure Commerce Commission Relay, May 20, YC127</p>
-        </section>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">New Eden Adrift: Navigating an Era of Unprecedented Change</h2>
-            <p class="mb-4 leading-relaxed">The past three standard years across New Eden have been anything but standard. From the heart of empire space to the lawless frontiers of nullsec, the cluster has been rocked by escalating conflicts, the emergence of shadowy new powers, and the resurgence of ancient threats long thought dormant. Capsuleers, the immortal pilots at the vanguard of galactic events, have found themselves not merely witnesses but pivotal actors in a drama that reshapes allegiances and redefines the very nature of power in our universe.</p>
-            <p class="mb-4 leading-relaxed">This NCN special report delves into the critical lore and story developments from May YC124 to May YC127, chronicling the major expansions, narrative arcs, factional shifts, and key events that have left an indelible mark on New Eden. We've seen empires rattle their sabers with renewed ferocity, corporations rise to unprecedented influence, and mysterious entities step from the void, their motives and origins shrouded in enigma. Join us as we dissect this turbulent period, a time where the only constant has been change, and the future of the cluster hangs precariously in the balance.</p>
-        </article>
-
-        <section class="content-section">
-            <h2 class="text-3xl font-semibold mb-6 text-center">Timeline of Turmoil: Key Events YC124-YC127</h2>
-            <div class="overflow-x-auto">
-                <table class="min-w-full timeline-table">
-                    <thead>
-                        <tr>
-                            <th>Date (YC / Standard)</th>
-                            <th>Expansion/Event</th>
-                            <th>NCN Headline Summary</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Aug YC124 (Aug 11, 2022)</td>
-                            <td>Uprising</td>
-                            <td>Empires Escalate: Factional Warfare Ignites Anew, Frontlines Redrawn, Navy Fleets Bolstered. Intaki Tensions Flare.</td>
-                        </tr>
-                        <tr>
-                            <td>Jun YC125 (Jun 13, 2023)</td>
-                            <td>Viridian</td>
-                            <td>Corporate Power Surge: New Tools for CEO Ambitions, Lancer Dreadnoughts Unveiled by Empires.</td>
-                        </tr>
-                        <tr>
-                            <td>Nov YC125 (Nov 14, 2023)</td>
-                            <td>Havoc</td>
-                            <td>ZARZAKH REVEALED: Mysterious Deathless Seizes Ancient Jovian Hub, Pirate Insurgencies Erupt. Angel & Guristas Capitals Spotted. Vanguard Operatives Deploy.</td>
-                        </tr>
-                        <tr>
-                            <td>Jun YC126 (Jun 11, 2024)</td>
-                            <td>Equinox</td>
-                            <td>Nullsec Gold Rush: Upwell Tech Transforms Sovereignty, New Resources Spark Conflict in Outer Regions.</td>
-                        </tr>
-                        <tr>
-                            <td>Nov YC126 (Nov 12, 2024)</td>
-                            <td>Revenant</td>
-                            <td>Deathless Mercenaries Rise: Covert Ops & New DoT Weaponry Emerge as Drifter Tensions Mount.</td>
-                        </tr>
-                        <tr>
-                            <td>Jan - Apr YC127 (2025)</td>
-                            <td>The Drifter Crisis</td>
-                            <td>CLUSTER UNDER SIEGE: Drifters Launch Unprecedented Attacks, Vigilant Dreamers Appear. Empires & Capsuleers Scramble Defense. SoCT & ARC Investigate. Deathless Bases Targeted.</td>
-                        </tr>
-                        <tr>
-                            <td>Apr - May YC127 (Apr 15 - May 15, 2025)</td>
-                            <td>Nexus Reckoning (Capsuleer Day XXII)</td>
-                            <td>WAR FOR THE HIVES: Drifter Crisis Culminates in Wormhole Battles. Labyrinth & Nexus Points Uncovered. Warden-Nexus Severance Ends Offensive.</td>
-                        </tr>
-                         <tr>
-                            <td>May YC127 (May 27, 2025)</td>
-                            <td>Legion</td>
-                            <td>CAPSULEER ECONOMY REBOOTED: Freelance Job System Launched. Triglavian Marauder & Angel Dreadnought Deployed. Nullsec Sovereignty Enhanced.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">YC124: Empires Unleashed - The Uprising Ignites Old Hatreds</h2>
-            <p class="mb-3 italic opacity-75">NCN Archives, August YC124</p>
-            <p class="mb-4 leading-relaxed">The relative quiet between the core empires shattered in August YC124 with the "Uprising." This wasn't a sudden spark but the culmination of simmering tensions, notably fueled by a mysterious "stellar transmuter accident" and the controversial Gallente Federation actions in the Intaki system. CONCORD sources, speaking off-record, confirmed a significant escalation in military posturing by all four major powers – the Amarr Empire, Caldari State, Gallente Federation, and Minmatar Republic.</p>
-            <p class="mb-4 leading-relaxed">The primary flashpoint: Factional Warfare zones. The Uprising introduced "Frontlines," dynamic battlefronts where capsuleer loyalists clashed for territorial control and strategic "Advantage." To bolster these efforts, empires deployed new Navy-issue capital ships, including the formidable Phoenix Navy Issue and Naglfar Fleet Issue dreadnoughts, alongside a new generation of advanced destroyers. This was a clear signal: the empires were investing heavily in a protracted conflict. "This is more than just skirmishing," commented a Caldari Navy spokesperson at the time, "This is a strategic realignment."</p>
-            <div class="infographic-box my-4">
-                <span class="infographic-title">Datapoint: The Intaki Incident</span>
-                <p class="text-sm leading-relaxed">The "invasion of Intaki" remains a contentious issue. While the Gallente Federation maintained its actions were within legal bounds, many, including Intaki sovereignty advocates and some CSM representatives, decried it as a violation of prior guarantees and an act of repression. This event served as a potent symbol of the grievances fueling the broader Uprising.</p>
-            </div>
-            <p class="leading-relaxed">The Uprising marked a narrative shift, pulling focus from external threats like the Triglavians back to the deep-seated animosities that have historically defined New Eden. For capsuleers, it meant renewed purpose in the empire warzones, with their actions directly shaping the course of these resurgent imperial conflicts.</p>
-        </article>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">YC125 Mid-Year Report: Corporations Ascendant - The Viridian Expansion</h2>
-            <p class="mb-3 italic opacity-75">NCN Business Desk, June YC125</p>
-            <p class="mb-4 leading-relaxed">While imperial war machines ground on, mid-YC125 saw a different kind of power surge with the Viridian expansion. The focus shifted to capsuleer corporations, those player-driven entities that form the economic and military backbone of much of New Eden. Viridian equipped these organizations with sophisticated tools to enhance their operational capabilities and project their unique identities across the cluster.</p>
-            <p class="mb-4 leading-relaxed">Key among these were the SKNR system for personalizing Upwell structures and expanded use of corporation EverMarks, allowing CEOs to visually brand their assets and rally members towards common goals. "A corporation's identity is its strength," an Upwell Consortium representative stated during the Viridian rollout. "These tools allow that strength to be seen and felt."</p>
-            <p class="mb-4 leading-relaxed">Simultaneously, the empires weren't idle. Each unveiled a new line of Tech II Lancer Dreadnoughts – the Amarr Bane, Caldari Karura, Gallente Hubris, and Minmatar Valravn. Armed with innovative area-of-effect disruptive lance weapons, these capital ships signaled an ongoing technological arms race and hinted at evolving battlefield doctrines. The message was clear: both state and non-state actors were gearing up for more complex confrontations. Viridian laid the groundwork for corporations to become even more significant players on the galactic stage, capable of pursuing ambitions that rivaled those of smaller NPC factions.</p>
-             <div class="infographic-box my-4">
-                <span class="infographic-title">Diagram: Lancer Dreadnought Deployment - Tactical Shift</span>
-                <ul class="list-disc list-inside text-sm pl-4 space-y-1">
-                    <li><strong>Amarr Bane:</strong> Energy Neutralizing Lance</li>
-                    <li><strong>Caldari Karura:</strong> ECM Jamming Lance</li>
-                    <li><strong>Gallente Hubris:</strong> Sensor Dampening Lance</li>
-                    <li><strong>Minmatar Valravn:</strong> Target Painting Lance</li>
+        </header>
+        <main class="container mx-auto p-4 mt-4">
+            <section class="text-center my-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                    Cluster in Turmoil: Three Years of Shifting Power and Ancient Echoes
+                </h1>
+                <p class="text-lg opacity-80">An NCN Special Report: YC124 - YC127</p>
+                <p class="text-sm opacity-60">Dateline: Jita 4-4, Secure Commerce Commission Relay, May 20, YC127</p>
+            </section>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">New Eden Adrift: Navigating an Era of Unprecedented Change</h2>
+                <p class="mb-4 leading-relaxed">
+                    The past three standard years across New Eden have been anything but standard. From the heart of empire space to the lawless frontiers of nullsec, the cluster has been rocked by escalating conflicts, the emergence of shadowy new powers, and the resurgence of ancient threats long thought dormant. Capsuleers, the immortal pilots at the vanguard of galactic events, have found themselves not merely witnesses but pivotal actors in a drama that reshapes allegiances and redefines the very nature of power in our universe.
+                </p>
+                <p class="mb-4 leading-relaxed">
+                    This NCN special report delves into the critical lore and story developments from May YC124 to May YC127, chronicling the major expansions, narrative arcs, factional shifts, and key events that have left an indelible mark on New Eden. We've seen empires rattle their sabers with renewed ferocity, corporations rise to unprecedented influence, and mysterious entities step from the void, their motives and origins shrouded in enigma. Join us as we dissect this turbulent period, a time where the only constant has been change, and the future of the cluster hangs precariously in the balance.
+                </p>
+            </article>
+            <section class="content-section">
+                <h2 class="text-3xl font-semibold mb-6 text-center">Timeline of Turmoil: Key Events YC124-YC127</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full timeline-table">
+                        <thead>
+                            <tr>
+                                <th>Date (YC / Standard)</th>
+                                <th>Expansion/Event</th>
+                                <th>NCN Headline Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Aug YC124 (Aug 11, 2022)</td>
+                                <td>Uprising</td>
+                                <td>
+                                    Empires Escalate: Factional Warfare Ignites Anew, Frontlines Redrawn, Navy Fleets Bolstered. Intaki Tensions Flare.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jun YC125 (Jun 13, 2023)</td>
+                                <td>Viridian</td>
+                                <td>Corporate Power Surge: New Tools for CEO Ambitions, Lancer Dreadnoughts Unveiled by Empires.</td>
+                            </tr>
+                            <tr>
+                                <td>Nov YC125 (Nov 14, 2023)</td>
+                                <td>Havoc</td>
+                                <td>
+                                    ZARZAKH REVEALED: Mysterious Deathless Seizes Ancient Jovian Hub, Pirate Insurgencies Erupt. Angel & Guristas Capitals Spotted. Vanguard Operatives Deploy.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jun YC126 (Jun 11, 2024)</td>
+                                <td>Equinox</td>
+                                <td>Nullsec Gold Rush: Upwell Tech Transforms Sovereignty, New Resources Spark Conflict in Outer Regions.</td>
+                            </tr>
+                            <tr>
+                                <td>Nov YC126 (Nov 12, 2024)</td>
+                                <td>Revenant</td>
+                                <td>Deathless Mercenaries Rise: Covert Ops & New DoT Weaponry Emerge as Drifter Tensions Mount.</td>
+                            </tr>
+                            <tr>
+                                <td>Jan - Apr YC127 (2025)</td>
+                                <td>The Drifter Crisis</td>
+                                <td>
+                                    CLUSTER UNDER SIEGE: Drifters Launch Unprecedented Attacks, Vigilant Dreamers Appear. Empires & Capsuleers Scramble Defense. SoCT & ARC Investigate. Deathless Bases Targeted.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Apr - May YC127 (Apr 15 - May 15, 2025)</td>
+                                <td>Nexus Reckoning (Capsuleer Day XXII)</td>
+                                <td>
+                                    WAR FOR THE HIVES: Drifter Crisis Culminates in Wormhole Battles. Labyrinth & Nexus Points Uncovered. Warden-Nexus Severance Ends Offensive.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>May YC127 (May 27, 2025)</td>
+                                <td>Legion</td>
+                                <td>
+                                    CAPSULEER ECONOMY REBOOTED: Freelance Job System Launched. Triglavian Marauder & Angel Dreadnought Deployed. Nullsec Sovereignty Enhanced.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">YC124: Empires Unleashed - The Uprising Ignites Old Hatreds</h2>
+                <p class="mb-3 italic opacity-75">NCN Archives, August YC124</p>
+                <p class="mb-4 leading-relaxed">
+                    The relative quiet between the core empires shattered in August YC124 with the "Uprising." This wasn't a sudden spark but the culmination of simmering tensions, notably fueled by a mysterious "stellar transmuter accident" and the controversial Gallente Federation actions in the Intaki system. CONCORD sources, speaking off-record, confirmed a significant escalation in military posturing by all four major powers – the Amarr Empire, Caldari State, Gallente Federation, and Minmatar Republic.
+                </p>
+                <p class="mb-4 leading-relaxed">
+                    The primary flashpoint: Factional Warfare zones. The Uprising introduced "Frontlines," dynamic battlefronts where capsuleer loyalists clashed for territorial control and strategic "Advantage." To bolster these efforts, empires deployed new Navy-issue capital ships, including the formidable Phoenix Navy Issue and Naglfar Fleet Issue dreadnoughts, alongside a new generation of advanced destroyers. This was a clear signal: the empires were investing heavily in a protracted conflict. "This is more than just skirmishing," commented a Caldari Navy spokesperson at the time, "This is a strategic realignment."
+                </p>
+                <div class="infographic-box my-4">
+                    <span class="infographic-title">Datapoint: The Intaki Incident</span>
+                    <p class="text-sm leading-relaxed">
+                        The "invasion of Intaki" remains a contentious issue. While the Gallente Federation maintained its actions were within legal bounds, many, including Intaki sovereignty advocates and some CSM representatives, decried it as a violation of prior guarantees and an act of repression. This event served as a potent symbol of the grievances fueling the broader Uprising.
+                    </p>
+                </div>
+                <p class="leading-relaxed">
+                    The Uprising marked a narrative shift, pulling focus from external threats like the Triglavians back to the deep-seated animosities that have historically defined New Eden. For capsuleers, it meant renewed purpose in the empire warzones, with their actions directly shaping the course of these resurgent imperial conflicts.
+                </p>
+            </article>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">YC125 Mid-Year Report: Corporations Ascendant - The Viridian Expansion</h2>
+                <p class="mb-3 italic opacity-75">NCN Business Desk, June YC125</p>
+                <p class="mb-4 leading-relaxed">
+                    While imperial war machines ground on, mid-YC125 saw a different kind of power surge with the Viridian expansion. The focus shifted to capsuleer corporations, those player-driven entities that form the economic and military backbone of much of New Eden. Viridian equipped these organizations with sophisticated tools to enhance their operational capabilities and project their unique identities across the cluster.
+                </p>
+                <p class="mb-4 leading-relaxed">
+                    Key among these were the SKNR system for personalizing Upwell structures and expanded use of corporation EverMarks, allowing CEOs to visually brand their assets and rally members towards common goals. "A corporation's identity is its strength," an Upwell Consortium representative stated during the Viridian rollout. "These tools allow that strength to be seen and felt."
+                </p>
+                <p class="mb-4 leading-relaxed">
+                    Simultaneously, the empires weren't idle. Each unveiled a new line of Tech II Lancer Dreadnoughts – the Amarr Bane, Caldari Karura, Gallente Hubris, and Minmatar Valravn. Armed with innovative area-of-effect disruptive lance weapons, these capital ships signaled an ongoing technological arms race and hinted at evolving battlefield doctrines. The message was clear: both state and non-state actors were gearing up for more complex confrontations. Viridian laid the groundwork for corporations to become even more significant players on the galactic stage, capable of pursuing ambitions that rivaled those of smaller NPC factions.
+                </p>
+                <div class="infographic-box my-4">
+                    <span class="infographic-title">Diagram: Lancer Dreadnought Deployment - Tactical Shift</span>
+                    <ul class="list-disc list-inside text-sm pl-4 space-y-1">
+                        <li>
+                            <strong>Amarr Bane:</strong> Energy Neutralizing Lance
+                        </li>
+                        <li>
+                            <strong>Caldari Karura:</strong> ECM Jamming Lance
+                        </li>
+                        <li>
+                            <strong>Gallente Hubris:</strong> Sensor Dampening Lance
+                        </li>
+                        <li>
+                            <strong>Minmatar Valravn:</strong> Target Painting Lance
+                        </li>
+                    </ul>
+                    <p class="text-xs text-center mt-2 opacity-70">
+                        Lancer Dreadnoughts introduced new area-denial and fleet disruption capabilities, forcing adaptations in large-scale engagement doctrines.
+                    </p>
+                </div>
+            </article>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">
+                    LATE YC125 SHOCKWAVE: Zarzakh Emerges, The Deathless Rises - Havoc Unleashed
+                </h2>
+                <p class="mb-3 italic opacity-75">NCN Special Bulletin, November YC125</p>
+                <p class="mb-4 leading-relaxed">
+                    The latter half of YC125 was irrevocably altered by two intertwined revelations: the discovery of the uncharted star system Zarzakh, and the dramatic rise of the Deathless Circle, led by the shadowy figure known only as "The Deathless." This culminated in the Havoc expansion, which thrust a new, formidable pirate-aligned power onto the galactic stage.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Zarzakh: Ancient Nexus, Modern Menace</h3>
+                <p class="mb-4 leading-relaxed">
+                    Whispers at Fanfest YC125 became stark reality: Zarzakh, an ancient Jovian transportation hub, was unveiled. Located deep within Divinity's Edge, yet paradoxically connected to key regions like Venal, Curse, Placid, and Metropolis via stable Jovian stargates, it instantly became a strategic chokepoint of unparalleled importance. Dominating the system is "The Fulcrum," a colossal Jovian megastructure seized by The Deathless and repurposed as a pirate sanctuary. The system itself is hazardous, with "Deathzones" and scanner disruptions, underscoring its alien origins.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">The Deathless Circle: A New Power Broker</h3>
+                <p class="mb-4 leading-relaxed">
+                    The master of Zarzakh, "The Deathless," remains an enigma. Speculation, fueled by fragmented intel, suggests he may be Templar One, a first-generation warclone with a deep-seated hatred for CONCORD. His stated goal: to understand Jovian technology. To this end, he forged alliances with the Angel Cartel and Guristas Pirates, offering them The Fulcrum and promising a "brighter future." The Deathless Circle fields unique ship designs like the Tholos and Cenotaph, armed with SCARAB breacher pods inflicting damage-over-time – a testament to their unique technological access.
+                </p>
+                <div class="infographic-box my-4 border-red-500/50">
+                    <span class="infographic-title text-red-400">Havoc Expansion: Pirates Empowered</span>
+                    <p class="text-sm mb-2 leading-relaxed">
+                        The Havoc expansion allowed capsuleers to formally align with these pirate factions, aiding The Deathless in spreading "corruption" through Factional Warfare zones. Pirate Insurgencies saw capsuleers establish pirate FOBs and even alter system security statuses – a direct assault on empire sovereignty orchestrated from Zarzakh.
+                    </p>
+                    <p class="text-sm leading-relaxed">
+                        The expansion also saw the deployment of new pirate capital ships, including the fearsome Angel Cartel Azariel-class Titan, and the first integration of EVE Vanguard, with ground operations potentially influencing corruption levels in space.
+                    </p>
+                </div>
+                <p class="leading-relaxed">
+                    The emergence of Zarzakh and The Deathless represents a fundamental shift. Pirate factions, once disparate, now have a unified, highly connected base and a powerful, mysterious patron. The Deathless's agenda, far exceeding simple piracy, hints at a long game involving ancient secrets and a direct challenge to the established order of New Eden.
+                </p>
+            </article>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">YC126: Nullsec Reborn & Shadows Deepen - Equinox and Revenant</h2>
+                <p class="mb-3 italic opacity-75">NCN Mid-Year Analysis & Year-End Review, YC126</p>
+                <p class="mb-4 leading-relaxed">
+                    YC126 brought transformative changes to the lawless expanse of nullsec and saw the Deathless narrative intertwine ominously with another ancient power: the Drifters.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Equinox: A New Frontier in Nullsec (June YC126)</h3>
+                <p class="mb-4 leading-relaxed">
+                    The Equinox expansion fundamentally reshaped nullsec sovereignty and resource exploitation. Upwell Consortium unveiled new structures – the Orbital Skyhook, Sovereignty Hub, and Metenox Moon Drill – designed to harvest novel "colony resources" (Power, Workforce, Reagents). Alliances could now not just conquer but actively *develop* their space, customizing systems via Sovereignty Hub upgrades fueled by these new resources. "Nullsec is no longer just territory; it's an investment," an Upwell executive declared. This created new conflict drivers, as control over resource harvesting and supply lines became paramount. Specialized Upwell haulers like the Squall were introduced to manage the new logistics chains.
+                </p>
+                <div class="infographic-box my-4">
+                    <span class="infographic-title">Nullsec Resource Cycle (Post-Equinox)</span>
+                    <p class="text-sm text-center mb-2 leading-relaxed">
+                        Orbital Skyhooks (Planetary Resources) + Metenox Moon Drills (Moon Ores) ➔ Power, Workforce, Reagents ➔ Sovereignty Hub Upgrades (System Customization, Enhanced Anomalies, Improved Defenses) ➔ Increased Strategic & Economic Value.
+                    </p>
+                    <p class="text-xs text-center opacity-70 leading-relaxed">
+                        This cycle introduced new vulnerabilities: Skyhook blockades, hacking attempts, and raids on Metenox drills became common conflict drivers.
+                    </p>
+                </div>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">
+                    Revenant: The Deathless, The Drifters, and The Coming Storm (November YC126)
+                </h3>
+                <p class="mb-4 leading-relaxed">
+                    The Revenant expansion pushed the Deathless storyline into darker territory. Tensions between The Deathless and the Drifters escalated visibly. Capsuleers were offered deeper ties to The Deathless through "Mercenary Dens" – player-deployable structures in nullsec generating "encrypted infomorphs," exchangeable in Zarzakh for advanced Deathless technology. This included new ships like the Tholos destroyer and Cenotaph battlecruiser, and the revolutionary Breacher Pod Launchers firing SCARAB pods that inflicted persistent, resistance-bypassing damage.
+                </p>
+                <p class="mb-4 leading-relaxed">
+                    Developer communications and in-game events, including reported Drifter attacks on Zarzakh itself, heavily signaled an impending confrontation. "The Deathless…can he be trusted? The Drifters will be back," warned CCP's Creative Director Bergur Finnbogason. Revenant positioned capsuleers as mercenaries in a shadow war, equipping them with tools that could prove decisive in the brewing conflict between these ancient, powerful entities.
+                </p>
+            </article>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">
+                    YC127: THE DRIFTER CRISIS - New Eden on the Brink, Nexus Reckoning Decides Fate
+                </h2>
+                <p class="mb-3 italic opacity-75">NCN Frontline Dispatch, January - May YC127</p>
+                <p class="mb-4 leading-relaxed">
+                    The dawn of YC127 plunged New Eden into chaos. Starting January, the Drifters launched an unprecedented, coordinated assault across the cluster, targeting civilian infrastructure far beyond their usual operational zones. This period, now known as the "Drifter Crisis," tested the resolve of empires and capsuleers alike.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Vigilant Dreamers and a Galaxy Under Fire</h3>
+                <p class="mb-4 leading-relaxed">
+                    At the heart of the Drifter offensive were enigmatic "Vigilant Dreamer" structures, believed to be critical surveillance or command nodes. The Society of Conscious Thought (SoCT) reported increasingly persistent deployments, indicating a determined Drifter campaign. In response, empires mobilized, and capsuleers were called to the frontlines. New "Crisis Sites" emerged, offering pilots opportunities to combat Drifters, rescue survivors, and gather intelligence. Notably, some sites involved defending Deathless Circle research outposts from Drifter attacks, highlighting the clear antagonism between these two shadowy factions. SoCT and the Arataka Research Consortium (ARC) played vital roles, with SoCT synthesizing tech upgrades from recovered Drifter telemetry.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Nexus Reckoning: The War for the Hives (Capsuleer Day XXII)</h3>
+                <p class="mb-4 leading-relaxed">
+                    The Drifter Crisis culminated in the "Nexus Reckoning" event (April-May YC127). Five capsuleer-supported factions, victorious in the preceding "Race for the Hives," established footholds in Drifter wormhole systems, battling fierce retaliation. Challenging new combat sites like the "Labyrinth Complex" (with rumored secret Triglavian traders) and "Nexus Point" (featuring Drifter Dreadnought encounters) drew fleets deep into hostile territory. Sleeper-themed combat and exploration sites also appeared cluster-wide, reinforcing the interconnectedness of these ancient factions.
+                </p>
+                <div class="infographic-box my-4 border-cyan-500/50">
+                    <span class="infographic-title text-cyan-400">The Warden's Gambit: Crisis Averted?</span>
+                    <p class="text-sm mb-2 leading-relaxed">
+                        The Drifter offensive ended abruptly on May 15, YC127. SoCT disseminated research indicating a "sudden severance of the connections between the Warden... and the Drifter Nexuses." The "Warden," a structure in Zarzakh under The Deathless's sole control, was pivotal. SoCT CEO Idmei Sver controversially suggested, "As we celebrate the end of a calamity that the Deathless Circle themselves caused..." This implied The Deathless may have provoked, then halted, the crisis for unknown reasons.
+                    </p>
+                </div>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Political Fallout: The Drifter Summit</h3>
+                <p class="mb-4 leading-relaxed">
+                    The aftermath saw intense political maneuvering. The five wormhole-occupying factions quickly secured Drifter tech. A "Drifter Summit" organized by the Sisters of EVE and ARC in Jita saw EDENCOM propose open sharing of this tech. This was largely rejected by Amarr, Caldari, and Triglavian representatives, sowing mistrust. The Gallente Federation, excluded from the summit, faced internal unrest over being technologically outpaced. The Drifter Crisis reshaped the galactic landscape, elevating The Deathless and exposing deep fissures among New Eden's major powers.
+                </p>
+            </article>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">YC127 LATE SPRING: The Legion Rises - Capsuleers Forge Their Own Destinies</h2>
+                <p class="mb-3 italic opacity-75">NCN HoloNet Broadcast, May 27, YC127</p>
+                <p class="mb-4 leading-relaxed">
+                    Launched in late May YC127, the Legion expansion heralded a new era of player agency, summed up by its themes: "unity, ambition, and the limitless potential of cooperation." Against the backdrop of the ongoing "Revenant narrative arc" and the simmering Deathless-Drifter conflict, Legion equipped capsuleers with unprecedented tools to shape their own stories.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Freelance Jobs: The Gig Economy Comes to New Eden</h3>
+                <p class="mb-4 leading-relaxed">
+                    The flagship feature, Freelance Jobs, formalized a capsuleer "gig economy." Corporations can now create and offer contracts for tasks ranging from logistics to combat support, open to any pilot. "This system empowers corporations to generate their own content and allows individual pilots to find their niche," an SCC official commented. It's seen as a way to connect new pilots with established groups and foster mentorship.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">New War Machines Deployed</h3>
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="infographic-box">
+                        <span class="infographic-title">Triglavian *Babaroga* Marauder</span>
+                        <p class="text-sm leading-relaxed">
+                            A Tech II Marauder based on the Leshak hull, bringing the Collective's devastating entropic disintegrator technology to this versatile ship class, complete with Bastion module for enhanced siege capabilities.
+                        </p>
+                    </div>
+                    <div class="infographic-box">
+                        <span class="infographic-title">Angel Cartel *Sarathiel* Dreadnought</span>
+                        <p class="text-sm leading-relaxed">
+                            This capital ship boasts a unique capital micro jump drive usable even in siege mode, granting unparalleled tactical mobility, true to Angel Cartel doctrine of speed and surprise.
+                        </p>
+                    </div>
+                </div>
+                <p class="mb-4 leading-relaxed">
+                    Further enhancements to nullsec sovereignty, offering greater customization and scalability (including immediate capture of orbital skyhooks), and improved corporation identity tools like full RGB color palettes for logos, continued the trend of empowering player organizations.
+                </p>
+                <div class="infographic-box my-4 border-green-500/50">
+                    <span class="infographic-title text-green-400">The Revenant Arc Continues</span>
+                    <p class="text-sm leading-relaxed">
+                        Legion's features are explicitly framed as tools for capsuleers within the ongoing Revenant narrative. With the Deathless-Drifter conflict looming, these enhancements to player agency are seen as equipping pilots to choose sides, carve out niches, or simply survive the fallout of this galactic power struggle.
+                    </p>
+                </div>
+                <p class="leading-relaxed">
+                    Legion marks a significant step in integrating player-driven narratives into the formal structure of New Eden. Capsuleer organizations are now officially recognized as entities capable of generating their own missions, directly influencing the world around them in a more codified and impactful manner than ever before.
+                </p>
+            </article>
+            <section class="content-section">
+                <h2 class="text-3xl font-semibold mb-6 text-center">
+                    Power Players: Factional Shifts & Evolving Agendas (YC124-YC127)
+                </h2>
+                <p class="text-center mb-6 opacity-75">
+                    NCN Intelligence Digest: An overview of key factions and their transformations.
+                </p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">The Deathless Circle</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> Led by "The Deathless" (suspected Templar One warclone), operating from The Fulcrum in Zarzakh. Deeply antagonistic to CONCORD.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> Acquire Jovian technology, establish pirate super-coalition, destabilize empires.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> Emergence as major power. Seizure of Zarzakh. Unique ships (Tholos, Cenotaph) & SCARAB tech. Pirate Insurgencies. Pivotal, ambiguous role in Drifter Crisis via "Warden."
+                        </p>
+                        <p class="text-xs opacity-60">
+                            NCN Analysis: Rapidly ascending power with precursor tech access. Complex, hostile relations with Drifters.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">The Drifters</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> Highly advanced, mysterious faction with Jove/Sleeper ties. Unpredictable.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> Largely unknown. YC127 Crisis suggested surveillance, resource acquisition, or ancient agenda.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> Launched massive Drifter Crisis (Vigilant Dreamers). Engaged heavily. Offensive ceased after Warden-Nexus severance. Ongoing conflict with The Deathless.
+                        </p>
+                        <p class="text-xs opacity-60">
+                            NCN Analysis: Persistent high-level threat. Warden link implies Deathless manipulation. True goals opaque.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">The Triglavian Collective</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> Masters of Pochven (Perun, Svarog, Veles Clades). Distinct tech path.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> Maintain Pochven, "prove" worthy entities, advance tech.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> Consolidated Pochven. Secret traders in Nexus Reckoning. Resisted open Drifter tech sharing. *Babaroga* Marauder introduced.
+                        </p>
+                        <p class="text-xs opacity-60">
+                            NCN Analysis: Isolationist but opportunistic. Independent and self-interested. Pochven remains influential.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">EDENCOM</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> Semi-autonomous CONCORD military command. Broader defense mandate.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> Defend New Eden, promote inter-empire security cooperation.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> Drifter Crisis response. Championed open Drifter tech sharing (rejected). Continued Pochven presence.
+                        </p>
+                        <p class="text-xs opacity-60">NCN Analysis: Transitioning security role. Faces challenges fostering empire unity.</p>
+                    </div>
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">Jove & Sleepers</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> (Jove) Ancient, vanished empire. (Sleepers) Enigmatic W-space denizens, Jove offshoot.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> (Jove) Legacy shapes events. (Sleepers) Defend domains, unknown purpose.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> Jovian legacy resurfaced via Zarzakh/Deathless. Sleeper sites in Nexus Reckoning reinforced Drifter links; no new major Sleeper lore.
+                        </p>
+                        <p class="text-xs opacity-60">
+                            NCN Analysis: Jove are New Eden's ghosts. Sleeper mystery deepens, entangled with Drifter/Deathless plots.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">SoCT & ARC</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> (SoCT) Ancient, Jovian-founded research org. (ARC) Independent research/diplomacy group.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> Seek knowledge, understand events, facilitate dialogue.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> SoCT crucial in Drifter Crisis (intel, tech, implicated Deathless). ARC investigated Crisis, co-facilitated Drifter Summit.
+                        </p>
+                        <p class="text-xs opacity-60">
+                            NCN Analysis: Vital non-state actors. SoCT's Jovian roots key to precursor plots. Provide analysis/diplomacy.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-2xl font-semibold mb-2">Sisters of EVE & CONCORD</h3>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Profile:</strong> (SoE) Humanitarian, EVE Gate custodians. (CONCORD) Core empire law/peace enforcement.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Motivations:</strong> (SoE) Aid, discovery. (CONCORD) Maintain order.
+                        </p>
+                        <p class="mb-2 text-sm">
+                            <strong class="opacity-80">Key Developments:</strong> SoE co-facilitated Drifter Summit. Whispers of new SoE/Triglavian/CONCORD plot with "rogue element in CONCORD." CONCORD challenged by Deathless & potential internal schism.
+                        </p>
+                        <p class="text-xs opacity-60">
+                            NCN Analysis: SoE benevolent. CONCORD under unprecedented pressure. "Rogue element" could shift secure space politics.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <article class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">NCN Analysis Desk: Unraveling the Threads - Themes and Lingering Mysteries</h2>
+                <p class="mb-3 italic opacity-75">By Senior Correspondent Kaelen Rourke, NCN</p>
+                <p class="mb-4 leading-relaxed">
+                    The chaotic currents of the past three years reveal distinct patterns and leave a trail of profound, unanswered questions that will undoubtedly shape New Eden's future.
+                </p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">Dominant Themes Shaping the Era:</h3>
+                <ul class="list-disc list-inside mb-4 pl-4 space-y-2 leading-relaxed">
+                    <li>
+                        <strong>The Echoes of Ancients:</strong> Jovian, Drifter, Sleeper, and even Triglavian legacies are no longer historical footnotes but active forces.
+                    </li>
+                    <li>
+                        <strong>The Unrelenting Arms Race:</strong> Continuous introduction of potent new war machines signifies escalating technological warfare.
+                    </li>
+                    <li>
+                        <strong>Capsuleers as Architects of Fate:</strong> Expansions consistently empowered players to be active narrative agents.
+                    </li>
+                    <li>
+                        <strong>The Fading Lines of Good and Evil:</strong> Morally ambiguous factions and actions challenge traditional dichotomies.
+                    </li>
+                    <li>
+                        <strong>Order Under Siege:</strong> Imperial wars, pirate insurgencies, and galactic crises point to a fracturing of established structures.
+                    </li>
                 </ul>
-                <p class="text-xs text-center mt-2 opacity-70">Lancer Dreadnoughts introduced new area-denial and fleet disruption capabilities, forcing adaptations in large-scale engagement doctrines.</p>
-            </div>
-        </article>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">LATE YC125 SHOCKWAVE: Zarzakh Emerges, The Deathless Rises - Havoc Unleashed</h2>
-            <p class="mb-3 italic opacity-75">NCN Special Bulletin, November YC125</p>
-            <p class="mb-4 leading-relaxed">The latter half of YC125 was irrevocably altered by two intertwined revelations: the discovery of the uncharted star system Zarzakh, and the dramatic rise of the Deathless Circle, led by the shadowy figure known only as "The Deathless." This culminated in the Havoc expansion, which thrust a new, formidable pirate-aligned power onto the galactic stage.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Zarzakh: Ancient Nexus, Modern Menace</h3>
-            <p class="mb-4 leading-relaxed">Whispers at Fanfest YC125 became stark reality: Zarzakh, an ancient Jovian transportation hub, was unveiled. Located deep within Divinity's Edge, yet paradoxically connected to key regions like Venal, Curse, Placid, and Metropolis via stable Jovian stargates, it instantly became a strategic chokepoint of unparalleled importance. Dominating the system is "The Fulcrum," a colossal Jovian megastructure seized by The Deathless and repurposed as a pirate sanctuary. The system itself is hazardous, with "Deathzones" and scanner disruptions, underscoring its alien origins.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">The Deathless Circle: A New Power Broker</h3>
-            <p class="mb-4 leading-relaxed">The master of Zarzakh, "The Deathless," remains an enigma. Speculation, fueled by fragmented intel, suggests he may be Templar One, a first-generation warclone with a deep-seated hatred for CONCORD. His stated goal: to understand Jovian technology. To this end, he forged alliances with the Angel Cartel and Guristas Pirates, offering them The Fulcrum and promising a "brighter future." The Deathless Circle fields unique ship designs like the Tholos and Cenotaph, armed with SCARAB breacher pods inflicting damage-over-time – a testament to their unique technological access.</p>
-            <div class="infographic-box my-4 border-red-500/50">
-                <span class="infographic-title text-red-400">Havoc Expansion: Pirates Empowered</span>
-                <p class="text-sm mb-2 leading-relaxed">The Havoc expansion allowed capsuleers to formally align with these pirate factions, aiding The Deathless in spreading "corruption" through Factional Warfare zones. Pirate Insurgencies saw capsuleers establish pirate FOBs and even alter system security statuses – a direct assault on empire sovereignty orchestrated from Zarzakh.</p>
-                <p class="text-sm leading-relaxed">The expansion also saw the deployment of new pirate capital ships, including the fearsome Angel Cartel Azariel-class Titan, and the first integration of EVE Vanguard, with ground operations potentially influencing corruption levels in space.</p>
-            </div>
-            <p class="leading-relaxed">The emergence of Zarzakh and The Deathless represents a fundamental shift. Pirate factions, once disparate, now have a unified, highly connected base and a powerful, mysterious patron. The Deathless's agenda, far exceeding simple piracy, hints at a long game involving ancient secrets and a direct challenge to the established order of New Eden.</p>
-        </article>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">YC126: Nullsec Reborn & Shadows Deepen - Equinox and Revenant</h2>
-            <p class="mb-3 italic opacity-75">NCN Mid-Year Analysis & Year-End Review, YC126</p>
-            <p class="mb-4 leading-relaxed">YC126 brought transformative changes to the lawless expanse of nullsec and saw the Deathless narrative intertwine ominously with another ancient power: the Drifters.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Equinox: A New Frontier in Nullsec (June YC126)</h3>
-            <p class="mb-4 leading-relaxed">The Equinox expansion fundamentally reshaped nullsec sovereignty and resource exploitation. Upwell Consortium unveiled new structures – the Orbital Skyhook, Sovereignty Hub, and Metenox Moon Drill – designed to harvest novel "colony resources" (Power, Workforce, Reagents). Alliances could now not just conquer but actively *develop* their space, customizing systems via Sovereignty Hub upgrades fueled by these new resources. "Nullsec is no longer just territory; it's an investment," an Upwell executive declared. This created new conflict drivers, as control over resource harvesting and supply lines became paramount. Specialized Upwell haulers like the Squall were introduced to manage the new logistics chains.</p>
-            <div class="infographic-box my-4">
-                <span class="infographic-title">Nullsec Resource Cycle (Post-Equinox)</span>
-                <p class="text-sm text-center mb-2 leading-relaxed">Orbital Skyhooks (Planetary Resources) + Metenox Moon Drills (Moon Ores) ➔ Power, Workforce, Reagents ➔ Sovereignty Hub Upgrades (System Customization, Enhanced Anomalies, Improved Defenses) ➔ Increased Strategic & Economic Value.</p>
-                <p class="text-xs text-center opacity-70 leading-relaxed">This cycle introduced new vulnerabilities: Skyhook blockades, hacking attempts, and raids on Metenox drills became common conflict drivers.</p>
-            </div>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Revenant: The Deathless, The Drifters, and The Coming Storm (November YC126)</h3>
-            <p class="mb-4 leading-relaxed">The Revenant expansion pushed the Deathless storyline into darker territory. Tensions between The Deathless and the Drifters escalated visibly. Capsuleers were offered deeper ties to The Deathless through "Mercenary Dens" – player-deployable structures in nullsec generating "encrypted infomorphs," exchangeable in Zarzakh for advanced Deathless technology. This included new ships like the Tholos destroyer and Cenotaph battlecruiser, and the revolutionary Breacher Pod Launchers firing SCARAB pods that inflicted persistent, resistance-bypassing damage.</p>
-            <p class="mb-4 leading-relaxed">Developer communications and in-game events, including reported Drifter attacks on Zarzakh itself, heavily signaled an impending confrontation. "The Deathless…can he be trusted? The Drifters will be back," warned CCP's Creative Director Bergur Finnbogason. Revenant positioned capsuleers as mercenaries in a shadow war, equipping them with tools that could prove decisive in the brewing conflict between these ancient, powerful entities.</p>
-        </article>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">YC127: THE DRIFTER CRISIS - New Eden on the Brink, Nexus Reckoning Decides Fate</h2>
-            <p class="mb-3 italic opacity-75">NCN Frontline Dispatch, January - May YC127</p>
-            <p class="mb-4 leading-relaxed">The dawn of YC127 plunged New Eden into chaos. Starting January, the Drifters launched an unprecedented, coordinated assault across the cluster, targeting civilian infrastructure far beyond their usual operational zones. This period, now known as the "Drifter Crisis," tested the resolve of empires and capsuleers alike.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Vigilant Dreamers and a Galaxy Under Fire</h3>
-            <p class="mb-4 leading-relaxed">At the heart of the Drifter offensive were enigmatic "Vigilant Dreamer" structures, believed to be critical surveillance or command nodes. The Society of Conscious Thought (SoCT) reported increasingly persistent deployments, indicating a determined Drifter campaign. In response, empires mobilized, and capsuleers were called to the frontlines. New "Crisis Sites" emerged, offering pilots opportunities to combat Drifters, rescue survivors, and gather intelligence. Notably, some sites involved defending Deathless Circle research outposts from Drifter attacks, highlighting the clear antagonism between these two shadowy factions. SoCT and the Arataka Research Consortium (ARC) played vital roles, with SoCT synthesizing tech upgrades from recovered Drifter telemetry.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Nexus Reckoning: The War for the Hives (Capsuleer Day XXII)</h3>
-            <p class="mb-4 leading-relaxed">The Drifter Crisis culminated in the "Nexus Reckoning" event (April-May YC127). Five capsuleer-supported factions, victorious in the preceding "Race for the Hives," established footholds in Drifter wormhole systems, battling fierce retaliation. Challenging new combat sites like the "Labyrinth Complex" (with rumored secret Triglavian traders) and "Nexus Point" (featuring Drifter Dreadnought encounters) drew fleets deep into hostile territory. Sleeper-themed combat and exploration sites also appeared cluster-wide, reinforcing the interconnectedness of these ancient factions.</p>
-            <div class="infographic-box my-4 border-cyan-500/50">
-                <span class="infographic-title text-cyan-400">The Warden's Gambit: Crisis Averted?</span>
-                <p class="text-sm mb-2 leading-relaxed">The Drifter offensive ended abruptly on May 15, YC127. SoCT disseminated research indicating a "sudden severance of the connections between the Warden... and the Drifter Nexuses." The "Warden," a structure in Zarzakh under The Deathless's sole control, was pivotal. SoCT CEO Idmei Sver controversially suggested, "As we celebrate the end of a calamity that the Deathless Circle themselves caused..." This implied The Deathless may have provoked, then halted, the crisis for unknown reasons.</p>
-            </div>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Political Fallout: The Drifter Summit</h3>
-            <p class="mb-4 leading-relaxed">The aftermath saw intense political maneuvering. The five wormhole-occupying factions quickly secured Drifter tech. A "Drifter Summit" organized by the Sisters of EVE and ARC in Jita saw EDENCOM propose open sharing of this tech. This was largely rejected by Amarr, Caldari, and Triglavian representatives, sowing mistrust. The Gallente Federation, excluded from the summit, faced internal unrest over being technologically outpaced. The Drifter Crisis reshaped the galactic landscape, elevating The Deathless and exposing deep fissures among New Eden's major powers.</p>
-        </article>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">YC127 LATE SPRING: The Legion Rises - Capsuleers Forge Their Own Destinies</h2>
-            <p class="mb-3 italic opacity-75">NCN HoloNet Broadcast, May 27, YC127</p>
-            <p class="mb-4 leading-relaxed">Launched in late May YC127, the Legion expansion heralded a new era of player agency, summed up by its themes: "unity, ambition, and the limitless potential of cooperation." Against the backdrop of the ongoing "Revenant narrative arc" and the simmering Deathless-Drifter conflict, Legion equipped capsuleers with unprecedented tools to shape their own stories.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Freelance Jobs: The Gig Economy Comes to New Eden</h3>
-            <p class="mb-4 leading-relaxed">The flagship feature, Freelance Jobs, formalized a capsuleer "gig economy." Corporations can now create and offer contracts for tasks ranging from logistics to combat support, open to any pilot. "This system empowers corporations to generate their own content and allows individual pilots to find their niche," an SCC official commented. It's seen as a way to connect new pilots with established groups and foster mentorship.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">New War Machines Deployed</h3>
-            <div class="grid md:grid-cols-2 gap-4 mb-4">
-                <div class="infographic-box">
-                    <span class="infographic-title">Triglavian *Babaroga* Marauder</span>
-                    <p class="text-sm leading-relaxed">A Tech II Marauder based on the Leshak hull, bringing the Collective's devastating entropic disintegrator technology to this versatile ship class, complete with Bastion module for enhanced siege capabilities.</p>
+                <h3 class="text-2xl font-semibold mt-6 mb-3">The Great Unanswered Questions (As of May YC127):</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">The Deathless Enigma:</h4>
+                        <p class="text-sm leading-relaxed">
+                            True identity, ultimate goals for Zarzakh/Jovian tech, endgame with CONCORD, and his precise role (savior or instigator?) in the Drifter Crisis.
+                        </p>
+                    </div>
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">The Drifters' Grand Design:</h4>
+                        <p class="text-sm leading-relaxed">
+                            Motivations for YC127 Crisis, purpose of Vigilant Dreamers, long-term objectives concerning New Eden, Sleepers, and The Deathless.
+                        </p>
+                    </div>
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">The Warden's Secrets:</h4>
+                        <p class="text-sm leading-relaxed">
+                            Full capabilities of this Deathless-controlled Jovian structure in Zarzakh. What other powers might it hold?
+                        </p>
+                    </div>
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">CONCORD's Internal Shadow:</h4>
+                        <p class="text-sm leading-relaxed">Identity, motives, and reach of the hinted "rogue element within CONCORD."</p>
+                    </div>
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">Pochven's Path:</h4>
+                        <p class="text-sm leading-relaxed">
+                            Triglavian Collective's long-term relationship with New Eden remains fluid and unpredictable.
+                        </p>
+                    </div>
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">The Fate of Intaki:</h4>
+                        <p class="text-sm leading-relaxed">
+                            Status of the Gallente "invasion" and long-term resolution for the Intaki people.
+                        </p>
+                    </div>
+                    <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]">
+                        <h4 class="font-semibold text-lg">Jovian & Sleeper Truths:</h4>
+                        <p class="text-sm leading-relaxed">
+                            Will Zarzakh/SoCT reveal more on Jove fate and true nature of Sleepers/Drifters? Precise Sleeper-Drifter link.
+                        </p>
+                    </div>
                 </div>
-                <div class="infographic-box">
-                    <span class="infographic-title">Angel Cartel *Sarathiel* Dreadnought</span>
-                    <p class="text-sm leading-relaxed">This capital ship boasts a unique capital micro jump drive usable even in siege mode, granting unparalleled tactical mobility, true to Angel Cartel doctrine of speed and surprise.</p>
+                <p class="mt-6 leading-relaxed">
+                    This period demonstrates a clear narrative strategy towards an interconnected, dynamic universe. Storylines are not isolated. The accelerating pace of major lore events suggests a commitment to a "living universe," constantly in flux, where capsuleer actions will continue to be paramount.
+                </p>
+            </article>
+            <section class="content-section">
+                <h2 class="text-3xl font-semibold mb-4">NCN Outlook: A Fractured Galaxy on the Precipice</h2>
+                <p class="mb-4 leading-relaxed">
+                    The New Eden of May YC127 is a far more volatile and unpredictable entity than it was three years prior. Uprising reignited old imperial fires, Viridian empowered corporations, Havoc unleashed The Deathless from Zarzakh, and Equinox reshaped nullsec's resource wars. Revenant armed players for the clash that manifested as the Drifter Crisis, "resolved" by The Deathless's intervention via the Warden during Nexus Reckoning. Legion has now put new tools of agency and conflict into capsuleers' hands.
+                </p>
+                <p class="mb-4 leading-relaxed">
+                    The Deathless and his pirate coalition are a formidable new power. The Drifters, though repelled, remain an existential threat. Empires face internal and external pressures. Capsuleers navigate a complex web of morally ambiguous allegiances, armed with ever-more potent technology.
+                </p>
+                <p class="leading-relaxed">
+                    The stage is set for major confrontations: the brewing Deathless-Drifter war, the potential implosion of CONCORD from within, and the continued fallout from ancient legacies. New Eden is dynamic, the stakes are higher than ever, and its future will be forged in the crucible of these unfolding conflicts, with capsuleers at the very heart of the storm.
+                </p>
+            </section>
+            <section class="content-section">
+                <h2 class="text-3xl font-semibold mb-6 text-center">
+                    Armaments Update: Significant Warship Deployments (YC124-YC127)
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full timeline-table">
+                        <thead>
+                            <tr>
+                                <th>Designation</th>
+                                <th>Manufacturer/Allegiance</th>
+                                <th>Class</th>
+                                <th>Deployment Era</th>
+                                <th>Strategic Impact Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Phoenix Navy Issue</td>
+                                <td>Amarr Empire (Navy)</td>
+                                <td>Dreadnought</td>
+                                <td>Uprising</td>
+                                <td>Bolstered Amarr capital presence in renewed Factional Warfare.</td>
+                            </tr>
+                            <tr>
+                                <td>Moros Navy Issue</td>
+                                <td>Gallente Federation (Navy)</td>
+                                <td>Dreadnought</td>
+                                <td>Uprising</td>
+                                <td>Enhanced Gallente Federation's heavy assault capabilities in FW.</td>
+                            </tr>
+                            <tr>
+                                <td>Revelation Navy Issue</td>
+                                <td>Amarr Empire (Navy)</td>
+                                <td>Dreadnought</td>
+                                <td>Uprising</td>
+                                <td>Further solidified Amarr dominance in siege warfare scenarios.</td>
+                            </tr>
+                            <tr>
+                                <td>Naglfar Fleet Issue</td>
+                                <td>Minmatar Republic (Fleet)</td>
+                                <td>Dreadnought</td>
+                                <td>Uprising</td>
+                                <td>Provided Minmatar forces with a more resilient capital platform.</td>
+                            </tr>
+                            <tr>
+                                <td>Navy Destroyers (Various)</td>
+                                <td>Core Empires (Navy/Fleet)</td>
+                                <td>Destroyer</td>
+                                <td>Uprising</td>
+                                <td>Increased firepower and specialization at the destroyer level for FW.</td>
+                            </tr>
+                            <tr>
+                                <td>Bane, Karura, Hubris, Valravn</td>
+                                <td>Core Empires (Tech II)</td>
+                                <td>Lancer Dreadnought</td>
+                                <td>Viridian</td>
+                                <td>Introduced area-denial/fleet disruption capabilities to empire capitals.</td>
+                            </tr>
+                            <tr>
+                                <td>Azariel</td>
+                                <td>Angel Cartel</td>
+                                <td>Titan</td>
+                                <td>Havoc</td>
+                                <td>Massive escalation in pirate faction power projection; Angel Cartel flagship.</td>
+                            </tr>
+                            <tr>
+                                <td>Khizriel</td>
+                                <td>Angel Cartel</td>
+                                <td>Battlecruiser</td>
+                                <td>Havoc</td>
+                                <td>Advanced, high-speed subcapital for Angel Cartel fleets.</td>
+                            </tr>
+                            <tr>
+                                <td>Alligator</td>
+                                <td>Guristas Pirates</td>
+                                <td>Battlecruiser</td>
+                                <td>Havoc</td>
+                                <td>Heavy drone and missile platform for Guristas operations.</td>
+                            </tr>
+                            <tr>
+                                <td>Mekubal, Mamba</td>
+                                <td>Angel/Guristas (Insurgent)</td>
+                                <td>Destroyer</td>
+                                <td>Havoc</td>
+                                <td>Accessible pirate destroyers for insurgent capsuleers.</td>
+                            </tr>
+                            <tr>
+                                <td>Squall, Deluge, Torrent, Avalanche</td>
+                                <td>Upwell Consortium</td>
+                                <td>Industrial Hauler</td>
+                                <td>Equinox</td>
+                                <td>Vital for logistics of new nullsec colony resource economy.</td>
+                            </tr>
+                            <tr>
+                                <td>Tholos</td>
+                                <td>Deathless Circle</td>
+                                <td>Destroyer</td>
+                                <td>Revenant</td>
+                                <td>Covert-capable Deathless destroyer, fits novel Breacher Pods.</td>
+                            </tr>
+                            <tr>
+                                <td>Cenotaph</td>
+                                <td>Deathless Circle</td>
+                                <td>Battlecruiser</td>
+                                <td>Revenant</td>
+                                <td>Heavy Deathless platform with Breacher Pod capability and covert ops.</td>
+                            </tr>
+                            <tr>
+                                <td>*Babaroga*</td>
+                                <td>Triglavian Collective (T2)</td>
+                                <td>Marauder</td>
+                                <td>Legion</td>
+                                <td>Brings Triglavian entropic disintegrator tech to the Marauder class.</td>
+                            </tr>
+                            <tr>
+                                <td>*Sarathiel*</td>
+                                <td>Angel Cartel</td>
+                                <td>Dreadnought</td>
+                                <td>Legion</td>
+                                <td>Unprecedented mobility for a sieged dreadnought via capital MJD.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-            <p class="mb-4 leading-relaxed">Further enhancements to nullsec sovereignty, offering greater customization and scalability (including immediate capture of orbital skyhooks), and improved corporation identity tools like full RGB color palettes for logos, continued the trend of empowering player organizations.</p>
-            <div class="infographic-box my-4 border-green-500/50">
-                <span class="infographic-title text-green-400">The Revenant Arc Continues</span>
-                <p class="text-sm leading-relaxed">Legion's features are explicitly framed as tools for capsuleers within the ongoing Revenant narrative. With the Deathless-Drifter conflict looming, these enhancements to player agency are seen as equipping pilots to choose sides, carve out niches, or simply survive the fallout of this galactic power struggle.</p>
-            </div>
-            <p class="leading-relaxed">Legion marks a significant step in integrating player-driven narratives into the formal structure of New Eden. Capsuleer organizations are now officially recognized as entities capable of generating their own missions, directly influencing the world around them in a more codified and impactful manner than ever before.</p>
-        </article>
-
-        <section class="content-section">
-            <h2 class="text-3xl font-semibold mb-6 text-center">Power Players: Factional Shifts & Evolving Agendas (YC124-YC127)</h2>
-            <p class="text-center mb-6 opacity-75">NCN Intelligence Digest: An overview of key factions and their transformations.</p>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">The Deathless Circle</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> Led by "The Deathless" (suspected Templar One warclone), operating from The Fulcrum in Zarzakh. Deeply antagonistic to CONCORD.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> Acquire Jovian technology, establish pirate super-coalition, destabilize empires.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> Emergence as major power. Seizure of Zarzakh. Unique ships (Tholos, Cenotaph) & SCARAB tech. Pirate Insurgencies. Pivotal, ambiguous role in Drifter Crisis via "Warden."</p>
-                    <p class="text-xs opacity-60">NCN Analysis: Rapidly ascending power with precursor tech access. Complex, hostile relations with Drifters.</p>
-                </div>
-
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">The Drifters</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> Highly advanced, mysterious faction with Jove/Sleeper ties. Unpredictable.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> Largely unknown. YC127 Crisis suggested surveillance, resource acquisition, or ancient agenda.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> Launched massive Drifter Crisis (Vigilant Dreamers). Engaged heavily. Offensive ceased after Warden-Nexus severance. Ongoing conflict with The Deathless.</p>
-                    <p class="text-xs opacity-60">NCN Analysis: Persistent high-level threat. Warden link implies Deathless manipulation. True goals opaque.</p>
-                </div>
-
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">The Triglavian Collective</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> Masters of Pochven (Perun, Svarog, Veles Clades). Distinct tech path.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> Maintain Pochven, "prove" worthy entities, advance tech.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> Consolidated Pochven. Secret traders in Nexus Reckoning. Resisted open Drifter tech sharing. *Babaroga* Marauder introduced.</p>
-                    <p class="text-xs opacity-60">NCN Analysis: Isolationist but opportunistic. Independent and self-interested. Pochven remains influential.</p>
-                </div>
-
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">EDENCOM</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> Semi-autonomous CONCORD military command. Broader defense mandate.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> Defend New Eden, promote inter-empire security cooperation.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> Drifter Crisis response. Championed open Drifter tech sharing (rejected). Continued Pochven presence.</p>
-                    <p class="text-xs opacity-60">NCN Analysis: Transitioning security role. Faces challenges fostering empire unity.</p>
-                </div>
-                
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">Jove & Sleepers</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> (Jove) Ancient, vanished empire. (Sleepers) Enigmatic W-space denizens, Jove offshoot.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> (Jove) Legacy shapes events. (Sleepers) Defend domains, unknown purpose.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> Jovian legacy resurfaced via Zarzakh/Deathless. Sleeper sites in Nexus Reckoning reinforced Drifter links; no new major Sleeper lore.</p>
-                    <p class="text-xs opacity-60">NCN Analysis: Jove are New Eden's ghosts. Sleeper mystery deepens, entangled with Drifter/Deathless plots.</p>
-                </div>
-
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">SoCT & ARC</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> (SoCT) Ancient, Jovian-founded research org. (ARC) Independent research/diplomacy group.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> Seek knowledge, understand events, facilitate dialogue.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> SoCT crucial in Drifter Crisis (intel, tech, implicated Deathless). ARC investigated Crisis, co-facilitated Drifter Summit.</p>
-                    <p class="text-xs opacity-60">NCN Analysis: Vital non-state actors. SoCT's Jovian roots key to precursor plots. Provide analysis/diplomacy.</p>
-                </div>
-
-                <div class="p-4 rounded border opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    <h3 class="text-2xl font-semibold mb-2">Sisters of EVE & CONCORD</h3>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Profile:</strong> (SoE) Humanitarian, EVE Gate custodians. (CONCORD) Core empire law/peace enforcement.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Motivations:</strong> (SoE) Aid, discovery. (CONCORD) Maintain order.</p>
-                    <p class="mb-2 text-sm"><strong class="opacity-80">Key Developments:</strong> SoE co-facilitated Drifter Summit. Whispers of new SoE/Triglavian/CONCORD plot with "rogue element in CONCORD." CONCORD challenged by Deathless & potential internal schism.</p>
-                    <p class="text-xs opacity-60">NCN Analysis: SoE benevolent. CONCORD under unprecedented pressure. "Rogue element" could shift secure space politics.</p>
-                </div>
-            </div>
-        </section>
-
-        <article class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">NCN Analysis Desk: Unraveling the Threads - Themes and Lingering Mysteries</h2>
-            <p class="mb-3 italic opacity-75">By Senior Correspondent Kaelen Rourke, NCN</p>
-            <p class="mb-4 leading-relaxed">The chaotic currents of the past three years reveal distinct patterns and leave a trail of profound, unanswered questions that will undoubtedly shape New Eden's future.</p>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">Dominant Themes Shaping the Era:</h3>
-            <ul class="list-disc list-inside mb-4 pl-4 space-y-2 leading-relaxed">
-                <li><strong>The Echoes of Ancients:</strong> Jovian, Drifter, Sleeper, and even Triglavian legacies are no longer historical footnotes but active forces.</li>
-                <li><strong>The Unrelenting Arms Race:</strong> Continuous introduction of potent new war machines signifies escalating technological warfare.</li>
-                <li><strong>Capsuleers as Architects of Fate:</strong> Expansions consistently empowered players to be active narrative agents.</li>
-                <li><strong>The Fading Lines of Good and Evil:</strong> Morally ambiguous factions and actions challenge traditional dichotomies.</li>
-                <li><strong>Order Under Siege:</strong> Imperial wars, pirate insurgencies, and galactic crises point to a fracturing of established structures.</li>
-            </ul>
-            <h3 class="text-2xl font-semibold mt-6 mb-3">The Great Unanswered Questions (As of May YC127):</h3>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">The Deathless Enigma:</h4><p class="text-sm leading-relaxed">True identity, ultimate goals for Zarzakh/Jovian tech, endgame with CONCORD, and his precise role (savior or instigator?) in the Drifter Crisis.</p></div>
-                <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">The Drifters' Grand Design:</h4><p class="text-sm leading-relaxed">Motivations for YC127 Crisis, purpose of Vigilant Dreamers, long-term objectives concerning New Eden, Sleepers, and The Deathless.</p></div>
-                <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">The Warden's Secrets:</h4><p class="text-sm leading-relaxed">Full capabilities of this Deathless-controlled Jovian structure in Zarzakh. What other powers might it hold?</p></div>
-                <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">CONCORD's Internal Shadow:</h4><p class="text-sm leading-relaxed">Identity, motives, and reach of the hinted "rogue element within CONCORD."</p></div>
-                <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">Pochven's Path:</h4><p class="text-sm leading-relaxed">Triglavian Collective's long-term relationship with New Eden remains fluid and unpredictable.</p></div>
-                 <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">The Fate of Intaki:</h4><p class="text-sm leading-relaxed">Status of the Gallente "invasion" and long-term resolution for the Intaki people.</p></div>
-                <div class="p-3 rounded bg-[rgba(0,0,0,0.1)]"><h4 class="font-semibold text-lg">Jovian & Sleeper Truths:</h4><p class="text-sm leading-relaxed">Will Zarzakh/SoCT reveal more on Jove fate and true nature of Sleepers/Drifters? Precise Sleeper-Drifter link.</p></div>
-            </div>
-            <p class="mt-6 leading-relaxed">This period demonstrates a clear narrative strategy towards an interconnected, dynamic universe. Storylines are not isolated. The accelerating pace of major lore events suggests a commitment to a "living universe," constantly in flux, where capsuleer actions will continue to be paramount.</p>
-        </article>
-
-        <section class="content-section">
-            <h2 class="text-3xl font-semibold mb-4">NCN Outlook: A Fractured Galaxy on the Precipice</h2>
-            <p class="mb-4 leading-relaxed">The New Eden of May YC127 is a far more volatile and unpredictable entity than it was three years prior. Uprising reignited old imperial fires, Viridian empowered corporations, Havoc unleashed The Deathless from Zarzakh, and Equinox reshaped nullsec's resource wars. Revenant armed players for the clash that manifested as the Drifter Crisis, "resolved" by The Deathless's intervention via the Warden during Nexus Reckoning. Legion has now put new tools of agency and conflict into capsuleers' hands.</p>
-            <p class="mb-4 leading-relaxed">The Deathless and his pirate coalition are a formidable new power. The Drifters, though repelled, remain an existential threat. Empires face internal and external pressures. Capsuleers navigate a complex web of morally ambiguous allegiances, armed with ever-more potent technology.</p>
-            <p class="leading-relaxed">The stage is set for major confrontations: the brewing Deathless-Drifter war, the potential implosion of CONCORD from within, and the continued fallout from ancient legacies. New Eden is dynamic, the stakes are higher than ever, and its future will be forged in the crucible of these unfolding conflicts, with capsuleers at the very heart of the storm.</p>
-        </section>
-
-        <section class="content-section">
-            <h2 class="text-3xl font-semibold mb-6 text-center">Armaments Update: Significant Warship Deployments (YC124-YC127)</h2>
-            <div class="overflow-x-auto">
-                <table class="min-w-full timeline-table">
-                     <thead>
-                        <tr>
-                            <th>Designation</th>
-                            <th>Manufacturer/Allegiance</th>
-                            <th>Class</th>
-                            <th>Deployment Era</th>
-                            <th>Strategic Impact Assessment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Phoenix Navy Issue</td><td>Amarr Empire (Navy)</td><td>Dreadnought</td><td>Uprising</td><td>Bolstered Amarr capital presence in renewed Factional Warfare.</td></tr>
-                        <tr><td>Moros Navy Issue</td><td>Gallente Federation (Navy)</td><td>Dreadnought</td><td>Uprising</td><td>Enhanced Gallente Federation's heavy assault capabilities in FW.</td></tr>
-                        <tr><td>Revelation Navy Issue</td><td>Amarr Empire (Navy)</td><td>Dreadnought</td><td>Uprising</td><td>Further solidified Amarr dominance in siege warfare scenarios.</td></tr>
-                        <tr><td>Naglfar Fleet Issue</td><td>Minmatar Republic (Fleet)</td><td>Dreadnought</td><td>Uprising</td><td>Provided Minmatar forces with a more resilient capital platform.</td></tr>
-                        <tr><td>Navy Destroyers (Various)</td><td>Core Empires (Navy/Fleet)</td><td>Destroyer</td><td>Uprising</td><td>Increased firepower and specialization at the destroyer level for FW.</td></tr>
-                        <tr><td>Bane, Karura, Hubris, Valravn</td><td>Core Empires (Tech II)</td><td>Lancer Dreadnought</td><td>Viridian</td><td>Introduced area-denial/fleet disruption capabilities to empire capitals.</td></tr>
-                        <tr><td>Azariel</td><td>Angel Cartel</td><td>Titan</td><td>Havoc</td><td>Massive escalation in pirate faction power projection; Angel Cartel flagship.</td></tr>
-                        <tr><td>Khizriel</td><td>Angel Cartel</td><td>Battlecruiser</td><td>Havoc</td><td>Advanced, high-speed subcapital for Angel Cartel fleets.</td></tr>
-                        <tr><td>Alligator</td><td>Guristas Pirates</td><td>Battlecruiser</td><td>Havoc</td><td>Heavy drone and missile platform for Guristas operations.</td></tr>
-                        <tr><td>Mekubal, Mamba</td><td>Angel/Guristas (Insurgent)</td><td>Destroyer</td><td>Havoc</td><td>Accessible pirate destroyers for insurgent capsuleers.</td></tr>
-                        <tr><td>Squall, Deluge, Torrent, Avalanche</td><td>Upwell Consortium</td><td>Industrial Hauler</td><td>Equinox</td><td>Vital for logistics of new nullsec colony resource economy.</td></tr>
-                        <tr><td>Tholos</td><td>Deathless Circle</td><td>Destroyer</td><td>Revenant</td><td>Covert-capable Deathless destroyer, fits novel Breacher Pods.</td></tr>
-                        <tr><td>Cenotaph</td><td>Deathless Circle</td><td>Battlecruiser</td><td>Revenant</td><td>Heavy Deathless platform with Breacher Pod capability and covert ops.</td></tr>
-                        <tr><td>*Babaroga*</td><td>Triglavian Collective (T2)</td><td>Marauder</td><td>Legion</td><td>Brings Triglavian entropic disintegrator tech to the Marauder class.</td></tr>
-                        <tr><td>*Sarathiel*</td><td>Angel Cartel</td><td>Dreadnought</td><td>Legion</td><td>Unprecedented mobility for a sieged dreadnought via capital MJD.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer p-4 mt-8 text-center text-sm opacity-70">
-        <p>&copy; YC127 New Eden Comms Network (NCN). All rights transmitted via standardized FTL comms protocols.</p>
-        <p>Unauthorized rebroadcast or cloning of this informational material is a direct violation of CONCORD Commercial Code, Section 7, Paragraph 12, Sub-clause Gamma. Penalties may include ISK seizure and standings adjustment. Think before you transmit.</p>
-    </footer>
-
-    <script>
+            </section>
+        </main>
+        <footer class="footer p-4 mt-8 text-center text-sm opacity-70">
+            <p>&copy; YC127 New Eden Comms Network (NCN). All rights transmitted via standardized FTL comms protocols.</p>
+            <p>
+                Unauthorized rebroadcast or cloning of this informational material is a direct violation of CONCORD Commercial Code, Section 7, Paragraph 12, Sub-clause Gamma. Penalties may include ISK seizure and standings adjustment. Think before you transmit.
+            </p>
+        </footer>
+        <script>
         // Theme switcher logic
         const themeButtons = document.querySelectorAll('#theme-selector button');
         const body = document.body;
@@ -472,7 +751,7 @@
             gallente: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 0 L61.8 38.2 L100 38.2 L69.1 61.8 L79.3 100 L50 76.4 L20.7 100 L30.9 61.8 L0 38.2 L38.2 38.2 Z M50 45 A5 5 0 0 1 50 55 A5 5 0 0 1 50 45 Z" fill="currentColor"></path></svg>`, // Gallente Symbol (Simplified Star/Torch Flame)
             minmatar: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="8" fill="none"></circle><path d="M50 5 L50 25 M50 75 L50 95 M5 50 L25 50 M75 50 L95 50 M21.2 21.2 L35.3 35.3 M64.7 64.7 L78.8 78.8 M21.2 78.8 L35.3 64.7 M64.7 35.3 L78.8 21.2" stroke="currentColor" stroke-width="8"></path></svg>` // Minmatar Symbol (Simplified Tribal/Gear)
         };
-        const defaultNCNLogo = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20 20 H80 V30 H20 Z M20 45 H80 V55 H20 Z M20 70 H80 V80 H20 Z M45 20 V70 M55 30 V80" stroke="currentColor" stroke-width="5" fill="none"></path><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="5" fill="none"/></svg>`; // Generic NCN style logo
+        const defaultNCNLogo = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20 20 H80 V30 H20 Z M20 45 H80 V55 H20 Z M20 70 H80 V80 H20 Z M45 20 V70 M55 30 V80" stroke="currentColor" stroke-width="5" fill="none"></path><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="5" fill="none" /></svg>`; // Generic NCN style logo
 
 
         function applyTheme(theme) {
@@ -510,7 +789,6 @@
         // Load saved theme or apply default
         const savedTheme = localStorage.getItem('newsTheme') || 'caldari'; // Default to Caldari
         applyTheme(savedTheme);
-    </script>
-
-</body>
+        </script>
+    </body>
 </html>
