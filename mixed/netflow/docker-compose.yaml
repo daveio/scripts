@@ -1,6 +1,7 @@
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    # 8.13.1
+    image: docker.elastic.co/elasticsearch/elasticsearch@sha256:8b6d74cc54efff126b8646697ab4be0116959d9c7fb29b0a40605e0e9518df2a
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -9,7 +10,8 @@ services:
     networks:
       - ntopng
   grafana:
-    image: grafana/grafana:latest
+    # 10.3.3
+    image: grafana/grafana@sha256:8640e5038e83ca4554ed56b9d76375158bcd51580238c6f5d8adaf3f20dd5379
     restart: unless-stopped
     ports:
       - 3001:3000
@@ -20,7 +22,8 @@ services:
     depends_on:
       - influxdb
   influxdb:
-    image: influxdb:2.7
+    # 2.7.5
+    image: influxdb@sha256:766904dcef641fa1491750b7b3e0dd948b30417f7ef0ac4d3f1d6ffed52a1fa2
     restart: unless-stopped
     volumes:
       - influxdb:/var/lib/influxdb
@@ -29,7 +32,8 @@ services:
     networks:
       - ntopng
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.0
+    # 8.13.1
+    image: docker.elastic.co/kibana/kibana@sha256:0a002f6121aeaecb02c1c9b0b19580d26d47013620653e06fc3f661cea39134e
     ports:
       - 5601:5601
     environment:
@@ -39,7 +43,8 @@ services:
     depends_on:
       - elasticsearch
   netflow2ng:
-    image: synfinatic/netflow2ng:latest
+    # v0.0.5
+    image: synfinatic/netflow2ng@sha256:d3a91dee9f2dd99f5b9bad48d3de5409e19cf0f61a571cf7dc1460cbe0937885
     restart: unless-stopped
     command:
       [
@@ -59,7 +64,8 @@ services:
   ntopng:
     networks:
       - ntopng
-    image: ntop/ntopng:stable
+    # latest
+    image: ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     restart: unless-stopped
     network_mode: host
     volumes:
@@ -81,7 +87,8 @@ services:
       - influxdb
       - elasticsearch
   redis:
-    image: redis:alpine
+    # 7.2.4-alpine
+    image: redis@sha256:c8bb255c3559b3e458766db810aa7b3c7af1235b204cfdb304e79ff388fe1a5a
     restart: unless-stopped
     volumes:
       - redis:/data
