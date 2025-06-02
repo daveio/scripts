@@ -46,19 +46,18 @@ services:
     # Version: v0.0.5
     image: synfinatic/netflow2ng@sha256:d3a91dee9f2dd99f5b9bad48d3de5409e19cf0f61a571cf7dc1460cbe0937885
     restart: unless-stopped
+    network_mode: host
     command:
       [
         --zmq-output=tcp://ntopng:5556,
         --netflow-port=2055,
-        --metrics-addr=:9100,
+        --metrics-addr=:9101,
         --log-level=info,
       ]
     ports:
       # This will bind to both IPv4 and IPv6
       - 2055:2055/udp
-      - 9100:9100
-    networks:
-      - ntopng
+      - 9101:9101
     depends_on:
       - ntopng
   ntopng:
@@ -67,7 +66,6 @@ services:
     # Version: latest
     image: ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     restart: unless-stopped
-    network_mode: host
     volumes:
       - ntopng:/var/lib/ntopng
       - ./ntopng.conf:/etc/ntopng/ntopng.conf:ro
