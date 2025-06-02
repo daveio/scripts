@@ -1,7 +1,7 @@
 services:
   elasticsearch:
-    # 8.13.1
-    image: docker.elastic.co/elasticsearch/elasticsearch@sha256:8b6d74cc54efff126b8646697ab4be0116959d9c7fb29b0a40605e0e9518df2a
+    # Version: 9.0.1
+    image: docker.elastic.co/elasticsearch/elasticsearch@sha256:9244a573c48bc120c8ac4daf61d48dcda48db2b25fd1b3c4cbeb01aa175a8495
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -10,8 +10,8 @@ services:
     networks:
       - ntopng
   grafana:
-    # 10.3.3
-    image: grafana/grafana@sha256:8640e5038e83ca4554ed56b9d76375158bcd51580238c6f5d8adaf3f20dd5379
+    # Version: 12.0.1
+    image: grafana/grafana@sha256:06dc8d60e184705e5dc00e051a6d92342a44010d7d5e538d0a36339e85abb9b7
     restart: unless-stopped
     ports:
       - 3001:3000
@@ -22,8 +22,8 @@ services:
     depends_on:
       - influxdb
   influxdb:
-    # 2.7.5
-    image: influxdb@sha256:766904dcef641fa1491750b7b3e0dd948b30417f7ef0ac4d3f1d6ffed52a1fa2
+    # Version: 3.1.0-core
+    image: influxdb@sha256:a892c81c06734e1655327cfdea95ac6d1b18984db22a4bae3528f96792611f66
     restart: unless-stopped
     volumes:
       - influxdb:/var/lib/influxdb
@@ -32,8 +32,8 @@ services:
     networks:
       - ntopng
   kibana:
-    # 8.13.1
-    image: docker.elastic.co/kibana/kibana@sha256:0a002f6121aeaecb02c1c9b0b19580d26d47013620653e06fc3f661cea39134e
+    # Version: 9.0.1
+    image: docker.elastic.co/kibana/kibana@sha256:8298fac9df65785fdd8f00f977d2484ecfed8d1c2172730d43ee33d092b45a3f
     ports:
       - 5601:5601
     environment:
@@ -43,7 +43,7 @@ services:
     depends_on:
       - elasticsearch
   netflow2ng:
-    # v0.0.5
+    # Version: v0.0.5
     image: synfinatic/netflow2ng@sha256:d3a91dee9f2dd99f5b9bad48d3de5409e19cf0f61a571cf7dc1460cbe0937885
     restart: unless-stopped
     command:
@@ -64,7 +64,7 @@ services:
   ntopng:
     networks:
       - ntopng
-    # latest
+    # Version: latest
     image: ntop/ntopng@sha256:7121cca717ab921e414781805f8e9295ca70bf3a5268cfeaac55822549066d0b
     restart: unless-stopped
     network_mode: host
@@ -87,8 +87,8 @@ services:
       - influxdb
       - elasticsearch
   redis:
-    # 7.2.4-alpine
-    image: redis@sha256:c8bb255c3559b3e458766db810aa7b3c7af1235b204cfdb304e79ff388fe1a5a
+    # Version: 7.4.4-alpine3.21
+    image: redis@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273
     restart: unless-stopped
     volumes:
       - redis:/data
