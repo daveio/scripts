@@ -2,13 +2,11 @@ services:
   ntopng:
     build: .
     container_name: ntopng-main
-    depends_on:
-      - redis
     environment:
       GEOIPUPDATE_DB_DIR: /usr/share/GeoIP
       GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
       GEOIPUPDATE_VERBOSE: '1'
-      REMOTE_REDIS: redis:6379
+      # REMOTE_REDIS: redis:6379
     healthcheck:
       interval: 30s
       retries: 3
@@ -23,25 +21,9 @@ services:
       - 3000:3000
       - 2055:2055/udp
       - 8080:8080
+      - 6379:6379
     restart: unless-stopped
     volumes:
       - ./ntopng-data:/var/lib/ntopng
       - ./ntopng-logs:/var/log/ntopng
-  redis:
-    command: redis-server --appendonly yes
-    container_name: ntopng-redis
-    healthcheck:
-      interval: 30s
-      retries: 3
-      start_period: 10s
-      test:
-        - CMD
-        - redis-cli
-        - ping
-      timeout: 5s
-    image: redis:8.0.2-alpine
-    ports:
-      - 6379:6379
-    restart: unless-stopped
-    volumes:
-      - ./redis:/data
+      # - ./redis:/data # where is redis data stored?

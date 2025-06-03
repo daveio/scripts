@@ -119,6 +119,7 @@ RUN sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
       libtool \
       libxml2-dev \
       libzmq3-dev \
+      netcat \
       patch \
       pkg-config \
       rename \
