@@ -4,7 +4,6 @@ set -euo pipefail
 # Log configuration
 LOG_FILE="/var/log/ntopng/ntopng-startup.log"
 REDIS_LOG="/var/log/ntopng/redis.log"
-NETFLOW2NG_LOG="/var/log/ntopng/netflow2ng.log"
 
 # Ensure log directory exists
 mkdir -p "$(dirname "${LOG_FILE}")"
