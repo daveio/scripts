@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ntopng:
+    build: .
+    container_name: ntopng-netflow
+    ports:
+      - 3000:3000   # ntopng web interface
+      - 2055:2055/udp  # NetFlow input
+    volumes:
+      - ntopng_data:/var/lib/ntopng
+      - ntopng_logs:/var/log/ntopng
+    environment:
+      # GeoIP Configuration (OPTIONAL - uncomment and set your credentials)
+      # Get free credentials from: https://www.maxmind.com/en/geolite2/signup
+      # GEOIPUPDATE_ACCOUNT_ID: "your_account_id_here"
+      # GEOIPUPDATE_LICENSE_KEY: "your_license_key_here"
+
+      # GeoIP settings (these have sensible defaults, no need to change)
+      GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
+      GEOIPUPDATE_DB_DIR: /usr/share/GeoIP
+      GEOIPUPDATE_VERBOSE: "1"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:3000/lua/rest/v2/get/system/stats.lua
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  ntopng_data:
+    driver: local
+  ntopng_logs:
+    driver: local
