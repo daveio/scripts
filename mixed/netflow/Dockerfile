@@ -1,7 +1,8 @@
-FROM ubuntu:questing-20250514 AS stage1
+FROM jdxcode/mise:2025.6.0 AS stage1
 
 # Install runtime prerequisites
-RUN apt-get update \
+RUN sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
     && apt-get install -y --no-install-recommends \
       geoipupdate \
       gir1.2-freedesktop \
@@ -75,13 +76,15 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /tmp
 
 # Install build prerequisites
-RUN apt-get update \
+RUN sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
     && apt-get install -y --no-install-recommends \
       autoconf \
       autogen \
       automake \
       bison \
       build-essential \
+      cmake \
       flex \
       git \
       golang \
@@ -126,21 +129,24 @@ RUN git clone --depth 1 https://github.com/ntop/nDPI.git nDPI \
 
 COPY allow-flows-from-netflow2ng.patch ntopng/
 
+RUN mise use go@1.24.3 \
+    && mise install
+
 # Build all software
 RUN cd netflow2ng \
-    && make \
+    && make SHARED=0 CFLAGS='-static -std=gnu99 -static-libgcc -static-libstdc++ -fPIC' \
     && cp dist/netflow2ng-* /usr/local/bin/netflow2ng \
     && chmod +x /usr/local/bin/netflow2ng
 
 RUN cd nDPI \
     && ./autogen.sh --with-only-libndpi \
-    && ./configure \
+    && ./configure --enable-static \
     && make
 
 RUN cd ntopng \
     && patch -p1 -i allow-flows-from-netflow2ng.patch \
     && ./autogen.sh \
-    && ./configure \
+    && ./configure --enable-static \
     && make \
     && make install
 
@@ -153,12 +159,34 @@ COPY --from=stage2 /usr/local/share/ntopng /usr/local/share/ntopng
 RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
     && useradd -r -m -d /var/run/ntop -s /bin/false ntopng
 
-RUN chmod 775 /etc
+RUN mise use redis@8.0.2 \
+    && mise install
+
+RUN mkdir -p /etc/ntopng /var/lib/ntopng
+
+COPY ntopng.conf /etc/ntopng.conf
+COPY ntopng.bash /opt/ntopng.bash
+
+RUN chmod +x /opt/ntopng.bash \
+    && chown -R ntopng:ntopng \
+      /etc/ntopng \
+      /opt/ntopng.bash \
+      /var/run/netflow \
+      /var/run/ntop \
+      /var/lib/ntopng \
+      /usr/local/share/ntopng
 
 USER ntopng
 
+EXPOSE 3000/tcp 2055/udp
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD /usr/local/bin/ntopng --version || exit 1
+
+ENTRYPOINT ["/bin/bash", "-o", "pipefail", "-c"]
+
+CMD ["/opt/ntopng.bash"]
+
 
 
 LABEL \
