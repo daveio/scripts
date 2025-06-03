@@ -23,6 +23,7 @@ lint:
     - cspell
     - renovate
   enabled:
+    - hadolint@2.12.1-beta
     - djlint@1.36.4
     - oxipng@9.1.5
     - biome@1.9.4

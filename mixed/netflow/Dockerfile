@@ -178,6 +178,8 @@ RUN chmod +x /opt/ntopng.bash \
 
 USER ntopng
 
+WORKDIR /var/run/ntop
+
 EXPOSE 3000/tcp 2055/udp
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
