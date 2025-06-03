@@ -194,7 +194,8 @@ COPY ntopng.bash /opt/ntopng.bash
 COPY geoip.bash /opt/geoip.bash
 
 # Set proper permissions
-RUN chmod +x /opt/ntopng.bash /opt/geoip.bash \
+RUN touch /etc/GeoIP.conf \
+    && chmod +x /opt/ntopng.bash /opt/geoip.bash \
     && chown -R ntopng:ntopng \
       /etc/ntopng \
       /opt/ntopng.bash \
@@ -205,6 +206,7 @@ RUN chmod +x /opt/ntopng.bash /opt/geoip.bash \
       /usr/local/share/ntopng \
       /usr/share/GeoIP \
       /etc/GeoIP \
+      /etc/GeoIP.conf \
       /mise
 
 USER ntopng
