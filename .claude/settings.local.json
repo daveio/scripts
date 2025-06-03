@@ -1,0 +1,6 @@
+{
+	"permissions": {
+		"allow": ["mcp__docker__docker_cli", "mcp__docker__run_command"],
+		"deny": []
+	}
+}
