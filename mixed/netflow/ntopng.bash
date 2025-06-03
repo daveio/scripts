@@ -96,12 +96,6 @@ DatabaseDirectory ${GEOIPUPDATE_DB_DIR:-/usr/share/GeoIP}
 
 # Edition IDs to download
 EditionIDs GeoLite2-Country GeoLite2-City GeoLite2-ASN
-
-# Update frequency (in hours) - 0 means only manual updates
-UpdateFrequency 0
-
-# Verbose output
-Verbose 1
 EOF
 
 		if geoipupdate -v 2>&1 | tee -a "${LOG_FILE}"; then
