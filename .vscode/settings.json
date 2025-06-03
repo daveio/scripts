@@ -8,5 +8,6 @@
 		"go": "${workspaceFolder}/.vscode/mise-tools/go",
 		"gopls": "${workspaceFolder}/.vscode/mise-tools/gopls"
 	},
-	"workbench.colorCustomizations": {}
+	"workbench.colorCustomizations": {},
+	"postman.settings.dotenv-detection-notification-visibility": false
 }
