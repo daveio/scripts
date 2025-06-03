@@ -55,7 +55,7 @@ cleanup() {
 	# Stop Redis
 	if [[ -n ${REDIS_PID-} ]]; then
 		log "Stopping Redis (PID: ${REDIS_PID})..."
-		/mise/shims/redis-cli shutdown || true
+		/usr/local/bin/mise exec redis@latest -- redis-cli shutdown || true
 	fi
 
 	log "Cleanup complete"
@@ -93,7 +93,7 @@ main() {
 
 	# Start Redis in background
 	log "Starting Redis server..."
-	/mise/shims/redis-server \
+	/usr/local/bin/mise exec redis@latest -- redis-server \
 		--daemonize yes \
 		--logfile "${REDIS_LOG}" \
 		--loglevel notice \
