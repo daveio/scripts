@@ -1,14 +1,15 @@
-# ntopng with NetFlow2ng Docker Container
+# ntopng NetFlow Monitoring Stack
 
-A containerized network traffic monitoring solution that combines ntopng with netflow2ng to receive and analyze NetFlow data from Mikrotik routers and other network devices.
+A comprehensive containerized network traffic monitoring solution that combines ntopng with netflow2ng to receive and analyze NetFlow data from Mikrotik routers and other network devices. The project includes complete Docker configuration, interactive guides, and automation scripts for production deployment.
 
 ## Overview
 
-This Docker container includes:
-- **ntopng**: Web-based network traffic monitoring and analysis
-- **netflow2ng**: NetFlow v5/v9/IPFIX to ZeroMQ bridge
-- **Redis**: Data storage backend
-- **GeoIP**: Optional geographic IP location (MaxMind GeoLite2)
+This monitoring stack includes:
+- **ntopng 6.4**: Web-based network traffic monitoring and analysis
+- **netflow2ng 0.0.5**: NetFlow v5/v9/IPFIX to ZeroMQ bridge
+- **nDPI 4.14**: Deep packet inspection library
+- **Redis**: Data storage backend for flows and metrics
+- **GeoIP**: Optional geographic IP location with MaxMind GeoLite2
 
 ## Quick Start
 
@@ -228,18 +229,29 @@ docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar xzf /backup/nt
 | 3000 | TCP | ntopng web interface |
 | 2055 | UDP | NetFlow/sFlow/IPFIX input |
 
-## File Structure
+## Project Structure
 
 ```text
 /mixed/netflow/
-├── Dockerfile              # Container definition
-├── docker-compose.yml      # Orchestration configuration
-├── ntopng.conf            # ntopng configuration
-├── ntopng.bash            # Container startup script
-├── geoip.bash         # Interactive GeoIP setup
-├── allow-flows-from-netflow2ng.patch  # ntopng patch
-└── README.md              # This file
+├── Dockerfile                              # Multi-stage container build
+├── docker-compose.yml                      # Orchestration configuration
+├── ntopng.conf                            # ntopng runtime configuration
+├── ntopng.bash                            # Container startup and service management
+├── geoip.bash                             # Interactive GeoIP database setup
+├── allow-flows-from-netflow2ng.patch      # ntopng patch for ZeroMQ flow support
+├── LOCAL-LOCAL.html                       # Interactive traffic filtering guide
+├── LOCAL-LOCAL.md                         # Comprehensive filtering documentation
+└── README.md                              # This documentation
 ```
+
+### Key Files Explained
+
+- **Dockerfile**: Multi-stage build using mise for Go compilation, includes all necessary dependencies
+- **ntopng.bash**: Comprehensive startup script with health checks, logging, and graceful shutdown
+- **geoip.bash**: Interactive script for MaxMind GeoLite2 database configuration and updates
+- **allow-flows-from-netflow2ng.patch**: Enables JSON flow processing in community edition
+- **LOCAL-LOCAL.html**: Interactive web-based guide for configuring BPF filters to hide local traffic
+- **LOCAL-LOCAL.md**: Detailed technical documentation on local traffic filtering strategies
 
 ## Security Considerations
 
@@ -263,10 +275,11 @@ docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar xzf /backup/nt
 
 ### Custom Build Arguments
 ```bash
-# Build with specific versions
+# Build with specific versions (current defaults shown)
 docker build \
   --build-arg NTOP_VERSION=6.4 \
   --build-arg NDPI_VERSION=4.14 \
+  --build-arg NETFLOW2NG_VERSION=0.0.5 \
   -t ntopng-netflow .
 ```
 
@@ -284,6 +297,14 @@ docker run -d \
 - **Grafana**: Use ntopng's InfluxDB export for dashboards
 - **Elastic Stack**: Export data to Elasticsearch
 - **Prometheus**: Enable metrics export for monitoring
+
+## Traffic Filtering Guide
+
+For detailed information on filtering local network traffic, refer to:
+- **LOCAL-LOCAL.html**: Interactive web-based guide for building BPF filters
+- **LOCAL-LOCAL.md**: Comprehensive technical documentation on traffic filtering
+
+These guides help configure ntopng to focus on external traffic by hiding local-to-local communications.
 
 ## InfluxDB Integration
 
@@ -310,6 +331,33 @@ For issues and questions:
 3. Verify router NetFlow configuration
 4. Check network connectivity and firewall settings
 
+## Features
+
+### Built-in Components
+- **Multi-stage Docker build** optimized for production
+- **Automated service orchestration** with health checks and graceful shutdown
+- **Interactive GeoIP setup** with credential validation and database management
+- **Comprehensive logging** with structured output and log rotation
+- **Security hardening** with non-root users and minimal attack surface
+
+### Traffic Analysis Capabilities
+- **Real-time NetFlow/sFlow/IPFIX processing** from Mikrotik and other vendors
+- **Geographic IP mapping** with MaxMind GeoLite2 databases
+- **Advanced packet filtering** with Berkeley Packet Filter (BPF) support
+- **Local traffic isolation** with interactive filter configuration guides
+- **Flow export** to InfluxDB, Elasticsearch, and other time-series databases
+
+### Monitoring Features
+- **Web-based interface** on port 3000 with customizable dashboards
+- **REST API** for programmatic access to flow data and statistics
+- **Health check endpoints** for container orchestration platforms
+- **Metrics export** for Prometheus integration
+
 ## License
 
 This configuration is provided as-is for network monitoring purposes. Please ensure compliance with your organization's security policies and local regulations when monitoring network traffic.
+
+The included software components are subject to their respective licenses:
+- ntopng: GPLv3
+- netflow2ng: Apache 2.0
+- nDPI: LGPLv3

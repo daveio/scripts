@@ -175,9 +175,7 @@ RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
 RUN mkdir -p /etc/ntopng /var/lib/ntopng /var/log/ntopng /usr/share/GeoIP /etc/GeoIP
 
 # Set up GeoIP environment variables (can be overridden at runtime)
-ENV GEOIPUPDATE_ACCOUNT_ID="" \
-    GEOIPUPDATE_LICENSE_KEY="" \
-    GEOIPUPDATE_EDITION_IDS="GeoLite2-Country GeoLite2-City GeoLite2-ASN" \
+ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-Country GeoLite2-City GeoLite2-ASN" \
     GEOIPUPDATE_DB_DIR="/usr/share/GeoIP" \
     GEOIPUPDATE_HOST="updates.maxmind.com" \
     GEOIPUPDATE_VERBOSE="1" \
