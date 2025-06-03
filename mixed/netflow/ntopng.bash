@@ -80,6 +80,30 @@ update_geoip_databases() {
 	# Check if we have valid credentials
 	if [[ ${GEOIPUPDATE_ACCOUNT_ID:-0} != "0" ]] && [[ -n ${GEOIPUPDATE_LICENSE_KEY-} ]] && [[ ${GEOIPUPDATE_LICENSE_KEY-} != "000000000000" ]]; then
 		log "Valid GeoIP credentials detected, attempting database update..."
+
+		# Create GeoIP configuration file
+		log "Creating GeoIP configuration file..."
+		cat >/etc/GeoIP.conf <<EOF
+# GeoIP.conf configuration file
+# Generated automatically by ntopng startup script
+
+# Account ID and License Key from environment variables
+AccountID ${GEOIPUPDATE_ACCOUNT_ID}
+LicenseKey ${GEOIPUPDATE_LICENSE_KEY}
+
+# Database directory
+DatabaseDirectory ${GEOIPUPDATE_DB_DIR:-/usr/share/GeoIP}
+
+# Edition IDs to download
+EditionIDs GeoLite2-Country GeoLite2-City GeoLite2-ASN
+
+# Update frequency (in hours) - 0 means only manual updates
+UpdateFrequency 0
+
+# Verbose output
+Verbose 1
+EOF
+
 		if geoipupdate -v 2>&1 | tee -a "${LOG_FILE}"; then
 			log "✓ GeoIP databases updated successfully"
 			log "Geographic IP location features enabled"
@@ -151,7 +175,7 @@ main() {
 			--pidfile /var/run/ntopng/redis.pid \
 			--port "${REDIS_PORT}" \
 			--bind 0.0.0.0 \
-			--dir /var/run/ntopng/redis \
+			--dir /var/run/ntopng \
 			--appendonly yes
 
 		# Wait a moment for Redis to write PID file and bind to port

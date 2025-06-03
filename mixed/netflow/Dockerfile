@@ -173,7 +173,7 @@ RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
     && useradd -r -m -d /var/run/ntopng -s /bin/false ntopng
 
 # Create required directories
-RUN mkdir -p /etc/ntopng /var/lib/ntopng /var/log/ntopng /usr/share/GeoIP /etc/GeoIP /var/run/ntopng/redis
+RUN mkdir -p /etc/ntopng /var/lib/ntopng /var/log/ntopng /usr/share/GeoIP /etc/GeoIP
 
 # Set up GeoIP environment variables (can be overridden at runtime)
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-Country GeoLite2-City GeoLite2-ASN" \
@@ -199,9 +199,9 @@ RUN chmod +x /opt/ntopng.bash /opt/geoip.bash \
       /etc/ntopng \
       /opt/ntopng.bash \
       /var/run/netflow \
-      /var/run/ntopng \
       /var/lib/ntopng \
       /var/log/ntopng \
+      /var/run/ntopng \
       /usr/local/share/ntopng \
       /usr/share/GeoIP \
       /etc/GeoIP \
@@ -211,9 +211,9 @@ USER ntopng
 
 WORKDIR /var/run/ntopng
 
-RUN /usr/local/bin/mise use redis@latest \
-    && /usr/local/bin/mise trust \
-    && /usr/local/bin/mise install
+RUN /usr/local/bin/mise use "redis@${REDIS_VERSION:-latest}" \
+  && /usr/local/bin/mise trust \
+  && /usr/local/bin/mise install
 
 EXPOSE 3000/tcp 2055/udp
 
