@@ -1,6 +1,7 @@
 # ====================================================================
 # Operating System Files
 # ====================================================================
+
 # macOS
 ._*
 .apdisk
@@ -22,7 +23,6 @@ Network Trash Folder
 Temporary Items
 
 # Linux
-*~
 .directory
 .fuse_hidden*
 .nfs*
@@ -41,6 +41,7 @@ Thumbs.db
 # ====================================================================
 # Environment Variables & Configuration
 # ====================================================================
+
 .env
 .env*.local
 .env.development.local
@@ -50,9 +51,14 @@ Thumbs.db
 .env.test
 .env.test.local
 
+# Cloudflare Workers
+.dev.vars*
+!.dev.vars.example
+
 # ====================================================================
 # Node.js & JavaScript/TypeScript
 # ====================================================================
+
 # Dependencies
 node_modules/
 bower_components
@@ -80,6 +86,11 @@ out/
 **/.vitepress/cache
 **/.vitepress/dist
 
+# Nuxt specific
+.output
+.data
+.nitro
+
 # Cache directories
 .cache/
 .eslintcache
@@ -90,7 +101,7 @@ out/
 .rts2_cache_umd/
 .stylelintcache
 
-# Coverage
+# Test coverage
 coverage/
 .nyc_output
 *.lcov
@@ -105,7 +116,7 @@ typings/
 .node_repl_history
 .tern-port
 
-# Logs
+# Node.js logs
 lerna-debug.log*
 npm-debug.log*
 pnpm-debug.log*
@@ -119,6 +130,7 @@ bower.json
 # ====================================================================
 # Python
 # ====================================================================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -201,20 +213,15 @@ dmypy.json
 *.mo
 *.pot
 
-# Web frameworks
 # Django
 local_settings.py
+
 # Flask
 instance/
 .webassets-cache
 
 # Scrapy
 .scrapy
-
-# Documentation
-docs/_build/
-docs/_book
-/site
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -234,6 +241,7 @@ cython_debug/
 # ====================================================================
 # Ruby & Rails
 # ====================================================================
+
 *.gem
 *.rbc
 capybara-*.html
@@ -266,21 +274,9 @@ public/uploads
 storage/*
 !storage/.keep
 
-# Rails database files
-/db/*.sqlite3
-/db/*.sqlite3-journal
-/db/*.sqlite3-[0-9]*
-
 # Rails directories
 /public/system
-/coverage/
 /spec/tmp
-
-# Documentation
-.yardoc/
-_yardoc/
-doc/
-rdoc/
 
 # Installer
 lib/bundler/man/
@@ -295,12 +291,14 @@ test/version_tmp/
 # ====================================================================
 # Go
 # ====================================================================
+
 go.work
 go.work.sum
 
 # ====================================================================
 # iOS Development
 # ====================================================================
+
 build-iPhoneOS/
 build-iPhoneSimulator/
 *.hmap
@@ -329,6 +327,7 @@ Carthage/Build/
 # ====================================================================
 # IDEs & Editors
 # ====================================================================
+
 # VSCode
 .vscode/*
 !.vscode/settings.json
@@ -366,9 +365,21 @@ Carthage/Build/
 *.iws
 atlassian-ide-plugin.xml
 
+# Fleet
+.fleet
+
+# ====================================================================
+# Cloudflare Workers
+# ====================================================================
+
+.wrangler
+worker-configuration.d.ts
+env.d.ts
+
 # ====================================================================
 # Build Tools & CI/CD
 # ====================================================================
+
 target/
 .build/
 .serverless/
@@ -378,6 +389,7 @@ cmake-build-*/
 # ====================================================================
 # Databases
 # ====================================================================
+
 *.sqlite
 *.sqlite3
 *.sqlite3-journal
@@ -387,8 +399,21 @@ db.sqlite3-journal
 .dynamodb/
 
 # ====================================================================
+# Documentation
+# ====================================================================
+
+docs/_build/
+docs/_book
+/site
+.yardoc/
+_yardoc/
+doc/
+rdoc/
+
+# ====================================================================
 # Logs & Runtime Files
 # ====================================================================
+
 *.log
 logs
 pids
@@ -400,6 +425,7 @@ pids
 # ====================================================================
 # Temporary & Backup Files
 # ====================================================================
+
 *.tmp
 *.temp
 .temp
@@ -409,24 +435,22 @@ pids
 **/*.rs.bk
 
 # ====================================================================
-# Archives & Binaries
+# Binaries
 # ====================================================================
-*.7z
-*.dmg
+
 *.dll
 *.exe
 *.exe~
-*.gz
-*.iso
-*.jar
 *.out
-*.rar
-*.tar
-*.test
-*.tgz
-*.zip
+
+# ====================================================================
+# Code Quality & Analysis
+# ====================================================================
+
+.codacy/
 
 # ====================================================================
 # Reports & Analytics
 # ====================================================================
+
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
