@@ -1,6 +1,6 @@
-redis/
+redis/*
 !redis/.keep
-ntopng-data/
+ntopng-data/*
 !ntopng-data/.keep
-ntopng-logs/
+ntopng-logs/*
 !ntopng-logs/.keep
