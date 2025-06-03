@@ -16,6 +16,9 @@ services:
       # GEOIPUPDATE_ACCOUNT_ID: "your_account_id_here"
       # GEOIPUPDATE_LICENSE_KEY: "your_license_key_here"
 
+      # Redis Configuration (OPTIONAL - uncomment to use external Redis)
+      # REMOTE_REDIS: "redis.example.com:6379"  # or just "redis.example.com" (defaults to port 6379)
+
       # GeoIP settings (these have sensible defaults, no need to change)
       GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
       GEOIPUPDATE_DB_DIR: /usr/share/GeoIP

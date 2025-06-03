@@ -203,11 +203,15 @@ RUN chmod +x /opt/ntopng.bash /opt/geoip.bash \
       /var/log/ntopng \
       /usr/local/share/ntopng \
       /usr/share/GeoIP \
-      /etc/GeoIP
+      /etc/GeoIP \
+      /mise
 
 USER ntopng
 
 WORKDIR /var/run/ntop
+
+RUN /usr/local/bin/mise use redis@latest \
+    && /usr/local/bin/mise install
 
 EXPOSE 3000/tcp 2055/udp
 

@@ -221,6 +221,34 @@ docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar xzf /backup/nt
 | `GEOIPUPDATE_EDITION_IDS` | `GeoLite2-Country GeoLite2-City GeoLite2-ASN` | Database editions |
 | `GEOIPUPDATE_DB_DIR` | `/usr/share/GeoIP` | Database directory |
 | `GEOIPUPDATE_VERBOSE` | `1` | Verbose logging |
+| `REMOTE_REDIS` | _not set_ | Remote Redis server (format: `HOSTNAME:PORT` or just `HOSTNAME`, defaults to port 6379) |
+
+### Redis Configuration
+
+By default, the container runs a local Redis server. To use an external Redis server instead:
+
+```bash
+# Using hostname and port
+docker run -d \
+  --name ntopng \
+  -e REMOTE_REDIS="redis.example.com:6379" \
+  -p 3000:3000 \
+  -p 2055:2055/udp \
+  ntopng-netflow
+
+# Using hostname only (defaults to port 6379)
+docker run -d \
+  --name ntopng \
+  -e REMOTE_REDIS="redis.example.com" \
+  -p 3000:3000 \
+  -p 2055:2055/udp \
+  ntopng-netflow
+```
+
+When `REMOTE_REDIS` is set:
+- Local Redis server is **not** started
+- ntopng connects to the specified remote Redis server
+- Container startup will fail if the remote Redis is not accessible
 
 ## Ports
 
