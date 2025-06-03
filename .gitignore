@@ -1,42 +1,32 @@
-__pycache__/
-__pypackages__/
-!.vscode/*.code-snippets
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/settings.json
-!.vscode/tasks.json
-._*
-.apdisk
-.AppleDB
-.AppleDesktop
-.AppleDouble
-.cache
-.cache
-.cache
-.cache/
-.claude/
-.com.apple.timemachine.donotpresent
-.coverage
-.coverage.*
-.dmypy.json
-.DocumentRevisions-V100
-.docusaurus
-.DS_Store
-.dynamodb/
-.eggs/
-.env
+# =============================================================================
+# GITIGNORE FOR MULTI-LANGUAGE PROJECT
+# =============================================================================
+# This file covers Python, Node.js/JavaScript, various IDEs, and system files
+# Organized into logical sections for better maintainability
+
+# =============================================================================
+# ENVIRONMENT & CONFIGURATION FILES
+# =============================================================================
 .env
 .env.development.local
 .env.local
 .env.production.local
 .env.test.local
-.eslintcache
-.fseventsd
-.fusebox/
-.grunt
-.history/
-.hypothesis/
-.idea_modules/
+
+# =============================================================================
+# EDITOR & IDE CONFIGURATIONS
+# =============================================================================
+
+# VSCode (allow some configs)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/*.code-snippets
+.vscode-test
+
+# JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)
 .idea/**/aws.xml
 .idea/**/contentModel.xml
 .idea/**/dataSources.ids
@@ -58,339 +48,391 @@ __pypackages__/
 .idea/httpRequests
 .idea/replstate.xml
 .idea/sonarlint/
-.installed.cfg
-.ipynb_checkpoints
-.lock-wscript
+.idea_modules/
+
+# Other IDEs
+atlassian-ide-plugin.xml
+crashlytics-build.properties
+crashlytics.properties
+fabric.properties
+
+# =============================================================================
+# OPERATING SYSTEM FILES
+# =============================================================================
+
+# macOS
+._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
 .LSOverride
-.mypy_cache/
-.next
-.node_repl_history
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+Icon
+Network Trash Folder
+Temporary Items
+
+# =============================================================================
+# PYTHON
+# =============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+__pypackages__/
+*$py.class
+*.py[cod]
+*.py,cover
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
 .nox/
-.npm
-.nuxt
-.nyc_output
-.parcel-cache
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.hypothesis/
+cover/
+coverage
+coverage.xml
+nosetests.xml
+*.cover
+
+# Jupyter Notebook
+.ipynb_checkpoints
+ipython_config.py
+profile_default/
+
+# IPython
+.Python
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyBuilder
+.pybuilder/
+
+# PDM
 .pdm-build/
 .pdm-python
 .pdm.toml
-.pnp.*
-.pnpm-debug.log*
-.pybuilder/
-.pypirc
-.pyre/
-.pytest_cache/
-.Python
-.pytype/
-.ropeproject
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
+
+# Ruff
 .ruff_cache/
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask
+instance/
+
+# Scrapy
 .scrapy
-.serverless/
-.Spotlight-V100
-.spyderproject
-.spyproject
-.stylelintcache
-.temp
-.TemporaryItems
-.tern-port
-.tox/
-.Trashes
-.venv
-.vitepress/cache
-.vitepress/dist
-.VolumeIcon.icns
-.vscode-test
-.vscode/*
-.vuepress/dist
-.webassets-cache
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# =============================================================================
+# NODE.JS / JAVASCRIPT / TYPESCRIPT
+# =============================================================================
+
+# Dependencies
+node_modules/
+jspm_packages/
+bower_components/
+web_modules/
+
+# Yarn
 .yarn-integrity
 .yarn/build-state.yml
 .yarn/cache
 .yarn/install-state.gz
 .yarn/unplugged
-*.cover
-*.egg
-*.egg-info/
-*.iws
-*.lcov
-*.log
-*.log
-*.manifest
-*.mo
-*.pid
-*.pid.lock
-*.pot
-*.py,cover
-*.py[cod]
-*.sage.py
-*.seed
-*.so
-*.spec
-*.tgz
-*.tsbuildinfo
-*.vsix
-**/__pycache__/
-**/__pypackages__/
-**/!.vscode/*.code-snippets
-**/!.vscode/extensions.json
-**/!.vscode/launch.json
-**/!.vscode/settings.json
-**/!.vscode/tasks.json
-**/._*
-**/.apdisk
-**/.AppleDB
-**/.AppleDesktop
-**/.AppleDouble
-**/.cache
-**/.cache
-**/.cache
-**/.cache/
-**/.claude/
-**/.com.apple.timemachine.donotpresent
-**/.coverage
-**/.coverage.*
-**/.dmypy.json
-**/.DocumentRevisions-V100
-**/.docusaurus
-**/.DS_Store
-**/.dynamodb/
-**/.eggs/
-**/.env
-**/.env
-**/.env.development.local
-**/.env.local
-**/.env.production.local
-**/.env.test.local
-**/.eslintcache
-**/.fseventsd
-**/.fusebox/
-**/.grunt
-**/.history/
-**/.hypothesis/
-**/.idea_modules/
-**/.idea/**/aws.xml
-**/.idea/**/contentModel.xml
-**/.idea/**/dataSources.ids
-**/.idea/**/dataSources.local.xml
-**/.idea/**/dataSources/
-**/.idea/**/dbnavigator.xml
-**/.idea/**/dictionaries
-**/.idea/**/dynamic.xml
-**/.idea/**/gradle.xml
-**/.idea/**/libraries
-**/.idea/**/mongoSettings.xml
-**/.idea/**/shelf
-**/.idea/**/sqlDataSources.xml
-**/.idea/**/tasks.xml
-**/.idea/**/uiDesigner.xml
-**/.idea/**/usage.statistics.xml
-**/.idea/**/workspace.xml
-**/.idea/caches/build_file_checksums.ser
-**/.idea/httpRequests
-**/.idea/replstate.xml
-**/.idea/sonarlint/
-**/.installed.cfg
-**/.ipynb_checkpoints
-**/.lock-wscript
-**/.LSOverride
-**/.mypy_cache/
-**/.next
-**/.node_repl_history
-**/.nox/
-**/.npm
-**/.nuxt
-**/.nyc_output
-**/.parcel-cache
-**/.pdm-build/
-**/.pdm-python
-**/.pdm.toml
-**/.pnp.*
-**/.pnpm-debug.log*
-**/.pybuilder/
-**/.pypirc
-**/.pyre/
-**/.pytest_cache/
-**/.Python
-**/.pytype/
-**/.ropeproject
-**/.rpt2_cache/
-**/.rts2_cache_cjs/
-**/.rts2_cache_es/
-**/.rts2_cache_umd/
-**/.ruff_cache/
-**/.scrapy
-**/.serverless/
-**/.Spotlight-V100
-**/.spyderproject
-**/.spyproject
-**/.stylelintcache
-**/.temp
-**/.TemporaryItems
-**/.tern-port
-**/.tox/
-**/.Trashes
-**/.venv
-**/.vitepress/cache
-**/.vitepress/dist
-**/.VolumeIcon.icns
-**/.vscode-test
-**/.vscode/*
-**/.vuepress/dist
-**/.webassets-cache
-**/.yarn-integrity
-**/.yarn/build-state.yml
-**/.yarn/cache
-**/.yarn/install-state.gz
-**/.yarn/unplugged
-**/*.cover
-**/*.egg
-**/*.egg-info/
-**/*.iws
-**/*.lcov
-**/*.log
-**/*.log
-**/*.manifest
-**/*.mo
-**/*.pid
-**/*.pid.lock
-**/*.pot
-**/*.py,cover
-**/*.py[cod]
-**/*.sage.py
-**/*.seed
-**/*.so
-**/*.spec
-**/*.tgz
-**/*.tsbuildinfo
-**/*.vsix
-**/*$py.class
-**//site
-**/atlassian-ide-plugin.xml
-**/bower_components
-**/build/
-**/build/Release
-**/celerybeat-schedule
-**/celerybeat.pid
-**/cmake-build-*/
-**/com_crashlytics_export_strings.xml
-**/cover/
-**/coverage
-**/coverage.xml
-**/crashlytics-build.properties
-**/crashlytics.properties
-**/cython_debug/
-**/db.sqlite3
-**/db.sqlite3-journal
-**/develop-eggs/
-**/dist
-**/dist/
-**/dmypy.json
-**/docs/_build/
-**/downloads/
-**/eggs/
-**/env.bak/
-**/env/
-**/ENV/
-**/fabric.properties
-**/htmlcov/
-**/Icon
-**/instance/
-**/ipython_config.py
-**/jspm_packages/
-**/lerna-debug.log*
-**/lib-cov
-**/lib/
-**/lib64/
-**/local_settings.py
-**/logs
-**/MANIFEST
-**/Network Trash Folder
-**/node_modules/
-**/nosetests.xml
-**/npm-debug.log*
-**/out
-**/out/
-**/parts/
-**/pids
-**/pip-delete-this-directory.txt
-**/pip-log.txt
-**/profile_default/
-**/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-**/sdist/
-**/share/python-wheels/
-**/target/
-**/Temporary Items
-**/var/
-**/venv.bak/
-**/venv/
-**/web_modules/
-**/wheels/
-**/yarn-debug.log*
-**/yarn-error.log*
-*$py.class
-/site
-atlassian-ide-plugin.xml
-bower_components
+
+# npm
+.npm
+npm-debug.log*
+
+# Yarn v2
+.pnp.*
+
+# pnpm
+.pnpm-debug.log*
+
+# Lerna
+lerna-debug.log*
+
+# Output directories
+dist/
+out/
 build/
 build/Release
-celerybeat-schedule
-celerybeat.pid
-cmake-build-*/
-com_crashlytics_export_strings.xml
-cover/
-coverage
-coverage.xml
-crashlytics-build.properties
-crashlytics.properties
-cython_debug/
-db.sqlite3
-db.sqlite3-journal
-develop-eggs/
-dist
-dist/
-dmypy.json
-docs/_build/
-downloads/
-eggs/
-env.bak/
-env/
-ENV/
-fabric.properties
-htmlcov/
-Icon
-instance/
-ipython_config.py
-jspm_packages/
-lerna-debug.log*
-lib-cov
-lib/
-lib64/
-local_settings.py
-logs
-MANIFEST
-Network Trash Folder
-node_modules/
-nosetests.xml
-npm-debug.log*
-out
-out/
-parts/
+
+# Runtime data
 pids
-pip-delete-this-directory.txt
-pip-log.txt
-profile_default/
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-sdist/
-share/python-wheels/
+*.pid
+*.pid.lock
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage
+.nyc_output
+
+# ESLint cache
+.eslintcache
+
+# Optional npm cache directory
+.npm
+
+# Node REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# Parcel bundler
+.cache
+.parcel-cache
+
+# Next.js
+.next
+
+# Nuxt.js
+.nuxt
+
+# Gatsby
+.cache/
+
+# VuePress
+.vuepress/dist
+
+# Serverless Framework
+.serverless/
+
+# FuseBox
+.fusebox/
+
+# DynamoDB Local
+.dynamodb/
+
+# TernJS
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# TypeScript
+*.tsbuildinfo
+
+# =============================================================================
+# BUILD TOOLS & PACKAGE MANAGERS
+# =============================================================================
+
+# CMake
+cmake-build-*/
+
+# Gradle
+.gradle/
+
+# Maven
 target/
-Temporary Items
-var/
-venv.bak/
-venv/
-web_modules/
-wheels/
+
+# =============================================================================
+# DOCUMENTATION & STATIC SITE GENERATORS
+# =============================================================================
+
+# Docusaurus
+.docusaurus
+
+# VitePress
+.vitepress/cache
+.vitepress/dist
+
+# =============================================================================
+# TESTING & QUALITY ASSURANCE
+# =============================================================================
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.pytest_cache/
+.hypothesis/
+
+# Cache files
+.cache/
+.stylelintcache
+
+# =============================================================================
+# LOGS & TEMPORARY FILES
+# =============================================================================
+
+# Log files
+*.log
+logs/
+pids/
+
+# Temporary files
+.temp
+*.tmp
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Grunt intermediate storage
+.grunt
+
+# =============================================================================
+# BINARY & COMPILED FILES
+# =============================================================================
+
+# Compiled binary addons
+*.node
+*.so
+
+# Libraries
+lib-cov
+
+# =============================================================================
+# DEVELOPMENT & DEBUGGING
+# =============================================================================
+
+# Debug logs
+npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# History
+.history/
+
+# =============================================================================
+# MISCELLANEOUS
+# =============================================================================
+
+# Claude AI assistant
+.claude/
+
+# Webassets
+.webassets-cache
+
+# Lock files for scripts
+.lock-wscript
+
+# Report files
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# VS Code extension files
+*.vsix
+
+# License check files
+.installed.cfg
+
+# Android
+com_crashlytics_export_strings.xml
+
+# Archives
+*.tar.gz
+*.zip
+
+# Other
+*.iws
+*.lcov
+*.mo
