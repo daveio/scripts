@@ -211,6 +211,10 @@ USER ntopng
 
 WORKDIR /var/run/ntopng
 
+RUN /usr/local/bin/mise use redis@latest \
+    && /usr/local/bin/mise trust \
+    && /usr/local/bin/mise install
+
 EXPOSE 3000/tcp 2055/udp
 
 # Improved healthcheck
