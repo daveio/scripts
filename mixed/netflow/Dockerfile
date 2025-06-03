@@ -56,6 +56,7 @@ RUN sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
       libssl3 \
       libxft2 \
       libzmq5 \
+      netcat-openbsd \
       nginx \
       procps \
       redis-server \
@@ -119,7 +120,6 @@ RUN sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
       libtool \
       libxml2-dev \
       libzmq3-dev \
-      netcat \
       patch \
       pkg-config \
       rename \
@@ -170,10 +170,10 @@ COPY --from=stage2 /usr/local/share/ntopng /usr/local/share/ntopng
 
 # Create non-root users for security
 RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
-    && useradd -r -m -d /var/run/ntop -s /bin/false ntopng
+    && useradd -r -m -d /var/run/ntopng -s /bin/false ntopng
 
 # Create required directories
-RUN mkdir -p /etc/ntopng /var/lib/ntopng /var/log/ntopng /usr/share/GeoIP /etc/GeoIP
+RUN mkdir -p /etc/ntopng /var/lib/ntopng /var/log/ntopng /usr/share/GeoIP /etc/GeoIP /var/run/ntopng/redis
 
 # Set up GeoIP environment variables (can be overridden at runtime)
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-Country GeoLite2-City GeoLite2-ASN" \
@@ -199,7 +199,7 @@ RUN chmod +x /opt/ntopng.bash /opt/geoip.bash \
       /etc/ntopng \
       /opt/ntopng.bash \
       /var/run/netflow \
-      /var/run/ntop \
+      /var/run/ntopng \
       /var/lib/ntopng \
       /var/log/ntopng \
       /usr/local/share/ntopng \
@@ -209,10 +209,7 @@ RUN chmod +x /opt/ntopng.bash /opt/geoip.bash \
 
 USER ntopng
 
-WORKDIR /var/run/ntop
-
-RUN /usr/local/bin/mise use redis@latest \
-    && /usr/local/bin/mise install
+WORKDIR /var/run/ntopng
 
 EXPOSE 3000/tcp 2055/udp
 

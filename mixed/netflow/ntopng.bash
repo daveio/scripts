@@ -57,7 +57,7 @@ cleanup() {
 	if [[ -n ${REDIS_PID-} ]] && [[ ${USE_LOCAL_REDIS-} == true ]]; then
 		log "Stopping Redis (PID: ${REDIS_PID})..."
 		# Try graceful shutdown first
-		/usr/local/bin/mise exec redis@latest -- redis-cli -p "${REDIS_PORT:-6379}" shutdown || true
+		redis-cli -p "${REDIS_PORT:-6379}" shutdown || true
 		# If Redis is still running after 5 seconds, force kill it
 		sleep 2
 		if kill -0 "${REDIS_PID}" 2>/dev/null; then
@@ -143,22 +143,22 @@ main() {
 		log "Starting local Redis server..."
 
 		# Ensure PID directory exists
-		mkdir -p /var/run/ntop
+		mkdir -p /var/run/ntopng
 
 		/usr/local/bin/mise exec redis@latest -- redis-server \
 			--daemonize yes \
 			--logfile "${REDIS_LOG}" \
 			--loglevel notice \
-			--pidfile /var/run/ntop/redis.pid \
+			--pidfile /var/run/ntopng/redis.pid \
 			--port "${REDIS_PORT}" \
-			--bind 127.0.0.1 \
-			--save "" \
-			--appendonly no
+			--bind 0.0.0.0 \
+			--dir /var/run/ntopng/redis \
+			--appendonly yes
 
 		# Wait a moment for Redis to write PID file and bind to port
 		sleep 2
 
-		REDIS_PID=$(cat /var/run/ntop/redis.pid 2>/dev/null || echo "")
+		REDIS_PID=$(cat /var/run/ntopng/redis.pid 2>/dev/null || echo "")
 		if [[ -z ${REDIS_PID} ]]; then
 			log "ERROR: Failed to read Redis PID file"
 			exit 1
@@ -181,11 +181,10 @@ main() {
 	# Start netflow2ng in background
 	log "Starting netflow2ng..."
 	/usr/local/bin/netflow2ng \
-		-metrics :9101 \
-		-listen :2055 \
-		-log-level info \
-		-target tcp://127.0.0.1:5556 \
-		2>&1 | tee -a "${NETFLOW2NG_LOG}" &
+		--metrics=":9101" \
+		--listen=":2055" \
+		--listen-zmq="tcp://*:5556" \
+		--log-level="info" &
 
 	NETFLOW2NG_PID=$!
 	log "netflow2ng started with PID: ${NETFLOW2NG_PID}"

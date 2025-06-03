@@ -24,6 +24,6 @@ services:
       - 6379:6379
     restart: unless-stopped
     volumes:
-      - ./ntopng-data:/var/lib/ntopng
+      - ./ntopng-lib:/var/lib/ntopng
+      - ./ntopng-run:/var/run/ntopng
       - ./ntopng-logs:/var/log/ntopng
-      # - ./redis:/data # where is redis data stored?
