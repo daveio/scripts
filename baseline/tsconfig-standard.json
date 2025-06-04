@@ -1,0 +1,31 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"lib": ["es2022"],
+		"module": "es2022",
+		"moduleDetection": "force",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"noImplicitAny": false,
+		"noImplicitThis": true,
+		"noUncheckedIndexedAccess": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"strictNullChecks": false,
+		"target": "es2022",
+		"types": [
+			"@cloudflare/workers-types",
+			"@types/service-worker-mock",
+			"@types/bun",
+			"@types/node"
+		],
+		"verbatimModuleSyntax": false
+	},
+	"exclude": ["node_modules", "dist", "test"],
+	"include": ["src", "scripts", "worker-configuration.d.ts"]
+}

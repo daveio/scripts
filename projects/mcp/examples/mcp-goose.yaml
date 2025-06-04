@@ -1,0 +1,191 @@
+GOOSE_MODE: smart_approve
+GOOSE_MODEL: claude-sonnet-4-20250514
+GOOSE_PROVIDER: anthropic
+extensions:
+  claudecode:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - '@anthropic-ai/claude-code'
+      - mcp
+      - serve
+    description: Claude Code tools for development assistance
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Claude Code
+    bundled: null
+    env_keys: []
+  cloudflarecontainer:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - mcp-remote
+      - https://containers.mcp.cloudflare.com/sse
+    description: Spin up containers and interact with them
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Cloudflare Container
+    bundled: null
+    env_keys: []
+  cloudflaredocumentation:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - mcp-remote
+      - https://docs.mcp.cloudflare.com/sse
+    description: Access to Cloudflare Developer Documentation
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Cloudflare Documentation
+    bundled: null
+    env_keys: []
+  cloudflareobservability:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - mcp-remote
+      - https://observability.mcp.cloudflare.com/sse
+    description: Cloudflare Workers Observability and monitoring
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Cloudflare Observability
+    bundled: null
+    env_keys: []
+  cloudflarerendering:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - mcp-remote
+      - https://browser.mcp.cloudflare.com/sse
+    description: Browser rendering and screenshot capabilities
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Cloudflare Browser Rendering
+    bundled: null
+    env_keys: []
+  consoleninja:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - run
+      - ~/.console-ninja/mcp/
+    description: Console output monitoring and debugging
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Console Ninja
+    bundled: null
+    env_keys: []
+  context7:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - '@upstash/context7-mcp'
+    description: Documentation database and context search
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Context7
+    bundled: null
+    env_keys: []
+  docker:
+    cmd: docker
+    args:
+      - ai
+      - mcpserver
+    description: Docker container management and integration
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Docker
+    bundled: null
+    env_keys: []
+  duckduckgo:
+    cmd: /Users/dave/.local/share/mise/shims/uvx
+    args:
+      - duckduckgo-mcp-server
+    description: Web search and page fetching capabilities
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: DuckDuckGo
+    bundled: null
+    env_keys: []
+  fetch:
+    cmd: /Users/dave/.local/share/mise/shims/uvx
+    args:
+      - mcp-server-fetch
+    description: Web content fetching and processing
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Fetch
+    bundled: null
+    env_keys: []
+  git:
+    cmd: /Users/dave/.local/share/mise/shims/uvx
+    args:
+      - mcp-server-git
+    description: Git repository management and version control
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Git
+    bundled: null
+    env_keys: []
+  pdfreader:
+    cmd: /Users/dave/.local/share/mise/shims/uvx
+    args:
+      - mcp-read-pdf
+    description: Read and process PDF documents
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: PDF Reader
+    bundled: null
+    env_keys: []
+  pieces:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - mcp-remote
+      - http://localhost:39300/model_context_protocol/2024-11-05/sse
+    description: Pieces long-term memory engine integration
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs: {}
+    name: Pieces
+    bundled: null
+    env_keys: []
+  sharedmemory:
+    cmd: /Users/dave/.local/share/mise/shims/bun
+    args:
+      - x
+      - '@modelcontextprotocol/server-memory'
+    description: Persistent memory storage and retrieval
+    enabled: true
+    timeout: 300
+    type: stdio
+    envs:
+      MEMORY_FILE_PATH: /Users/dave/.memory
+    name: Shared Memory
+    bundled: null
+    env_keys:
+      - MEMORY_FILE_PATH

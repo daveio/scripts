@@ -1,0 +1,4 @@
+cache: true
+extends:
+  - stylelint-config-recommended
+  - stylelint-config-tailwindcss

@@ -1,0 +1,343 @@
+$schema: ./mcp.schema.json
+config:
+  defaults:
+    enabled: true
+    timeout: 300
+    type: stdio
+  output:
+    CUSTOM-DEFINITION:
+      format: json
+      path: mcp.CUSTOM-DEFINITION.json
+      template: CUSTOM-TEMPLATE
+    claude-desktop:
+      path: mcp.claude-desktop.json
+      # preset: format: json
+      # preset: template: claude-desktop
+      # claude-desktop template will be included in distribution
+      # for now please write it to mcp-templates/claude-desktop.yaml and load from there
+    goose:
+      path: mcp.goose.yaml
+      # preset: format: yaml
+      # preset: template: goose
+      # goose template will be included in distribution
+      # for now please write it to mcp-templates/goose.yaml and load from there
+    zed:
+      path: mcp.zed.json
+      # preset: format: json
+      # preset: template: zed
+      # zed template will be included in distribution
+      # for now please write it to mcp-templates/zed.yaml and load from there
+servers:
+  ableton-live:
+    args:
+      - ableton-mcp
+    command: /Users/dave/.local/share/mise/shims/uvx
+    description: Ableton Live DAW integration
+    enabled: false
+    env: {}
+    name: Ableton Live
+    settings: {}
+    timeout: 300
+    type: stdio
+  claude-code:
+    args:
+      - x
+      - "@anthropic-ai/claude-code"
+      - mcp
+      - serve
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Claude Code tools for development assistance
+    enabled: true
+    env: {}
+    name: Claude Code
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-ai:
+    args:
+      - x
+      - mcp-remote
+      - https://ai-gateway.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Cloudflare AI Gateway integration
+    enabled: false
+    env: {}
+    name: Cloudflare AI Gateway
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-audit:
+    args:
+      - x
+      - mcp-remote
+      - https://auditlogs.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Cloudflare audit logs and security monitoring
+    enabled: false
+    env: {}
+    name: Cloudflare Audit Logs
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-autorag:
+    args:
+      - x
+      - mcp-remote
+      - https://autorag.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Cloudflare AutoRAG document search and retrieval
+    enabled: false
+    env: {}
+    name: Cloudflare AutoRAG
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-bindings:
+    args:
+      - x
+      - mcp-remote
+      - https://bindings.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Cloudflare Workers storage and compute bindings
+    enabled: false
+    env: {}
+    name: Cloudflare Workers Bindings
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-container:
+    args:
+      - x
+      - mcp-remote
+      - https://containers.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Spin up containers and interact with them
+    enabled: true
+    env: {}
+    name: Cloudflare Container
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-dns:
+    args:
+      - x
+      - mcp-remote
+      - https://dns-analytics.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: DNS performance analytics and debugging
+    enabled: false
+    env: {}
+    name: Cloudflare DNS Analytics
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-documentation:
+    args:
+      - x
+      - mcp-remote
+      - https://docs.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Access to Cloudflare Developer Documentation
+    enabled: true
+    env: {}
+    name: Cloudflare Documentation
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-observability:
+    args:
+      - x
+      - mcp-remote
+      - https://observability.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Cloudflare Workers Observability and monitoring
+    enabled: true
+    env: {}
+    name: Cloudflare Observability
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-radar:
+    args:
+      - x
+      - mcp-remote
+      - https://radar.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Global Internet traffic insights and trends
+    enabled: false
+    env: {}
+    name: Cloudflare Radar
+    settings: {}
+    timeout: 300
+    type: stdio
+  cloudflare-rendering:
+    args:
+      - x
+      - mcp-remote
+      - https://browser.mcp.cloudflare.com/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Browser rendering and screenshot capabilities
+    enabled: true
+    env: {}
+    name: Cloudflare Browser Rendering
+    settings: {}
+    timeout: 300
+    type: stdio
+  console-ninja:
+    args:
+      - run
+      - ~/.console-ninja/mcp/
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Console output monitoring and debugging
+    enabled: true
+    env: {}
+    name: Console Ninja
+    settings: {}
+    timeout: 300
+    type: stdio
+  context7:
+    args:
+      - x
+      - "@upstash/context7-mcp"
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Documentation database and context search
+    enabled: true
+    env: {}
+    name: Context7
+    settings: {}
+    timeout: 300
+    type: stdio
+  docker:
+    args:
+      - ai
+      - mcpserver
+    command: docker
+    description: Docker container management and integration
+    enabled: true
+    env: {}
+    name: Docker
+    settings: {}
+    timeout: 300
+    type: stdio
+  duckduckgo:
+    args:
+      - duckduckgo-mcp-server
+    command: /Users/dave/.local/share/mise/shims/uvx
+    description: Web search and page fetching capabilities
+    enabled: true
+    env: {}
+    name: DuckDuckGo
+    settings: {}
+    timeout: 300
+    type: stdio
+  fetch:
+    args:
+      - mcp-server-fetch
+    command: /Users/dave/.local/share/mise/shims/uvx
+    description: Web content fetching and processing
+    enabled: true
+    env: {}
+    name: Fetch
+    settings: {}
+    timeout: 300
+    type: stdio
+  git:
+    args:
+      - mcp-server-git
+    command: /Users/dave/.local/share/mise/shims/uvx
+    description: Git repository management and version control
+    enabled: true
+    env: {}
+    name: Git
+    settings: {}
+    timeout: 300
+    type: stdio
+  github:
+    args:
+      - x
+      - "@modelcontextprotocol/server-github"
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: GitHub API integration for repositories and issues
+    enabled: false
+    env: {}
+    name: GitHub
+    settings: {}
+    timeout: 300
+    type: stdio
+  linear:
+    args:
+      - x
+      - mcp-remote
+      - https://mcp.linear.app/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Linear project management integration
+    enabled: false
+    env: {}
+    name: Linear
+    settings: {}
+    timeout: 300
+    type: stdio
+  notion:
+    args:
+      - x
+      - "@notionhq/notion-mcp-server"
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Notion workspace integration
+    enabled: false
+    env:
+      OPENAPI_MCP_HEADERS: >-
+        {"Authorization": "Bearer $NOTION_TOKEN", "Notion-Version":
+        "2022-06-28"}
+    name: Notion
+    settings: {}
+    timeout: 300
+    type: stdio
+  pdf-reader:
+    args:
+      - mcp-read-pdf
+    command: /Users/dave/.local/share/mise/shims/uvx
+    description: Read and process PDF documents
+    enabled: true
+    env: {}
+    name: PDF Reader
+    settings: {}
+    timeout: 300
+    type: stdio
+  pieces:
+    args:
+      - x
+      - mcp-remote
+      - http://localhost:39300/model_context_protocol/2024-11-05/sse
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Pieces long-term memory engine integration
+    enabled: true
+    env: {}
+    name: Pieces
+    settings: {}
+    timeout: 300
+    type: stdio
+  shared-memory:
+    args:
+      - x
+      - "@modelcontextprotocol/server-memory"
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Persistent memory storage and retrieval
+    enabled: true
+    env:
+      MEMORY_FILE_PATH: /Users/dave/.memory
+    name: Shared Memory
+    settings: {}
+    timeout: 300
+    type: stdio
+  vscode:
+    args:
+      - x
+      - vscode-mcp-server
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Visual Studio Code integration
+    enabled: false
+    env: {}
+    name: VS Code
+    settings: {}
+    timeout: 300
+    type: stdio

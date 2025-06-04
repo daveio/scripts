@@ -1,0 +1,198 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "MCP Template Schema",
+	"description": "Schema for defining MCP configuration templates that transform mcp.yaml into tool-specific formats",
+	"type": "object",
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "JSON Schema reference"
+		},
+		"metadata": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Template name"
+				},
+				"description": {
+					"type": "string",
+					"description": "Template description"
+				},
+				"version": {
+					"type": "string",
+					"description": "Template version"
+				},
+				"outputFormat": {
+					"type": "string",
+					"enum": ["json", "yaml"],
+					"description": "Output file format"
+				},
+				"targetTool": {
+					"type": "string",
+					"description": "Target tool this template is for"
+				}
+			},
+			"required": ["name", "outputFormat", "targetTool"]
+		},
+		"transform": {
+			"type": "object",
+			"properties": {
+				"rootKey": {
+					"type": "string",
+					"description": "Root key for the output object (e.g., 'mcpServers', 'extensions')"
+				},
+				"serverFilter": {
+					"type": "object",
+					"properties": {
+						"enabledOnly": {
+							"type": "boolean",
+							"default": true,
+							"description": "Only include enabled servers"
+						},
+						"include": {
+							"type": "array",
+							"items": { "type": "string" },
+							"description": "Specific server names to include"
+						},
+						"exclude": {
+							"type": "array",
+							"items": { "type": "string" },
+							"description": "Specific server names to exclude"
+						}
+					}
+				},
+				"serverNameMapping": {
+					"type": "object",
+					"properties": {
+						"strategy": {
+							"type": "string",
+							"enum": ["keep", "singleWord", "camelCase", "kebab-case"],
+							"default": "keep",
+							"description": "How to join multi-word server names: keep=original, singleWord=remove hyphens/spaces, camelCase=firstWordSecondWord, kebab-case=first-word-second-word"
+						},
+						"prefix": {
+							"type": "string",
+							"description": "Prefix to add to all server names"
+						},
+						"suffix": {
+							"type": "string",
+							"description": "Suffix to add to all server names"
+						}
+					}
+				},
+				"propertyMappings": {
+					"type": "object",
+					"description": "Map input properties to output properties",
+					"additionalProperties": {
+						"oneOf": [
+							{ "type": "string" },
+							{
+								"type": "object",
+								"properties": {
+									"path": {
+										"type": "string",
+										"description": "Output property path (dot notation supported)"
+									},
+									"transform": {
+										"type": "string",
+										"enum": [
+											"string",
+											"number",
+											"boolean",
+											"array",
+											"object",
+											"omit"
+										],
+										"description": "Type transformation to apply"
+									},
+									"default": {
+										"description": "Default value if source is missing"
+									},
+									"required": {
+										"type": "boolean",
+										"default": false,
+										"description": "Whether this property is required in output"
+									}
+								}
+							}
+						]
+					}
+				},
+				"staticProperties": {
+					"type": "object",
+					"description": "Static properties to add to each server configuration"
+				},
+				"conditionalProperties": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"condition": {
+								"type": "string",
+								"description": "JSONPath or simple condition to evaluate"
+							},
+							"properties": {
+								"type": "object",
+								"description": "Properties to add when condition is true"
+							}
+						},
+						"required": ["condition", "properties"]
+					}
+				},
+				"globalProperties": {
+					"type": "object",
+					"description": "Properties to add at the root level of output"
+				}
+			},
+			"required": ["rootKey"]
+		},
+		"postProcess": {
+			"type": "object",
+			"properties": {
+				"removeEmptyObjects": {
+					"type": "boolean",
+					"default": true,
+					"description": "Remove empty objects from output"
+				},
+				"removeNullValues": {
+					"type": "boolean",
+					"default": true,
+					"description": "Remove null values from output"
+				},
+				"sortKeys": {
+					"type": "boolean",
+					"default": false,
+					"description": "Sort object keys alphabetically"
+				},
+				"customTransforms": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Transform name/identifier"
+							},
+							"jsonPath": {
+								"type": "string",
+								"description": "JSONPath to target elements"
+							},
+							"operation": {
+								"type": "string",
+								"enum": ["rename", "move", "delete", "transform", "merge"],
+								"description": "Operation to perform"
+							},
+							"parameters": {
+								"type": "object",
+								"description": "Parameters for the operation"
+							}
+						},
+						"required": ["name", "operation"]
+					}
+				}
+			}
+		}
+	},
+	"required": ["metadata", "transform"]
+}

@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Try to load from the installed gem first
+begin
+  require 'envhunter'
+rescue LoadError
+  # If not found, add the lib directory to the load path (for development)
+  $LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+  require 'envhunter'
+end
+
+# Run the CLI
+EnvHunter.run_cli

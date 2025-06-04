@@ -1,0 +1,456 @@
+# ====================================================================
+# Operating System Files
+# ====================================================================
+
+# macOS
+._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.DS_Store
+.DS_Store?
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+Icon
+Network Trash Folder
+Temporary Items
+
+# Linux
+.directory
+.fuse_hidden*
+.nfs*
+.Trash-*
+
+# Windows
+ehthumbs.db
+Thumbs.db
+
+# ====================================================================
+# AI tools
+# ====================================================================
+
+.claude/
+
+# ====================================================================
+# Environment Variables & Configuration
+# ====================================================================
+
+.env
+.env*.local
+.env.development.local
+.env.local
+.env.production
+.env.production.local
+.env.test
+.env.test.local
+
+# Cloudflare Workers
+.dev.vars*
+!.dev.vars.example
+
+# ====================================================================
+# Node.js & JavaScript/TypeScript
+# ====================================================================
+
+# Dependencies
+node_modules/
+bower_components
+jspm_packages/
+web_modules/
+
+# Package managers
+.npm
+.pnp.*
+.yarn-integrity
+.yarn/build-state.yml
+.yarn/cache
+.yarn/install-state.gz
+.yarn/unplugged
+
+# Build outputs
+build/
+build/Release
+dist/
+out/
+.next
+.nuxt
+.docusaurus
+.vuepress/dist
+**/.vitepress/cache
+**/.vitepress/dist
+
+# Nuxt specific
+.output
+.data
+.nitro
+
+# Cache directories
+.cache/
+.eslintcache
+.parcel-cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.stylelintcache
+
+# Test coverage
+coverage/
+.nyc_output
+*.lcov
+
+# TypeScript
+*.tsbuildinfo
+typings/
+
+# Tools & misc
+.grunt
+.lock-wscript
+.node_repl_history
+.tern-port
+
+# Node.js logs
+lerna-debug.log*
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package files
+*.bowerrc
+bower.json
+
+# ====================================================================
+# Python
+# ====================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+__pypackages__/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Other Python tools
+.pybuilder/
+.pypirc
+.ropeproject
+.spyderproject
+.spyproject
+.ruff_cache/
+.powenv
+
+# PDM
+.pdm-build/
+.pdm-python
+.pdm.toml
+
+# Translations
+*.mo
+*.pot
+
+# Django
+local_settings.py
+
+# Flask
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# Jupyter Notebook
+.ipynb_checkpoints
+ipython_config.py
+profile_default/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Cython debug symbols
+cython_debug/
+
+# ====================================================================
+# Ruby & Rails
+# ====================================================================
+
+*.gem
+*.rbc
+capybara-*.html
+.rspec
+*.orig
+rerun.txt
+pickle-email-*.html
+
+# Ruby Version managers
+.rvmrc
+
+# Bundler
+.bundle
+.bundle/
+vendor/bundle
+
+# Rails specific
+config/initializers/secret_token.rb
+config/master.key
+public/assets
+public/packs
+public/packs-test
+public/uploads
+
+# Rails directories with keep files
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+storage/*
+!storage/.keep
+
+# Rails directories
+/public/system
+/spec/tmp
+
+# Installer
+lib/bundler/man/
+InstalledFiles
+
+# Test reports
+spec/reports/
+spec/examples.txt
+test/tmp/
+test/version_tmp/
+
+# ====================================================================
+# Go
+# ====================================================================
+
+go.work
+go.work.sum
+
+# ====================================================================
+# iOS Development
+# ====================================================================
+
+build-iPhoneOS/
+build-iPhoneSimulator/
+*.hmap
+*.ipa
+xcuserdata/
+*.dSYM
+*.dSYM.zip
+playground.xcworkspace
+timeline.xctimeline
+
+# Fastlane
+fastlane/Preview.html
+fastlane/report.xml
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Firebase
+crashlytics-build.properties
+crashlytics.properties
+fabric.properties
+com_crashlytics_export_strings.xml
+
+# Carthage
+Carthage/Build/
+
+# ====================================================================
+# IDEs & Editors
+# ====================================================================
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.vscode-test
+.history/
+*.vsix
+
+# IntelliJ IDEA
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/aws.xml
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/gradle.xml
+.idea/**/libraries
+.idea/**/mongoSettings.xml
+.idea/caches/build_file_checksums.ser
+.idea/httpRequests
+.idea/replstate.xml
+.idea/sonarlint/
+.idea_modules/
+*.iws
+atlassian-ide-plugin.xml
+
+# Fleet
+.fleet
+
+# ====================================================================
+# Cloudflare Workers
+# ====================================================================
+
+.wrangler
+worker-configuration.d.ts
+env.d.ts
+
+# ====================================================================
+# Build Tools & CI/CD
+# ====================================================================
+
+target/
+.build/
+.serverless/
+.fusebox/
+cmake-build-*/
+
+# ====================================================================
+# Databases
+# ====================================================================
+
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+*.sql
+db.sqlite3
+db.sqlite3-journal
+.dynamodb/
+
+# ====================================================================
+# Documentation
+# ====================================================================
+
+docs/_build/
+docs/_book
+/site
+.yardoc/
+_yardoc/
+doc/
+rdoc/
+
+# ====================================================================
+# Logs & Runtime Files
+# ====================================================================
+
+*.log
+logs
+pids
+*.pid
+*.pid.lock
+*.seed
+.dat*
+
+# ====================================================================
+# Temporary & Backup Files
+# ====================================================================
+
+*.tmp
+*.temp
+.temp
+*.orig
+*.bak
+*~
+**/*.rs.bk
+
+# ====================================================================
+# Binaries
+# ====================================================================
+
+*.dll
+*.exe
+*.exe~
+*.out
+
+# ====================================================================
+# Code Quality & Analysis
+# ====================================================================
+
+.codacy/
+
+# ====================================================================
+# Reports & Analytics
+# ====================================================================
+
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

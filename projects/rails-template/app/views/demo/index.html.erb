@@ -1,0 +1,56 @@
+<div class="min-h-screen bg-base-100 p-4">
+  <div class="container mx-auto">
+    <div class="hero bg-base-200 rounded-box p-8 mb-8">
+      <div class="hero-content text-center">
+        <div class="max-w-md">
+          <h1 class="text-5xl font-bold">%%PROJECTNAME%% Demo</h1>
+          <p class="py-6">Welcome to the %%PROJECTNAME%% demo page. This page showcases Tailwind v4 and DaisyUI components with theme support.</p>
+          <p class="pb-6">Use the theme selector in the top right corner to switch between different themes and see how they affect components.</p>
+          <%= link_to "View UI Components", demo_ui_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">Tailwind CSS v4</h2>
+          <p>%%PROJECTNAME%% uses Tailwind CSS v4 for utility-first styling with PostCSS processing.</p>
+          <div class="card-actions justify-end">
+            <a href="https://tailwindcss.com/docs" target="_blank" class="btn btn-sm btn-outline">Documentation</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">DaisyUI</h2>
+          <p>The project uses DaisyUI for pre-built components with theming support.</p>
+          <div class="card-actions justify-end">
+            <a href="https://daisyui.com/components/" target="_blank" class="btn btn-sm btn-outline">Components</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">Catppuccin Themes</h2>
+          <p>Features Catppuccin color palette integration with multiple flavors.</p>
+          <div class="card-actions justify-end">
+            <a href="https://github.com/catppuccin/catppuccin" target="_blank" class="btn btn-sm btn-outline">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 p-6 bg-base-200 rounded-box">
+      <h2 class="text-2xl font-bold mb-4">Development Only</h2>
+      <div class="alert alert-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>This demo page is only accessible in development mode.</span>
+      </div>
+    </div>
+  </div>
+</div>

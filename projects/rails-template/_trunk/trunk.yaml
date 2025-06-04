@@ -1,0 +1,111 @@
+# This file controls the behavior of Trunk: https://docs.trunk.io/cli
+# To learn more about the format of this file, see https://docs.trunk.io/reference/trunk-yaml
+version: 0.1
+cli:
+  version: 1.22.15
+# Trunk provides extensibility via plugins. (https://docs.trunk.io/plugins)
+plugins:
+  sources:
+    - id: trunk
+      ref: v1.6.8
+      uri: https://github.com/trunk-io/plugins
+# Many linters and tools depend on runtimes - configure them here. (https://docs.trunk.io/runtimes)
+runtimes:
+  enabled:
+    - ruby@3.4.2
+    - go@1.21.0
+    - node@18.20.5
+    - python@3.10.8
+# This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
+lint:
+  disabled:
+    - prettier
+    - sort-package-json
+    - semgrep
+    - terrascan
+    - eslint
+    - vale
+    - djlint
+    - markdown-table-prettify
+    - markdownlint
+    - remark-lint
+  definitions:
+    - name: rails-test
+      files:
+        - ALL
+      commands:
+        - name: rails-test
+          output: pass_fail
+          run: bin/rails test
+          success_codes: [0, 1]
+  ignore:
+    - linters:
+        - trunk-toolbox
+      paths:
+        - "**/*.jpg"
+        - "**/*.png"
+        - "**/*.html"
+    - linters:
+        - prettier
+      paths:
+        - "**/*.js"
+        - "**/*.mjs"
+        - "**/*.json"
+        - "**/*.css"
+    - linters:
+        - shellcheck
+      paths:
+        - bin/docker-entrypoint
+    - linters:
+        - ALL
+      paths:
+        - bin/mise
+        - "**/*.zst"
+  enabled:
+    - trunk-toolbox@0.5.4
+    - stylelint@16.19.1
+    - markdownlint-cli2@0.18.0
+    - biome@1.9.4
+    - dustilock@1.2.0
+    - gitleaks@8.25.1
+    - markdown-link-check@3.13.7
+    - taplo@0.9.3
+    - actionlint@1.7.7
+    - brakeman
+    - checkov@3.2.417
+    - git-diff-check
+    - hadolint@2.12.1-beta
+    - osv-scanner@2.0.2
+    - oxipng@9.1.5
+    - rubocop:
+        packages:
+          - rubocop-capybara
+          - rubocop-minitest
+          - rubocop-performance
+          - rubocop-rails
+          - rubocop-rails-omakase
+          - rubocop-rake
+          - rubocop-rspec
+          - rubocop-sorbet
+          - rubocop-thread_safety
+    - shellcheck@0.10.0
+    - shfmt@3.6.0
+    - svgo@3.3.2
+    - trufflehog@3.88.29
+    - yamllint@1.37.1
+actions:
+  enabled:
+    - trunk-announce
+    - trunk-check-pre-push
+    - trunk-fmt-pre-commit
+    - trunk-upgrade-available
+    - trunk-cache-prune
+    - git-lfs
+    - rails-test
+  definitions:
+    - id: rails-test
+      display_name: Rails Test
+      run: bin/rails test
+      triggers:
+        - git_hooks:
+            - pre-commit

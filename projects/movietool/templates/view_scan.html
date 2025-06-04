@@ -1,0 +1,520 @@
+{% extends "layout.html" %}
+{% block extra_head %}
+    <style>
+  .scan-details {
+    margin-bottom: 2rem;
+  }
+
+  .scan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+
+  .scan-meta {
+    margin-bottom: 0.75rem;
+  }
+
+  .scan-directory {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .scan-timestamp {
+    font-size: 0.8rem;
+    color: var(--subtext);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .breadcrumb-separator {
+    color: var(--subtext);
+  }
+
+  /* The rest of the styles are the same as in index.html */
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for("index") }}"> <i data-feather="home"></i> Home </a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{{ url_for("history") }}">
+                <i data-feather="clock"></i> History
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span>Scan Results</span>
+        </div>
+        <section class="scan-details card">
+            <div class="scan-header">
+                <div>
+                    <h2>Scan Results</h2>
+                    <div class="scan-meta">
+                        <div class="scan-directory">{{ scan.directory }}</div>
+                        <div class="scan-timestamp">Scanned on {{ scan.formatted_timestamp }}</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="{{ url_for("index") }}" class="btn-secondary">
+                        <i data-feather="search"></i> New Scan
+                    </a>
+                </div>
+            </div>
+            <div class="results-stats">
+                <div class="stat-group">
+                    <div class="stat">
+                        <span class="stat-label">Directories:</span>
+                        <span id="stat-total-dirs" class="stat-value">{{ scan.total_dirs }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">With Duplicates:</span>
+                        <span id="stat-dirs-with-duplicates" class="stat-value">{{ scan.dirs_with_duplicates }}</span>
+                    </div>
+                </div>
+                <div class="stat-group">
+                    <div class="stat">
+                        <span class="stat-label">Total Files:</span>
+                        <span id="stat-total-files" class="stat-value">{{ scan.total_files }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Flagged Files:</span>
+                        <span id="stat-flagged-files" class="stat-value">{{ scan.flagged_files }}</span>
+                    </div>
+                </div>
+                <div class="stat-group">
+                    <div class="stat">
+                        <span class="stat-label">Total Size:</span>
+                        <span id="stat-total-size" class="stat-value">{{ scan.formatted_total_size }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Potential Savings:</span>
+                        <span id="stat-potential-savings" class="stat-value">{{ scan.formatted_flagged_size }}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% if results and results.directories %}
+            <div class="results-chart-container card">
+                <h3>File Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="file-distribution-chart"></canvas>
+                </div>
+            </div>
+            <div class="directories-list card">
+                <h3>Directories with Duplicate Files</h3>
+                <div class="directory-filter">
+                    <label>
+                        <input type="checkbox" id="show-only-duplicates" checked />
+                        Show only directories with duplicates
+                    </label>
+                </div>
+                <div id="directories-container">
+                    {% for dir in results.directories %}
+                        {% if not loop.first %}<hr class="directory-separator" />{% endif %}
+                        <div class="directory-card {% if dir.has_duplicates %}has-duplicates{% endif %}">
+                            <div class="directory-header">
+                                <div>
+                                    <h4>{{ dir.name }}</h4>
+                                    <div class="directory-path">{{ dir.path }}</div>
+                                </div>
+                                <div class="directory-summary">
+                                    {% if dir.has_duplicates %}
+                                        <span class="flagged-label">{{ dir.files|selectattr('flagged',
+                                        'defined') |selectattr('flagged')|list|length }} Flagged</span>
+                                    {% else %}
+                                        <span class="keep-label">No Duplicates</span>
+                                    {% endif %}
+                                    <i data-feather="chevron-down" class="toggle-icon"></i>
+                                </div>
+                            </div>
+                            <div class="file-list">
+                                {% for file in dir.files %}
+                                    <div class="file-item {% if file.flagged|default(false) %}flagged{% else %}keep{% endif %}">
+                                        <div class="file-info">
+                                            <div class="file-name">
+                                                {{ file.name }}
+                                                {% if file.flagged|default(false) %}
+                                                    <span class="flagged-label">Flagged</span>
+                                                {% else %}
+                                                    <span class="keep-label">Keep</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="file-size">{{ file.size_readable }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card">
+                <h3>Generate Deletion Script</h3>
+                <p>Create a script to delete all flagged files in this scan.</p>
+                <div class="script-type-selector mb-2">
+                    <label>
+                        <input type="radio" name="script-type" value="bash" checked />
+                        Bash (Linux/Mac)
+                    </label>
+                    <label>
+                        <input type="radio" name="script-type" value="batch" />
+                        Batch (Windows)
+                    </label>
+                </div>
+                <button id="generate-script-btn"
+                        class="btn-primary"
+                        data-scan-id="{{ scan.id }}">
+                    <i data-feather="code"></i> Generate Deletion Script
+                </button>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="empty-state">
+                    <p>No detailed results available for this scan.</p>
+                </div>
+            </div>
+        {% endif %}
+        <div id="script-modal" class="modal hidden">
+            <div class="modal-content card">
+                <div class="modal-header">
+                    <h3>Deletion Script</h3>
+                    <button class="close-btn" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="script-info">
+                        <p>
+                            This script will delete <span id="script-file-count">0</span> files
+                            totaling <span id="script-file-size">0 MB</span>.
+                        </p>
+                        <p class="warning">
+                            <i data-feather="alert-triangle"></i> Review carefully before
+                            executing.
+                        </p>
+                    </div>
+                    <pre id="script-content" class="script-content"></pre>
+                    <div class="script-actions">
+                        <button id="copy-script-btn" class="btn-secondary">
+                            <i data-feather="clipboard"></i> Copy to Clipboard
+                        </button>
+                        <button id="download-script-btn" class="btn-primary">
+                            <i data-feather="download"></i> Download Script
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/file-scanner.js') }}"></script>
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Feather icons
+      feather.replace();
+
+      // Set up chart
+      const chartCanvas = document.getElementById('file-distribution-chart');
+      if (chartCanvas) {
+          const ctx = chartCanvas.getContext('2d');
+          const chart = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                  labels: ['Flagged Files', 'Kept Files'],
+                  datasets: [{
+                      data: [
+                          {{ scan.flagged_files }},
+                          {{ scan.total_files - scan.flagged_files }}
+                      ],
+                      backgroundColor: [
+                          getComputedStyle(document.body).getPropertyValue('--red').trim(),
+                          getComputedStyle(document.body).getPropertyValue('--green').trim()
+                      ],
+                      borderColor: [
+                          getComputedStyle(document.body).getPropertyValue('--base').trim(),
+                          getComputedStyle(document.body).getPropertyValue('--base').trim()
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                      legend: {
+                          position: 'bottom',
+                          labels: {
+                              color: getComputedStyle(document.body).getPropertyValue('--text').trim(),
+                              font: {
+                                  family: "'Inter', sans-serif",
+                                  size: 14
+                              }
+                          }
+                      },
+                      tooltip: {
+                          backgroundColor: getComputedStyle(document.body).getPropertyValue('--overlay').trim(),
+                          titleColor: getComputedStyle(document.body).getPropertyValue('--text').trim(),
+                          bodyColor: getComputedStyle(document.body).getPropertyValue('--text').trim(),
+                          borderColor: getComputedStyle(document.body).getPropertyValue('--accent').trim(),
+                          borderWidth: 1,
+                          displayColors: true,
+                          padding: 10,
+                          titleFont: {
+                              family: "'Inter', sans-serif",
+                              size: 14,
+                              weight: 'bold'
+                          },
+                          bodyFont: {
+                              family: "'Inter', sans-serif",
+                              size: 13
+                          },
+                          callbacks: {
+                              label: function(context) {
+                                  const label = context.label || '';
+                                  const value = context.raw || 0;
+                                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                  const percentage = Math.round((value / total) * 100);
+                                  return `${label}: ${value} files (${percentage}%)`;
+                              }
+                          }
+                      }
+                  }
+              }
+          });
+      }
+
+      // Set up directory toggle
+      const directoryCards = document.querySelectorAll('.directory-card');
+      directoryCards.forEach(card => {
+          const header = card.querySelector('.directory-header');
+          header.addEventListener('click', () => {
+              card.classList.toggle('expanded');
+              const icon = card.querySelector('.toggle-icon');
+              if (card.classList.contains('expanded')) {
+                  icon.setAttribute('data-feather', 'chevron-up');
+              } else {
+                  icon.setAttribute('data-feather', 'chevron-down');
+              }
+              feather.replace();
+          });
+      });
+
+      // Directory filter functionality
+      const showOnlyDuplicates = document.getElementById('show-only-duplicates');
+      if (showOnlyDuplicates) {
+          showOnlyDuplicates.addEventListener('change', () => {
+              const cards = document.querySelectorAll('.directory-card');
+              cards.forEach(card => {
+                  if (showOnlyDuplicates.checked && !card.classList.contains('has-duplicates')) {
+                      card.style.display = 'none';
+                  } else {
+                      card.style.display = 'block';
+                  }
+              });
+          });
+
+          // Initial filter state
+          if (showOnlyDuplicates.checked) {
+              const cards = document.querySelectorAll('.directory-card:not(.has-duplicates)');
+              cards.forEach(card => {
+                  card.style.display = 'none';
+              });
+          }
+      }
+
+      // Script generation functionality
+      const generateScriptBtn = document.getElementById('generate-script-btn');
+      const scriptModal = document.getElementById('script-modal');
+      const closeModalBtn = scriptModal.querySelector('.close-btn');
+      const copyScriptBtn = document.getElementById('copy-script-btn');
+      const downloadScriptBtn = document.getElementById('download-script-btn');
+
+      generateScriptBtn.addEventListener('click', async () => {
+          try {
+              const scriptTypeEl = document.querySelector('input[name="script-type"]:checked');
+              const scriptType = scriptTypeEl ? scriptTypeEl.value : 'bash';
+
+              // Use the saved scan data
+              const flaggedFiles = {{ results.flagged_files|tojson }};
+
+              const response = await fetch('/api/generate-script', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      files: flaggedFiles,
+                      script_type: scriptType
+                  })
+              });
+
+              if (!response.ok) {
+                  throw new Error('Failed to generate script');
+              }
+
+              const scriptResult = await response.json();
+
+              // Update modal with script content
+              document.getElementById('script-content').textContent = scriptResult.script;
+              document.getElementById('script-file-count').textContent = scriptResult.file_count;
+              document.getElementById('script-file-size').textContent = formatSize(scriptResult.total_size);
+
+              // Show modal
+              scriptModal.classList.remove('hidden');
+              scriptModal.classList.add('visible');
+
+              // Re-initialize feather icons in the modal
+              feather.replace();
+          } catch (error) {
+              console.error('Error generating script:', error);
+              showError(`Error generating script: ${error.message}`);
+          }
+      });
+
+      // Modal close functionality
+      closeModalBtn.addEventListener('click', () => {
+          scriptModal.classList.remove('visible');
+          setTimeout(() => {
+              scriptModal.classList.add('hidden');
+          }, 300);
+      });
+
+      // Click outside modal to close
+      scriptModal.addEventListener('click', (e) => {
+          if (e.target === scriptModal) {
+              closeModalBtn.click();
+          }
+      });
+
+      // Copy script button
+      copyScriptBtn.addEventListener('click', () => {
+          const scriptContent = document.getElementById('script-content').textContent;
+          navigator.clipboard.writeText(scriptContent)
+              .then(() => {
+                  showNotification('Script copied to clipboard');
+              })
+              .catch(err => {
+                  showError('Failed to copy script to clipboard');
+              });
+      });
+
+      // Download script button
+      downloadScriptBtn.addEventListener('click', () => {
+          const scriptContent = document.getElementById('script-content').textContent;
+          const scriptType = document.querySelector('input[name="script-type"]:checked').value;
+          const extension = scriptType === 'bash' ? 'sh' : 'bat';
+
+          const blob = new Blob([scriptContent], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+
+          a.href = url;
+          a.download = `delete_flagged_files.${extension}`;
+          document.body.appendChild(a);
+          a.click();
+
+          // Clean up
+          setTimeout(() => {
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+          }, 0);
+      });
+
+      // Helper functions
+      function showError(message) {
+          console.error(message);
+
+          // Create error notification element
+          const errorNotification = document.createElement('div');
+          errorNotification.className = 'notification error';
+          errorNotification.innerHTML = `
+              <div class="notification-content">
+                  <i data-feather="alert-circle"></i>
+                  <p>${message}</p>
+              </div>
+              <button class="notification-close">
+                  <i data-feather="x"></i>
+              </button>
+          `;
+
+          // Add to page
+          document.body.appendChild(errorNotification);
+
+          // Initialize icons
+          feather.replace();
+
+          // Add close functionality
+          errorNotification.querySelector('.notification-close').addEventListener('click', () => {
+              errorNotification.remove();
+          });
+
+          // Auto-remove after 5 seconds
+          setTimeout(() => {
+              if (document.body.contains(errorNotification)) {
+                  errorNotification.remove();
+              }
+          }, 5000);
+      }
+
+      function showNotification(message) {
+          // Create notification element
+          const notification = document.createElement('div');
+          notification.className = 'notification';
+          notification.innerHTML = `
+              <div class="notification-content">
+                  <i data-feather="check-circle"></i>
+                  <p>${message}</p>
+              </div>
+              <button class="notification-close">
+                  <i data-feather="x"></i>
+              </button>
+          `;
+
+          // Add to page
+          document.body.appendChild(notification);
+
+          // Initialize icons
+          feather.replace();
+
+          // Add close functionality
+          notification.querySelector('.notification-close').addEventListener('click', () => {
+              notification.remove();
+          });
+
+          // Auto-remove after 3 seconds
+          setTimeout(() => {
+              if (document.body.contains(notification)) {
+                  notification.remove();
+              }
+          }, 3000);
+      }
+
+      function formatSize(bytes) {
+          if (bytes === 0) return '0 B';
+
+          const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+          return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
+      }
+  });
+    </script>
+{% endblock %}

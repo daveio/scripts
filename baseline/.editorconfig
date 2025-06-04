@@ -1,0 +1,28 @@
+# syntax: https://editorconfig.org
+
+[*]
+charset = utf-8
+end_of_line = lf
+ij_continuation_indent_size = 2
+ij_smart_tabs = true
+ij_wrap_on_typing = false
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+tab_width = 2
+trim_trailing_whitespace = true
+
+# 4 space indentation, spaces
+[*.{py,rs,fish}]
+ij_continuation_indent_size = 4
+indent_size = 4
+indent_style = space
+tab_width = 4
+
+# 4 space indentation, tabs
+[*.go,Makefile]
+ij_continuation_indent_size = 4
+indent_size = 4
+indent_style = tab
+tab_width = 4

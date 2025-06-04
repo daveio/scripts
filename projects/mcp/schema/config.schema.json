@@ -1,0 +1,205 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://raw.githubusercontent.com/daveio/_baseline/main/mcp.schema.json",
+	"title": "MCP Configuration Schema",
+	"description": "Schema for Model Context Protocol server configuration files",
+	"type": "object",
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "JSON Schema reference"
+		},
+		"config": {
+			"type": "object",
+			"description": "Global configuration settings",
+			"properties": {
+				"defaults": {
+					"type": "object",
+					"description": "Default settings for all servers",
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"description": "Default enabled state for servers",
+							"default": true
+						},
+						"timeout": {
+							"type": "integer",
+							"description": "Default timeout in seconds",
+							"minimum": 1,
+							"maximum": 3600,
+							"default": 300
+						},
+						"type": {
+							"$ref": "#/definitions/serverType",
+							"description": "Default server communication type",
+							"default": "stdio"
+						}
+					},
+					"additionalProperties": false
+				},
+				"output": {
+					"type": "object",
+					"description": "Output configurations for different clients",
+					"patternProperties": {
+						"^[a-zA-Z0-9][a-zA-Z0-9_-]*$": {
+							"$ref": "#/definitions/outputConfig"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
+		"servers": {
+			"type": "object",
+			"description": "MCP server definitions",
+			"patternProperties": {
+				"^[a-zA-Z0-9][a-zA-Z0-9_-]*$": {
+					"$ref": "#/definitions/server"
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"required": ["servers"],
+	"additionalProperties": false,
+	"definitions": {
+		"server": {
+			"type": "object",
+			"description": "MCP server configuration",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Human-readable name for the server",
+					"minLength": 1
+				},
+				"description": {
+					"type": "string",
+					"description": "Description of server functionality",
+					"minLength": 1
+				},
+				"command": {
+					"type": "string",
+					"description": "Executable command or binary path",
+					"minLength": 1
+				},
+				"args": {
+					"type": "array",
+					"description": "Command line arguments",
+					"items": {
+						"type": "string"
+					},
+					"default": []
+				},
+				"type": {
+					"$ref": "#/definitions/serverType",
+					"description": "Server communication type",
+					"default": "stdio"
+				},
+				"enabled": {
+					"type": "boolean",
+					"description": "Whether the server is enabled",
+					"default": true
+				},
+				"timeout": {
+					"type": "integer",
+					"description": "Server timeout in seconds",
+					"minimum": 1,
+					"maximum": 3600,
+					"default": 300
+				},
+				"env": {
+					"type": "object",
+					"description": "Environment variables for the server",
+					"patternProperties": {
+						"^[A-Z][A-Z0-9_]*$": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": true,
+					"default": {}
+				},
+				"settings": {
+					"type": "object",
+					"description": "Server-specific settings",
+					"additionalProperties": true,
+					"default": {}
+				},
+				"bundled": {
+					"type": ["boolean", "null"],
+					"description": "Whether the server is bundled (client-specific)",
+					"default": null
+				},
+				"display_name": {
+					"type": "string",
+					"description": "Display name for bundled servers (client-specific)"
+				},
+				"env_keys": {
+					"type": "array",
+					"description": "Environment variable keys (client-specific)",
+					"items": {
+						"type": "string"
+					},
+					"default": []
+				},
+				"envs": {
+					"type": "object",
+					"description": "Environment variables mapping (client-specific)",
+					"additionalProperties": {
+						"type": "string"
+					},
+					"default": {}
+				}
+			},
+			"required": ["name", "description", "command"],
+			"additionalProperties": false
+		},
+		"serverType": {
+			"type": "string",
+			"enum": ["stdio", "builtin", "sse", "http"],
+			"description": "Server communication protocol type"
+		},
+		"outputConfig": {
+			"type": "object",
+			"description": "Output configuration for a specific client",
+			"properties": {
+				"format": {
+					"type": "string",
+					"enum": ["json", "yaml"],
+					"description": "Output format for the export"
+				},
+				"path": {
+					"type": "string",
+					"description": "Output file path for the export",
+					"minLength": 1
+				},
+				"template": {
+					"type": "string",
+					"description": "Template to use for export formatting",
+					"minLength": 1
+				},
+				"enabled_only": {
+					"type": "boolean",
+					"description": "Only export enabled servers",
+					"default": true
+				},
+				"filter": {
+					"type": "array",
+					"description": "Server names to include in export",
+					"items": {
+						"type": "string"
+					}
+				},
+				"exclude": {
+					"type": "array",
+					"description": "Server names to exclude from export",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"required": ["path"],
+			"additionalProperties": false
+		}
+	}
+}

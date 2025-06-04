@@ -1,0 +1,108 @@
+---
+description: Details on how to use Smithery to use Model Context Protocol (MCP) servers
+globs:
+alwaysApply: true
+---
+
+# Smithery Registry API Documentation
+
+**Purpose**: Programmatic access to search and obtain connection configurations for Model Context Protocol (MCP) servers.
+
+## Authentication
+- Required: Bearer token in Authorization header
+- Format: `Authorization: Bearer your-api-token`
+- API key is stored in the `SMITHERY_API_KEY` environment variable
+
+## Endpoints
+
+### 1. List Servers
+```http
+GET https://registry.smithery.ai/servers
+```
+
+#### Query Parameters
+- `q`: Search query (semantic search)
+- `page`: Page number (default: 1)
+- `pageSize`: Items per page (default: 10)
+
+#### Filtering Syntax
+- Text search: `"machine learning"`
+- Owner filter: `owner:username`
+- Repository filter: `repo:repository-name`
+- Deployment status: `is:deployed`
+- Combined example: `"owner:smithery-ai repo:fetch is:deployed machine learning"`
+
+#### Response Schema
+```typescript
+{
+  servers: Array<{
+    qualifiedName: string;
+    displayName: string;
+    description: string;
+    homepage: string;
+    useCount: string;
+    isDeployed: boolean;
+    createdAt: string;
+  }>;
+  pagination: {
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+    totalCount: number;
+  };
+}
+```
+
+### 2. Get Server
+```http
+GET https://registry.smithery.ai/servers/{qualifiedName}
+```
+
+#### Response Schema
+```typescript
+{
+  qualifiedName: string;
+  displayName: string;
+  remote: boolean;  // Whether the server is designed to run remotely or locally
+  iconUrl: string | null;  // URL to the server's icon image, null if not set
+  deploymentUrl: string | null;  // URL for deployed servers, null if not deployed
+  configSchema: JSONSchema;  // Schema for server configuration
+  connections: Array<{
+    type: string;
+    url?: string;
+    configSchema: JSONSchema;
+  }>;
+  security: {
+    scanPassed: boolean;
+  } | null;  // Added recently, null if no security scan performed
+  tools: Array<{
+    name: string;
+    description: string | null;
+  }> | null;  // Added recently. List of tools provided by the server, null if not retrieved
+}
+```## Connection Details
+- URL Format: `https://server.smithery.ai/${qualifiedName}/mcp?config=${base64encode(config)}&api_key=${smithery_api_key}`
+- Config must comply with server's configSchema
+- Config is base64-encoded JSON
+- API key required for authentication
+
+## TypeScript SDK Usage
+```typescript
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
+
+const serverUrl = new URL("https://server.smithery.ai/{qualifiedName}/mcp")
+const config = {
+  // config object matching schema
+}
+const configString = JSON.stringify(config)
+serverUrl.searchParams.set("config", btoa(configString))
+serverUrl.searchParams.set("api_key", "your-smithery-api-key")
+
+const transport = new StreamableHTTPClientTransport(serverUrl)
+```
+
+## Note
+- Smithery Registry indexes MCP servers
+- Servers have configuration schemas defining connection requirements
+- Supported connection types: "http" (streamable HTTP) or "stdio"
+- API is under development and may change

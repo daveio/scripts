@@ -1,0 +1,130 @@
+{
+	"mcpServers": {
+		"claudeCode": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"cloudflareContainer": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": [
+					"x",
+					"mcp-remote",
+					"https://containers.mcp.cloudflare.com/sse"
+				],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"cloudflareDocumentation": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"cloudflareObservability": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": [
+					"x",
+					"mcp-remote",
+					"https://observability.mcp.cloudflare.com/sse"
+				],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"cloudflareRendering": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": ["x", "mcp-remote", "https://browser.mcp.cloudflare.com/sse"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"consoleNinja": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": ["run", "~/.console-ninja/mcp/"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"context7": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": ["x", "@upstash/context7-mcp"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"docker": {
+			"command": {
+				"path": "docker",
+				"args": ["ai", "mcpserver"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"duckduckgo": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/uvx",
+				"args": ["duckduckgo-mcp-server"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"fetch": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/uvx",
+				"args": ["mcp-server-fetch"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"git": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/uvx",
+				"args": ["mcp-server-git"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"pdfReader": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/uvx",
+				"args": ["mcp-read-pdf"],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"pieces": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": [
+					"x",
+					"mcp-remote",
+					"http://localhost:39300/model_context_protocol/2024-11-05/sse"
+				],
+				"env": {}
+			},
+			"settings": {}
+		},
+		"sharedMemory": {
+			"command": {
+				"path": "/Users/dave/.local/share/mise/shims/bun",
+				"args": ["x", "@modelcontextprotocol/server-memory"],
+				"env": {
+					"MEMORY_FILE_PATH": "/Users/dave/.memory"
+				}
+			},
+			"settings": {}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"$schema": "node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": [".trunk/configs/biome.json"],
+	"files": {
+		"ignore": [
+			".trunk",
+			"dist",
+			"node_modules",
+			".git",
+			".history",
+			"worker-configuration.d.ts",
+			".wrangler",
+			"components.d.ts",
+			"auto-imports.d.ts",
+			".nuxt",
+			".codacy",
+			".output"
+		]
+	}
+}

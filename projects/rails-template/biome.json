@@ -1,0 +1,7 @@
+{
+	"$schema": "./biome_schema.json",
+	"extends": [".trunk/configs/biome.json"],
+	"files": {
+		"ignore": [".trunk"]
+	}
+}

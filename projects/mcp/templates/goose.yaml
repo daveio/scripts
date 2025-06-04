@@ -1,0 +1,45 @@
+$schema: ./template.schema.json
+metadata:
+  name: "Goose Configuration Template"
+  description: "Template for generating Goose AI agent configuration"
+  version: "1.0.0"
+  outputFormat: "yaml"
+  targetTool: "goose"
+
+transform:
+  rootKey: "extensions"
+  
+  serverFilter:
+    enabledOnly: true
+  
+  serverNameMapping:
+    strategy: "singleWord"
+  
+  propertyMappings:
+    command: "cmd"
+    args: "args"
+    description: "description"
+    enabled: "enabled"
+    timeout: "timeout"
+    type: "type"
+    env: "envs"
+    name: "name"
+  
+  staticProperties:
+    bundled: null
+    env_keys: []
+  
+  conditionalProperties:
+    - condition: "$.env"
+      properties:
+        env_keys: "{{extractEnvKeys}}"
+  
+  globalProperties:
+    GOOSE_MODE: "smart_approve"
+    GOOSE_MODEL: "claude-sonnet-4-20250514"
+    GOOSE_PROVIDER: "anthropic"
+
+postProcess:
+  removeEmptyObjects: false
+  removeNullValues: false
+  sortKeys: false

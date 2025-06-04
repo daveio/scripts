@@ -1,0 +1,15 @@
+[ifchange]
+enabled = true # default: false
+
+[donotland]
+enabled = true # default: true
+
+[todo]
+enabled = true # default: false
+
+[neveredit]
+enabled = false # default: false
+paths = []      # default: []
+
+[nocurlyquotes]
+enabled = true # default: false

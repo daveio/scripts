@@ -1,0 +1,12 @@
+---
+description: Package and project managers to use, and any caveats.
+globs:
+alwaysApply: true
+---
+# Package Managers
+
+## JavaScript/TypeScript
+Use `bun` for package management. In `package.json` scripts, use `bun run` prefix.
+
+## Python
+Use `uv` for project initialization and management. Prefer manager-agnostic directives in package definitions; use `uv`-specific directives only when generic options aren't feasible.

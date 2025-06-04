@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html data-controller="theme synthwave">
+
+<head>
+  <title>%%PROJECTNAME%%</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= yield :head %>
+
+  <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+  <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <%# Color scheme meta tag for browsers %>
+  <meta name="color-scheme" content="dark light">
+
+  <%# Apply theme immediately to prevent flash of unstyled content %>
+  <script>
+    (function() {
+      // Get saved theme or use catppuccin as default
+      const savedTheme = localStorage.getItem('theme') || 'catppuccin';
+      // Apply theme to html element
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      // Set color scheme meta
+      const isLight = ['light'].includes(savedTheme);
+      document.querySelector('meta[name="color-scheme"]').setAttribute(
+        'content', isLight ? 'light dark' : 'dark light'
+      );
+    })();
+  </script>
+
+  <%# Includes all stylesheet files in app/assets/stylesheets %>
+  <%= stylesheet_link_tag "application" %>
+  <%= javascript_include_tag "application", defer: true %>
+</head>
+
+<body>
+  <div class="fixed top-4 right-4 z-50">
+    <div class="p-2 bg-base-200 rounded-lg shadow-lg">
+      <select data-theme-target="selector" data-action="change->theme#select" class="select select-sm select-bordered" aria-label="Select theme">
+        <option value="catppuccin">Catppuccin</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <% if Rails.env.development? || Rails.env.test? %>
+        <option value="synthwave84">Synthwave '84</option>
+        <% end %>
+      </select>
+      <% if Rails.env.development? %>
+      <div class="text-xs opacity-70 mt-1">
+        <span class="block">Easter egg: Use Konami code to activate Synthwave '84</span>
+        <span class="block text-center">↑↑↓↓←→←→BA</span>
+      </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= yield %>
+</body>
+
+</html>

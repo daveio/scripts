@@ -1,0 +1,71 @@
+{
+	"mcpServers": {
+		"claudeCode": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"]
+		},
+		"cloudflareContainer": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["x", "mcp-remote", "https://containers.mcp.cloudflare.com/sse"]
+		},
+		"cloudflareDocumentation": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"]
+		},
+		"cloudflareObservability": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": [
+				"x",
+				"mcp-remote",
+				"https://observability.mcp.cloudflare.com/sse"
+			]
+		},
+		"cloudflareRendering": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["x", "mcp-remote", "https://browser.mcp.cloudflare.com/sse"]
+		},
+		"consoleNinja": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["run", "~/.console-ninja/mcp/"]
+		},
+		"context7": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["x", "@upstash/context7-mcp"]
+		},
+		"docker": {
+			"command": "docker",
+			"args": ["ai", "mcpserver"]
+		},
+		"duckduckgo": {
+			"command": "/Users/dave/.local/share/mise/shims/uvx",
+			"args": ["duckduckgo-mcp-server"]
+		},
+		"fetch": {
+			"command": "/Users/dave/.local/share/mise/shims/uvx",
+			"args": ["mcp-server-fetch"]
+		},
+		"git": {
+			"command": "/Users/dave/.local/share/mise/shims/uvx",
+			"args": ["mcp-server-git"]
+		},
+		"pdfReader": {
+			"command": "/Users/dave/.local/share/mise/shims/uvx",
+			"args": ["mcp-read-pdf"]
+		},
+		"pieces": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": [
+				"x",
+				"mcp-remote",
+				"http://localhost:39300/model_context_protocol/2024-11-05/sse"
+			]
+		},
+		"sharedMemory": {
+			"command": "/Users/dave/.local/share/mise/shims/bun",
+			"args": ["x", "@modelcontextprotocol/server-memory"],
+			"env": {
+				"MEMORY_FILE_PATH": "/Users/dave/.memory"
+			}
+		}
+	}
+}

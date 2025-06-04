@@ -1,0 +1,27 @@
+[env]
+%%PROJECTNAME%%_MISE_ACTIVE = 'true'
+
+[settings]
+env_file = '.env'
+idiomatic_version_file = false
+asdf_compat = false
+
+[tools]
+ruby = { version = '3.4.3' }
+bun = { version = '1.2.13' }
+node = { version = '22.15.0' }
+
+[tasks]
+'db:reset' = { run = [
+  'bundle exec rails db:drop',
+  'bundle exec rails db:create',
+  'bundle exec rails db:migrate',
+  'bundle exec rails db:seed',
+] }
+'dev' = { env = { 'RAILS_ENV' = 'development', 'RUBY_DEBUG_OPEN' = 'true' }, run = 'foreman start -f Procfile.tailscale' }
+'dev:localhost' = { env = { 'RAILS_ENV' = 'development', 'RUBY_DEBUG_OPEN' = 'true' }, run = 'foreman start -f Procfile.localhost' }
+prepare-ci = 'gem install bundler; bundle install; bundle binstubs --all; bun install'
+'ci:brakeman' = { run = 'bundle exec brakeman --no-pager' }
+'ci:rubocop' = { run = 'bundle exec rubocop -f github' }
+'ci:test' = { env = { RAILS_ENV = 'test' }, run = 'bundle exec rails db:test:prepare test test:system' }
+ci = { depends = 'ci:*' }

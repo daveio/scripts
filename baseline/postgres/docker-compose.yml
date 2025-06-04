@@ -1,0 +1,38 @@
+name: shared-postgres
+services:
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    ports:
+      - 5432:5432
+    volumes:
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 134217728
+      - type: tmpfs
+        target: /var/run/postgresql
+      - type: volume
+        target: /var/lib/postgresql/data
+    env_file: postgres.env
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5433:8080
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - type: tmpfs
+        target: /var/www/html/.adminer-init
+      - type: tmpfs
+        target: /tmp
+    read_only: true

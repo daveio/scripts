@@ -1,0 +1,12 @@
+[env]
+DAVE_IO_MISE_ACTIVE = 'true'
+
+[settings]
+env_file = '.env'
+
+[tools]
+node = { version = 'lts' }
+bun = { version = '1.2.15' }
+
+[tasks]
+'hello' = { run = "echo 'Hello, world!'" }

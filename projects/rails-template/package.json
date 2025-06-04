@@ -1,0 +1,32 @@
+{
+	"name": "app",
+	"private": true,
+	"scripts": {
+		"build": "bun run build:js",
+		"build:js": "bun bun.config.js",
+		"build:css": "bun run postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css"
+	},
+	"dependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@catppuccin/daisyui": "^2.1.1",
+		"@catppuccin/palette": "^1.7.1",
+		"@catppuccin/tailwindcss": "^0.1.6",
+		"@hotwired/stimulus": "^3.2.2",
+		"@hotwired/turbo-rails": "^8.0.13",
+		"@tailwindcss/postcss": "^4.1.6",
+		"autoprefixer": "^10.4.21",
+		"daisyui": "^5.0.35",
+		"postcss": "^8.5.3",
+		"postcss-cli": "^11.0.1",
+		"postcss-import": "^16.1.0",
+		"postcss-nesting": "^13.0.1",
+		"stylelint-config-recommended": "^16.0.0",
+		"stylelint-config-tailwindcss": "^1.0.0",
+		"tailwindcss": "^4.1.6"
+	},
+	"trustedDependencies": ["@biomejs/biome", "@tailwindcss/oxide"],
+	"engines": {
+		"bun": "~1.2.13",
+		"node": "~lts"
+	}
+}

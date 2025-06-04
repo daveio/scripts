@@ -1,0 +1,23 @@
+$schema: ./template.schema.json
+metadata:
+  name: "Claude Desktop Configuration Template"
+  description: "Template for generating Claude Desktop MCP configuration"
+  version: "1.0.0"
+  outputFormat: "json"
+  targetTool: "claude-desktop"
+transform:
+  rootKey: "mcpServers"
+  serverFilter:
+    enabledOnly: true
+  serverNameMapping:
+    strategy: "camelCase"
+  propertyMappings:
+    command: "command"
+    args: "args"
+    env: "env"
+  staticProperties: {}
+  conditionalProperties: []
+postProcess:
+  removeEmptyObjects: true
+  removeNullValues: true
+  sortKeys: false

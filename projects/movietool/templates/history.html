@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+{% block extra_head %}
+    <style>
+  .scan-history-list {
+    margin-top: 1.5rem;
+  }
+
+  .scan-history-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--overlay);
+    border-radius: 8px;
+    box-shadow: var(--neu-flat);
+    transition: transform 0.2s ease;
+  }
+
+  .scan-history-item:hover {
+    transform: translateY(-2px);
+  }
+
+  .scan-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .scan-directory {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  .scan-timestamp {
+    font-size: 0.8rem;
+    color: var(--subtext);
+  }
+
+  .scan-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .scan-stat {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+  }
+
+  .scan-stat-label {
+    font-size: 0.8rem;
+    color: var(--subtext);
+  }
+
+  .scan-stat-value {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .scan-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .no-scans {
+    text-align: center;
+    padding: 2rem;
+    color: var(--subtext);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .breadcrumb-separator {
+    color: var(--subtext);
+  }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for("index") }}"> <i data-feather="home"></i> Home </a>
+            <span class="breadcrumb-separator">/</span>
+            <span>Scan History</span>
+        </div>
+        <section class="card">
+            <h2>Scan History</h2>
+            <p>View your previous directory scans and their results.</p>
+            {% if scans %}
+                <div class="scan-history-list">
+                    {% for scan in scans %}
+                        <div class="scan-history-item">
+                            <div class="scan-history-header">
+                                <h3>{{ scan.directory|truncate(40) }}</h3>
+                                <span class="scan-timestamp">{{ scan.formatted_timestamp }}</span>
+                            </div>
+                            <div class="scan-directory">{{ scan.directory }}</div>
+                            <div class="scan-stats">
+                                <div class="scan-stat">
+                                    <span class="scan-stat-label">Directories</span>
+                                    <span class="scan-stat-value">{{ scan.total_dirs }}</span>
+                                </div>
+                                <div class="scan-stat">
+                                    <span class="scan-stat-label">Total Files</span>
+                                    <span class="scan-stat-value">{{ scan.total_files }}</span>
+                                </div>
+                                <div class="scan-stat">
+                                    <span class="scan-stat-label">With Duplicates</span>
+                                    <span class="scan-stat-value">{{ scan.dirs_with_duplicates }}</span>
+                                </div>
+                                <div class="scan-stat">
+                                    <span class="scan-stat-label">Flagged Files</span>
+                                    <span class="scan-stat-value">{{ scan.flagged_files }}</span>
+                                </div>
+                                <div class="scan-stat">
+                                    <span class="scan-stat-label">Potential Savings</span>
+                                    <span class="scan-stat-value">{{ scan.formatted_flagged_size }}</span>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <a href="{{ url_for('view_scan', scan_id=scan.id) }}"
+                                   class="btn-primary">
+                                    <i data-feather="eye"></i> View Results
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-scans">
+                    <p>You haven't performed any scans yet.</p>
+                    <a href="{{ url_for("index") }}" class="btn-primary mt-2">
+                        <i data-feather="search"></i> Start Scanning
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

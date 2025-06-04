@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>Genderbase</title>
+        <link href="tailwind_theme/tailwind.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body class="font-sans bg-slate-50 text-slate-800">
+        <nav class="bg-white shadow-md fixed w-full z-50">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center">
+                        <a href="#" class="text-2xl font-bold text-primary-700">Genderbase</a>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#" class="text-slate-600 hover:text-primary-700 transition">Home</a><a href="#" class="text-slate-600 hover:text-primary-700 transition">Knowledge Base</a><a href="#" class="text-slate-600 hover:text-primary-700 transition">How Do I Say...?</a><a href="#" class="text-slate-600 hover:text-primary-700 transition">Ask a Question</a><a href="#" class="text-slate-600 hover:text-primary-700 transition">About</a>
+                    </div>
+                    <div class="md:hidden">
+                        <button title="Menu"
+                                class="text-slate-600 hover:text-primary-700 focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <section class="py-12 bg-gradient-to-br from-primary-800 to-indigo-900 text-white pt-28 md:pt-32">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">Get Answers</h2>
+                        <p class="text-lg text-white/90 mb-0">
+                            Have a question about issues of gender? Our team of vetted
+                            volunteers is here to help.
+                        </p>
+                        <p class="text-lg text-white/90 mb-0">Ask anything in good faith, without fear of judgment.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm p-8 md:p-10 rounded-2xl border border-white/20">
+                        <form>
+                            <div class="mb-6">
+                                <label for="question" class="block text-white font-medium mb-2">Your Question</label>
+                                <textarea id="question"
+                                          rows="5"
+                                          class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-slate-800 resize-none"
+                                          placeholder="Ask anything about gender topics..."></textarea>
+                            </div>
+                            <div class="mb-6">
+                                <label for="email" class="block text-white font-medium mb-2">Email Address (Optional)</label>
+                                <input type="email"
+                                       id="email"
+                                       class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-slate-800"
+                                       placeholder="For notification of responses (never shared)" />
+                                <p class="text-white/70 text-sm mt-2">
+                                    You will receive a link to return to your question. If you
+                                    give us your email address, we&apos;ll email it to you too,
+                                    and notify you about responses. If you don&apos;t, you will
+                                    have to check back manually.
+                                </p>
+                                <p class="text-white/70 text-sm mt-2">
+                                    Your email address is not shared with responders, and is
+                                    discarded when your question is closed unless you explicitly
+                                    choose to receive updates about the site. It is never, ever
+                                    sold, or passed to any third parties.
+                                </p>
+                                <p class="text-white/70 text-sm mt-2"></p>
+                            </div>
+                            <div class="flex items-center mb-6">
+                                <input type="checkbox"
+                                       id="terms"
+                                       class="rounded text-secondary-600 focus:ring-secondary-500 h-5 w-5" />
+                                <label for="terms" class="ml-2 text-white/90">
+                                    I understand my question may be anonymized and shared in the
+                                    knowledge base
+                                </label>
+                            </div>
+                            <button type="submit"
+                                    class="w-full bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300">
+                                Submit Question
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-slate-50 rounded-xl p-8 shadow-lg border-t-4 border-primary-500 hover:shadow-xl transition duration-300">
+                            <div class="flex items-center mb-6">
+                                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-primary-600"
+                                         viewBox="0 0 24 24"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1"
+                                         xml:space
+                                         fill="none"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Knowledge Base</h3>
+                            </div>
+                            <p class="text-slate-600 mb-6">
+                                Access our comprehensive collection of articles and resources
+                                about gender topics.
+                            </p>
+                            <a href="#"
+                               class="inline-block bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">Browse Articles</a>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-8 shadow-lg border-t-4 border-teal-500 hover:shadow-xl transition duration-300">
+                            <div class="flex items-center mb-6">
+                                <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-teal-600"
+                                         viewBox="0 0 24 24"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1"
+                                         xml:space
+                                         fill="none"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">How Do I Say...?</h3>
+                            </div>
+                            <p class="text-slate-600 mb-6">
+                                Quick answers about terminology, language to use, and words to
+                                avoid.
+                            </p>
+                            <a href="#"
+                               class="inline-block bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">View Guides</a>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-8 shadow-lg border-t-4 border-secondary-500 hover:shadow-xl transition duration-300">
+                            <div class="flex items-center mb-6">
+                                <div class="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-secondary-600"
+                                         viewBox="0 0 24 24"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         version="1.1"
+                                         xml:space
+                                         fill="none"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Recently Answered</h3>
+                            </div>
+                            <p class="text-slate-600 mb-6">
+                                Browse previously answered questions to find insights and
+                                information.
+                            </p>
+                            <a href="#"
+                               class="inline-block bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">View Answers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-12 bg-slate-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-bold text-primary-800">Recently Answered Questions</h2>
+                        <a href="#"
+                           class="text-primary-600 hover:text-primary-700 font-semibold flex items-center">
+                            View All
+                            <svg class="w-4 h-4 ml-1"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="divide-y divide-slate-100">
+                            <a href="#" class="block hover:bg-slate-50 transition duration-300">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="bg-secondary-100 text-secondary-800 text-xs font-semibold px-2.5 py-0.5 rounded">Family</span><span class="text-slate-500 text-sm ml-auto">2 days ago</span>
+                                    </div>
+                                    <h3 class="text-lg font-bold mb-2 text-slate-800">How can I support my child who just came out as non-binary?</h3>
+                                    <p class="text-slate-600 text-sm">
+                                        Practical advice for parents navigating this journey with
+                                        their children...
+                                    </p>
+                                </div>
+                            </a><a href="#" class="block hover:bg-slate-50 transition duration-300">
+                            <div class="p-6">
+                                <div class="flex items-center mb-2">
+                                    <span class="bg-secondary-100 text-secondary-800 text-xs font-semibold px-2.5 py-0.5 rounded">Terminology</span><span class="text-slate-500 text-sm ml-auto">5 days ago</span>
+                                </div>
+                                <h3 class="text-lg font-bold mb-2 text-slate-800">
+                                    What's the difference between gender expression and gender
+                                    identity?
+                                </h3>
+                                <p class="text-slate-600 text-sm">
+                                    Understanding these distinct but related concepts in gender
+                                    diversity...
+                                </p>
+                            </div>
+                        </a><a href="#" class="block hover:bg-slate-50 transition duration-300">
+                        <div class="p-6">
+                            <div class="flex items-center mb-2">
+                                <span class="bg-secondary-100 text-secondary-800 text-xs font-semibold px-2.5 py-0.5 rounded">Workplace</span><span class="text-slate-500 text-sm ml-auto">1 week ago</span>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2 text-slate-800">How do I handle misgendering in the workplace?</h3>
+                            <p class="text-slate-600 text-sm">
+                                Strategies for addressing and preventing misgendering in
+                                professional settings...
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-primary-800">Terminology Guides</h2>
+                <a href="#"
+                   class="text-primary-600 hover:text-primary-700 font-semibold flex items-center">
+                    View All
+                    <svg class="w-4 h-4 ml-1"
+                         fill="none"
+                         stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="#"
+                   class="block bg-slate-50 rounded-xl p-6 shadow-md hover:shadow-lg transition duration-300 border-l-4 border-teal-500">
+                    <h3 class="text-lg font-bold mb-2 text-slate-800">Pronouns Guide</h3>
+                    <p class="text-slate-600 text-sm mb-4">
+                        How to ask about, use, and respect different pronouns in various
+                        contexts.
+                    </p>
+                    <span class="text-teal-600 text-sm font-semibold flex items-center">
+                        Read guide
+                        <svg class="w-4 h-4 ml-1"
+                             fill="none"
+                             stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </span> </a><a href="#"
+   class="block bg-slate-50 rounded-xl p-6 shadow-md hover:shadow-lg transition duration-300 border-l-4 border-teal-500">
+                    <h3 class="text-lg font-bold mb-2 text-slate-800">Trans-Inclusive Language</h3>
+                    <p class="text-slate-600 text-sm mb-4">Terms to use and avoid when discussing transgender experiences.</p>
+                    <span class="text-teal-600 text-sm font-semibold flex items-center">
+                        Read guide
+                        <svg class="w-4 h-4 ml-1"
+                             fill="none"
+                             stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </span> </a><a href="#"
+   class="block bg-slate-50 rounded-xl p-6 shadow-md hover:shadow-lg transition duration-300 border-l-4 border-teal-500">
+                    <h3 class="text-lg font-bold mb-2 text-slate-800">Gender-Neutral Terms</h3>
+                    <p class="text-slate-600 text-sm mb-4">How to use inclusive language that doesn't assume binary gender.</p>
+                    <span class="text-teal-600 text-sm font-semibold flex items-center">
+                        Read guide
+                        <svg class="w-4 h-4 ml-1"
+                             fill="none"
+                             stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-12 bg-slate-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-primary-800">Recent Articles</h2>
+                <a href="#"
+                   class="text-primary-600 hover:text-primary-700 font-semibold flex items-center">
+                    View All
+                    <svg class="w-4 h-4 ml-1"
+                         fill="none"
+                         stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <a href="#"
+                   class="block bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                    <div class="aspect-video bg-slate-200 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1563986768711-b3bde3dc821e?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDV8fGVkdWNhdGlvbmFsJTIwcmVzb3VyY2VzfGVufDB8fHx8MTc0NDAzODU2Nnww&ixlib=rb-4.0.3q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop"
+                             alt="Educational resources"
+                             class="w-full h-full object-cover transition duration-500 hover:scale-105" />
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <span class="bg-primary-100 text-primary-800 text-xs font-semibold px-2.5 py-0.5 rounded">Gender Identity</span><span class="text-slate-500 text-sm ml-auto">June 12, 2025</span>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-slate-800">Understanding Non-Binary Identities</h3>
+                        <p class="text-slate-600 text-sm">
+                            A comprehensive guide to understanding non-binary gender
+                            identities and how to be supportive.
+                        </p>
+                    </div>
+                </a><a href="#"
+   class="block bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                <div class="aspect-video bg-slate-200 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1550096141-7263640aa48c?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDE5fHxjb21tdW5pdHklMjBmb3J1bXN8ZW58MHx8fHwxNzQ0MDM4NTY2fDA&ixlib=rb-4.0.3q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop"
+                         alt="Community forums"
+                         class="w-full h-full object-cover transition duration-500 hover:scale-105" />
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded">Workplace</span><span class="text-slate-500 text-sm ml-auto">June 8, 2025</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-slate-800">Creating Gender-Inclusive Workplaces</h3>
+                    <p class="text-slate-600 text-sm">
+                        Practical steps for employers and colleagues to create
+                        inclusive professional environments.
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</section>
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-gradient-to-r from-primary-800 to-indigo-900 rounded-2xl overflow-hidden shadow-xl">
+                <div class="p-8 md:p-12">
+                    <div class="md:flex items-center">
+                        <div class="md:w-2/3 mb-6 md:mb-0 md:pr-8">
+                            <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Be part of Genderbase</h2>
+                            <p class="text-white/90 mb-6">
+                                Be part of a growing movement dedicated to understanding,
+                                respect, and equality for all gender identities.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="#"
+                                   class="inline-block bg-white text-primary-800 hover:bg-slate-100 font-semibold py-2 px-6 rounded-lg transition duration-300 text-sm">Volunteer</a><a href="#"
+   class="inline-block bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 text-sm">Contribute</a>
+                            </div>
+                        </div>
+                        <div class="md:w-1/3">
+                            <form class="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
+                                <h3 class="text-lg font-bold text-white mb-4">Stay Updated</h3>
+                                <div class="mb-4">
+                                    <input type="email"
+                                           placeholder="Your email address"
+                                           class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-slate-800 text-sm" />
+                                </div>
+                                <h3 class="text-white/70 text-sm mt-2">Your details will never be sold.</h3>
+                                <button type="submit"
+                                        class="mt-2 w-full bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">
+                                    Subscribe
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="bg-slate-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Genderbase</h3>
+                    <p class="text-slate-400 text-sm"></p>
+                    <div class="flex space-x-4 mt-4">
+                        <a title="Twitter"
+                           href="#"
+                           class="text-slate-400 hover:text-white transition">
+                            <svg class="w-5 h-5"
+                                 viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 version="1.1"
+                                 xml:space
+                                 fill="currentColor"
+                                 stroke>
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z">
+                                </path>
+                            </svg>
+                        </a><a title="Facebook"
+   href="#"
+   class="text-slate-400 hover:text-white transition">
+                        <svg class="w-5 h-5"
+                             viewBox="0 0 24 24"
+                             xmlns="http://www.w3.org/2000/svg"
+                             version="1.1"
+                             xml:space
+                             fill="currentColor"
+                             stroke>
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.184 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z">
+                            </path>
+                        </svg>
+                    </a><a title="Instagram"
+   href="#"
+   class="text-slate-400 hover:text-white transition">
+                    <svg class="w-5 h-5"
+                         viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg"
+                         version="1.1"
+                         xml:space
+                         fill="currentColor"
+                         stroke>
+                        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z">
+                        </path>
+                    </svg>
+                </a><a title="TikTok"
+   href="#"
+   class="text-slate-400 hover:text-white transition">
+                <svg class="w-5 h-5"
+                     viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg"
+                     version="1.1"
+                     xml:space
+                     fill="currentColor"
+                     stroke>
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z">
+                    </path>
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div>
+        <h4 class="font-bold mb-4 text-sm uppercase text-slate-300">Resources</h4>
+        <ul class="space-y-2 text-sm">
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Knowledge Base</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">How Do I Say...?</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Ask a Question</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Answered Questions</a>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h4 class="font-bold mb-4 text-sm uppercase text-slate-300">Community</h4>
+        <ul class="space-y-2 text-sm">
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Volunteer</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Contribute</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Support</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Donate</a>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h4 class="font-bold mb-4 text-sm uppercase text-slate-300">About</h4>
+        <ul class="space-y-2 text-sm">
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Our Mission</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Team</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Privacy Policy</a>
+            </li>
+            <li>
+                <a href="#" class="text-slate-400 hover:text-white transition">Contact</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+    <p class="text-slate-500 text-sm mb-4 md:mb-0">&copy; 2025 Genderbase. All rights reserved.</p>
+    <a href="#"
+       class="text-slate-400 hover:text-secondary-400 transition text-sm font-medium flex items-center">
+        <svg class="w-4 h-4 mr-2"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+            </path>
+        </svg>
+        Responder Login
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</body>
+</html>

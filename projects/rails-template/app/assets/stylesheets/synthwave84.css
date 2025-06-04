@@ -1,0 +1,553 @@
+/* Synthwave '84 Theme for %%PROJECTNAME%% */
+
+[data-theme="synthwave84"] {
+	/* Base colors */
+	--primary: #f92aad;
+	--primary-focus: #fa1a9e;
+	--primary-content: #ffffff;
+
+	--secondary: #03edf9;
+	--secondary-focus: #00d6e7;
+	--secondary-content: #2a2139;
+
+	--accent: #72f1b8;
+	--accent-focus: #5ce0a7;
+	--accent-content: #2a2139;
+
+	/* Base colors - completely replace dark theme */
+	--base-100: #262335; /* Match VS Code editor background */
+	--base-200: #241b2f; /* Match VS Code sidebar background */
+	--base-300: #171520; /* Match VS Code activity bar background */
+	--base-content: #ffffff;
+
+	--neutral: #34294f;
+	--neutral-focus: #3a2d59;
+	--neutral-content: #f4eee4;
+
+	--info: #03edf9;
+	--info-content: #2a2139;
+
+	--success: #72f1b8;
+	--success-content: #2a2139;
+
+	--warning: #fff951;
+	--warning-content: #2a2139;
+
+	--error: #fe4450;
+	--error-content: #ffffff;
+
+	/* Additional Synthwave colors */
+	--synthwave-pink: #f92aad;
+	--synthwave-blue: #03edf9;
+	--synthwave-purple: #b893ce;
+	--synthwave-green: #72f1b8;
+	--synthwave-yellow: #f0f09b;
+	--synthwave-orange: #fc9867;
+	--synthwave-red: #fe4450;
+
+	/* Special effects applied via a filter wrapper */
+	--glow-intensity: 0.3;
+
+	/* Override any conflicting dark theme variables */
+	color-scheme: dark;
+}
+
+/* Override core elements to match Synthwave '84 */
+[data-theme="synthwave84"] body {
+	/* Synthwave background with subtle gradient */
+	background-color: var(--base-100);
+	background-image: linear-gradient(
+		to bottom,
+		var(--base-100) 75%,
+		var(--neutral)
+	);
+	background-size: auto 100vh;
+	background-position: top;
+	background-repeat: no-repeat;
+	color: var(--base-content);
+}
+
+/* Card and container styling */
+[data-theme="synthwave84"] .card,
+[data-theme="synthwave84"] .container {
+	background-color: var(--base-200);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="synthwave84"] .card-title {
+	color: var(--synthwave-pink);
+	text-shadow: 0 0 2px #100c0f, 0 0 5px rgba(242, 42, 173, 0.3), 0 0 7px
+		rgba(242, 42, 173, 0.2);
+}
+
+[data-theme="synthwave84"] .card.image-full:before {
+	background-color: rgba(52, 41, 79, 0.7);
+	background-image: linear-gradient(
+		45deg,
+		rgba(41, 34, 60, 0.7),
+		rgba(82, 62, 125, 0.7)
+	);
+}
+
+/* Apply neon glow effect to specific elements */
+[data-theme="synthwave84"] .synthwave-glow-text {
+	text-shadow: 0 0 2px #100c0f, 0 0 5px rgba(242, 42, 173, 0.5), 0 0 10px
+		rgba(242, 42, 173, 0.3);
+}
+
+[data-theme="synthwave84"] .synthwave-glow-blue {
+	text-shadow: 0 0 2px #001716, 0 0 3px rgba(3, 237, 249, 0.5), 0 0 5px
+		rgba(3, 237, 249, 0.3);
+}
+
+[data-theme="synthwave84"] .synthwave-glow-green {
+	text-shadow: 0 0 2px #100c0f, 0 0 10px rgba(114, 241, 184, 0.5), 0 0 35px
+		rgba(114, 241, 184, 0.3);
+}
+
+/* Define a scanline effect */
+[data-theme="synthwave84"] .synthwave-scanlines {
+	position: relative;
+}
+
+[data-theme="synthwave84"] .synthwave-scanlines::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent 0%,
+		rgba(0, 0, 0, 0.05) 0.5%,
+		transparent 1%
+	);
+	pointer-events: none;
+	z-index: 10;
+}
+
+/* Button styling with glow */
+[data-theme="synthwave84"] .btn {
+	border-color: rgba(255, 255, 255, 0.2);
+	transition: all 0.3s ease;
+}
+
+[data-theme="synthwave84"] .btn:hover {
+	filter: brightness(1.2);
+	transform: translateY(-1px);
+}
+
+[data-theme="synthwave84"] .btn-primary {
+	background-color: var(--primary);
+	box-shadow: 0 0 10px rgba(242, 42, 173, 0.4);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .btn-primary:hover {
+	box-shadow: 0 0 15px rgba(242, 42, 173, 0.6);
+}
+
+[data-theme="synthwave84"] .btn-secondary {
+	background-color: var(--secondary);
+	box-shadow: 0 0 10px rgba(3, 237, 249, 0.4);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .btn-secondary:hover {
+	box-shadow: 0 0 15px rgba(3, 237, 249, 0.6);
+}
+
+[data-theme="synthwave84"] .btn-accent {
+	background-color: var(--accent);
+	box-shadow: 0 0 10px rgba(114, 241, 184, 0.4);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .btn-accent:hover {
+	box-shadow: 0 0 15px rgba(114, 241, 184, 0.6);
+}
+
+[data-theme="synthwave84"] .btn-info {
+	background-color: var(--info);
+	color: var(--info-content);
+	box-shadow: 0 0 10px rgba(3, 237, 249, 0.4);
+}
+
+[data-theme="synthwave84"] .btn-success {
+	background-color: var(--success);
+	color: var(--success-content);
+	box-shadow: 0 0 10px rgba(114, 241, 184, 0.4);
+}
+
+[data-theme="synthwave84"] .btn-warning {
+	background-color: var(--warning);
+	color: var(--warning-content);
+	box-shadow: 0 0 10px rgba(255, 249, 81, 0.4);
+}
+
+[data-theme="synthwave84"] .btn-error {
+	background-color: var(--error);
+	color: var(--error-content);
+	box-shadow: 0 0 10px rgba(254, 68, 80, 0.4);
+}
+
+[data-theme="synthwave84"] .btn-ghost {
+	background-color: transparent;
+	color: var(--base-content);
+	border-color: transparent;
+}
+
+[data-theme="synthwave84"] .btn-ghost:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: var(--secondary);
+	text-shadow: 0 0 5px rgba(3, 237, 249, 0.5);
+}
+
+[data-theme="synthwave84"] .btn-link {
+	color: var(--synthwave-blue);
+	text-decoration: underline;
+}
+
+[data-theme="synthwave84"] .btn-outline {
+	background-color: transparent;
+	border-color: currentColor;
+}
+
+[data-theme="synthwave84"] .btn-outline.btn-primary {
+	color: var(--synthwave-pink);
+	text-shadow: 0 0 5px rgba(242, 42, 173, 0.3);
+}
+
+[data-theme="synthwave84"] .btn-outline.btn-secondary {
+	color: var(--synthwave-blue);
+	text-shadow: 0 0 5px rgba(3, 237, 249, 0.3);
+}
+
+[data-theme="synthwave84"] .btn-outline.btn-accent {
+	color: var(--synthwave-green);
+	text-shadow: 0 0 5px rgba(114, 241, 184, 0.3);
+}
+
+/* Active elements with gradient borders */
+[data-theme="synthwave84"] .active-border {
+	position: relative;
+}
+
+[data-theme="synthwave84"] .active-border::after {
+	content: "";
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: linear-gradient(
+		to right,
+		var(--synthwave-pink),
+		var(--synthwave-blue)
+	);
+	z-index: 1;
+}
+
+/* Gradient text for headings */
+[data-theme="synthwave84"] .gradient-text {
+	background: linear-gradient(
+		to right,
+		var(--synthwave-pink),
+		var(--synthwave-blue)
+	);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Default heading styles */
+[data-theme="synthwave84"] h1,
+[data-theme="synthwave84"] h2,
+[data-theme="synthwave84"] h3 {
+	color: var(--synthwave-pink);
+}
+
+/* Form controls */
+[data-theme="synthwave84"] .select,
+[data-theme="synthwave84"] .input,
+[data-theme="synthwave84"] .textarea {
+	background-color: var(--base-300);
+	border-color: rgba(255, 255, 255, 0.1);
+	color: var(--base-content);
+}
+
+[data-theme="synthwave84"] .input:focus,
+[data-theme="synthwave84"] .textarea:focus {
+	border-color: var(--synthwave-blue);
+	box-shadow: 0 0 0 2px rgba(3, 237, 249, 0.2);
+}
+
+[data-theme="synthwave84"] .input-primary,
+[data-theme="synthwave84"] .textarea-primary {
+	border-color: var(--synthwave-pink);
+}
+
+[data-theme="synthwave84"] .input-primary:focus,
+[data-theme="synthwave84"] .textarea-primary:focus {
+	border-color: var(--synthwave-pink);
+	box-shadow: 0 0 0 2px rgba(242, 42, 173, 0.2);
+}
+
+[data-theme="synthwave84"] .input-secondary,
+[data-theme="synthwave84"] .textarea-secondary {
+	border-color: var(--synthwave-blue);
+}
+
+[data-theme="synthwave84"] .input-secondary:focus,
+[data-theme="synthwave84"] .textarea-secondary:focus {
+	border-color: var(--synthwave-blue);
+	box-shadow: 0 0 0 2px rgba(3, 237, 249, 0.2);
+}
+
+/* Focus styles */
+[data-theme="synthwave84"] .select:focus,
+[data-theme="synthwave84"] .input:focus,
+[data-theme="synthwave84"] .textarea:focus,
+[data-theme="synthwave84"] .btn:focus {
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(3, 237, 249, 0.5);
+}
+
+/* Theme selector styles */
+[data-theme="synthwave84"] .select.select-bordered {
+	background-color: var(--base-300);
+	color: var(--synthwave-blue);
+	border-color: rgba(3, 237, 249, 0.3);
+}
+
+/* Checkbox and toggle elements */
+[data-theme="synthwave84"] .checkbox {
+	border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="synthwave84"] .checkbox:checked {
+	background-color: var(--synthwave-blue);
+	border-color: var(--synthwave-blue);
+	box-shadow: 0 0 5px rgba(3, 237, 249, 0.5);
+}
+
+[data-theme="synthwave84"] .checkbox-primary:checked {
+	background-color: var(--synthwave-pink);
+	border-color: var(--synthwave-pink);
+	box-shadow: 0 0 5px rgba(242, 42, 173, 0.5);
+}
+
+[data-theme="synthwave84"] .toggle {
+	background-color: var(--base-300);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="synthwave84"] .toggle:checked {
+	background-color: var(--synthwave-blue);
+	border-color: var(--synthwave-blue);
+	box-shadow: 0 0 5px rgba(3, 237, 249, 0.5);
+}
+
+[data-theme="synthwave84"] .toggle-primary:checked {
+	background-color: var(--synthwave-pink);
+	border-color: var(--synthwave-pink);
+	box-shadow: 0 0 5px rgba(242, 42, 173, 0.5);
+}
+
+/* Alert styling with improved contrast */
+[data-theme="synthwave84"] .alert {
+	background-color: var(--base-200);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: var(--base-content);
+	border-left-width: 4px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="synthwave84"] .alert svg {
+	stroke-width: 2.5;
+}
+
+[data-theme="synthwave84"] .alert-info {
+	background-color: rgba(3, 237, 249, 0.1);
+	border-color: var(--synthwave-blue);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .alert-info svg {
+	color: var(--synthwave-blue);
+	filter: drop-shadow(0 0 3px rgba(3, 237, 249, 0.5));
+}
+
+[data-theme="synthwave84"] .alert-success {
+	background-color: rgba(114, 241, 184, 0.1);
+	border-color: var(--synthwave-green);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .alert-success svg {
+	color: var(--synthwave-green);
+	filter: drop-shadow(0 0 3px rgba(114, 241, 184, 0.5));
+}
+
+[data-theme="synthwave84"] .alert-warning {
+	background-color: rgba(255, 249, 81, 0.15);
+	border-color: var(--synthwave-yellow);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .alert-warning svg {
+	color: var(--synthwave-yellow);
+	filter: drop-shadow(0 0 3px rgba(255, 249, 81, 0.5));
+}
+
+[data-theme="synthwave84"] .alert-error {
+	background-color: rgba(254, 68, 80, 0.15);
+	border-color: var(--synthwave-red);
+	color: #ffffff;
+}
+
+[data-theme="synthwave84"] .alert-error svg {
+	color: var(--synthwave-red);
+	filter: drop-shadow(0 0 3px rgba(254, 68, 80, 0.5));
+}
+
+[data-theme="synthwave84"] .alert .btn {
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="synthwave84"] .alert .btn:hover {
+	background-color: rgba(0, 0, 0, 0.3);
+	border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Modal styling */
+[data-theme="synthwave84"] .modal-box {
+	background-color: var(--base-200);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(3, 237, 249, 0.1);
+}
+
+[data-theme="synthwave84"] .modal-box h3 {
+	color: var(--synthwave-pink);
+	text-shadow: 0 0 2px #100c0f, 0 0 5px rgba(242, 42, 173, 0.3), 0 0 7px
+		rgba(242, 42, 173, 0.2);
+}
+
+/* Tab styling */
+[data-theme="synthwave84"] .tabs-boxed {
+	background-color: var(--base-300);
+}
+
+[data-theme="synthwave84"] .tab {
+	color: var(--base-content);
+	transition: all 0.3s ease;
+}
+
+[data-theme="synthwave84"] .tab:hover {
+	color: var(--synthwave-blue);
+	text-shadow: 0 0 5px rgba(3, 237, 249, 0.3);
+}
+
+[data-theme="synthwave84"] .tab.tab-active {
+	background-color: var(--neutral);
+	color: var(--synthwave-pink);
+	text-shadow: 0 0 5px rgba(242, 42, 173, 0.3);
+	border-color: var(--synthwave-pink);
+}
+
+[data-theme="synthwave84"] .tab-lifted.tab-active {
+	background-color: var(--base-200);
+	border-color: var(--synthwave-pink);
+}
+
+[data-theme="synthwave84"] .tab-lifted.tab-active:before,
+[data-theme="synthwave84"] .tab-lifted.tab-active:after {
+	background-image: radial-gradient(
+		circle at top,
+		transparent 70%,
+		var(--base-200) 71%
+	);
+}
+
+/* Label styling */
+[data-theme="synthwave84"] .label-text {
+	color: var(--synthwave-blue);
+}
+
+[data-theme="synthwave84"] .label-text-alt {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+/* Additional UI elements */
+[data-theme="synthwave84"] .badge {
+	background-color: var(--neutral);
+	color: var(--synthwave-pink);
+}
+
+[data-theme="synthwave84"] a {
+	color: var(--synthwave-blue);
+	transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+[data-theme="synthwave84"] a:hover {
+	color: var(--secondary-focus);
+	text-shadow: 0 0 8px rgba(3, 237, 249, 0.5);
+}
+
+/* Table styling */
+[data-theme="synthwave84"] table {
+	background-color: var(--base-200);
+}
+
+[data-theme="synthwave84"] th {
+	color: var(--synthwave-green);
+}
+
+[data-theme="synthwave84"] tr:nth-child(even) {
+	background-color: rgba(52, 41, 79, 0.3);
+}
+
+/* Override theme selector background */
+[data-theme="synthwave84"] .bg-base-200 {
+	background-color: var(--base-200) !important;
+}
+
+/* Grid and flexbox containers */
+[data-theme="synthwave84"] .rounded-box,
+[data-theme="synthwave84"] .rounded-lg,
+[data-theme="synthwave84"] .rounded {
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Loading states */
+[data-theme="synthwave84"] .loading {
+	color: transparent !important;
+}
+
+[data-theme="synthwave84"] .loading:after {
+	border-color: var(--synthwave-pink) transparent var(--synthwave-pink)
+		transparent;
+}
+
+/* Utility classes from demo */
+[data-theme="synthwave84"] .min-h-screen {
+	background-image: linear-gradient(
+		to bottom,
+		var(--base-100) 0%,
+		var(--base-200) 100%
+	);
+}
+
+/* Form control wrapper */
+[data-theme="synthwave84"] .form-control {
+	position: relative;
+}
+
+[data-theme="synthwave84"] .form-control:focus-within label .label-text {
+	color: var(--synthwave-pink);
+	text-shadow: 0 0 5px rgba(242, 42, 173, 0.3);
+}

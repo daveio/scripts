@@ -1,0 +1,20 @@
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = tab
+insert_final_newline = true
+max_line_length = 120
+tab_width = 2
+ij_continuation_indent_size = 2
+ij_smart_tabs = true
+ij_wrap_on_typing = false
+
+[*.{yaml,yml,rb,md,markdown}]
+indent_style = space
+
+[*.py]
+tab_width = 4
+indent_size = 4
+ij_continuation_indent_size = 4
+

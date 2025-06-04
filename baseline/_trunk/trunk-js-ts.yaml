@@ -1,0 +1,74 @@
+# https://docs.trunk.io/cli | https://docs.trunk.io/reference/trunk-yaml
+actions:
+  definitions:
+    - display_name: lint
+      id: biome-safe-fixes
+      run: bun run biome check --fix
+      triggers:
+        - git_hooks:
+            - pre-commit
+    - display_name: lint
+      id: lint
+      run: bun run lint
+      triggers:
+        - git_hooks:
+            - pre-commit
+    - display_name: typecheck
+      id: typecheck
+      run: bun run typecheck
+      triggers:
+        - git_hooks:
+            - pre-commit
+  enabled:
+    - biome-safe-fixes
+    - lint
+    - typecheck
+    - trunk-announce
+    - trunk-check-pre-push
+    - trunk-fmt-pre-commit
+    - trunk-upgrade-available
+cli:
+  version: 1.22.15
+lint: # https://docs.trunk.io/check/configuration
+  disabled:
+    - codespell
+    - markdown-link-check
+    - prettier
+  enabled:
+    - oxipng@9.1.5
+    - sourcery@1.36.0
+    - semgrep@1.116.0
+    - vale@3.11.2
+    - biome@1.9.4
+    - dustilock@1.2.0
+    - gitleaks@8.26.0
+    - osv-scanner@2.0.2
+    - taplo@0.9.3
+    - trunk-toolbox@0.5.4
+    - actionlint@1.7.7
+    - checkov@3.2.427
+    - git-diff-check
+    - markdownlint@0.45.0
+    - trufflehog@3.88.31
+    - yamllint@1.37.1
+  ignore:
+    - linters:
+        - ALL
+      paths:
+        - worker-configuration.d.ts
+    - linters:
+        - trunk-toolbox
+      paths:
+        - CLAUDE.md
+        - CLAUDE.template.md
+plugins: # https://docs.trunk.io/plugins
+  sources:
+    - id: trunk
+      ref: v1.6.8
+      uri: https://github.com/trunk-io/plugins
+runtimes: # https://docs.trunk.io/runtimes
+  enabled:
+    - go@1.21.0
+    - node@18.20.5
+    - python@3.10.8
+version: 0.1

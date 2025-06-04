@@ -1,0 +1,12 @@
+# Direct Ruff configuration for Trunk
+# Basic settings
+line-length = 80
+target-version = "py313"
+select = ["E", "F", "I"]
+
+# Ignore line length issues in specific places
+[per-file-ignores]
+"bumpinator/commands/actions.py" = ["E501"]
+"bumpinator/commands/packages.py" = ["E501"]
+"bumpinator/updaters/github_updater.py" = ["E501"]
+"bumpinator/updaters/package_updater.py" = ["E501"]

@@ -1,0 +1,8 @@
+[env]
+AAISP_EXPORTER_MISE_ACTIVE = 'true'
+
+[settings]
+env_file = '.env'
+
+[tools]
+go = { version = '1.24.3' }

@@ -1,0 +1,39 @@
+---
+description: Details of how to format and lint, with trunk and other tools.
+globs:
+alwaysApply: true
+---
+# Trunk
+
+- Use trunk if `.trunk/trunk.yaml` exists (https://trunk.io)
+- Check ignored issues with `trunk check --show-existing`
+
+# Formatting
+
+- Prefer `trunk fmt [filename]` or `trunk fmt -a` (all files)
+
+# Linting
+
+- Prefer `trunk check [filename]` or `trunk check -a` (all files)
+- Auto-fix with `trunk check --fix [filename]` or `trunk check --fix -a` (all files)
+- Ignore warnings from `trunk-toolbox`
+
+## TypeScript
+
+- Also run `tsc --noEmit` via package manager:
+  - Bun: `bun run tsc --noEmit`
+  - pnpm: `pnpm run tsc --noEmit`
+
+## Next.js Projects
+
+- Also run `next lint` via package manager:
+  - Bun: `bun run next lint`
+  - pnpm: `pnpm run next lint`
+
+## Biome
+
+- When enabled in trunk or `biome.json` exists, run directly:
+  - `biome check [filename]` or `biome check` (all files)
+  - Safe fixes: `biome check --write [filename]` or `biome check --write` (all files)
+  - Unsafe fixes: `biome check --write --unsafe [filename]` or `biome check --write --unsafe` (all files)
+  - Validate unsafe fixes for functional parity

@@ -1,0 +1,72 @@
+{
+	"$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
+	"files": {
+		"ignore": [
+			"../../node_modules",
+			"../../.trunk",
+			"../../dist",
+			"../../.git",
+			"../../.history",
+			"../../.wrangler",
+			"../../components.d.ts",
+			"../../auto-imports.d.ts",
+			"../../.nuxt",
+			"../../.codacy",
+			"../../.output"
+		]
+	},
+	"css": {
+		"formatter": {
+			"quoteStyle": "single"
+		}
+	},
+	"formatter": {
+		"attributePosition": "auto",
+		"bracketSpacing": true,
+		"enabled": true,
+		"indentStyle": "space",
+		"indentWidth": 2,
+		"lineEnding": "lf",
+		"lineWidth": 120,
+		"useEditorconfig": true
+	},
+	"graphql": {
+		"formatter": {
+			"quoteStyle": "single"
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"semicolons": "asNeeded",
+			"trailingCommas": "none"
+		}
+	},
+	"json": {
+		"parser": {
+			"allowComments": true,
+			"allowTrailingCommas": true
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"correctness": {
+				"noUnusedVariables": "error"
+			},
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "error"
+			}
+		}
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"vcs": {
+		"clientKind": "git",
+		"defaultBranch": "main",
+		"root": "../..",
+		"useIgnoreFile": true
+	}
+}

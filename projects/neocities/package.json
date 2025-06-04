@@ -1,0 +1,20 @@
+{
+	"name": "neocities",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "bun@1.2.13",
+	"dependencies": {
+		"tailwindcss": "4.1.8"
+	},
+	"engines": {
+		"bun": "~1.2.13",
+		"node": "~lts"
+	}
+}

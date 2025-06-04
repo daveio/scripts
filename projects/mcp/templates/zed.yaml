@@ -1,0 +1,31 @@
+$schema: ./template.schema.json
+metadata:
+  name: "Zed Configuration Template"
+  description: "Template for generating Zed editor MCP configuration"
+  version: "1.0.0"
+  outputFormat: "json"
+  targetTool: "zed"
+
+transform:
+  rootKey: "mcpServers"
+  
+  serverFilter:
+    enabledOnly: true
+  
+  serverNameMapping:
+    strategy: "camelCase"
+  
+  propertyMappings:
+    command: "command.path"
+    args: "command.args"
+    env: "command.env"
+  
+  staticProperties:
+    settings: {}
+  
+  conditionalProperties: []
+
+postProcess:
+  removeEmptyObjects: false
+  removeNullValues: true
+  sortKeys: false

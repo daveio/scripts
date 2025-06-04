@@ -1,0 +1,5 @@
+# `ticket-explorer`
+
+## `.plan`
+
+- None

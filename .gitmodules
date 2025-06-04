@@ -1,0 +1,6 @@
+[submodule "cleancut--ultimate-rust-crash-course"]
+	path = submodules/cleancut--ultimate-rust-crash-course
+	url = https://github.com/CleanCut/ultimate_rust_crash_course.git
+[submodule "sanjeed5--awesome-cursor-rules"]
+	path = submodules/sanjeed5--awesome-cursor-rules
+	url = https://github.com/sanjeed5/awesome-cursor-rules-mdc.git

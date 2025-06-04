@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% block extra_head %}<!-- Nothing extra for now -->{% endblock %}
+{% block content %}
+    <div class="container">
+        <section class="scan-section card">
+            <h2>Directory Scanner</h2>
+            <p>Select a directory to scan for duplicate video files.</p>
+            {% if recent_scans %}
+                <div class="recent-scans">
+                    <h3>Recent Scans</h3>
+                    <div class="recent-scans-list">
+                        {% for scan in recent_scans %}
+                            <div class="recent-scan-item">
+                                <div class="recent-scan-info">
+                                    <span class="recent-scan-dir">{{ scan.directory|truncate(30) }}</span>
+                                    <span class="recent-scan-meta">{{ scan.formatted_timestamp }} • {{ scan.total_files }}
+                                    files</span>
+                                </div>
+                                <div class="recent-scan-actions">
+                                    <a href="{{ url_for('view_scan', scan_id=scan.id) }}"
+                                       class="btn-secondary btn-small">
+                                        <i data-feather="eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="recent-scans-more">
+                        <a href="{{ url_for("history") }}" class="btn-link">
+                            <i data-feather="clock"></i> View all scan history
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+            <form id="scan-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="directory-path">Directory Path:</label>
+                    <div class="input-group">
+                        <input type="text"
+                               id="directory-path"
+                               name="directory"
+                               placeholder="/path/to/your/movies"
+                               required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="file-extensions">File Extensions:</label>
+                    <div class="input-group">
+                        <input type="text"
+                               id="file-extensions"
+                               name="extensions"
+                               placeholder=".mp4, .mkv, .avi"
+                               value=".mp4, .mkv, .avi" />
+                    </div>
+                    <small>Comma-separated list of file extensions to scan.</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="include-pattern">Include Pattern (regex):</label>
+                        <input type="text"
+                               id="include-pattern"
+                               name="include_pattern"
+                               placeholder="(optional)" />
+                    </div>
+                    <div class="form-group half">
+                        <label for="exclude-pattern">Exclude Pattern (regex):</label>
+                        <input type="text"
+                               id="exclude-pattern"
+                               name="exclude_pattern"
+                               placeholder="(optional)" />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="scan-btn" class="btn-primary">
+                        <i data-feather="search"></i> Scan Directory
+                    </button>
+                </div>
+            </form>
+        </section>
+        <section id="scan-progress" class="progress-section card hidden">
+            <h2>Scanning Progress</h2>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="progress-text">Searching for video files...</div>
+                <div class="progress-percentage">0%</div>
+            </div>
+        </section>
+        <section id="scan-results" class="results-section hidden">
+            <div class="results-header card">
+                <h2>Scan Results</h2>
+                <div class="results-stats">
+                    <div class="stat-group">
+                        <div class="stat">
+                            <span class="stat-label">Directories:</span>
+                            <span id="stat-total-dirs" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">With Duplicates:</span>
+                            <span id="stat-dirs-with-duplicates" class="stat-value">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-group">
+                        <div class="stat">
+                            <span class="stat-label">Total Files:</span>
+                            <span id="stat-total-files" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Flagged Files:</span>
+                            <span id="stat-flagged-files" class="stat-value">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-group">
+                        <div class="stat">
+                            <span class="stat-label">Total Size:</span>
+                            <span id="stat-total-size" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Potential Savings:</span>
+                            <span id="stat-potential-savings" class="stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="results-actions">
+                    <button id="generate-script-btn" class="btn-primary">
+                        <i data-feather="code"></i> Generate Deletion Script
+                    </button>
+                    <div class="script-type-selector">
+                        <label>
+                            <input type="radio" name="script-type" value="bash" checked />
+                            Bash (Linux/Mac)
+                        </label>
+                        <label>
+                            <input type="radio" name="script-type" value="batch" />
+                            Batch (Windows)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="results-chart-container card">
+                <h3>File Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="file-distribution-chart"></canvas>
+                </div>
+            </div>
+            <div class="directories-list card">
+                <h3>Directories with Duplicate Files</h3>
+                <div class="directory-filter">
+                    <label>
+                        <input type="checkbox" id="show-only-duplicates" checked />
+                        Show only directories with duplicates
+                    </label>
+                </div>
+                <div id="directories-container"></div>
+            </div>
+        </section>
+        <div id="script-modal" class="modal hidden">
+            <div class="modal-content card">
+                <div class="modal-header">
+                    <h3>Deletion Script</h3>
+                    <button class="close-btn" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="script-info">
+                        <p>
+                            This script will delete <span id="script-file-count">0</span> files
+                            totaling <span id="script-file-size">0 MB</span>.
+                        </p>
+                        <p class="warning">
+                            <i data-feather="alert-triangle"></i> Review carefully before
+                            executing.
+                        </p>
+                    </div>
+                    <pre id="script-content" class="script-content"></pre>
+                    <div class="script-actions">
+                        <button id="copy-script-btn" class="btn-secondary">
+                            <i data-feather="clipboard"></i> Copy to Clipboard
+                        </button>
+                        <button id="download-script-btn" class="btn-primary">
+                            <i data-feather="download"></i> Download Script
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/file-scanner.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

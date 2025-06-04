@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>movietool</title>
+        <!-- Favicon -->
+        <link rel="icon"
+              href="{{ url_for('static', filename='img/favicon.svg') }}"
+              type="image/svg+xml" />
+        <!-- Fonts -->
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/jetbrains-mono@1.0.6/css/jetbrains-mono.min.css" />
+        <!-- Feather Icons -->
+        <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Custom CSS -->
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/catppuccin.css') }}" />
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/style.css') }}" />
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body class="theme-frappe">
+        <!-- Background animated icons -->
+        <div class="floating-icons">
+            <div class="floating-icon" style="--delay: 0s; --left: 5%; --top: 20%">🎬</div>
+            <div class="floating-icon" style="--delay: 3s; --left: 80%; --top: 15%">🎥</div>
+            <div class="floating-icon" style="--delay: 6s; --left: 25%; --top: 80%">📽️</div>
+            <div class="floating-icon" style="--delay: 9s; --left: 85%; --top: 75%">📀</div>
+            <div class="floating-icon" style="--delay: 12s; --left: 50%; --top: 40%">🍿</div>
+        </div>
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <i data-feather="film"></i>
+                    <h1>
+                        <code>movietool</code>
+                    </h1>
+                </div>
+                <div class="header-nav">
+                    <a href="{{ url_for("index") }}" class="nav-link">
+                        <i data-feather="home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="{{ url_for("history") }}" class="nav-link">
+                        <i data-feather="clock"></i>
+                        <span>History</span>
+                    </a>
+                    <button id="theme-toggle-btn" aria-label="Toggle theme" class="nav-link">
+                        <i id="theme-icon" data-feather="moon"></i>
+                        <span>Theme</span>
+                    </button>
+                    <button id="sound-toggle-btn"
+                            aria-label="Toggle sound effects"
+                            class="nav-link">
+                        <i id="sound-icon" data-feather="volume-2"></i>
+                        <span>Sound</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        <footer>
+            <div class="footer-container">
+                <p class="footer-note">
+                    Powered by
+                    <a href="https://github.com/catppuccin/catppuccin" target="_blank">Catppuccin</a>
+                    magic ✨
+                </p>
+                <div class="footer-animation">
+                    <div class="moving-dot dot1"></div>
+                    <div class="moving-dot dot2"></div>
+                    <div class="moving-dot dot3"></div>
+                </div>
+            </div>
+        </footer>
+        <!-- Core Scripts -->
+        <script src="{{ url_for('static', filename='js/confetti.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/sounds.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/file-comparison.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
+        <!-- Sound toggle functionality -->
+        <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const soundToggleBtn = document.getElementById("sound-toggle-btn");
+        const soundIcon = document.getElementById("sound-icon");
+
+        // Update icon based on initial state
+        updateSoundIcon();
+
+        // Add event listener for toggling sounds
+        soundToggleBtn.addEventListener("click", () => {
+          const isEnabled = soundManager.toggleSounds();
+          updateSoundIcon();
+
+          // Play a sound if enabling
+          if (isEnabled) {
+            soundManager.playSound("success");
+          }
+        });
+
+        function updateSoundIcon() {
+          if (soundManager.isSoundEnabled()) {
+            soundIcon.setAttribute("data-feather", "volume-2");
+          } else {
+            soundIcon.setAttribute("data-feather", "volume-x");
+          }
+          feather.replace();
+        }
+      });
+        </script>
+        <!-- Initialize Feather Icons -->
+        <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        feather.replace();
+      });
+        </script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

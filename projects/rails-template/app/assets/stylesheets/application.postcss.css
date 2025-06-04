@@ -1,0 +1,12 @@
+/* Entry point for your PostCSS build */
+
+@import "tailwindcss";
+@import "synthwave84.css";
+@import "catppuccin.css";
+
+@plugin "daisyui";
+
+/* Then apply Tailwind utilities */
+@tailwind utilities;
+
+/* Custom styles below this line */

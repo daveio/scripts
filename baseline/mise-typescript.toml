@@ -1,0 +1,23 @@
+[env]
+BASELINE_MISE_ACTIVE = 'true'
+
+[settings]
+env_file = '.env'
+
+[tools]
+bun = { version = '1.2.14' }
+
+[tasks]
+'build' = { run = 'bun run build' }
+'check:trunk' = { run = 'trunk check -a' }
+'check:typescript' = { run = 'bun run check:typescript' }
+'check' = { depends = ['check:typescript', 'check:trunk'] }
+'deploy' = { run = 'bun run deploy' }
+'dev' = { run = 'bun run dev' }
+'fix:trunk' = { run = 'trunk check -a --fix' }
+'fix' = { depends = ['fmt', 'fix:trunk'] }
+'fmt' = { run = 'trunk fmt -a' }
+'format' = { run = 'bun run format' }
+'lint' = { run = 'bun run lint' }
+'test' = { run = 'bun run test' }
+'types' = { run = 'bun run wrangler types' }
