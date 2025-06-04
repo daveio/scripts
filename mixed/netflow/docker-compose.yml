@@ -7,7 +7,6 @@ services:
       GEOIPUPDATE_DB_DIR: /usr/share/GeoIP
       GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
       GEOIPUPDATE_VERBOSE: 1
-      # REMOTE_REDIS: redis:6379
     healthcheck:
       interval: 30s
       retries: 3
@@ -24,6 +23,6 @@ services:
       - 6379:6379
     restart: unless-stopped
     volumes:
-      - ./ntopng-lib:/var/lib/ntopng
-      - ./ntopng-run:/var/run/ntopng
-      - ./ntopng-logs:/var/log/ntopng
+      - ./ntop-lib:/var/lib/ntopng
+      - ./ntop-log:/var/log/ntopng
+      - ./ntop-run:/var/run/ntopng

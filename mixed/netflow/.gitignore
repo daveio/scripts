@@ -1,6 +1,6 @@
-lib/**
-!lib/.keep
-logs/**
-!logs/.keep
-run/**
-!run/.keep
+ntop-lib/**
+!ntop-lib/.keep
+ntop-log/**
+!ntop-log/.keep
+ntop-run/**
+!ntop-run/.keep
