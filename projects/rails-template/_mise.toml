@@ -1,5 +1,5 @@
 [env]
-%%PROJECTNAME%%_MISE_ACTIVE = 'true'
+xxPROJECTNAMExx_MISE_ACTIVE = 'true'
 
 [settings]
 env_file = '.env'
