@@ -2,7 +2,7 @@ services:
   ntopng:
     build: .
     env_file:
-      - ../../.env
+      - .env
     environment:
       GEOIPUPDATE_DB_DIR: /usr/share/GeoIP
       GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
@@ -15,14 +15,18 @@ services:
         - CMD
         - curl
         - -f
-        - http://localhost:3000/lua/rest/v2/get/system/stats.lua
+        - http://localhost:8849/lua/rest/v2/get/system/stats.lua
       timeout: 10s
-    ports:
-      - 2055:2055/udp
-      - 3000:3000
-      - 6379:6379
+    network_mode: host # 8849/tcp, 2055/udp
     restart: unless-stopped
     volumes:
-      - ./ntop-lib:/var/lib/ntopng
-      - ./ntop-log:/var/log/ntopng
-      - ./ntop-run:/var/run/ntopng
+      - ntop-lib:/var/lib/ntopng
+      - ntop-log:/var/log/ntopng
+      - ntop-run:/var/run/ntopng
+volumes:
+  ntop-lib:
+    driver: local
+  ntop-log:
+    driver: local
+  ntop-run:
+    driver: local

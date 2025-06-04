@@ -217,7 +217,7 @@ RUN /usr/local/bin/mise use "redis@${REDIS_VERSION:-latest}" \
   && /usr/local/bin/mise trust \
   && /usr/local/bin/mise install
 
-EXPOSE 3000/tcp 2055/udp 6379/tcp
+EXPOSE 8849/tcp 2055/udp
 
 # Improved healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \

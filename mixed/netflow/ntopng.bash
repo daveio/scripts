@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Log configuration
-LOG_FILE="/var/log/ntopng/ntopng-startup.log"
+LOG_FILE="/var/log/ntopng/startup.log"
 REDIS_LOG="/var/log/ntopng/redis.log"
 
 # Ensure log directory exists
@@ -198,9 +198,7 @@ main() {
 	# Start netflow2ng in background
 	log "Starting netflow2ng..."
 	/usr/local/bin/netflow2ng \
-		--metrics=":9101" \
 		--listen=":2055" \
-		--listen-zmq="tcp://*:5556" \
 		--log-level="info" &
 
 	NETFLOW2NG_PID=$!
@@ -220,10 +218,10 @@ main() {
 
 	# Wait for ntopng to be ready
 	# trunk-ignore(shellcheck/SC2310)
-	check_service "ntopng" 3000 60 "localhost" || exit 1
+	check_service "ntopng" 8849 60 "localhost" || exit 1
 
 	log "All services started successfully"
-	log "ntopng web interface available at http://localhost:3000"
+	log "ntopng web interface available at http://localhost:8849"
 	log "netflow2ng listening on UDP port 2055"
 	if [[ ${USE_LOCAL_REDIS} == true ]]; then
 		log "Using local Redis server at localhost:6379"
