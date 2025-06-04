@@ -17,6 +17,7 @@ Based on analysis of your installed software, development tools, and project dep
 ## 🎯 Priority Implementations (High Impact)
 
 ### 1. Editors & IDEs
+
 | Software | Status | Theme Repository | Impact |
 |----------|---------|------------------|---------|
 | **Visual Studio Code** | ✅ Installed | [`catppuccin/vscode`](https://github.com/catppuccin/vscode) | 🔥 **Critical** |
@@ -25,6 +26,7 @@ Based on analysis of your installed software, development tools, and project dep
 | **Obsidian** | ✅ Installed | [`catppuccin/obsidian`](https://github.com/catppuccin/obsidian) | 🔥 **Critical** |
 
 ### 2. Terminal Environment
+
 | Software | Status | Theme Repository | Impact |
 |----------|---------|------------------|---------|
 | **iTerm2** | ✅ Installed | [`catppuccin/iterm`](https://github.com/catppuccin/iterm) | 🔥 **Critical** |
@@ -33,6 +35,7 @@ Based on analysis of your installed software, development tools, and project dep
 | **Starship** | ✅ Installed (via mise) | [`catppuccin/starship`](https://github.com/catppuccin/starship) | 🔥 **Critical** |
 
 ### 3. Daily Applications
+
 | Software | Status | Theme Repository | Impact |
 |----------|---------|------------------|---------|
 | **Discord** | ✅ Installed | [`catppuccin/discord`](https://github.com/catppuccin/discord) | 🔥 **Critical** |
@@ -44,18 +47,21 @@ Based on analysis of your installed software, development tools, and project dep
 ## 🛠️ Development Tools
 
 ### Code Quality & Linting
+
 | Tool | Status | Theme Repository | Notes |
 |------|---------|------------------|--------|
 | **GitHub** | ✅ Used | [`catppuccin/github`](https://github.com/catppuccin/github) | Web interface theming |
 | **GitKraken** | ✅ Installed | No official theme | Custom styling possible |
 
 ### Build Tools & Package Managers
+
 | Tool | Status | Theme Repository | Notes |
 |------|---------|------------------|--------|
 | **Bun** | ✅ Installed (via mise) | No official theme | Terminal colors inherit |
 | **NPM** | ✅ Used | No official theme | Terminal colors inherit |
 
 ### Databases & Infrastructure
+
 | Tool | Status | Theme Repository | Notes |
 |------|---------|------------------|--------|
 | **Docker** | ✅ Installed | [`catppuccin/docker`](https://github.com/catppuccin/docker) | Desktop app theming |
@@ -67,6 +73,7 @@ Based on analysis of your installed software, development tools, and project dep
 ## 🎨 Framework & Library Integration
 
 ### Web Development
+
 | Framework | Status | Integration | Repository |
 |-----------|---------|-------------|------------|
 | **Tailwind CSS** | ✅ **Active** | [`@catppuccin/tailwindcss`](https://github.com/catppuccin/tailwindcss) | Already using! |
@@ -77,6 +84,7 @@ Based on analysis of your installed software, development tools, and project dep
 | **Nuxt.js** | ✅ Used | Manual integration via Tailwind | Via existing setup |
 
 ### Backend & APIs
+
 | Framework | Status | Integration | Repository |
 |-----------|---------|-------------|------------|
 | **Rails** | ✅ Used | [`catppuccin`](https://rubygems.org/gems/catppuccin) gem | Already using! |
@@ -88,6 +96,7 @@ Based on analysis of your installed software, development tools, and project dep
 ## 📱 Applications & Utilities
 
 ### Media & Entertainment
+
 | Application | Status | Theme Repository | Impact |
 |-------------|---------|------------------|---------|
 | **VLC** | ✅ Installed | [`catppuccin/vlc`](https://github.com/catppuccin/vlc) | 🟡 Medium |
@@ -95,12 +104,14 @@ Based on analysis of your installed software, development tools, and project dep
 | **Jellyfin** | ✅ Installed | [`catppuccin/jellyfin`](https://github.com/catppuccin/jellyfin) | 🟡 Medium |
 
 ### System Utilities
+
 | Application | Status | Theme Repository | Impact |
 |-------------|---------|------------------|---------|
 | **Raycast** | ✅ Installed | [`catppuccin/raycast`](https://github.com/catppuccin/raycast) | 🔥 **Critical** |
 | **Alfred** | Not installed | [`catppuccin/alfred`](https://github.com/catppuccin/alfred) | N/A |
 
 ### Communication
+
 | Application | Status | Theme Repository | Impact |
 |-------------|---------|------------------|---------|
 | **Signal** | ✅ Installed | [`catppuccin/signal`](https://github.com/catppuccin/signal) | 🟡 Medium |
@@ -335,7 +346,7 @@ set -gx FZF_DEFAULT_OPTS "--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38
 
 ### Immediate Actions (High Impact)
 1. **Install core themes** (VS Code, iTerm2, Fish) - 30 minutes
-2. **Configure Starship prompt** - 5 minutes  
+2. **Configure Starship prompt** - 5 minutes
 3. **Set up Raycast theme** - 2 minutes
 4. **Apply Discord theme** - 10 minutes
 
@@ -370,7 +381,3 @@ set -gx FZF_DEFAULT_OPTS "--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38
 - 💬 [Discord Server](https://discord.gg/catppuccin)
 - 🐦 [Twitter](https://twitter.com/catppuccin)
 - 🌍 [Website](https://catppuccin.com)
-
----
-
-*Generated with Claude Code • Last updated: February 6, 2025*

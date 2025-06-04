@@ -10,15 +10,15 @@
  * - Provides beautiful terminal UI with detailed progress information
  */
 
-import { exec as execCallback } from "child_process";
-import * as path from "path";
-import { promisify } from "util";
+import { exec as execCallback } from "node:child_process";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { promisify } from "node:util";
 import * as toml from "@iarna/toml";
 import axios from "axios";
 import boxen from "boxen";
 import chalk from "chalk";
 import { Command } from "commander";
-import * as fs from "fs/promises";
 import * as yaml from "js-yaml";
 import ora from "ora";
 import * as semver from "semver";
@@ -121,9 +121,13 @@ async function discoverRepositories(targetRepo?: string): Promise<string[]> {
 		const baseDir = "/Users/dave/src/github.com/daveio";
 
 		if (targetRepo) {
-			const repoPath = path.isAbsolute(targetRepo)
-				? targetRepo
-				: path.join(baseDir, targetRepo);
+			// Sanitize targetRepo to prevent path traversal attacks
+			const sanitizedTargetRepo = targetRepo
+				.replace(/\.\./g, "")
+				.replace(/[\/\\]/g, "");
+			const repoPath = path.isAbsolute(sanitizedTargetRepo)
+				? sanitizedTargetRepo
+				: path.join(baseDir, sanitizedTargetRepo);
 
 			// Check if the repo directory exists and is a git repository
 			const isDir = await fs
@@ -352,11 +356,7 @@ async function readPyprojectTomlDependencies(
 		const pyproject = toml.parse(content) as PyProject;
 
 		// Poetry dependencies
-		if (
-			pyproject.tool &&
-			pyproject.tool.poetry &&
-			pyproject.tool.poetry.dependencies
-		) {
+		if (pyproject.tool?.poetry?.dependencies) {
 			const poetryDeps = pyproject.tool.poetry.dependencies;
 			for (const name of Object.keys(poetryDeps)) {
 				if (name !== "python") {
@@ -387,7 +387,7 @@ async function readPyprojectTomlDependencies(
 		}
 
 		// PEP 621 dependencies
-		if (pyproject.project && pyproject.project.dependencies) {
+		if (pyproject.project?.dependencies) {
 			const projectDeps = pyproject.project.dependencies;
 			const deps = Array.isArray(projectDeps)
 				? projectDeps
@@ -537,7 +537,7 @@ async function retryWithBackoff<T>(
 			// If it's a rate limit error, use a longer delay
 			if (isRateLimit) {
 				const retryAfter = error.response?.headers?.["retry-after"];
-				if (retryAfter && !isNaN(Number.parseInt(retryAfter))) {
+				if (retryAfter && !Number.isNaN(Number.parseInt(retryAfter))) {
 					delay = Number.parseInt(retryAfter) * 1000;
 				} else {
 					delay = Math.min(delay * 2, maxDelay); // Exponential backoff

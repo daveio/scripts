@@ -4,8 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>New Eden Comms Network (NCN) - Cluster Report</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"
+                integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+                crossorigin="anonymous"></script>
+        <link href="https://rsms.me/inter/inter.css"
+              rel="stylesheet"
+              integrity="sha384-4Jjmh+y0jYfUQgR9+ViWu13pR5P5KNrr1NoZsxiAJjG8Nddh0VQNsXaxYYyE2Nj1"
+              crossorigin="anonymous">
         <style>
         /* Base styles */
         body {
@@ -15,7 +20,7 @@
         .content-section { margin-bottom: 2rem; padding: 1.5rem; border-radius: 0.5rem; }
         .header, .footer { transition: background-color 0.5s, border-color 0.5s; }
         .content-section { transition: background-color 0.5s, border-color 0.5s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
-        
+
         .timeline-table th, .timeline-table td { padding: 0.75rem 1rem; text-align: left; }
         .timeline-table th { font-weight: bold; }
         .timeline-table tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.05); }
@@ -79,7 +84,7 @@
             --accent: #FFAB91; --font-family: 'Courier New', Courier, monospace;
             --button-bg: #FF7043; --button-hover-bg: #F4511E;
         }
-        
+
         /* Applying theme variables */
         body {
             background-color: var(--body-bg, var(--default-body-bg));
@@ -758,7 +763,7 @@
             body.className = ''; // Clear existing theme classes
             body.classList.add(`theme-${theme}`);
             localStorage.setItem('newsTheme', theme);
-            
+
             // Update NCN logo
             if (logoContainer) {
                 logoContainer.innerHTML = factionSVGs[theme] || defaultNCNLogo;

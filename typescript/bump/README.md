@@ -17,7 +17,7 @@ A powerful dependency manager that updates packages across multiple repositories
 ## 📦 Installation
 
 The script is already installed at:
-```
+```bash
 /Users/dave/src/github.com/daveio/myriad/typescript/bump/
 ```
 

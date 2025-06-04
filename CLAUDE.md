@@ -333,18 +333,18 @@ The most common issues are:
 
 Would you like me to help with any specific part of this setup?
 
-```
+```text
 
 ### Example 4: User asking about the bump utility
 
-```
+```text
 To use the bump utility for updating dependencies across your repositories:
 
 1. Basic usage:
    ```bash
    # Update all repositories
    bump
-   
+
    # Update a specific repository
    bump your-repo-name
    ```
@@ -363,7 +363,7 @@ To use the bump utility for updating dependencies across your repositories:
    ```bash
    # Skip committing changes
    bump --no-commit
-   
+
    # Skip pushing changes
    bump --no-push
    ```
@@ -376,7 +376,7 @@ The tool will:
 - Commit and push changes (unless disabled)
 
 It supports JavaScript/TypeScript (package.json), Python (pyproject.toml), and Ruby (Gemfile, gemspec) projects.
-```
+```text
 
 ```markdown
 ## Final Notes
