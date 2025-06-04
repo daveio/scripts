@@ -1,6 +1,6 @@
-ntopng-lib/**
-!ntopng-lib/.keep
-ntopng-logs/**
-!ntopng-logs/.keep
-ntopng-run/**
-!ntopng-run/.keep
+lib/**
+!lib/.keep
+logs/**
+!logs/.keep
+run/**
+!run/.keep
