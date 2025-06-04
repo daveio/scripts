@@ -19,9 +19,8 @@ services:
         - http://localhost:3000/lua/rest/v2/get/system/stats.lua
       timeout: 10s
     ports:
-      - 3000:3000
       - 2055:2055/udp
-      - 8080:8080
+      - 3000:3000
       - 6379:6379
     restart: unless-stopped
     volumes:
