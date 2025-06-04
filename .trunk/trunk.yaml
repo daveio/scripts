@@ -12,6 +12,12 @@ runtimes:
     - node@22.16.0
     - python@3.10.8
 lint:
+  ignore:
+    - linters:
+      - markdownlint-cli2
+      paths:
+      - research/roadman-dialect/ROADMAN-SLANG-DICTIONARY.md
+      - research/roadman-dialect/uk-roadman-slang-dictionary.md
   disabled:
     - prettier
     - flake8
