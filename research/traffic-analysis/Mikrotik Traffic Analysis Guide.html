@@ -113,6 +113,10 @@
             white-space: pre-wrap; /* To respect newlines from API */
             word-wrap: break-word;
         }
+        .code-block-large {
+            max-height: 500px;
+            overflow-y: auto;
+        }
         .close-button {
             color: #aaa;
             float: right;
@@ -533,9 +537,7 @@ cd ntopng-stack</code></pre>
                     <p>
                         Create a file named <code>docker-compose.yml</code> in the <code>ntopng-stack</code> directory with the following content. Remember to adjust the <code>-m "..."</code> local networks parameter for `ntopng` to match your actual network(s), and set the <code>TZ</code> environment variable to your local timezone.
                     </p>
-                    <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow"
-                         style="max-height: 500px;
-                                overflow-y: auto">
+                    <div class="code-block bg-gray-900 text-slate-200 p-4 rounded-lg shadow code-block-large">
                         <button class="copy-button bg-sky-600 hover:bg-sky-700 text-white">Copy</button>
                         <pre><code id="docker-compose-code" class="language-yaml">version: '3.8'
 services:
