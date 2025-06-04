@@ -286,18 +286,20 @@ async function findFiles(dir: string, pattern: string): Promise<string[]> {
 		// The -path patterns need to come before -name to properly exclude directories
 		const findCommand = `find ${escapedDir} -type f \\( -path "*/node_modules/*" -o -path "*/.git/*" \\) -prune -o -type f -name "${pattern}" -print`;
 
-		console.log(`DEBUG: Running find command: ${findCommand}`);
+		console.log("DEBUG: Running find command:", findCommand);
 
 		const { stdout } = await exec(findCommand);
 		const files = stdout.trim().split("\n").filter(Boolean);
 
-		console.log(
-			`DEBUG: Found ${files.length} files matching pattern "${pattern}" in ${dir}`,
-		);
+		console.log("DEBUG: Found files matching pattern in directory:", {
+			count: files.length,
+			pattern,
+			directory: dir,
+		});
 
 		return files;
 	} catch (error) {
-		console.error(`Error finding files: ${error}`);
+		console.error("Error finding files:", error);
 		return [];
 	}
 }
@@ -337,7 +339,7 @@ async function readPackageJsonDependencies(
 			}
 		}
 	} catch (error) {
-		console.error(`Error reading ${filePath}:`, error);
+		console.error("Error reading package.json file:", filePath, error);
 	}
 
 	return dependencies;
@@ -415,7 +417,7 @@ async function readPyprojectTomlDependencies(
 			}
 		}
 	} catch (error) {
-		console.error(`Error reading ${filePath}:`, error);
+		console.error("Error reading pyproject.toml file:", filePath, error);
 	}
 
 	return dependencies;
@@ -452,7 +454,7 @@ async function readGemfileDependencies(
 			}
 		}
 	} catch (error) {
-		console.error(`Error reading ${filePath}:`, error);
+		console.error("Error reading Gemfile:", filePath, error);
 	}
 
 	return dependencies;
@@ -490,7 +492,7 @@ async function readGemspecDependencies(
 			}
 		}
 	} catch (error) {
-		console.error(`Error reading ${filePath}:`, error);
+		console.error("Error reading gemspec file:", filePath, error);
 	}
 
 	return dependencies;
@@ -521,7 +523,7 @@ async function retryWithBackoff<T>(
 	while (true) {
 		try {
 			return await fn();
-		} catch (error: any) {
+		} catch (error: unknown) {
 			attempt++;
 
 			// Check if we've exhausted our retries
@@ -529,14 +531,36 @@ async function retryWithBackoff<T>(
 				throw error;
 			}
 
+			// Type guard for error with response property
+			const hasResponse = (
+				err: unknown,
+			): err is {
+				response?: { status?: number; headers?: Record<string, string> };
+			} => {
+				return typeof err === "object" && err !== null && "response" in err;
+			};
+
+			// Type guard for error with message property
+			const hasMessage = (err: unknown): err is { message: string } => {
+				return (
+					typeof err === "object" &&
+					err !== null &&
+					"message" in err &&
+					typeof (err as { message: unknown }).message === "string"
+				);
+			};
+
 			// Check if the error is due to rate limiting
 			const isRateLimit =
-				error.response?.status === 429 ||
-				(error.message && error.message.includes("rate limit"));
+				(hasResponse(error) && error.response?.status === 429) ||
+				(hasMessage(error) && error.message.includes("rate limit"));
 
 			// If it's a rate limit error, use a longer delay
 			if (isRateLimit) {
-				const retryAfter = error.response?.headers?.["retry-after"];
+				let retryAfter: string | undefined;
+				if (hasResponse(error)) {
+					retryAfter = error.response?.headers?.["retry-after"];
+				}
 				if (retryAfter && !Number.isNaN(Number.parseInt(retryAfter))) {
 					delay = Number.parseInt(retryAfter) * 1000;
 				} else {
@@ -600,7 +624,8 @@ async function processNpmDependenciesBatch(
 						});
 					} catch (error) {
 						console.error(
-							`Error fetching npm package ${chalk.yellow(dep.name)} after retries:`,
+							"Error fetching npm package after retries:",
+							chalk.yellow(dep.name),
 							error,
 						);
 					}
@@ -655,7 +680,8 @@ async function processPypiDependenciesBatch(
 						});
 					} catch (error) {
 						console.error(
-							`Error fetching PyPI package ${chalk.yellow(dep.name)} after retries:`,
+							"Error fetching PyPI package after retries:",
+							chalk.yellow(dep.name),
 							error,
 						);
 					}
@@ -710,7 +736,8 @@ async function processRubygemsDependenciesBatch(
 						});
 					} catch (error) {
 						console.error(
-							`Error fetching RubyGems package ${chalk.yellow(dep.name)} after retries:`,
+							"Error fetching RubyGems package after retries:",
+							chalk.yellow(dep.name),
 							error,
 						);
 					}
@@ -808,26 +835,28 @@ async function checkForUpdates(
 		>();
 
 		// Collect version info from unique dependencies
-		[...uniqueNpmDeps, ...uniquePypiDeps, ...uniqueRubygemsDeps].forEach(
-			(dep) => {
-				if (dep.latestVersion) {
-					versionMap.set(`${dep.manager}:${dep.name}`, {
-						latestVersion: dep.latestVersion,
-						updateType: dep.updateType,
-					});
-				}
-			},
-		);
+		for (const dep of [
+			...uniqueNpmDeps,
+			...uniquePypiDeps,
+			...uniqueRubygemsDeps,
+		]) {
+			if (dep.latestVersion) {
+				versionMap.set(`${dep.manager}:${dep.name}`, {
+					latestVersion: dep.latestVersion,
+					updateType: dep.updateType,
+				});
+			}
+		}
 
 		// Apply collected version info to all dependencies
-		dependencies.forEach((dep) => {
+		for (const dep of dependencies) {
 			const key = `${dep.manager}:${dep.name}`;
 			const versionInfo = versionMap.get(key);
 			if (versionInfo) {
 				dep.latestVersion = versionInfo.latestVersion;
 				dep.updateType = versionInfo.updateType;
 			}
-		});
+		}
 
 		const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 		spinner.succeed(
@@ -880,9 +909,11 @@ function determineUpdateType(
 	// Compare major, minor, and patch versions
 	if (latest.major > current.major) {
 		return "major";
-	} else if (latest.minor > current.minor) {
+	}
+	if (latest.minor > current.minor) {
 		return "minor";
-	} else if (latest.patch > current.patch) {
+	}
+	if (latest.patch > current.patch) {
 		return "patch";
 	}
 
@@ -914,7 +945,7 @@ async function applyUpdates(
 
 	// Process each file
 	for (const [filePath, deps] of fileGroups.entries()) {
-		const fileType = deps[0].fileType;
+		const { fileType } = deps[0];
 		const repoName = deps[0].repository;
 
 		try {
@@ -985,7 +1016,7 @@ async function applyUpdates(
 				}
 			}
 		} catch (error) {
-			console.error(`Error updating ${filePath}:`, error);
+			console.error("Error updating file:", filePath, error);
 		}
 	}
 
@@ -1024,7 +1055,7 @@ function updatePackageJson(
 		}
 
 		// Preserve formatting
-		return JSON.stringify(pkg, null, 2) + "\n";
+		return `${JSON.stringify(pkg, null, 2)}\n`;
 	} catch (error) {
 		console.error("Error updating package.json:", error);
 		return content;
@@ -1041,36 +1072,37 @@ function updatePyprojectToml(
 		const updatedLines = [...lines];
 
 		for (const dep of dependencies) {
-			if (!dep.latestVersion) continue;
+			if (!dep.latestVersion) {
+				continue;
+			}
 
-			// Handle different formats of Python dependencies
-			const poetryPattern = new RegExp(
-				`(\\s*${dep.name}\\s*=\\s*["\'])([^"']+)(["\'])`,
-			);
-			const pep621Pattern = new RegExp(
-				`(\\s*["']${dep.name}\\s*)([<>=!~]+\\s*[0-9.]+)(["'])`,
-			);
-
+			// Handle different formats of Python dependencies with string matching
 			for (let i = 0; i < lines.length; i++) {
-				const poetryMatch = lines[i].match(poetryPattern);
-				if (poetryMatch) {
-					updatedLines[i] = lines[i].replace(
-						poetryPattern,
-						`$1${dep.latestVersion}$3`,
-					);
-					continue;
+				const line = lines[i];
+
+				// Poetry format: dependency = "version"
+				if (line.includes(`${dep.name} =`) && line.includes('"')) {
+					const parts = line.split('"');
+					if (parts.length >= 3) {
+						parts[1] = dep.latestVersion;
+						updatedLines[i] = parts.join('"');
+						continue;
+					}
 				}
 
-				const pep621Match = lines[i].match(pep621Pattern);
-				if (pep621Match && pep621Match.length >= 3) {
-					// Extract the operator (>=, ==, etc.)
-					const operatorMatch = pep621Match[2].match(/^([<>=!~]+)/);
-					const operator =
-						operatorMatch && operatorMatch.length > 1 ? operatorMatch[1] : "==";
-					updatedLines[i] = lines[i].replace(
-						pep621Pattern,
-						`$1${operator}${dep.latestVersion}$3`,
-					);
+				// PEP 621 format: "dependency>=version"
+				if (line.includes(`"${dep.name}`) || line.includes(`'${dep.name}`)) {
+					// Extract operator and update version
+					const match = line.match(/["']([^"']+)["']/);
+					if (match) {
+						const depString = match[1];
+						if (depString.startsWith(dep.name)) {
+							const operatorMatch = depString.match(/^[^<>=!~]+([<>=!~]+)/);
+							const operator = operatorMatch ? operatorMatch[1] : "==";
+							const newDepString = `${dep.name}${operator}${dep.latestVersion}`;
+							updatedLines[i] = line.replace(match[0], `"${newDepString}"`);
+						}
+					}
 				}
 			}
 		}
@@ -1089,19 +1121,43 @@ function updateGemfile(content: string, dependencies: Dependency[]): string {
 		const updatedLines = [...lines];
 
 		for (const dep of dependencies) {
-			if (!dep.latestVersion) continue;
+			if (!dep.latestVersion) {
+				continue;
+			}
 
-			const gemPattern = new RegExp(
-				`(\\s*gem\\s+["']${dep.name}["']\\s*,\\s*["'])([^"']+)(["'])`,
-			);
-
+			// Use string matching instead of dynamic RegExp for security
 			for (let i = 0; i < lines.length; i++) {
-				const match = lines[i].match(gemPattern);
-				if (match) {
-					updatedLines[i] = lines[i].replace(
-						gemPattern,
-						`$1${dep.latestVersion}$3`,
-					);
+				const line = lines[i];
+
+				// Match gem entries with single or double quotes
+				const singleQuotePattern = `gem '${dep.name}',`;
+				const doubleQuotePattern = `gem "${dep.name}",`;
+
+				if (
+					line.includes(singleQuotePattern) ||
+					line.includes(doubleQuotePattern)
+				) {
+					// Extract and replace version string safely
+					const quoteChar = line.includes(singleQuotePattern) ? "'" : '"';
+					const gemDeclaration = `gem ${quoteChar}${dep.name}${quoteChar},`;
+
+					if (line.includes(gemDeclaration)) {
+						// Find the version part and replace it
+						const parts = line.split(gemDeclaration);
+						if (parts.length === 2) {
+							const beforeGem = parts[0];
+							const afterGem = parts[1].trim();
+
+							// Extract version string
+							const versionMatch = afterGem.match(/^(['"])([^'"]+)\1/);
+							if (versionMatch) {
+								const versionQuote = versionMatch[1];
+								const restOfLine = afterGem.substring(versionMatch[0].length);
+								updatedLines[i] =
+									`${beforeGem}${gemDeclaration} ${versionQuote}${dep.latestVersion}${versionQuote}${restOfLine}`;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1120,19 +1176,49 @@ function updateGemspec(content: string, dependencies: Dependency[]): string {
 		const updatedLines = [...lines];
 
 		for (const dep of dependencies) {
-			if (!dep.latestVersion) continue;
+			if (!dep.latestVersion) {
+				continue;
+			}
 
-			const gemspecPattern = new RegExp(
-				`(\\.add_(?:development_|runtime_)?dependency\\s*\\(?["']${dep.name}["']\\s*,\\s*["'])([^"']+)(["'])`,
-			);
-
+			// Use string matching instead of dynamic RegExp for security
 			for (let i = 0; i < lines.length; i++) {
-				const match = lines[i].match(gemspecPattern);
-				if (match) {
-					updatedLines[i] = lines[i].replace(
-						gemspecPattern,
-						`$1${dep.latestVersion}$3`,
-					);
+				const line = lines[i];
+
+				// Match add_dependency, add_development_dependency, or add_runtime_dependency
+				const dependencyPatterns = [
+					`.add_dependency('${dep.name}',`,
+					`.add_dependency("${dep.name}",`,
+					`.add_development_dependency('${dep.name}',`,
+					`.add_development_dependency("${dep.name}",`,
+					`.add_runtime_dependency('${dep.name}',`,
+					`.add_runtime_dependency("${dep.name}",`,
+					`.add_dependency '${dep.name}',`,
+					`.add_dependency "${dep.name}",`,
+					`.add_development_dependency '${dep.name}',`,
+					`.add_development_dependency "${dep.name}",`,
+					`.add_runtime_dependency '${dep.name}',`,
+					`.add_runtime_dependency "${dep.name}",`,
+				];
+
+				for (const pattern of dependencyPatterns) {
+					if (line.includes(pattern)) {
+						// Extract and replace version string safely
+						const parts = line.split(pattern);
+						if (parts.length === 2) {
+							const beforeDep = parts[0];
+							const afterDep = parts[1].trim();
+
+							// Extract version string
+							const versionMatch = afterDep.match(/^(['"])([^'"]+)\1/);
+							if (versionMatch) {
+								const versionQuote = versionMatch[1];
+								const restOfLine = afterDep.substring(versionMatch[0].length);
+								updatedLines[i] =
+									`${beforeDep}${pattern} ${versionQuote}${dep.latestVersion}${versionQuote}${restOfLine}`;
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1341,18 +1427,31 @@ function printUpdateSummary(
 		if (!byRepo.has(dep.repository)) {
 			byRepo.set(dep.repository, new Map<string, Dependency[]>());
 		}
-		const repoMap = byRepo.get(dep.repository)!;
-
-		if (!repoMap.has(dep.name)) {
-			repoMap.set(dep.name, []);
+		const repoMap = byRepo.get(dep.repository);
+		if (!repoMap) {
+			byRepo.set(dep.repository, new Map<string, Dependency[]>());
 		}
-		repoMap.get(dep.name)!.push(dep);
+		const validRepoMap = byRepo.get(dep.repository);
+		if (!validRepoMap) {
+			continue; // Skip if still no valid repo map
+		}
+
+		if (!validRepoMap.has(dep.name)) {
+			validRepoMap.set(dep.name, []);
+		}
+		const depArray = validRepoMap.get(dep.name);
+		if (depArray) {
+			depArray.push(dep);
+		}
 
 		// Organize by dependency
 		if (!byDep.has(dep.name)) {
 			byDep.set(dep.name, new Map<string, Dependency>());
 		}
-		byDep.get(dep.name)!.set(dep.repository, dep);
+		const depMap = byDep.get(dep.name);
+		if (depMap) {
+			depMap.set(dep.repository, dep);
+		}
 	}
 
 	// Generate summary output
