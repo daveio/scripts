@@ -15,6 +15,10 @@ runtimes:
 lint:
   ignore:
     - linters:
+      - ALL
+      paths:
+      - submodules
+    - linters:
       - markdownlint-cli2
       paths:
       - research/roadman-dialect/ROADMAN-SLANG-DICTIONARY.md
