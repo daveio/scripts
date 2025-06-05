@@ -1,14 +1,3 @@
-[env]
-DNSTOOL_MISE_ACTIVE = 'true'
-
-[settings]
-env_file = '.env'
-
-[tools]
-python = { version = '3.13.3' }
-bun = { version = '1.2.14' }
-node = { version = 'lts' }
-
 [tasks]
 'rules' = { run = '/usr/bin/env python3 scripts/rules.py' }
 'deploy' = { run = 'bun run deploy' }

@@ -30,13 +30,10 @@ The project uses Trunk for linting and code quality checks:
 
 ```bash
 # Run all linters
-trunk check
+trunk check -a --show-existing .
 
 # Format code
-trunk fmt
-
-# Check for vulnerabilities
-trunk scan
+trunk fmt -a .
 ```
 
 ### Docker

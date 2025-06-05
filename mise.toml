@@ -5,8 +5,11 @@ MYRIAD_MISE_ACTIVE = 'true'
 env_file = '.env'
 
 [tools]
+python = { version = '3.13.4' }
 node = { version = 'lts' }
 bun = { version = '1.2.15' }
+go = { version = '1.24.3' }
+'gem:neocities' = { version = '0.0.20' }
 
 [tasks]
 'hello' = { run = "echo 'Hello, world!'" }

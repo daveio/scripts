@@ -1,12 +1,3 @@
-[env]
-MOVIETOOL_MISE_ACTIVE = 'true'
-
-[settings]
-env_file = '.env'
-
-[tools]
-python = { version = '3.13.3' }
-
 [tasks]
 'start' = { run = 'uv run start.py' }
 'reset' = { run = 'rm instance/*.db' }

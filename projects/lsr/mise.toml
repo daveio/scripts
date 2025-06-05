@@ -1,8 +1,0 @@
-[env]
-LSR_MISE_ACTIVE = 'true'
-
-[settings]
-env_file = '.env'
-
-[tools]
-python = '3.13.3'

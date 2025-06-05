@@ -3,30 +3,29 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sirupsen/logrus"
+	"resty.dev/v3"
 )
 
 //nolint:funlen
 func main() {
 	flag.Parse()
-	logrus.SetFormatter(&logrus.JSONFormatter{
-		TimestampFormat:   "",
-		DisableTimestamp:  false,
-		DisableHTMLEscape: false,
-		DataKey:           "",
-		FieldMap:          nil,
-		CallerPrettyfier:  nil,
-		PrettyPrint:       false,
-	})
+
+	// Configure slog with JSON output
+	opts := &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, opts))
+	slog.SetDefault(logger)
 
 	var (
 		listenPort    = "9902"
@@ -98,23 +97,27 @@ func main() {
 		if (intParseErr == nil) && (customPortInt > 0) && (customPortInt < 65536) {
 			listenPort = customPort
 		} else {
-			logrus.Fatal("AAISP_EXPORTER_PORT is set but invalid, bailing out")
+			slog.Error("AAISP_EXPORTER_PORT is set but invalid, bailing out")
+			os.Exit(1)
 		}
 	}
 
-	logrus.Infof("starting aaisp-exporter on port %s", listenPort)
+	slog.Info("starting aaisp-exporter", "port", listenPort)
 
-	logrus.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", listenPort), nil))
+	// trunk-ignore(semgrep/go.lang.security.audit.net.use-tls.use-tls): Internal service, no TLS needed.
+	err := http.ListenAndServe(fmt.Sprintf(":%s", listenPort), nil)
+	slog.Error("server failed", "error", err)
+	os.Exit(1)
 }
 
 func ScheduleUpdates(gauges AaGauges, refreshSecs int) {
 	for {
 		vals, err := GetUpdatedValues()
 		if err != nil {
-			logrus.Error("scheduled update failed")
+			slog.Error("scheduled update failed")
 		} else {
 			if len(vals.Info) < 1 {
-				logrus.Error("no data returned from CHAOS API")
+				slog.Error("no data returned from CHAOS API")
 			} else {
 				for _, lineVal := range vals.Info {
 					UpdateGauge(lineVal.QuotaMonthly, lineVal.LineID, &gauges.QuotaMonthly)
@@ -134,19 +137,23 @@ func ScheduleUpdates(gauges AaGauges, refreshSecs int) {
 func GetUpdatedValues() (AaResponse, error) {
 	aaControlUsername, usernameSet := os.LookupEnv("AAISP_CONTROL_USERNAME")
 	if !usernameSet {
-		logrus.Fatal("AAISP_CONTROL_USERNAME is not set, bailing out")
+		slog.Error("AAISP_CONTROL_USERNAME is not set, bailing out")
+		os.Exit(1)
 	} else {
-		if resty.IsStringEmpty(aaControlUsername) {
-			logrus.Fatal("AAISP_CONTROL_USERNAME is set but empty, bailing out")
+		if strings.TrimSpace(aaControlUsername) == "" {
+			slog.Error("AAISP_CONTROL_USERNAME is set but empty, bailing out")
+			os.Exit(1)
 		}
 	}
 
 	aaControlPassword, passwordSet := os.LookupEnv("AAISP_CONTROL_PASSWORD")
 	if !passwordSet {
-		logrus.Fatal("AAISP_CONTROL_PASSWORD is not set, bailing out")
+		slog.Error("AAISP_CONTROL_PASSWORD is not set, bailing out")
+		os.Exit(1)
 	} else {
-		if resty.IsStringEmpty(aaControlPassword) {
-			logrus.Fatal("AAISP_CONTROL_PASSWORD is set but empty, bailing out")
+		if strings.TrimSpace(aaControlPassword) == "" {
+			slog.Error("AAISP_CONTROL_PASSWORD is set but empty, bailing out")
+			os.Exit(1)
 		}
 	}
 
