@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Public Key
+    url: https://dave.io/go/key
+    about: If you want to encrypt your issue, grab my key here.
