@@ -10,6 +10,8 @@ ARG REDIS_VERSION="8.0.2"
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
+
+
 # Enable BuildKit features
 ARG BUILDKIT_INLINE_CACHE=1
 
@@ -30,7 +32,12 @@ FROM base AS runtime-deps
 # Install runtime prerequisites with mount cache and ALL pinned versions
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
+    case "${TARGETPLATFORM}" in \
+      "linux/amd64") LIBRADCLI_VERSION="1.2.11-1+b2" ;; \
+      "linux/arm64") LIBRADCLI_VERSION="1.2.11-1+b1" ;; \
+      *) LIBRADCLI_VERSION="1.2.11-1+b1" ;; \
+    esac \
+    && sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
       curl=7.88.1-10+deb12u12 \
@@ -72,7 +79,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libpcre2-16-0=10.42-1 \
       libpcre2-32-0=10.42-1 \
       libpcre2-posix3=10.42-1 \
-      libradcli4=1.2.11-1+b1 \
+      libradcli4=${LIBRADCLI_VERSION} \
       librrd8=1.7.2-4+b8 \
       libsensors-config=1:3.6.0-7.1 \
       libsensors5=1:3.6.0-7.1 \
@@ -91,7 +98,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       wget=1.21.3-1+deb12u1 \
     && rm -rf \
       /tmp/* \
-      /var/cache/* \
       /var/log/* \
       /var/lib/apt/lists/*
 
@@ -112,7 +118,12 @@ FROM runtime-deps AS build-deps
 # Install build prerequisites with mount cache and ALL pinned versions
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update \
+    case "${TARGETPLATFORM}" in \
+      "linux/amd64") LIBRADCLI_VERSION="1.2.11-1+b2" ;; \
+      "linux/arm64") LIBRADCLI_VERSION="1.2.11-1+b1" ;; \
+      *) LIBRADCLI_VERSION="1.2.11-1+b1" ;; \
+    esac \
+    && apt-get update \
     && apt-get install -y --no-install-recommends \
       autoconf=2.71-3 \
       autogen=1:5.18.16-5 \
@@ -139,7 +150,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libnl-genl-3-dev=3.7.0-0.2+b1 \
       libpango1.0-dev=1.50.12+ds-1 \
       libpcap-dev=1.10.3-1 \
-      libradcli-dev=1.2.11-1+b1 \
+      libradcli-dev=${LIBRADCLI_VERSION} \
       libreadline-dev=8.2-1.3 \
       librrd-dev=1.7.2-4+b8 \
       libsnmp-dev=5.9.3+dfsg-2 \
