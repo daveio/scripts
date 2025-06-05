@@ -87,12 +87,13 @@ function replacePlaceholders(content: string, envVars: EnvVars): string {
  * Main function
  */
 async function main() {
-  const repoRoot = process.cwd()
-  const netflowDir = join(repoRoot, 'projects', 'netflow')
 
+  const cwd = process.cwd()
+  // Always read template from the netflow directory
+  const netflowDir = join(cwd, 'projects', 'netflow')
   const templatePath = join(netflowDir, 'docker-compose.template.yml')
-  const envPath = join(netflowDir, '.env')
-  const outputPath = join(repoRoot, 'docker-compose.yml')
+  const envPath = join(cwd, '.env') // still use .env from cwd
+  const outputPath = join(cwd, 'docker-compose.yml') // output to cwd
 
   console.log('🚀 Starting netflow deployment preparation...\n')
 
