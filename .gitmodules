@@ -4,3 +4,6 @@
 [submodule "sanjeed5--awesome-cursor-rules"]
 	path = submodules/sanjeed5--awesome-cursor-rules
 	url = https://github.com/sanjeed5/awesome-cursor-rules-mdc.git
+[submodule "schemastore--schemastore"]
+	path = submodules/schemastore--schemastore
+	url = https://github.com/SchemaStore/schemastore.git
