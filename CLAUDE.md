@@ -68,26 +68,26 @@ graph TB
     A --> F[boneyard/]
     A --> G[submodules/]
     A --> H[images/]
-    
+
     B --> B1[Web Apps<br/>Next.js/React]
     B --> B2[System Tools<br/>Go/Python/TypeScript]
     B --> B3[Development Tools<br/>CLI/Automation]
     B --> B4[Infrastructure<br/>Docker/Configs]
-    
+
     C --> C1[Templates]
     C --> C2[Cursor Rules]
     C --> C3[GitHub Actions]
     C --> C4[Configurations]
-    
+
     D --> D1[Utility Scripts<br/>TypeScript/Python]
-    
+
     E --> E1[Technical Docs]
     E --> E2[Research Notes]
-    
+
     F --> F1[Archived Projects]
-    
+
     G --> G1[Third-party Resources]
-    
+
     H --> H1[Project Assets]
 ```
 
@@ -236,11 +236,11 @@ graph LR
     A[images/] --> B[projects/]
     A --> C[multipurpose/]
     A --> D[myriad/]
-    
+
     B --> B1[social/jpeg/]
     B --> B2[social/png/]
     B --> B3[square/]
-    
+
     C --> C1[Generic Icons]
     D --> D1[Myriad Branding]
 ```
@@ -299,9 +299,9 @@ graph LR
 
 ## 📝 REFERENCE LINKS
 
-- **Bun Documentation**: https://bun.sh/docs
-- **TypeScript Handbook**: https://www.typescriptlang.org/docs/
-- **Cloudflare Workers**: https://developers.cloudflare.com/workers/
-- **Next.js Documentation**: https://nextjs.org/docs
-- **Radix UI**: https://www.radix-ui.com/
-- **Tailwind CSS**: https://tailwindcss.com/docs
+- [Bun Documentation](https://bun.sh/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Radix UI Documentation](https://www.radix-ui.com/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)

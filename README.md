@@ -2,13 +2,13 @@
 
 *One repository to rule them all, one repository to find them...*
 
-Welcome to my delightfully chaotic software development playground where I've collected everything from DNS analysis tools to network traffic monitors, because apparently I have commitment issues with single-purpose repositories. 
+Welcome to my delightfully chaotic software development playground where I've collected everything from DNS analysis tools to network traffic monitors, because apparently I have commitment issues with single-purpose repositories.
 
 This monorepo is like that drawer in your kitchen where you keep "useful stuff" – except this one actually **is** useful, and I can find things in it.
 
 ## What's All This Then? 🤔
 
-Myriad is my personal software laboratory where I experiment with, develop, and unleash various tools upon an unsuspecting world. It's a polyglot paradise featuring everything from Next.js web applications to Go system utilities, Ruby gems, Python scripts, and the occasional RouterOS configuration that definitely won't brick your network equipment* (*warranty void if it does).
+Myriad is my personal software laboratory where I experiment with, develop, and unleash various tools upon an unsuspecting world. It's a polyglot paradise featuring everything from Next.js web applications to Go system utilities, Ruby gems, Python scripts, and the occasional RouterOS configuration that definitely won't brick your network equipment. Warranty void if it does.
 
 Think of it as a Swiss Army knife, if Swiss Army knives came with TypeScript, had dependency graphs that resembled modern art, and occasionally made you question your life choices.
 
@@ -19,24 +19,24 @@ graph TB
     A --> D[🛠️ Utility Scripts]
     A --> E[📚 Research & Documentation]
     A --> F[🗃️ The Boneyard]
-    
+
     B --> B1[🌐 Web Applications]
     B --> B2[🔧 System Tools]
     B --> B3[⚡ CLI Utilities]
     B --> B4[🐳 Infrastructure]
-    
+
     C --> C1[🎯 Project Templates]
     C --> C2[📋 Cursor Rules]
     C --> C3[⚙️ GitHub Actions]
     C --> C4[🔍 Quality Configs]
-    
+
     D --> D1[🔄 Automation Scripts]
     D --> D2[📦 Docker Tools]
     D --> D3[🔐 Security Utilities]
-    
+
     E --> E1[📖 Technical Guides]
     E --> E2[🧪 Experiments]
-    
+
     F --> F1[💀 Archived Projects]
     F --> F2[🔄 Restoration Service]
 ```
@@ -176,7 +176,7 @@ The `research/` directory is where I document my journey through the seven circl
 The `images/` directory contains logos, icons, and other visual assets organized with the obsessive-compulsive precision of someone who's tired of hunting for that one PNG file.
 
 **Structure:**
-```
+```plaintext
 images/
 ├── projects/        # Project-specific branding
 │   ├── social/      # Social media formats
@@ -226,7 +226,7 @@ See [LICENSE](LICENSE) for the legal bits. TL;DR: Don't be evil, give credit whe
 
 - **Issues**: [GitHub Issues](https://github.com/daveio/myriad/issues) - For when things break (they will)
 - **Discussions**: [GitHub Discussions](https://github.com/daveio/myriad/discussions) - For philosophical debates about semicolons
-- **Email**: dave@dave.io - For when GitHub is down (which happens more than we'd like)
+- **Email**: <dave@dave.io> - For when GitHub is down (which happens more than we'd like)
 
 ## Final Thoughts 💭
 
