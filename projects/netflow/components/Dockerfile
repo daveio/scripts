@@ -221,7 +221,7 @@ EXPOSE 8849/tcp 2055/udp
 
 # Improved healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:3000/lua/rest/v2/get/system/stats.lua || exit 1
+    CMD curl -f http://localhost:8849/lua/rest/v2/get/system/stats.lua || exit 1
 
 # Use exec form for better signal handling
 ENTRYPOINT ["/opt/ntopng.bash"]

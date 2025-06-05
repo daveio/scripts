@@ -6,11 +6,13 @@
  * This script reads docker-compose.template.yml, replaces placeholders with values
  * from .env file, and writes the result to docker-compose.yml for deployment.
  *
- * Usage: bun run netflow (from repo root)
+ * Usage: bun run netflow [--qnap] (from repo root)
+ * Options:
+ *   --qnap  Use QNAP-specific template to avoid ZFS build issues
  */
 
-import { existsSync } from 'fs'
-import { join } from 'path'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 interface EnvVars {
   [key: string]: string
@@ -37,8 +39,9 @@ async function parseEnvFile(filePath: string): Promise<EnvVars> {
 
     // Parse KEY=VALUE or KEY="VALUE"
     const match = trimmed.match(/^([^=]+)=(.*)$/)
-    if (match) {
-      const [, key, value] = match
+    if (match && match[1] !== undefined && match[2] !== undefined) {
+      const key = match[1]
+      const value = match[2]
       // Remove surrounding quotes if present
       envVars[key.trim()] = value.trim().replace(/^["']|["']$/g, '')
     }
@@ -84,18 +87,38 @@ function replacePlaceholders(content: string, envVars: EnvVars): string {
 }
 
 /**
+ * Detect if we're running on QNAP or if --qnap flag is used
+ */
+function shouldUseQnapTemplate(): boolean {
+  // Check command line arguments
+  if (process.argv.includes('--qnap')) {
+    return true
+  }
+
+  // Auto-detect QNAP environment
+  if (existsSync('/etc/config/uLinux.conf') || existsSync('/share/CACHEDEV1_DATA') || process.env.QNAP_PLATFORM) {
+    return true
+  }
+
+  return false
+}
+
+/**
  * Main function
  */
 async function main() {
-
   const cwd = process.cwd()
+  const useQnap = shouldUseQnapTemplate()
+
   // Always read template from the netflow directory
   const netflowDir = join(cwd, 'projects', 'netflow')
-  const templatePath = join(netflowDir, 'docker-compose.template.yml')
+  const templateFileName = useQnap ? 'docker-compose.qnap.template.yml' : 'docker-compose.template.yml'
+  const templatePath = join(netflowDir, templateFileName)
   const envPath = join(cwd, '.env') // still use .env from cwd
   const outputPath = join(cwd, 'docker-compose.yml') // output to cwd
 
-  console.log('🚀 Starting netflow deployment preparation...\n')
+  console.log('🚀 Starting netflow deployment preparation...')
+  console.log(`📋 Using ${useQnap ? 'QNAP-specific' : 'standard'} template\n`)
 
   // Check if template file exists
   if (!existsSync(templatePath)) {
@@ -110,7 +133,7 @@ async function main() {
     console.log(`✅ Loaded ${Object.keys(envVars).length} environment variables\n`)
 
     // Read template file
-    console.log('📄 Reading docker-compose template...')
+    console.log(`📄 Reading docker-compose template (${templateFileName})...`)
     const templateFile = Bun.file(templatePath)
     const templateContent = await templateFile.text()
     console.log('✅ Template loaded successfully\n')
@@ -135,7 +158,7 @@ async function main() {
 }
 
 // Run the script
-if (import.meta.main) {
+if (process.argv[1]?.endsWith('netflow.ts') || process.argv[1]?.endsWith('netflow.js')) {
   main().catch((error) => {
     console.error('❌ Unexpected error:', error)
     process.exit(1)
