@@ -3,7 +3,6 @@ set -euo pipefail
 
 # Log configuration
 LOG_FILE="/var/log/ntopng/startup.log"
-REDIS_LOG="/var/log/ntopng/redis.log"
 
 # Ensure log directory exists
 mkdir -p "$(dirname "${LOG_FILE}")"
