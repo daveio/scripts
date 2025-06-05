@@ -14,5 +14,8 @@
   "type": "module",
   "scripts": {
     "netflow": "bun run bin/netflow.ts"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
   }
 }
