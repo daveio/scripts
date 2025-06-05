@@ -162,7 +162,7 @@ main() {
     # Ensure PID directory exists
     mkdir -p /var/run/ntopng
 
-    /usr/local/bin/mise exec redis@latest -- redis-server \
+    /usr/local/bin/redis-server \
       --daemonize yes \
       --logfile "${REDIS_LOG}" \
       --loglevel notice \

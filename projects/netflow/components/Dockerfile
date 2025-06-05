@@ -176,11 +176,12 @@ RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
     && mise install go@${GO_VERSION} \
     && mise which go
 
-# Install Redis with mise and cache the installation  
+# Install Redis with mise and cache the installation process
 RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
     mise use redis@${REDIS_VERSION} \
     && mise install redis@${REDIS_VERSION} \
-    && mise which redis-server
+    && mise which redis-server \
+    && test -f /root/.local/share/mise/installs/redis/${REDIS_VERSION}/bin/redis-server
 
 # Set mise environment for subsequent stages
 ENV PATH="/root/.local/share/mise/installs/go/${GO_VERSION}/bin:/root/.local/share/mise/installs/redis/${REDIS_VERSION}/bin:${PATH}"
@@ -244,8 +245,10 @@ FROM runtime-deps AS final
 COPY --from=netflow2ng-builder /usr/local/bin/netflow2ng /usr/local/bin/netflow2ng
 COPY --from=ntopng-builder /tmp/ntopng-install/usr/local/ /usr/local/
 
-# Copy mise installations for runtime
-COPY --from=mise-tools /root/.local/share/mise/installs/redis/${REDIS_VERSION}/ /usr/local/
+# Copy Redis installation from mise-tools stage
+COPY --from=mise-tools /root/.local/share/mise/installs/redis/ /usr/local/redis/
+# Create symlinks for Redis binaries
+RUN ln -sf /usr/local/redis/${REDIS_VERSION}/bin/* /usr/local/bin/
 
 # Create non-root users for security
 RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
