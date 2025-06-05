@@ -155,36 +155,27 @@ main() {
   # Update GeoIP databases if credentials provided
   update_geoip_databases
 
-  # Start Redis in background only if using local Redis
+  # Start Redis server only if using local Redis
   if [[ ${USE_LOCAL_REDIS} == true ]]; then
-    log "Starting local Redis server..."
+    log "Starting local Redis server with configuration..."
 
-    # Ensure PID directory exists
-    mkdir -p /var/run/ntopng
+    # Start Redis with our configuration file
+    /usr/bin/redis-server /etc/redis/redis.conf &
+    REDIS_PID=$!
 
-    /usr/local/bin/redis-server \
-      --daemonize yes \
-      --logfile "${REDIS_LOG}" \
-      --loglevel notice \
-      --pidfile /var/run/ntopng/redis.pid \
-      --port "${REDIS_PORT}" \
-      --bind 0.0.0.0 \
-      --dir /var/run/ntopng \
-      --appendonly yes
+    # Wait for Redis to start and write PID file
+    sleep 3
 
-    # Wait a moment for Redis to write PID file and bind to port
-    sleep 2
-
-    REDIS_PID=$(cat /var/run/ntopng/redis.pid 2>/dev/null || echo "")
-    if [[ -z ${REDIS_PID} ]]; then
-      log "ERROR: Failed to read Redis PID file"
+    # Verify Redis is running
+    if ! kill -0 "${REDIS_PID}" 2>/dev/null; then
+      log "ERROR: Redis failed to start"
       exit 1
     fi
 
     # trunk-ignore(shellcheck/SC2310)
     check_service "Redis" "${REDIS_PORT}" 30 "localhost" || exit 1
+    log "Redis server started successfully with PID: ${REDIS_PID}"
   else
-    REDIS_PID="" # No local Redis PID when using remote Redis
     log "Skipping local Redis startup, using remote Redis at ${REDIS_HOST}:${REDIS_PORT}"
     # Check if remote Redis is accessible with shorter timeout since it should already be running
     # trunk-ignore(shellcheck/SC2310)

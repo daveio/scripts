@@ -6,7 +6,7 @@ ARG NDPI_VERSION="4.14"
 ARG NTOP_VERSION="6.4"
 ARG NETFLOW2NG_VERSION="0.0.5"
 ARG GO_VERSION="1.24.3"
-ARG REDIS_VERSION="8.0.2"
+
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
@@ -176,15 +176,8 @@ RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
     && mise install go@${GO_VERSION} \
     && mise which go
 
-# Install Redis with mise and cache the installation process
-RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
-    mise use redis@${REDIS_VERSION} \
-    && mise install redis@${REDIS_VERSION} \
-    && mise which redis-server \
-    && test -f /root/.local/share/mise/installs/redis/${REDIS_VERSION}/bin/redis-server
-
 # Set mise environment for subsequent stages
-ENV PATH="/root/.local/share/mise/installs/go/${GO_VERSION}/bin:/root/.local/share/mise/installs/redis/${REDIS_VERSION}/bin:${PATH}"
+ENV PATH="/root/.local/share/mise/installs/go/${GO_VERSION}/bin:${PATH}"
 
 # Source code preparation stage
 FROM mise-tools AS source-prepared
@@ -243,12 +236,15 @@ FROM runtime-deps AS final
 
 # Copy built binaries from build stages
 COPY --from=netflow2ng-builder /usr/local/bin/netflow2ng /usr/local/bin/netflow2ng
-COPY --from=ntopng-builder /tmp/ntopng-install/usr/local/ /usr/local/
 
-# Copy Redis installation from mise-tools stage
-COPY --from=mise-tools /root/.local/share/mise/installs/redis/ /usr/local/redis/
-# Create symlinks for Redis binaries
-RUN ln -sf /usr/local/redis/${REDIS_VERSION}/bin/* /usr/local/bin/
+# Copy ntopng installation using shell to handle missing directories
+RUN --mount=from=ntopng-builder,source=/tmp/ntopng-install,target=/mnt/install \
+    if [ -d /mnt/install/usr/local/bin ]; then cp -r /mnt/install/usr/local/bin/* /usr/local/bin/ 2>/dev/null || true; fi \
+    && if [ -d /mnt/install/usr/local/lib ]; then cp -r /mnt/install/usr/local/lib/* /usr/local/lib/ 2>/dev/null || true; fi \
+    && if [ -d /mnt/install/usr/local/share ]; then cp -r /mnt/install/usr/local/share/* /usr/local/share/ 2>/dev/null || true; fi \
+    && if [ -d /mnt/install/usr/local/include ]; then cp -r /mnt/install/usr/local/include/* /usr/local/include/ 2>/dev/null || true; fi
+
+
 
 # Create non-root users for security
 RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
@@ -259,6 +255,9 @@ RUN mkdir -p \
       /etc/ntopng \
       /var/lib/ntopng \
       /var/log/ntopng \
+      /var/lib/redis \
+      /var/log/redis \
+      /var/run/redis \
       /usr/share/GeoIP \
       /etc/GeoIP \
       /var/lock
@@ -279,6 +278,7 @@ RUN touch /usr/share/GeoIP/GeoLite2-Country.mmdb \
 
 # Copy configuration files
 COPY ntopng.conf /etc/ntopng.conf
+COPY redis.conf /etc/redis/redis.conf
 COPY ntopng.bash /opt/ntopng.bash
 COPY geoip.bash /opt/geoip.bash
 
@@ -295,7 +295,12 @@ RUN touch /etc/GeoIP.conf \
       /usr/local/share/ntopng \
       /usr/share/GeoIP \
       /etc/GeoIP \
-      /etc/GeoIP.conf
+      /etc/GeoIP.conf \
+    && chown -R redis:redis \
+      /var/lib/redis \
+      /var/log/redis \
+      /var/run/redis \
+      /etc/redis/redis.conf
 
 USER ntopng
 
@@ -320,7 +325,7 @@ LABEL \
     org.opencontainers.image.version="6.4-001-optimized-pinned" \
     org.opencontainers.image.base.digest="sha256:cff42e2bf1063ae6a8729c148a1003357d5befa2fe7656c5d0c99e62b68aab7d" \
     netflow.go.version="${GO_VERSION}" \
-    netflow.redis.version="${REDIS_VERSION}" \
+
     netflow.ndpi.version="${NDPI_VERSION}" \
     netflow.ntop.version="${NTOP_VERSION}" \
     netflow.netflow2ng.version="${NETFLOW2NG_VERSION}"

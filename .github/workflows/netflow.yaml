@@ -5,7 +5,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: netflow
   GO_VERSION: 1.24.3
-  REDIS_VERSION: 8.0.2
   NDPI_VERSION: 4.14
   NTOP_VERSION: 6.4
   NETFLOW2NG_VERSION: 0.0.5
@@ -23,10 +22,10 @@ jobs:
         run: |
           DOCKERFILE_HASH=$(sha256sum projects/netflow/components/Dockerfile | cut -d' ' -f1)
           PATCH_HASH="${{ hashFiles('projects/netflow/components/allow-flows-from-netflow2ng.patch') }}"
-          CACHE_KEY="deps-${{ env.NDPI_VERSION }}-${{ env.NTOP_VERSION }}-${{ env.NETFLOW2NG_VERSION }}-${{ env.GO_VERSION }}-${{ env.REDIS_VERSION }}-${{ env.GEOIPUPDATE_VERSION }}-${DOCKERFILE_HASH}-${PATCH_HASH}"
+          CACHE_KEY="deps-${{ env.NDPI_VERSION }}-${{ env.NTOP_VERSION }}-${{ env.NETFLOW2NG_VERSION }}-${{ env.GO_VERSION }}-${{ env.GEOIPUPDATE_VERSION }}-${DOCKERFILE_HASH}-${PATCH_HASH}"
           echo "key=$CACHE_KEY" >> "$GITHUB_OUTPUT"
           echo "dockerfile-hash=${DOCKERFILE_HASH}" >> "$GITHUB_OUTPUT"
-          echo "packages-hash=$(echo '${{ env.GO_VERSION }}${{ env.REDIS_VERSION }}${{ env.GEOIPUPDATE_VERSION }}' | sha256sum | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "packages-hash=$(echo '${{ env.GO_VERSION }}${{ env.GEOIPUPDATE_VERSION }}' | sha256sum | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - name: dependency-cache
         id: dependency-cache
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
@@ -132,7 +131,6 @@ jobs:
             type=gha,scope=${{ matrix.platform }}-build-deps-${{ needs.prefetch.outputs.cache-key }}
             type=gha,scope=${{ matrix.platform }}-mise-tools-${{ needs.prefetch.outputs.cache-key }}
             type=gha,scope=shared-mise-go-${{ env.GO_VERSION }}
-            type=gha,scope=shared-mise-redis-${{ env.REDIS_VERSION }}
             type=gha,scope=shared-deps-${{ needs.prefetch.outputs.cache-key }}
             type=gha,scope=shared-packages-${{ needs.prefetch.outputs.cache-key }}
             type=gha,scope=shared-geoip-${{ env.GEOIPUPDATE_VERSION }}
@@ -143,7 +141,6 @@ jobs:
             type=gha,mode=max,scope=${{ matrix.platform }}-build-deps-${{ needs.prefetch.outputs.cache-key }}
             type=gha,mode=max,scope=${{ matrix.platform }}-mise-tools-${{ needs.prefetch.outputs.cache-key }}
             type=gha,mode=max,scope=shared-mise-go-${{ env.GO_VERSION }}
-            type=gha,mode=max,scope=shared-mise-redis-${{ env.REDIS_VERSION }}
             type=gha,mode=max,scope=shared-deps-${{ needs.prefetch.outputs.cache-key }}
             type=gha,mode=max,scope=shared-packages-${{ needs.prefetch.outputs.cache-key }}
             type=gha,mode=max,scope=shared-geoip-${{ env.GEOIPUPDATE_VERSION }}
@@ -156,7 +153,6 @@ jobs:
             BUILDPLATFORM=${{ matrix.platform }}
             TARGETPLATFORM=linux/${{ matrix.platform }}
             GO_VERSION=${{ env.GO_VERSION }}
-            REDIS_VERSION=${{ env.REDIS_VERSION }}
             NDPI_VERSION=${{ env.NDPI_VERSION }}
             NTOP_VERSION=${{ env.NTOP_VERSION }}
             NETFLOW2NG_VERSION=${{ env.NETFLOW2NG_VERSION }}
