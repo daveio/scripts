@@ -135,9 +135,9 @@ services:
         WORKDIR /mise
 
         # Download source code with version pinning
-        RUN git clone --depth 1 --branch ${NDPI_VERSION} https://github.com/ntop/nDPI.git nDPI \
-            && git clone --depth 1 --branch ${NTOP_VERSION} https://github.com/ntop/ntopng.git ntopng \
-            && git clone --depth 1 --branch v${NETFLOW2NG_VERSION} https://github.com/synfinatic/netflow2ng.git netflow2ng
+        RUN git clone --depth 1 --branch $${NDPI_VERSION} https://github.com/ntop/nDPI.git nDPI \
+            && git clone --depth 1 --branch $${NTOP_VERSION} https://github.com/ntop/ntopng.git ntopng \
+            && git clone --depth 1 --branch v$${NETFLOW2NG_VERSION} https://github.com/synfinatic/netflow2ng.git netflow2ng
 
         # Create and copy patch file
         RUN cat > ntopng/allow-flows-from-netflow2ng.patch << 'EOF'
@@ -183,7 +183,7 @@ services:
         # Build nDPI library
         RUN ./autogen.sh "--with-only-libndpi" \
             && ./configure --enable-static --disable-debug \
-            && make -j"$(nproc)"
+            && make -j"$$(nproc)"
 
         WORKDIR /mise/ntopng
 
@@ -191,7 +191,7 @@ services:
         RUN patch -p1 -i "allow-flows-from-netflow2ng.patch" \
             && ./autogen.sh \
             && ./configure --enable-static --disable-debug \
-            && make -j"$(nproc)" \
+            && make -j"$$(nproc)" \
             && make install
 
         FROM stage1
@@ -285,31 +285,31 @@ services:
         REDIS_LOG="/var/log/ntopng/redis.log"
 
         # Ensure log directory exists
-        mkdir -p "$(dirname "${LOG_FILE}")"
+        mkdir -p "$$(dirname "$${LOG_FILE}")"
 
         # Function to log messages with timestamps
         log() {
         	local timestamp
-        	timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-        	echo "[${timestamp}] $*" | tee -a "${LOG_FILE}"
+        	timestamp=$$(date '+%Y-%m-%d %H:%M:%S')
+        	echo "[$${timestamp}] $$*" | tee -a "$${LOG_FILE}"
         }
 
         # Function to check if a service is running
         check_service() {
-        	local service_name="$1"
-        	local port="$2"
-        	local timeout="${3:-30}"
-        	local host="${4:-localhost}"
+        	local service_name="$$1"
+        	local port="$$2"
+        	local timeout="$${3:-30}"
+        	local host="$${4:-localhost}"
 
-        	log "Checking if ${service_name} is available on ${host}:${port}..."
-        	for _ in $(seq 1 "${timeout}"); do
-        		if nc -z "${host}" "${port}" 2>/dev/null; then
-        			log "${service_name} is ready on ${host}:${port}"
+        	log "Checking if $${service_name} is available on $${host}:$${port}..."
+        	for _ in $$(seq 1 "$${timeout}"); do
+        		if nc -z "$${host}" "$${port}" 2>/dev/null; then
+        			log "$${service_name} is ready on $${host}:$${port}"
         			return 0
         		fi
         		sleep 1
         	done
-        	log "ERROR: ${service_name} failed to start on ${host}:${port} after ${timeout}s"
+        	log "ERROR: $${service_name} failed to start on $${host}:$${port} after $${timeout}s"
         	return 1
         }
 
@@ -318,31 +318,31 @@ services:
         	log "Received shutdown signal, cleaning up..."
 
         	# Stop ntopng
-        	if [[ -n ${NTOPNG_PID-} ]]; then
-        		log "Stopping ntopng (PID: ${NTOPNG_PID})..."
-        		kill -TERM "${NTOPNG_PID}" 2>/dev/null || true
-        		wait "${NTOPNG_PID}" 2>/dev/null || true
+        	if [[ -n $${NTOPNG_PID-} ]]; then
+        		log "Stopping ntopng (PID: $${NTOPNG_PID})..."
+        		kill -TERM "$${NTOPNG_PID}" 2>/dev/null || true
+        		wait "$${NTOPNG_PID}" 2>/dev/null || true
         	fi
 
         	# Stop netflow2ng
-        	if [[ -n ${NETFLOW2NG_PID-} ]]; then
-        		log "Stopping netflow2ng (PID: ${NETFLOW2NG_PID})..."
-        		kill -TERM "${NETFLOW2NG_PID}" 2>/dev/null || true
-        		wait "${NETFLOW2NG_PID}" 2>/dev/null || true
+        	if [[ -n $${NETFLOW2NG_PID-} ]]; then
+        		log "Stopping netflow2ng (PID: $${NETFLOW2NG_PID})..."
+        		kill -TERM "$${NETFLOW2NG_PID}" 2>/dev/null || true
+        		wait "$${NETFLOW2NG_PID}" 2>/dev/null || true
         	fi
 
         	# Stop Redis only if we started it locally
-        	if [[ -n ${REDIS_PID-} ]] && [[ ${USE_LOCAL_REDIS-} == true ]]; then
-        		log "Stopping Redis (PID: ${REDIS_PID})..."
+        	if [[ -n $${REDIS_PID-} ]] && [[ $${USE_LOCAL_REDIS-} == true ]]; then
+        		log "Stopping Redis (PID: $${REDIS_PID})..."
         		# Try graceful shutdown first
-        		redis-cli -p "${REDIS_PORT:-6379}" shutdown || true
+        		redis-cli -p "$${REDIS_PORT:-6379}" shutdown || true
         		# If Redis is still running after 5 seconds, force kill it
         		sleep 2
-        		if kill -0 "${REDIS_PID}" 2>/dev/null; then
+        		if kill -0 "$${REDIS_PID}" 2>/dev/null; then
         			log "Redis still running, force stopping..."
-        			kill -TERM "${REDIS_PID}" 2>/dev/null || true
+        			kill -TERM "$${REDIS_PID}" 2>/dev/null || true
         			sleep 3
-        			kill -KILL "${REDIS_PID}" 2>/dev/null || true
+        			kill -KILL "$${REDIS_PID}" 2>/dev/null || true
         		fi
         	fi
 
@@ -357,7 +357,7 @@ services:
         	log "Checking GeoIP configuration..."
 
         	# Check if we have valid credentials
-        	if [[ ${GEOIPUPDATE_ACCOUNT_ID:-0} != "0" ]] && [[ -n ${GEOIPUPDATE_LICENSE_KEY-} ]] && [[ ${GEOIPUPDATE_LICENSE_KEY-} != "000000000000" ]]; then
+        	if [[ $${GEOIPUPDATE_ACCOUNT_ID:-0} != "0" ]] && [[ -n $${GEOIPUPDATE_LICENSE_KEY-} ]] && [[ $${GEOIPUPDATE_LICENSE_KEY-} != "000000000000" ]]; then
         		log "Valid GeoIP credentials detected, attempting database update..."
 
         		# Create GeoIP configuration file
@@ -367,17 +367,17 @@ services:
         # Generated automatically by ntopng startup script
 
         # Account ID and License Key from environment variables
-        AccountID ${GEOIPUPDATE_ACCOUNT_ID}
-        LicenseKey ${GEOIPUPDATE_LICENSE_KEY}
+        AccountID $${GEOIPUPDATE_ACCOUNT_ID}
+        LicenseKey $${GEOIPUPDATE_LICENSE_KEY}
 
         # Database directory
-        DatabaseDirectory ${GEOIPUPDATE_DB_DIR:-/usr/share/GeoIP}
+        DatabaseDirectory $${GEOIPUPDATE_DB_DIR:-/usr/share/GeoIP}
 
         # Edition IDs to download
         EditionIDs GeoLite2-Country GeoLite2-City GeoLite2-ASN
         GEOF
 
-        		if geoipupdate -v 2>&1 | tee -a "${LOG_FILE}"; then
+        		if geoipupdate -v 2>&1 | tee -a "$${LOG_FILE}"; then
         			log "✓ GeoIP databases updated successfully"
         			log "Geographic IP location features enabled"
         		else
@@ -392,35 +392,35 @@ services:
 
         # Function to parse Redis configuration
         parse_redis_config() {
-        	if [[ -n ${REMOTE_REDIS-} ]]; then
+        	if [[ -n $${REMOTE_REDIS-} ]]; then
         		# Parse REMOTE_REDIS in format HOSTNAME:PORT or just HOSTNAME
-        		if [[ ${REMOTE_REDIS} == *":"* ]]; then
-        			REDIS_HOST="${REMOTE_REDIS%:*}"
-        			REDIS_PORT="${REMOTE_REDIS#*:}"
+        		if [[ $${REMOTE_REDIS} == *":"* ]]; then
+        			REDIS_HOST="$${REMOTE_REDIS%:*}"
+        			REDIS_PORT="$${REMOTE_REDIS#*:}"
 
         			# Validate port is numeric and in valid range
-        			if ! [[ ${REDIS_PORT} =~ ^[0-9]+$ ]] || [[ ${REDIS_PORT} -lt 1 ]] || [[ ${REDIS_PORT} -gt 65535 ]]; then
-        				log "ERROR: Invalid Redis port '${REDIS_PORT}' in REMOTE_REDIS. Must be 1-65535"
+        			if ! [[ $${REDIS_PORT} =~ ^[0-9]+$$ ]] || [[ $${REDIS_PORT} -lt 1 ]] || [[ $${REDIS_PORT} -gt 65535 ]]; then
+        				log "ERROR: Invalid Redis port '$${REDIS_PORT}' in REMOTE_REDIS. Must be 1-65535"
         				exit 1
         			fi
         		else
-        			REDIS_HOST="${REMOTE_REDIS}"
+        			REDIS_HOST="$${REMOTE_REDIS}"
         			REDIS_PORT="6379"
         		fi
 
         		# Validate hostname is not empty
-        		if [[ -z ${REDIS_HOST} ]] || [[ ${REDIS_HOST} == *" "* ]]; then
-        			log "ERROR: Invalid Redis hostname '${REDIS_HOST}' in REMOTE_REDIS"
+        		if [[ -z $${REDIS_HOST} ]] || [[ $${REDIS_HOST} == *" "* ]]; then
+        			log "ERROR: Invalid Redis hostname '$${REDIS_HOST}' in REMOTE_REDIS"
         			exit 1
         		fi
 
         		USE_LOCAL_REDIS=false
-        		log "Using remote Redis server: ${REDIS_HOST}:${REDIS_PORT}"
+        		log "Using remote Redis server: $${REDIS_HOST}:$${REDIS_PORT}"
         	else
         		REDIS_HOST="localhost"
         		REDIS_PORT="6379"
         		USE_LOCAL_REDIS=true
-        		log "Using local Redis server: ${REDIS_HOST}:${REDIS_PORT}"
+        		log "Using local Redis server: $${REDIS_HOST}:$${REDIS_PORT}"
         	fi
         }
 
@@ -435,7 +435,7 @@ services:
         	update_geoip_databases
 
         	# Start Redis in background only if using local Redis
-        	if [[ ${USE_LOCAL_REDIS} == true ]]; then
+        	if [[ $${USE_LOCAL_REDIS} == true ]]; then
         		log "Starting local Redis server..."
 
         		# Ensure PID directory exists
@@ -443,10 +443,10 @@ services:
 
         		/usr/local/bin/mise exec redis@latest -- redis-server \
         			--daemonize yes \
-        			--logfile "${REDIS_LOG}" \
+        			--logfile "$${REDIS_LOG}" \
         			--loglevel notice \
         			--pidfile /var/run/ntopng/redis.pid \
-        			--port "${REDIS_PORT}" \
+        			--port "$${REDIS_PORT}" \
         			--bind 0.0.0.0 \
         			--dir /var/run/ntopng \
         			--appendonly yes
@@ -454,21 +454,21 @@ services:
         		# Wait a moment for Redis to write PID file and bind to port
         		sleep 2
 
-        		REDIS_PID=$(cat /var/run/ntopng/redis.pid 2>/dev/null || echo "")
-        		if [[ -z ${REDIS_PID} ]]; then
+        		REDIS_PID=$$(cat /var/run/ntopng/redis.pid 2>/dev/null || echo "")
+        		if [[ -z $${REDIS_PID} ]]; then
         			log "ERROR: Failed to read Redis PID file"
         			exit 1
         		fi
 
         		# trunk-ignore(shellcheck/SC2310)
-        		check_service "Redis" "${REDIS_PORT}" 30 "localhost" || exit 1
+        		check_service "Redis" "$${REDIS_PORT}" 30 "localhost" || exit 1
         	else
         		REDIS_PID="" # No local Redis PID when using remote Redis
-        		log "Skipping local Redis startup, using remote Redis at ${REDIS_HOST}:${REDIS_PORT}"
+        		log "Skipping local Redis startup, using remote Redis at $${REDIS_HOST}:$${REDIS_PORT}"
         		# Check if remote Redis is accessible with shorter timeout since it should already be running
         		# trunk-ignore(shellcheck/SC2310)
-        		check_service "Remote Redis" "${REDIS_PORT}" 5 "${REDIS_HOST}" || {
-        			log "ERROR: Cannot connect to remote Redis at ${REDIS_HOST}:${REDIS_PORT}"
+        		check_service "Remote Redis" "$${REDIS_PORT}" 5 "$${REDIS_HOST}" || {
+        			log "ERROR: Cannot connect to remote Redis at $${REDIS_HOST}:$${REDIS_PORT}"
         			log "Please ensure the remote Redis server is running and accessible"
         			exit 1
         		}
@@ -480,8 +480,8 @@ services:
         		--listen=":2055" \
         		--log-level="info" &
 
-        	NETFLOW2NG_PID=$!
-        	log "netflow2ng started with PID: ${NETFLOW2NG_PID}"
+        	NETFLOW2NG_PID=$$!
+        	log "netflow2ng started with PID: $${NETFLOW2NG_PID}"
 
         	# Give netflow2ng time to start
         	sleep 5
@@ -489,11 +489,11 @@ services:
         	# Start ntopng in foreground
         	log "Starting ntopng..."
         	/usr/local/bin/ntopng /etc/ntopng.conf \
-        		--redis "${REDIS_HOST}" \
-        		--redis-port "${REDIS_PORT}" &
-        	NTOPNG_PID=$!
+        		--redis "$${REDIS_HOST}" \
+        		--redis-port "$${REDIS_PORT}" &
+        	NTOPNG_PID=$$!
 
-        	log "ntopng started with PID: ${NTOPNG_PID}"
+        	log "ntopng started with PID: $${NTOPNG_PID}"
 
         	# Wait for ntopng to be ready
         	# trunk-ignore(shellcheck/SC2310)
@@ -502,14 +502,14 @@ services:
         	log "All services started successfully"
         	log "ntopng web interface available at http://localhost:8849"
         	log "netflow2ng listening on UDP port 2055"
-        	if [[ ${USE_LOCAL_REDIS} == true ]]; then
+        	if [[ $${USE_LOCAL_REDIS} == true ]]; then
         		log "Using local Redis server at localhost:6379"
         	else
-        		log "Using remote Redis server at ${REDIS_HOST}:${REDIS_PORT}"
+        		log "Using remote Redis server at $${REDIS_HOST}:$${REDIS_PORT}"
         	fi
 
         	# Wait for ntopng to finish
-        	wait "${NTOPNG_PID}"
+        	wait "$${NTOPNG_PID}"
         }
 
         # Check for required files
@@ -529,7 +529,7 @@ services:
         fi
 
         # Start main function
-        main "$@"
+        main "$$@"
         EOF
 
         # Create GeoIP setup script
@@ -541,7 +541,7 @@ services:
         # This script helps set up MaxMind GeoLite2 databases for geographic IP lookups
 
         declare -r GEOIP_DIR="/usr/share/GeoIP"
-        export SCRIPT_NAME="${0##*/}"
+        export SCRIPT_NAME="$${0##*/}"
         declare -r MAXMIND_URL="https://www.maxmind.com/en/geolite2/signup"
 
         # Color codes for better output
@@ -553,20 +553,20 @@ services:
 
         # Print colored output
         print_status() {
-        	local color="${1}"
+        	local color="$${1}"
         	shift
-        	printf "${color}%s${NC}\n" "${*}"
+        	printf "$${color}%s$${NC}\n" "$${*}"
         }
 
-        print_error() { print_status "${RED}" "❌ ERROR: ${*}"; }
-        print_success() { print_status "${GREEN}" "✅ ${*}"; }
-        print_warning() { print_status "${YELLOW}" "⚠️  ${*}"; }
-        print_info() { print_status "${BLUE}" "ℹ️  ${*}"; }
+        print_error() { print_status "$${RED}" "❌ ERROR: $${*}"; }
+        print_success() { print_status "$${GREEN}" "✅ $${*}"; }
+        print_warning() { print_status "$${YELLOW}" "⚠️  $${*}"; }
+        print_info() { print_status "$${BLUE}" "ℹ️  $${*}"; }
 
         # Usage information
         usage() {
         	cat <<EOFGEO
-        Usage: ${SCRIPT_NAME} [options]
+        Usage: $${SCRIPT_NAME} [options]
 
         Interactive MaxMind GeoLite2 database setup for ntopng container.
 
@@ -579,17 +579,17 @@ services:
             -k, --key KEY       License key (for silent mode)
 
         Examples:
-            ${SCRIPT_NAME}                           # Interactive setup
-            ${SCRIPT_NAME} --check                   # Check status
-            ${SCRIPT_NAME} --update                  # Update databases
-            ${SCRIPT_NAME} -s -a 123456 -k ABC123... # Silent setup
+            $${SCRIPT_NAME}                           # Interactive setup
+            $${SCRIPT_NAME} --check                   # Check status
+            $${SCRIPT_NAME} --update                  # Update databases
+            $${SCRIPT_NAME} -s -a 123456 -k ABC123... # Silent setup
 
         EOFGEO
         }
 
         # Check if running inside the container
         check_environment() {
-        	if [[ ! -d ${GEOIP_DIR} ]]; then
+        	if [[ ! -d $${GEOIP_DIR} ]]; then
         		print_error "GeoIP directory not found. Are you running this inside the ntopng container?"
         		exit 1
         	fi
@@ -602,8 +602,8 @@ services:
 
         # Validate license key format (MaxMind keys are 16 characters)
         validate_license_key() {
-        	local key="${1}"
-        	if [[ ! ${key} =~ ^[A-Za-z0-9_]{16}$ ]]; then
+        	local key="$${1}"
+        	if [[ ! $${key} =~ ^[A-Za-z0-9_]{16}$$ ]]; then
         		print_error "License key must be exactly 16 alphanumeric characters (including underscores)"
         		return 1
         	fi
@@ -612,8 +612,8 @@ services:
 
         # Validate account ID (numeric)
         validate_account_id() {
-        	local id="${1}"
-        	if [[ ! ${id} =~ ^[0-9]+$ ]] || [[ ${id} == "0" ]]; then
+        	local id="$${1}"
+        	if [[ ! $${id} =~ ^[0-9]+$$ ]] || [[ $${id} == "0" ]]; then
         		print_error "Account ID must be a positive number"
         		return 1
         	fi
@@ -626,12 +626,12 @@ services:
         	echo
 
         	# Check environment variables
-        	local account_id="${GEOIPUPDATE_ACCOUNT_ID:-0}"
-        	local license_key="${GEOIPUPDATE_LICENSE_KEY:-000000000000}"
+        	local account_id="$${GEOIPUPDATE_ACCOUNT_ID:-0}"
+        	local license_key="$${GEOIPUPDATE_LICENSE_KEY:-000000000000}"
 
-        	printf "%-25s: %s\n" "Account ID" "${account_id}"
-        	printf "%-25s: %s\n" "License Key" "${license_key:0:4}***"
-        	printf "%-25s: %s\n" "Database Directory" "${GEOIPUPDATE_DB_DIR:-${GEOIP_DIR}}"
+        	printf "%-25s: %s\n" "Account ID" "$${account_id}"
+        	printf "%-25s: %s\n" "License Key" "$${license_key:0:4}***"
+        	printf "%-25s: %s\n" "Database Directory" "$${GEOIPUPDATE_DB_DIR:-$${GEOIP_DIR}}"
         	echo
 
         	# Check database files
@@ -639,36 +639,36 @@ services:
         	local -a databases=("GeoLite2-Country.mmdb" "GeoLite2-City.mmdb" "GeoLite2-ASN.mmdb")
         	local found_valid=false
 
-        	for db in "${databases[@]}"; do
-        		local db_path="${GEOIP_DIR}/${db}"
-        		if [[ -f ${db_path} ]]; then
+        	for db in "$${databases[@]}"; do
+        		local db_path="$${GEOIP_DIR}/$${db}"
+        		if [[ -f $${db_path} ]]; then
         			local size
-        			if ! size=$(stat -f%z "${db_path}" 2>/dev/null); then
-        				if ! size=$(stat -c%s "${db_path}" 2>/dev/null); then
+        			if ! size=$$(stat -f%z "$${db_path}" 2>/dev/null); then
+        				if ! size=$$(stat -c%s "$${db_path}" 2>/dev/null); then
         					size="0"
         				fi
         			fi
-        			if [[ ${size} -gt 1024 ]]; then
+        			if [[ $${size} -gt 1024 ]]; then
         				local mod_time
-        				if ! mod_time=$(stat -f%Sm -t%Y-%m-%d "${db_path}" 2>/dev/null); then
-        					if ! mod_time=$(stat -c%y "${db_path}" 2>/dev/null); then
+        				if ! mod_time=$$(stat -f%Sm -t%Y-%m-%d "$${db_path}" 2>/dev/null); then
+        					if ! mod_time=$$(stat -c%y "$${db_path}" 2>/dev/null); then
         						mod_time="unknown"
         					else
-        						mod_time=$(echo "${mod_time}" | cut -d' ' -f1)
+        						mod_time=$$(echo "$${mod_time}" | cut -d' ' -f1)
         					fi
         				fi
-        				printf "  ✅ %-20s (%s bytes, modified: %s)\n" "${db}" "${size}" "${mod_time}"
+        				printf "  ✅ %-20s (%s bytes, modified: %s)\n" "$${db}" "$${size}" "$${mod_time}"
         				found_valid=true
         			else
-        				printf "  ⚠️  %-20s (placeholder file)\n" "${db}"
+        				printf "  ⚠️  %-20s (placeholder file)\n" "$${db}"
         			fi
         		else
-        			printf "  ❌ %-20s (missing)\n" "${db}"
+        			printf "  ❌ %-20s (missing)\n" "$${db}"
         		fi
         	done
 
         	echo
-        	if [[ ${found_valid} == true ]]; then
+        	if [[ $${found_valid} == true ]]; then
         		print_success "GeoIP databases are available and appear to be valid"
         	else
         		print_warning "No valid GeoIP databases found - only placeholder files"
@@ -679,10 +679,10 @@ services:
         update_databases() {
         	print_info "Updating GeoIP databases..."
 
-        	local account_id="${GEOIPUPDATE_ACCOUNT_ID:-0}"
-        	local license_key="${GEOIPUPDATE_LICENSE_KEY:-000000000000}"
+        	local account_id="$${GEOIPUPDATE_ACCOUNT_ID:-0}"
+        	local license_key="$${GEOIPUPDATE_LICENSE_KEY:-000000000000}"
 
-        	if [[ ${account_id} == "0" ]] || [[ ${license_key} == "000000000000" ]]; then
+        	if [[ $${account_id} == "0" ]] || [[ $${license_key} == "000000000000" ]]; then
         		print_error "Valid credentials not found in environment variables"
         		print_info "Set GEOIPUPDATE_ACCOUNT_ID and GEOIPUPDATE_LICENSE_KEY, or run interactive setup"
         		exit 1
@@ -701,11 +701,11 @@ services:
 
         # Interactive credential input with validation
         get_credentials() {
-        	local -n account_ref=${1}
-        	local -n key_ref=${2}
+        	local -n account_ref=$${1}
+        	local -n key_ref=$${2}
 
         	print_info "MaxMind GeoLite2 Setup Instructions:"
-        	echo "1. Visit: ${MAXMIND_URL}"
+        	echo "1. Visit: $${MAXMIND_URL}"
         	echo "2. Create a free account"
         	echo "3. Generate a license key in your account dashboard"
         	echo "4. Note your Account ID and License Key"
@@ -714,9 +714,9 @@ services:
         	# Get Account ID with validation
         	while true; do
         		read -rp "Enter your MaxMind Account ID: " account_ref
-        		validate_account_id "${account_ref}"
-        		local account_valid=${?}
-        		if [[ ${account_valid} -eq 0 ]]; then
+        		validate_account_id "$${account_ref}"
+        		local account_valid=$${?}
+        		if [[ $${account_valid} -eq 0 ]]; then
         			break
         		fi
         		print_warning "Please enter a valid Account ID"
@@ -725,9 +725,9 @@ services:
         	# Get License Key with validation
         	while true; do
         		read -rp "Enter your MaxMind License Key: " key_ref
-        		validate_license_key "${key_ref}"
-        		local key_valid=${?}
-        		if [[ ${key_valid} -eq 0 ]]; then
+        		validate_license_key "$${key_ref}"
+        		local key_valid=$${?}
+        		if [[ $${key_valid} -eq 0 ]]; then
         			break
         		fi
         		print_warning "Please enter a valid License Key (16 characters)"
@@ -736,16 +736,16 @@ services:
 
         # Set up GeoIP with provided credentials
         setup_geoip() {
-        	local account_id="${1}"
-        	local license_key="${2}"
+        	local account_id="$${1}"
+        	local license_key="$${2}"
 
         	print_info "Configuring GeoIP environment variables..."
 
         	# Export environment variables for this session
-        	export GEOIPUPDATE_ACCOUNT_ID="${account_id}"
-        	export GEOIPUPDATE_LICENSE_KEY="${license_key}"
+        	export GEOIPUPDATE_ACCOUNT_ID="$${account_id}"
+        	export GEOIPUPDATE_LICENSE_KEY="$${license_key}"
         	export GEOIPUPDATE_EDITION_IDS="GeoLite2-Country GeoLite2-City GeoLite2-ASN"
-        	export GEOIPUPDATE_DB_DIR="${GEOIP_DIR}"
+        	export GEOIPUPDATE_DB_DIR="$${GEOIP_DIR}"
         	export GEOIPUPDATE_VERBOSE="1"
 
         	print_success "Environment variables configured for this session"
@@ -760,13 +760,13 @@ services:
         		# Display downloaded files
         		print_info "Downloaded databases:"
         		local -a found_files=()
-        		mapfile -t found_files < <(find "${GEOIP_DIR}" -name "*.mmdb" -type f 2>/dev/null || true)
+        		mapfile -t found_files < <(find "$${GEOIP_DIR}" -name "*.mmdb" -type f 2>/dev/null || true)
 
-        		if [[ ${#found_files[@]} -gt 0 ]]; then
-        			for file in "${found_files[@]}"; do
+        		if [[ $${#found_files[@]} -gt 0 ]]; then
+        			for file in "$${found_files[@]}"; do
         				local size
-        				size=$(stat -f%z "${file}" 2>/dev/null) || size=$(stat -c%s "${file}" 2>/dev/null) || size="0"
-        				printf "  • %s (%s bytes)\n" "${file##*/}" "${size}"
+        				size=$$(stat -f%z "$${file}" 2>/dev/null) || size=$$(stat -c%s "$${file}" 2>/dev/null) || size="0"
+        				printf "  • %s (%s bytes)\n" "$${file##*/}" "$${size}"
         			done
         		else
         			print_warning "No .mmdb files found"
@@ -780,8 +780,8 @@ services:
 
         		print_info "To make these credentials persistent across container restarts:"
         		echo "Set these environment variables when running the container:"
-        		echo "  GEOIPUPDATE_ACCOUNT_ID=${account_id}"
-        		echo "  GEOIPUPDATE_LICENSE_KEY=${license_key}"
+        		echo "  GEOIPUPDATE_ACCOUNT_ID=$${account_id}"
+        		echo "  GEOIPUPDATE_LICENSE_KEY=$${license_key}"
         		echo
         		print_info "To update databases in the future, run: geoipupdate -v"
 
@@ -802,8 +802,8 @@ services:
         	local license_key=""
 
         	# Parse command line arguments
-        	while [[ ${#} -gt 0 ]]; do
-        		case ${1} in
+        	while [[ $${#} -gt 0 ]]; do
+        		case $${1} in
         		-h | --help)
         			usage
         			exit 0
@@ -821,15 +821,15 @@ services:
         			shift
         			;;
         		-a | --account)
-        			account_id="${2}"
+        			account_id="$${2}"
         			shift 2
         			;;
         		-k | --key)
-        			license_key="${2}"
+        			license_key="$${2}"
         			shift 2
         			;;
         		*)
-        			print_error "Unknown option: ${1}"
+        			print_error "Unknown option: $${1}"
         			usage
         			exit 1
         			;;
@@ -839,47 +839,47 @@ services:
         	# Check environment first
         	check_environment
 
-        	print_status "${BLUE}" "=== MaxMind GeoLite2 Database Setup ==="
+        	print_status "$${BLUE}" "=== MaxMind GeoLite2 Database Setup ==="
         	echo
 
         	# Handle different modes
-        	if [[ ${check_only} == true ]]; then
+        	if [[ $${check_only} == true ]]; then
         		check_geoip_status
         		exit 0
         	fi
 
-        	if [[ ${update_only} == true ]]; then
+        	if [[ $${update_only} == true ]]; then
         		update_databases
         		exit 0
         	fi
 
-        	if [[ ${silent_mode} == true ]]; then
-        		if [[ -z ${account_id} ]] || [[ -z ${license_key} ]]; then
+        	if [[ $${silent_mode} == true ]]; then
+        		if [[ -z $${account_id} ]] || [[ -z $${license_key} ]]; then
         			print_error "Silent mode requires both --account and --key options"
         			usage
         			exit 1
         		fi
 
-        		validate_account_id "${account_id}"
-        		local account_valid=$?
-        		validate_license_key "${license_key}"
-        		local key_valid=$?
+        		validate_account_id "$${account_id}"
+        		local account_valid=$$?
+        		validate_license_key "$${license_key}"
+        		local key_valid=$$?
 
-        		if [[ ${account_valid} -ne 0 ]] || [[ ${key_valid} -ne 0 ]]; then
+        		if [[ $${account_valid} -ne 0 ]] || [[ $${key_valid} -ne 0 ]]; then
         			exit 1
         		fi
 
-        		setup_geoip "${account_id}" "${license_key}"
+        		setup_geoip "$${account_id}" "$${license_key}"
         	else
         		# Interactive mode
         		get_credentials account_id license_key
         		echo
-        		setup_geoip "${account_id}" "${license_key}"
+        		setup_geoip "$${account_id}" "$${license_key}"
         	fi
         }
 
         # Run main function with all arguments
-        main "$@"
+        main "$$@"
         EOF
 
         # Set proper permissions
@@ -902,7 +902,7 @@ services:
 
         WORKDIR /var/run/ntopng
 
-        RUN /usr/local/bin/mise use "redis@${REDIS_VERSION:-latest}" \
+        RUN /usr/local/bin/mise use "redis@$${REDIS_VERSION:-latest}" \
           && /usr/local/bin/mise trust \
           && /usr/local/bin/mise install
 
