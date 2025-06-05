@@ -200,7 +200,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
     --mount=type=cache,target=/go/pkg/mod,sharing=locked \
     mise exec go@${GO_VERSION} -- go build -ldflags="-s -w" -o /usr/local/bin/netflow2ng ./cmd/...
 
-# nDPI build stage  
+# nDPI build stage
 FROM source-prepared AS ndpi-builder
 
 WORKDIR /src/nDPI
@@ -325,7 +325,6 @@ LABEL \
     org.opencontainers.image.version="6.4-001-optimized-pinned" \
     org.opencontainers.image.base.digest="sha256:cff42e2bf1063ae6a8729c148a1003357d5befa2fe7656c5d0c99e62b68aab7d" \
     netflow.go.version="${GO_VERSION}" \
-
     netflow.ndpi.version="${NDPI_VERSION}" \
     netflow.ntop.version="${NTOP_VERSION}" \
     netflow.netflow2ng.version="${NETFLOW2NG_VERSION}"
