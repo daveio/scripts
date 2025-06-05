@@ -2,6 +2,6 @@
   "$schema": "node_modules/@biomejs/biome/configuration_schema.json",
   "extends": [".trunk/configs/biome.json"],
   "files": {
-    "ignore": [".trunk"]
+    "ignore": [".trunk", "submodules"]
   }
 }
