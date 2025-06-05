@@ -94,7 +94,7 @@ jobs:
           driver-opts: |
             network=host
             image=moby/buildkit:buildx-stable-1
-          config-inline: |
+          buildkitd-config-inline: |
             [worker.oci]
               max-parallelism = 4
             [worker.containerd]
@@ -148,12 +148,10 @@ jobs:
             type=gha,mode=max,scope=shared-packages-${{ needs.prefetch.outputs.cache-key }}
             type=gha,mode=max,scope=shared-geoip-${{ env.GEOIPUPDATE_VERSION }}
             type=registry,ref=${{ steps.metadata.outputs.cache-image }},mode=max
-            type=inline
           platforms: linux/${{ matrix.platform }}
           provenance: mode=max
           sbom: true
           build-args: |
-            BUILDKIT_INLINE_CACHE=1
             BUILDKIT_MULTI_PLATFORM=1
             BUILDPLATFORM=${{ matrix.platform }}
             TARGETPLATFORM=linux/${{ matrix.platform }}
