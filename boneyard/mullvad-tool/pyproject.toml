@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mullvad-tool"
+version = "0.1.4"
+description = "Utility to generate Mikrotik configuration scripts from Mullvad configuration files, among other things"
+authors = [{ name = "Dave Williams", email = "dave@dave.io" }]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "requests>=2.32.3",
+  "cryptography>=45.0.2",
+  "click>=8.2.0",
+  "wireguard-tools>=0.5.2",
+  "chevron>=0.14.0",
+]
+
+[project.optional-dependencies]
+dev = ["ipython>=8.31.0", "bpython>=0.24", "types-chevron>=0.14.2.20240310"]
+
+[project.scripts]
+mullvad-tool = "mullvad_tool.cli:cli"
+
+[tool.setuptools]
+packages = [
+  "mullvad_tool",
+  "keypair",
+  "meta",
+  "openvpn",
+  "portgen",
+  "util",
+  "wireguard",
+]
