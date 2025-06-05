@@ -4,11 +4,16 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: netflow
 jobs:
-  push:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [amd64, arm64]
     outputs:
-      image: ${{ steps.metadata.outputs.tags }}
-      digest: ${{ steps.push.outputs.digest }}
+      image-amd64: ${{ steps.output.outputs.image-amd64 }}
+      image-arm64: ${{ steps.output.outputs.image-arm64 }}
+      digest-amd64: ${{ steps.output.outputs.digest-amd64 }}
+      digest-arm64: ${{ steps.output.outputs.digest-arm64 }}
     permissions:
       contents: read
       packages: write
@@ -32,7 +37,7 @@ jobs:
         id: metadata
         run: |
           {
-            echo "tags=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+            echo "image=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.platform }}"
             echo "labels=org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}"
             echo "labels=org.opencontainers.image.revision=${{ github.sha }}"
           } >> "$GITHUB_OUTPUT"
@@ -43,31 +48,70 @@ jobs:
           context: ./projects/netflow/components
           file: ./projects/netflow/components/Dockerfile
           push: true
-          tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ steps.metadata.outputs.image }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
+          platforms: linux/${{ matrix.platform }}
           provenance: mode=max
           sbom: true
+      - name: output
+        id: output
+        run: |
+          echo "image-${{ matrix.platform }}=${{ steps.metadata.outputs.image }}" >> "$GITHUB_OUTPUT"
+          echo "digest-${{ matrix.platform }}=${{ steps.push.outputs.digest }}" >> "$GITHUB_OUTPUT"
+
+  manifest:
+    runs-on: ubuntu-latest
+    needs: build
+    outputs:
+      image: ${{ steps.metadata.outputs.tags }}
+      digest: ${{ steps.manifest.outputs.digest }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: login
+        id: login
+        uses: docker/login-action@6d4b68b490aef8836e8fb5e50ee7b3bdfa5894f0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: metadata
+        id: metadata
+        run: |
+          {
+            echo "tags<<EOF"
+            echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+            echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: manifest
+        id: manifest
+        run: |
+          # Create and push multi-arch manifest for SHA tag
+          docker buildx imagetools create \
+            --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            ${{ needs.build.outputs.image-amd64 }} \
+            ${{ needs.build.outputs.image-arm64 }}
+          
+          # Create and push multi-arch manifest for latest tag
+          docker buildx imagetools create \
+            --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest \
+            ${{ needs.build.outputs.image-amd64 }} \
+            ${{ needs.build.outputs.image-arm64 }}
+          
+          # Get digest of the SHA-tagged manifest
+          DIGEST=$(docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} --format '{{.Manifest.Digest}}')
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
       - name: image
         id: image
         run: |
-          echo "Image pushed to: ${{ steps.metadata.outputs.tags }}"
+          echo "Multi-arch images created:"
+          echo "  - ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "  - ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
           echo "Short SHA: ${{ github.sha }}"
-          echo "Full image reference: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-          echo "Image digest: ${{ steps.push.outputs.digest }}"
-  slsa:
-    needs:
-      - push
-    permissions:
-      actions: read
-      id-token: write
-      packages: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.9.0
-    with:
-      image: ${{ needs.push.outputs.image }}
-      digest: ${{ needs.push.outputs.digest }}
-      registry-username: ${{ github.actor }}
-    secrets:
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
+          echo "Manifest digest: ${{ steps.manifest.outputs.digest }}"
+          echo "AMD64 digest: ${{ needs.build.outputs.digest-amd64 }}"
+          echo "ARM64 digest: ${{ needs.build.outputs.digest-arm64 }}"
