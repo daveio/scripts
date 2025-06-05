@@ -1,122 +1,110 @@
 {
-	"mcpServers": {
-		"abletonLive": {
-			"args": ["ableton-mcp"],
-			"command": "/Users/dave/.local/share/mise/shims/uvx"
-		},
-		"claude-code": {
-			"command": "claude mcp serve",
-			"args": []
-		},
-		"cloudflareAI": {
-			"args": ["x", "mcp-remote", "https://ai-gateway.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareAudit": {
-			"args": ["x", "mcp-remote", "https://auditlogs.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareAutorag": {
-			"args": ["x", "mcp-remote", "https://autorag.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareBindings": {
-			"args": ["x", "mcp-remote", "https://bindings.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareContainer": {
-			"args": ["x", "mcp-remote", "https://containers.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareDocumentation": {
-			"args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareDNS": {
-			"args": [
-				"x",
-				"mcp-remote",
-				"https://dns-analytics.mcp.cloudflare.com/sse"
-			],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareObservability": {
-			"args": [
-				"x",
-				"mcp-remote",
-				"https://observability.mcp.cloudflare.com/sse"
-			],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareRadar": {
-			"args": ["x", "mcp-remote", "https://radar.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"cloudflareRendering": {
-			"args": ["x", "mcp-remote", "https://browser.mcp.cloudflare.com/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"console-ninja": {
-			"command": "bun",
-			"args": ["run", "~/.console-ninja/mcp/"]
-		},
-		"context7": {
-			"command": "/Users/dave/.local/share/mise/shims/bun",
-			"args": ["x", "@upstash/context7-mcp"]
-		},
-		"docker": {
-			"args": ["ai", "mcpserver"],
-			"command": "docker"
-		},
-		"duckduckgo": {
-			"args": ["duckduckgo-mcp-server"],
-			"command": "/Users/dave/.local/share/mise/shims/uvx"
-		},
-		"fetch": {
-			"args": ["mcp-server-fetch"],
-			"command": "/Users/dave/.local/share/mise/shims/uvx"
-		},
-		"git": {
-			"args": ["mcp-server-git"],
-			"command": "/Users/dave/.local/share/mise/shims/uvx"
-		},
-		"github": {
-			"args": ["x", "@modelcontextprotocol/server-github"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"linear": {
-			"args": ["x", "mcp-remote", "https://mcp.linear.app/sse"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"sharedMemory": {
-			"args": ["x", "@modelcontextprotocol/server-memory"],
-			"command": "/Users/dave/.local/share/mise/shims/bun",
-			"env": {
-				"MEMORY_FILE_PATH": "/Users/dave/.memory"
-			}
-		},
-		"notion": {
-			"args": ["x", "@notionhq/notion-mcp-server"],
-			"command": "/Users/dave/.local/share/mise/shims/bun",
-			"env": {
-				"OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer %%NOTION_TOKEN%%\", \"Notion-Version\": \"2022-06-28\" }"
-			}
-		},
-		"pdfReader": {
-			"args": ["mcp-read-pdf"],
-			"command": "/Users/dave/.local/share/mise/shims/uvx"
-		},
-		"pieces": {
-			"args": [
-				"x",
-				"mcp-remote",
-				"http://localhost:39300/model_context_protocol/2024-11-05/sse"
-			],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		},
-		"vscode": {
-			"args": ["x", "vscode-mcp-server"],
-			"command": "/Users/dave/.local/share/mise/shims/bun"
-		}
-	}
+  "mcpServers": {
+    "abletonLive": {
+      "args": ["ableton-mcp"],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "claude-code": {
+      "command": "claude mcp serve",
+      "args": []
+    },
+    "cloudflareAI": {
+      "args": ["x", "mcp-remote", "https://ai-gateway.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareAudit": {
+      "args": ["x", "mcp-remote", "https://auditlogs.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareAutorag": {
+      "args": ["x", "mcp-remote", "https://autorag.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareBindings": {
+      "args": ["x", "mcp-remote", "https://bindings.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareContainer": {
+      "args": ["x", "mcp-remote", "https://containers.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareDocumentation": {
+      "args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareDNS": {
+      "args": ["x", "mcp-remote", "https://dns-analytics.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareObservability": {
+      "args": ["x", "mcp-remote", "https://observability.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareRadar": {
+      "args": ["x", "mcp-remote", "https://radar.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "cloudflareRendering": {
+      "args": ["x", "mcp-remote", "https://browser.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "console-ninja": {
+      "command": "bun",
+      "args": ["run", "~/.console-ninja/mcp/"]
+    },
+    "context7": {
+      "command": "/Users/dave/.local/share/mise/shims/bun",
+      "args": ["x", "@upstash/context7-mcp"]
+    },
+    "docker": {
+      "args": ["ai", "mcpserver"],
+      "command": "docker"
+    },
+    "duckduckgo": {
+      "args": ["duckduckgo-mcp-server"],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "fetch": {
+      "args": ["mcp-server-fetch"],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "git": {
+      "args": ["mcp-server-git"],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "github": {
+      "args": ["x", "@modelcontextprotocol/server-github"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "linear": {
+      "args": ["x", "mcp-remote", "https://mcp.linear.app/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "sharedMemory": {
+      "args": ["x", "@modelcontextprotocol/server-memory"],
+      "command": "/Users/dave/.local/share/mise/shims/bun",
+      "env": {
+        "MEMORY_FILE_PATH": "/Users/dave/.memory"
+      }
+    },
+    "notion": {
+      "args": ["x", "@notionhq/notion-mcp-server"],
+      "command": "/Users/dave/.local/share/mise/shims/bun",
+      "env": {
+        "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer %%NOTION_TOKEN%%\", \"Notion-Version\": \"2022-06-28\" }"
+      }
+    },
+    "pdfReader": {
+      "args": ["mcp-read-pdf"],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "pieces": {
+      "args": ["x", "mcp-remote", "http://localhost:39300/model_context_protocol/2024-11-05/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "vscode": {
+      "args": ["x", "vscode-mcp-server"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    }
+  }
 }

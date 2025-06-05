@@ -1,35 +1,35 @@
 {
-	"files": {
-		"404.html": {
-			"frameworks": [
-				"html",
-				"pg.css.grid",
-				"pg.insight.events",
-				"pg.asset.manager",
-				"pg.code-validator",
-				"pg.project.items",
-				"pg.image.overlay",
-				"pg.fontawesome.5",
-				"bs4",
-				"pg.html",
-				"pg.components"
-			],
-			"last_page_width": 1024
-		}
-	},
-	"breakpoints": ["40em", "48em", "62em", "576px", "768px", "992px", "1200px"],
-	"frameworks": [
-		"html",
-		"pg.css.grid",
-		"pg.insight.events",
-		"pg.asset.manager",
-		"pg.code-validator",
-		"pg.project.items",
-		"pg.image.overlay",
-		"pg.fontawesome.5",
-		"bs4",
-		"pg.html",
-		"pg.components"
-	],
-	"template_framework_id": "bootstrap"
+  "files": {
+    "404.html": {
+      "frameworks": [
+        "html",
+        "pg.css.grid",
+        "pg.insight.events",
+        "pg.asset.manager",
+        "pg.code-validator",
+        "pg.project.items",
+        "pg.image.overlay",
+        "pg.fontawesome.5",
+        "bs4",
+        "pg.html",
+        "pg.components"
+      ],
+      "last_page_width": 1024
+    }
+  },
+  "breakpoints": ["40em", "48em", "62em", "576px", "768px", "992px", "1200px"],
+  "frameworks": [
+    "html",
+    "pg.css.grid",
+    "pg.insight.events",
+    "pg.asset.manager",
+    "pg.code-validator",
+    "pg.project.items",
+    "pg.image.overlay",
+    "pg.fontawesome.5",
+    "bs4",
+    "pg.html",
+    "pg.components"
+  ],
+  "template_framework_id": "bootstrap"
 }

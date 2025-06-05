@@ -164,7 +164,7 @@ services:
            */
         -  return(0);
          #endif
-         
+
          #if 0
         EOF
 
@@ -923,12 +923,12 @@ services:
             org.opencontainers.image.url="https://github.com/daveio/ntopng" \
             org.opencontainers.image.source="https://github.com/daveio/ntopng" \
             org.opencontainers.image.version="6.4-001"
-    env_file:
-      - .env
     environment:
       GEOIPUPDATE_DB_DIR: /usr/share/GeoIP
       GEOIPUPDATE_EDITION_IDS: GeoLite2-Country GeoLite2-City GeoLite2-ASN
       GEOIPUPDATE_VERBOSE: 1
+      GEOIPUPDATE_ACCOUNT_ID: "xxxGEOIPUPDATE_ACCOUNT_IDxxx"
+      GEOIPUPDATE_LICENSE_KEY: "xxxGEOIPUPDATE_LICENSE_KEYxxx"
     healthcheck:
       interval: 30s
       retries: 3

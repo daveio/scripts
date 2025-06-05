@@ -1,299 +1,295 @@
 {
-	"$schema": "https://www.raycast.com/schemas/extension.json",
-	"name": "raycast-alt",
-	"title": "Alt",
-	"description": "Generate alt text for images using Claude",
-	"icon": "icon.png",
-	"author": "dave.io",
-	"owner": "dave.io",
-	"contributors": ["dave.io"],
-	"categories": ["Productivity", "Developer Tools", "Web", "Fun", "Other"],
-	"license": "MIT",
-	"commands": [
-		{
-			"name": "ask",
-			"title": "Ask Question",
-			"subtitle": "Claude",
-			"description": "Ask Claude via Raycast",
-			"mode": "view"
-		},
-		{
-			"name": "saved",
-			"title": "Saved Answers",
-			"subtitle": "Claude",
-			"description": "Collection of your saved answer",
-			"mode": "view"
-		},
-		{
-			"name": "history",
-			"title": "History",
-			"subtitle": "Claude",
-			"description": "Collection of your recent answer",
-			"mode": "view"
-		},
-		{
-			"name": "conversation",
-			"title": "Conversations",
-			"subtitle": "Claude",
-			"description": "Collection of your recent conversation",
-			"mode": "view"
-		},
-		{
-			"name": "model",
-			"title": "Models",
-			"subtitle": "Claude",
-			"description": "Collection of your custom and default model",
-			"mode": "view"
-		},
-		{
-			"name": "summarize",
-			"title": "Summarize Website",
-			"subtitle": "Claude",
-			"description": "Summarize Website and YouTube video",
-			"mode": "view",
-			"preferences": [
-				{
-					"name": "promptTemplate",
-					"description": "Template support {{content}} tag, and it will replace with the content",
-					"type": "file",
-					"title": "Prompt template for the website",
-					"required": false
-				},
-				{
-					"name": "promptTemplate2",
-					"description": "Template support {{content}} tag, and it will replace with the video transcript",
-					"type": "file",
-					"title": "Prompt template for the YouTube",
-					"required": false
-				}
-			]
-		},
-		{
-			"name": "ask-selected-image",
-			"title": "Ask Selected Image",
-			"description": "Template with a plain detail view",
-			"mode": "view",
-			"icon": "vision.png",
-			"arguments": [
-				{
-					"name": "query",
-					"type": "text",
-					"required": false,
-					"placeholder": "What is it?"
-				}
-			]
-		},
-		{
-			"name": "ask-clipboard-image",
-			"title": "Ask Clipboard Image",
-			"description": "Template with a plain detail view",
-			"mode": "view",
-			"icon": "vision.png",
-			"arguments": [
-				{
-					"name": "query",
-					"type": "text",
-					"required": false,
-					"placeholder": "What is it?"
-				}
-			]
-		},
-		{
-			"name": "create-ai-command",
-			"title": "Create AI Command",
-			"description": "Create new quick AI command",
-			"mode": "view",
-			"icon": "icon.png"
-		},
-		{
-			"name": "search-ai-command",
-			"title": "Search AI Command",
-			"description": "Search AI commands",
-			"mode": "view",
-			"icon": "icon.png"
-		}
-	],
-	"keywords": ["anthropic", "claude", "alt", "text", "alt text", "vision"],
-	"preferences": [
-		{
-			"name": "apiKey",
-			"label": "Anthropic API Key",
-			"description": "Enter your personal Anthropic API Key",
-			"type": "password",
-			"title": "Anthropic API Key",
-			"required": true
-		},
-		{
-			"name": "useStream",
-			"label": "Enable streaming completions",
-			"description": "Stream the completions of the generated answer",
-			"type": "checkbox",
-			"title": "Stream Completion",
-			"default": true,
-			"required": true
-		},
-		{
-			"name": "isAutoSaveConversation",
-			"label": "Enable auto-save conversation",
-			"description": "Auto-save every conversation that you had with the model",
-			"type": "checkbox",
-			"title": "Auto-save Conversation",
-			"default": true,
-			"required": true
-		},
-		{
-			"name": "isHistoryPaused",
-			"label": "Enable pause history",
-			"description": "Pause the history of the conversation",
-			"type": "checkbox",
-			"title": "Pause History",
-			"default": false,
-			"required": false
-		},
-		{
-			"name": "isAutoLoadText",
-			"label": "Enable auto-load selected text",
-			"description": "Load selected text from your frontmost application to the question bar automatically",
-			"type": "checkbox",
-			"title": "Auto-load Text",
-			"default": false,
-			"required": false
-		},
-		{
-			"name": "isAutoFullInput",
-			"label": "Enable full text input initially",
-			"description": "Use full text input form when asking question for the first time",
-			"type": "checkbox",
-			"title": "Use Full Text Input",
-			"default": false,
-			"required": false
-		},
-		{
-			"name": "isAutoTTS",
-			"label": "Enable text-to-speech for every response",
-			"description": "Enable auto TTS everytime you get a generated answer",
-			"type": "checkbox",
-			"title": "Text-to-Speech",
-			"required": false,
-			"default": false
-		},
-		{
-			"default": false,
-			"description": "Enable custom model names without selecting from the model API",
-			"label": "Enable custom model name",
-			"name": "isCustomModel",
-			"required": false,
-			"title": "Custom model",
-			"type": "checkbox"
-		},
-		{
-			"name": "useProxy",
-			"label": "Enable proxy for each request",
-			"description": "Each request will be passed through the proxy",
-			"type": "checkbox",
-			"title": "Use Proxy",
-			"required": false,
-			"default": false
-		},
-		{
-			"name": "proxyProtocol",
-			"description": "Each request will be passed through the proxy",
-			"type": "dropdown",
-			"title": "Proxy Protocol",
-			"data": [
-				{
-					"title": "HTTP",
-					"value": "http"
-				},
-				{
-					"title": "HTTPs",
-					"value": "https"
-				},
-				{
-					"title": "Socks4",
-					"value": "socks4"
-				},
-				{
-					"title": "Socks5",
-					"value": "socks5"
-				}
-			],
-			"required": false,
-			"default": "http"
-		},
-		{
-			"name": "proxyHost",
-			"description": "Server address of the proxy",
-			"type": "textfield",
-			"title": "Proxy Host",
-			"required": false
-		},
-		{
-			"name": "proxyPort",
-			"description": "Server port of the proxy",
-			"type": "textfield",
-			"title": "Proxy Port",
-			"required": false
-		},
-		{
-			"name": "proxyUsername",
-			"description": "Leave empty if doesn't have",
-			"type": "textfield",
-			"title": "Proxy Username",
-			"required": false
-		},
-		{
-			"name": "proxyPassword",
-			"description": "Leave empty if doesn't have",
-			"type": "password",
-			"title": "Proxy Password",
-			"required": false
-		}
-	],
-	"dependencies": {
-		"@raycast/api": "^1.99.4",
-		"@raycast/utils": "^1.19.1",
-		"cross-fetch": "^4.1.0",
-		"csv-parse": "^5.6.0",
-		"image-meta": "^0.2.1",
-		"moment": "^2.30.1",
-		"plist": "^3.1.0",
-		"proxy-agent": "^6.5.0",
-		"run-applescript": "^7.0.0",
-		"say": "^0.16.0",
-		"uuid": "^11.1.0",
-		"youtube-transcript": "^1.2.1"
-	},
-	"devDependencies": {
-		"@anthropic-ai/claude-code": "^1.0.11",
-		"@biomejs/biome": "^1.9.4",
-		"@eslint/js": "^9.28.0",
-		"@openai/codex": "^0.1.2505172129",
-		"@raycast/eslint-config": "^2.0.4",
-		"@raycast/eslint-plugin": "^2.0.7",
-		"@trunkio/launcher": "^1.3.4",
-		"@types/node": "22.15.29",
-		"@types/plist": "^3.0.5",
-		"@types/react": "19.1.6",
-		"@types/uuid": "^10.0.0",
-		"eslint": "^9.28.0",
-		"eslint-config-prettier": "^10.1.5",
-		"globals": "^16.2.0",
-		"prettier": "^3.5.3",
-		"typescript": "^5.8.3",
-		"typescript-eslint": "^8.33.1"
-	},
-	"scripts": {
-		"build": "bun run ray build -e dist",
-		"dev": "bun run ray develop",
-		"fix-lint": "bun run ray lint --fix",
-		"lint": "bun run ray lint",
-		"publish": "bun run ray publish",
-		"pull": "bun run ray pull-contributions"
-	},
-	"trustedDependencies": [
-		"@anthropic-ai/claude-code",
-		"@biomejs/biome",
-		"esbuild"
-	]
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "raycast-alt",
+  "title": "Alt",
+  "description": "Generate alt text for images using Claude",
+  "icon": "icon.png",
+  "author": "dave.io",
+  "owner": "dave.io",
+  "contributors": ["dave.io"],
+  "categories": ["Productivity", "Developer Tools", "Web", "Fun", "Other"],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "ask",
+      "title": "Ask Question",
+      "subtitle": "Claude",
+      "description": "Ask Claude via Raycast",
+      "mode": "view"
+    },
+    {
+      "name": "saved",
+      "title": "Saved Answers",
+      "subtitle": "Claude",
+      "description": "Collection of your saved answer",
+      "mode": "view"
+    },
+    {
+      "name": "history",
+      "title": "History",
+      "subtitle": "Claude",
+      "description": "Collection of your recent answer",
+      "mode": "view"
+    },
+    {
+      "name": "conversation",
+      "title": "Conversations",
+      "subtitle": "Claude",
+      "description": "Collection of your recent conversation",
+      "mode": "view"
+    },
+    {
+      "name": "model",
+      "title": "Models",
+      "subtitle": "Claude",
+      "description": "Collection of your custom and default model",
+      "mode": "view"
+    },
+    {
+      "name": "summarize",
+      "title": "Summarize Website",
+      "subtitle": "Claude",
+      "description": "Summarize Website and YouTube video",
+      "mode": "view",
+      "preferences": [
+        {
+          "name": "promptTemplate",
+          "description": "Template support {{content}} tag, and it will replace with the content",
+          "type": "file",
+          "title": "Prompt template for the website",
+          "required": false
+        },
+        {
+          "name": "promptTemplate2",
+          "description": "Template support {{content}} tag, and it will replace with the video transcript",
+          "type": "file",
+          "title": "Prompt template for the YouTube",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "ask-selected-image",
+      "title": "Ask Selected Image",
+      "description": "Template with a plain detail view",
+      "mode": "view",
+      "icon": "vision.png",
+      "arguments": [
+        {
+          "name": "query",
+          "type": "text",
+          "required": false,
+          "placeholder": "What is it?"
+        }
+      ]
+    },
+    {
+      "name": "ask-clipboard-image",
+      "title": "Ask Clipboard Image",
+      "description": "Template with a plain detail view",
+      "mode": "view",
+      "icon": "vision.png",
+      "arguments": [
+        {
+          "name": "query",
+          "type": "text",
+          "required": false,
+          "placeholder": "What is it?"
+        }
+      ]
+    },
+    {
+      "name": "create-ai-command",
+      "title": "Create AI Command",
+      "description": "Create new quick AI command",
+      "mode": "view",
+      "icon": "icon.png"
+    },
+    {
+      "name": "search-ai-command",
+      "title": "Search AI Command",
+      "description": "Search AI commands",
+      "mode": "view",
+      "icon": "icon.png"
+    }
+  ],
+  "keywords": ["anthropic", "claude", "alt", "text", "alt text", "vision"],
+  "preferences": [
+    {
+      "name": "apiKey",
+      "label": "Anthropic API Key",
+      "description": "Enter your personal Anthropic API Key",
+      "type": "password",
+      "title": "Anthropic API Key",
+      "required": true
+    },
+    {
+      "name": "useStream",
+      "label": "Enable streaming completions",
+      "description": "Stream the completions of the generated answer",
+      "type": "checkbox",
+      "title": "Stream Completion",
+      "default": true,
+      "required": true
+    },
+    {
+      "name": "isAutoSaveConversation",
+      "label": "Enable auto-save conversation",
+      "description": "Auto-save every conversation that you had with the model",
+      "type": "checkbox",
+      "title": "Auto-save Conversation",
+      "default": true,
+      "required": true
+    },
+    {
+      "name": "isHistoryPaused",
+      "label": "Enable pause history",
+      "description": "Pause the history of the conversation",
+      "type": "checkbox",
+      "title": "Pause History",
+      "default": false,
+      "required": false
+    },
+    {
+      "name": "isAutoLoadText",
+      "label": "Enable auto-load selected text",
+      "description": "Load selected text from your frontmost application to the question bar automatically",
+      "type": "checkbox",
+      "title": "Auto-load Text",
+      "default": false,
+      "required": false
+    },
+    {
+      "name": "isAutoFullInput",
+      "label": "Enable full text input initially",
+      "description": "Use full text input form when asking question for the first time",
+      "type": "checkbox",
+      "title": "Use Full Text Input",
+      "default": false,
+      "required": false
+    },
+    {
+      "name": "isAutoTTS",
+      "label": "Enable text-to-speech for every response",
+      "description": "Enable auto TTS everytime you get a generated answer",
+      "type": "checkbox",
+      "title": "Text-to-Speech",
+      "required": false,
+      "default": false
+    },
+    {
+      "default": false,
+      "description": "Enable custom model names without selecting from the model API",
+      "label": "Enable custom model name",
+      "name": "isCustomModel",
+      "required": false,
+      "title": "Custom model",
+      "type": "checkbox"
+    },
+    {
+      "name": "useProxy",
+      "label": "Enable proxy for each request",
+      "description": "Each request will be passed through the proxy",
+      "type": "checkbox",
+      "title": "Use Proxy",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "proxyProtocol",
+      "description": "Each request will be passed through the proxy",
+      "type": "dropdown",
+      "title": "Proxy Protocol",
+      "data": [
+        {
+          "title": "HTTP",
+          "value": "http"
+        },
+        {
+          "title": "HTTPs",
+          "value": "https"
+        },
+        {
+          "title": "Socks4",
+          "value": "socks4"
+        },
+        {
+          "title": "Socks5",
+          "value": "socks5"
+        }
+      ],
+      "required": false,
+      "default": "http"
+    },
+    {
+      "name": "proxyHost",
+      "description": "Server address of the proxy",
+      "type": "textfield",
+      "title": "Proxy Host",
+      "required": false
+    },
+    {
+      "name": "proxyPort",
+      "description": "Server port of the proxy",
+      "type": "textfield",
+      "title": "Proxy Port",
+      "required": false
+    },
+    {
+      "name": "proxyUsername",
+      "description": "Leave empty if doesn't have",
+      "type": "textfield",
+      "title": "Proxy Username",
+      "required": false
+    },
+    {
+      "name": "proxyPassword",
+      "description": "Leave empty if doesn't have",
+      "type": "password",
+      "title": "Proxy Password",
+      "required": false
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.99.4",
+    "@raycast/utils": "^1.19.1",
+    "cross-fetch": "^4.1.0",
+    "csv-parse": "^5.6.0",
+    "image-meta": "^0.2.1",
+    "moment": "^2.30.1",
+    "plist": "^3.1.0",
+    "proxy-agent": "^6.5.0",
+    "run-applescript": "^7.0.0",
+    "say": "^0.16.0",
+    "uuid": "^11.1.0",
+    "youtube-transcript": "^1.2.1"
+  },
+  "devDependencies": {
+    "@anthropic-ai/claude-code": "^1.0.11",
+    "@biomejs/biome": "^1.9.4",
+    "@eslint/js": "^9.28.0",
+    "@openai/codex": "^0.1.2505172129",
+    "@raycast/eslint-config": "^2.0.4",
+    "@raycast/eslint-plugin": "^2.0.7",
+    "@trunkio/launcher": "^1.3.4",
+    "@types/node": "22.15.29",
+    "@types/plist": "^3.0.5",
+    "@types/react": "19.1.6",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
+  },
+  "scripts": {
+    "build": "bun run ray build -e dist",
+    "dev": "bun run ray develop",
+    "fix-lint": "bun run ray lint --fix",
+    "lint": "bun run ray lint",
+    "publish": "bun run ray publish",
+    "pull": "bun run ray pull-contributions"
+  },
+  "trustedDependencies": ["@anthropic-ai/claude-code", "@biomejs/biome", "esbuild"]
 }

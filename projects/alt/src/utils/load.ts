@@ -1,55 +1,55 @@
-import path from "path";
-import { Clipboard } from "@raycast/api";
-import fs from "fs/promises";
-import { imageMeta } from "image-meta";
-import { runAppleScript } from "run-applescript";
+import path from 'path'
+import { Clipboard } from '@raycast/api'
+import fs from 'fs/promises'
+import { imageMeta } from 'image-meta'
+import { runAppleScript } from 'run-applescript'
 
 type ImageMeta = {
-	type: string;
-	height: number;
-	width: number;
-};
+  type: string
+  height: number
+  width: number
+}
 
-export type LoadFrom = { data: Buffer; type: ImageMeta };
+export type LoadFrom = { data: Buffer; type: ImageMeta }
 
 const getType = async (data: Buffer, image: string): Promise<ImageMeta> => {
-	const meta = await imageMeta(data);
-	const type = meta.type ?? (path.extname(image).slice(1) || "png");
-	const height = meta.height ?? 0;
-	const width = meta.width ?? 0;
-	return { type, height, width };
-};
+  const meta = await imageMeta(data)
+  const type = meta.type ?? (path.extname(image).slice(1) || 'png')
+  const height = meta.height ?? 0
+  const width = meta.width ?? 0
+  return { type, height, width }
+}
 
 export const loadFromFinder = async (): Promise<LoadFrom | undefined> => {
-	const selectedImages = await getFinderSelectedImages();
-	if (!selectedImages?.length) {
-		return;
-	}
+  const selectedImages = await getFinderSelectedImages()
+  if (!selectedImages?.length) {
+    return
+  }
 
-	const image = selectedImages[0];
-	const data = await fs.readFile(image);
-	const type = await getType(data, image);
+  const image = selectedImages[0]
+  const data = await fs.readFile(image)
+  const type = await getType(data, image)
 
-	return { data, type };
-};
+  return { data, type }
+}
 
 export const loadFromClipboard = async () => {
-	let { file: image } = await Clipboard.read();
-	if (!image) {
-		return;
-	}
+  let { file: image } = await Clipboard.read()
+  if (!image) {
+    return
+  }
 
-	image = decodeURIComponent(image);
+  image = decodeURIComponent(image)
 
-	if (image.startsWith("file://")) {
-		image = image.slice(7);
-	}
+  if (image.startsWith('file://')) {
+    image = image.slice(7)
+  }
 
-	const data = await fs.readFile(image);
-	const type = await getType(data, image);
+  const data = await fs.readFile(image)
+  const type = await getType(data, image)
 
-	return { data, type };
-};
+  return { data, type }
+}
 
 /**
  * Gets currently selected images in Finder.
@@ -57,8 +57,8 @@ export const loadFromClipboard = async () => {
  * @returns A promise resolving to the comma-separated list of images as a string.
  */
 const getFinderSelectedImages = async (): Promise<string[]> => {
-	const result = await runAppleScript(
-		`\
+  const result = await runAppleScript(
+    `\
 set imageTypes to {"PNG", "JPG", "JPEG", "TIF", "HEIF", "GIF", "ICO", "ICNS", "ASTC", "BMP", "DDS", "EXR", "JP2", "KTX", "Portable Bitmap", "Adobe Photoshop", "PVR", "TGA", "WebP", "SVG", "PDF", "HEIC"}
 
 tell application "Finder"
@@ -84,7 +84,7 @@ tell application "Finder"
     end repeat
     return thePaths
   end if
-end tell`,
-	);
-	return result.split(/,\s+/g).filter((item) => !!item);
-};
+end tell`
+  )
+  return result.split(/,\s+/g).filter((item) => !!item)
+}

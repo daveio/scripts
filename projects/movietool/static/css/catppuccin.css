@@ -6,85 +6,83 @@
 
 /* Frappé Palette (Dark Theme) */
 .theme-frappe {
-	--base: #303446;
-	--text: #c6d0f5;
-	--subtext: #b5bfe2;
-	--surface: #292c3c;
-	--overlay: #414559;
-	--accent: #8caaee;
-	--accent-rgb: 140, 170, 238;
-	--red: #e78284;
-	--green: #a6d189;
-	--yellow: #e5c890;
-	--blue: #8caaee;
-	--mauve: #ca9ee6;
-	--pink: #f4b8e4;
-	--flamingo: #eebebe;
-	--teal: #81c8be;
-	--rosewater: #f2d5cf;
-	--lavender: #babbf1;
-	--sapphire: #85c1dc;
-	--sky: #99d1db;
+  --base: #303446;
+  --text: #c6d0f5;
+  --subtext: #b5bfe2;
+  --surface: #292c3c;
+  --overlay: #414559;
+  --accent: #8caaee;
+  --accent-rgb: 140, 170, 238;
+  --red: #e78284;
+  --green: #a6d189;
+  --yellow: #e5c890;
+  --blue: #8caaee;
+  --mauve: #ca9ee6;
+  --pink: #f4b8e4;
+  --flamingo: #eebebe;
+  --teal: #81c8be;
+  --rosewater: #f2d5cf;
+  --lavender: #babbf1;
+  --sapphire: #85c1dc;
+  --sky: #99d1db;
 
-	--shadow-low: 0 2px 4px rgba(0, 0, 0, 0.2);
-	--shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.25);
-	--shadow-high: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-low: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.25);
+  --shadow-high: 0 8px 16px rgba(0, 0, 0, 0.3);
 
-	--card-bg: var(--surface);
-	--card-border: 1px solid var(--overlay);
-	--input-bg: var(--overlay);
-	--input-border: 1px solid #4c4f69;
-	--divider: var(--overlay);
+  --card-bg: var(--surface);
+  --card-border: 1px solid var(--overlay);
+  --input-bg: var(--overlay);
+  --input-border: 1px solid #4c4f69;
+  --divider: var(--overlay);
 
-	/* Neumorphic specific dark theme adjustments */
-	--neu-shadow-1: #262936;
-	--neu-shadow-2: #343b4f;
-	--neu-flat: 1px 1px 1px var(--neu-shadow-1), -1px -1px 1px var(--neu-shadow-2);
-	--neu-pressed: inset 1px 1px 1px var(--neu-shadow-1), inset -1px -1px 1px
-		var(--neu-shadow-2);
+  /* Neumorphic specific dark theme adjustments */
+  --neu-shadow-1: #262936;
+  --neu-shadow-2: #343b4f;
+  --neu-flat: 1px 1px 1px var(--neu-shadow-1), -1px -1px 1px var(--neu-shadow-2);
+  --neu-pressed: inset 1px 1px 1px var(--neu-shadow-1), inset -1px -1px 1px var(--neu-shadow-2);
 }
 
 /* Latte Palette (Light Theme) */
 .theme-latte {
-	--base: #eff1f5;
-	--text: #4c4f69;
-	--subtext: #5c5f77;
-	--surface: #e6e9ef;
-	--overlay: #ccd0da;
-	--accent: #1e66f5;
-	--accent-rgb: 30, 102, 245;
-	--red: #d20f39;
-	--green: #40a02b;
-	--yellow: #df8e1d;
-	--blue: #1e66f5;
-	--mauve: #8839ef;
-	--pink: #ea76cb;
-	--flamingo: #dd7878;
-	--teal: #179299;
-	--rosewater: #dc8a78;
-	--lavender: #7287fd;
-	--sapphire: #209fb5;
-	--sky: #04a5e5;
+  --base: #eff1f5;
+  --text: #4c4f69;
+  --subtext: #5c5f77;
+  --surface: #e6e9ef;
+  --overlay: #ccd0da;
+  --accent: #1e66f5;
+  --accent-rgb: 30, 102, 245;
+  --red: #d20f39;
+  --green: #40a02b;
+  --yellow: #df8e1d;
+  --blue: #1e66f5;
+  --mauve: #8839ef;
+  --pink: #ea76cb;
+  --flamingo: #dd7878;
+  --teal: #179299;
+  --rosewater: #dc8a78;
+  --lavender: #7287fd;
+  --sapphire: #209fb5;
+  --sky: #04a5e5;
 
-	--shadow-low: 0 2px 4px rgba(0, 0, 0, 0.1);
-	--shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.12);
-	--shadow-high: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --shadow-low: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-high: 0 8px 16px rgba(0, 0, 0, 0.15);
 
-	--card-bg: var(--surface);
-	--card-border: 1px solid var(--overlay);
-	--input-bg: #ffffff;
-	--input-border: 1px solid var(--overlay);
-	--divider: var(--overlay);
+  --card-bg: var(--surface);
+  --card-border: 1px solid var(--overlay);
+  --input-bg: #ffffff;
+  --input-border: 1px solid var(--overlay);
+  --divider: var(--overlay);
 
-	/* Neumorphic specific light theme adjustments */
-	--neu-shadow-1: #d9dce2;
-	--neu-shadow-2: #f4f7ff;
-	--neu-flat: 1px 1px 2px var(--neu-shadow-1), -1px -1px 2px var(--neu-shadow-2);
-	--neu-pressed: inset 1px 1px 2px var(--neu-shadow-1), inset -1px -1px 2px
-		var(--neu-shadow-2);
+  /* Neumorphic specific light theme adjustments */
+  --neu-shadow-1: #d9dce2;
+  --neu-shadow-2: #f4f7ff;
+  --neu-flat: 1px 1px 2px var(--neu-shadow-1), -1px -1px 2px var(--neu-shadow-2);
+  --neu-pressed: inset 1px 1px 2px var(--neu-shadow-1), inset -1px -1px 2px var(--neu-shadow-2);
 }
 
 /* Theme transition */
 body {
-	transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

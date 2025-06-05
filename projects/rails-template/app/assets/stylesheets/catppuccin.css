@@ -1,468 +1,443 @@
 /* Catppuccin Theme - Dark mode (based on Frappe palette) */
-:root[data-theme="catppuccin"] {
-	/* Base Frappe palette */
-	--ctp-frappe-rosewater: #f2d5cf;
-	--ctp-frappe-flamingo: #eebebe;
-	--ctp-frappe-pink: #f4b8e4;
-	--ctp-frappe-mauve: #ca9ee6;
-	--ctp-frappe-red: #e78284;
-	--ctp-frappe-maroon: #ea999c;
-	--ctp-frappe-peach: #ef9f76;
-	--ctp-frappe-yellow: #e5c890;
-	--ctp-frappe-green: #a6d189;
-	--ctp-frappe-teal: #81c8be;
-	--ctp-frappe-sky: #99d1db;
-	--ctp-frappe-sapphire: #85c1dc;
-	--ctp-frappe-blue: #8caaee;
-	--ctp-frappe-lavender: #babbf1;
-	--ctp-frappe-text: #c6d0f5;
-	--ctp-frappe-subtext1: #b5bfe2;
-	--ctp-frappe-subtext0: #a5adce;
-	--ctp-frappe-overlay2: #949cbb;
-	--ctp-frappe-overlay1: #838ba7;
-	--ctp-frappe-overlay0: #737994;
-	--ctp-frappe-surface2: #626880;
-	--ctp-frappe-surface1: #51576d;
-	--ctp-frappe-surface0: #414559;
-	--ctp-frappe-base: #303446;
-	--ctp-frappe-mantle: #292c3c;
-	--ctp-frappe-crust: #232634;
+:root[data-theme='catppuccin'] {
+  /* Base Frappe palette */
+  --ctp-frappe-rosewater: #f2d5cf;
+  --ctp-frappe-flamingo: #eebebe;
+  --ctp-frappe-pink: #f4b8e4;
+  --ctp-frappe-mauve: #ca9ee6;
+  --ctp-frappe-red: #e78284;
+  --ctp-frappe-maroon: #ea999c;
+  --ctp-frappe-peach: #ef9f76;
+  --ctp-frappe-yellow: #e5c890;
+  --ctp-frappe-green: #a6d189;
+  --ctp-frappe-teal: #81c8be;
+  --ctp-frappe-sky: #99d1db;
+  --ctp-frappe-sapphire: #85c1dc;
+  --ctp-frappe-blue: #8caaee;
+  --ctp-frappe-lavender: #babbf1;
+  --ctp-frappe-text: #c6d0f5;
+  --ctp-frappe-subtext1: #b5bfe2;
+  --ctp-frappe-subtext0: #a5adce;
+  --ctp-frappe-overlay2: #949cbb;
+  --ctp-frappe-overlay1: #838ba7;
+  --ctp-frappe-overlay0: #737994;
+  --ctp-frappe-surface2: #626880;
+  --ctp-frappe-surface1: #51576d;
+  --ctp-frappe-surface0: #414559;
+  --ctp-frappe-base: #303446;
+  --ctp-frappe-mantle: #292c3c;
+  --ctp-frappe-crust: #232634;
 
-	/* DaisyUI color assignments - completely override all variables */
-	--p: var(--ctp-frappe-blue);
-	--pf: var(--ctp-frappe-lavender);
-	--pc: var(--ctp-frappe-crust);
+  /* DaisyUI color assignments - completely override all variables */
+  --p: var(--ctp-frappe-blue);
+  --pf: var(--ctp-frappe-lavender);
+  --pc: var(--ctp-frappe-crust);
 
-	--s: var(--ctp-frappe-mauve);
-	--sf: var(--ctp-frappe-pink);
-	--sc: var(--ctp-frappe-crust);
+  --s: var(--ctp-frappe-mauve);
+  --sf: var(--ctp-frappe-pink);
+  --sc: var(--ctp-frappe-crust);
 
-	--a: var(--ctp-frappe-teal);
-	--af: var(--ctp-frappe-sky);
-	--ac: var(--ctp-frappe-crust);
+  --a: var(--ctp-frappe-teal);
+  --af: var(--ctp-frappe-sky);
+  --ac: var(--ctp-frappe-crust);
 
-	--n: var(--ctp-frappe-surface0);
-	--nf: var(--ctp-frappe-surface1);
-	--nc: var(--ctp-frappe-text);
+  --n: var(--ctp-frappe-surface0);
+  --nf: var(--ctp-frappe-surface1);
+  --nc: var(--ctp-frappe-text);
 
-	--b1: var(--ctp-frappe-base);
-	--b2: var(--ctp-frappe-mantle);
-	--b3: var(--ctp-frappe-crust);
-	--bc: var(--ctp-frappe-text);
+  --b1: var(--ctp-frappe-base);
+  --b2: var(--ctp-frappe-mantle);
+  --b3: var(--ctp-frappe-crust);
+  --bc: var(--ctp-frappe-text);
 
-	--in: var(--ctp-frappe-sky);
-	--inc: var(--ctp-frappe-crust);
+  --in: var(--ctp-frappe-sky);
+  --inc: var(--ctp-frappe-crust);
 
-	--su: var(--ctp-frappe-green);
-	--suc: var(--ctp-frappe-crust);
+  --su: var(--ctp-frappe-green);
+  --suc: var(--ctp-frappe-crust);
 
-	--wa: var(--ctp-frappe-yellow);
-	--wac: var(--ctp-frappe-crust);
+  --wa: var(--ctp-frappe-yellow);
+  --wac: var(--ctp-frappe-crust);
 
-	--er: var(--ctp-frappe-red);
-	--erc: var(--ctp-frappe-crust);
+  --er: var(--ctp-frappe-red);
+  --erc: var(--ctp-frappe-crust);
 
-	/* Also set the old variable names for compatibility */
-	--primary: var(--ctp-frappe-blue);
-	--primary-focus: var(--ctp-frappe-lavender);
-	--primary-content: var(--ctp-frappe-crust);
+  /* Also set the old variable names for compatibility */
+  --primary: var(--ctp-frappe-blue);
+  --primary-focus: var(--ctp-frappe-lavender);
+  --primary-content: var(--ctp-frappe-crust);
 
-	--secondary: var(--ctp-frappe-mauve);
-	--secondary-focus: var(--ctp-frappe-pink);
-	--secondary-content: var(--ctp-frappe-crust);
+  --secondary: var(--ctp-frappe-mauve);
+  --secondary-focus: var(--ctp-frappe-pink);
+  --secondary-content: var(--ctp-frappe-crust);
 
-	--accent: var(--ctp-frappe-teal);
-	--accent-focus: var(--ctp-frappe-sky);
-	--accent-content: var(--ctp-frappe-crust);
+  --accent: var(--ctp-frappe-teal);
+  --accent-focus: var(--ctp-frappe-sky);
+  --accent-content: var(--ctp-frappe-crust);
 
-	--neutral: var(--ctp-frappe-surface0);
-	--neutral-focus: var(--ctp-frappe-surface1);
-	--neutral-content: var(--ctp-frappe-text);
+  --neutral: var(--ctp-frappe-surface0);
+  --neutral-focus: var(--ctp-frappe-surface1);
+  --neutral-content: var(--ctp-frappe-text);
 
-	--base-100: var(--ctp-frappe-base);
-	--base-200: var(--ctp-frappe-mantle);
-	--base-300: var(--ctp-frappe-crust);
-	--base-content: var(--ctp-frappe-text);
+  --base-100: var(--ctp-frappe-base);
+  --base-200: var(--ctp-frappe-mantle);
+  --base-300: var(--ctp-frappe-crust);
+  --base-content: var(--ctp-frappe-text);
 
-	--info: var(--ctp-frappe-sky);
-	--info-content: var(--ctp-frappe-crust);
+  --info: var(--ctp-frappe-sky);
+  --info-content: var(--ctp-frappe-crust);
 
-	--success: var(--ctp-frappe-green);
-	--success-content: var(--ctp-frappe-crust);
+  --success: var(--ctp-frappe-green);
+  --success-content: var(--ctp-frappe-crust);
 
-	--warning: var(--ctp-frappe-yellow);
-	--warning-content: var(--ctp-frappe-crust);
+  --warning: var(--ctp-frappe-yellow);
+  --warning-content: var(--ctp-frappe-crust);
 
-	--error: var(--ctp-frappe-red);
-	--error-content: var(--ctp-frappe-crust);
+  --error: var(--ctp-frappe-red);
+  --error-content: var(--ctp-frappe-crust);
 
-	/* Additional DaisyUI variables */
-	--rounded-box: 0.5rem;
-	--rounded-btn: 0.3rem;
-	--rounded-badge: 0.25rem;
-	--animation-btn: 0.2s;
-	--animation-input: 0.2s;
-	--btn-focus-scale: 0.95;
-	--border-btn: 1px;
-	--tab-border: 1px;
-	--tab-radius: 0.3rem;
+  /* Additional DaisyUI variables */
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.3rem;
+  --rounded-badge: 0.25rem;
+  --animation-btn: 0.2s;
+  --animation-input: 0.2s;
+  --btn-focus-scale: 0.95;
+  --border-btn: 1px;
+  --tab-border: 1px;
+  --tab-radius: 0.3rem;
 
-	/* Color scheme for browser */
-	color-scheme: dark;
+  /* Color scheme for browser */
+  color-scheme: dark;
 }
 
 /* Override specific component styles for better integration with the theme */
-:root[data-theme="catppuccin"] .btn-primary {
-	color: var(--ctp-frappe-crust);
-	background-color: var(--ctp-frappe-blue);
-	border-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .btn-primary {
+  color: var(--ctp-frappe-crust);
+  background-color: var(--ctp-frappe-blue);
+  border-color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .btn-primary:hover {
-	background-color: var(--ctp-frappe-lavender);
-	border-color: var(--ctp-frappe-lavender);
+:root[data-theme='catppuccin'] .btn-primary:hover {
+  background-color: var(--ctp-frappe-lavender);
+  border-color: var(--ctp-frappe-lavender);
 }
 
-:root[data-theme="catppuccin"] .btn-secondary {
-	color: var(--ctp-frappe-crust);
-	background-color: var(--ctp-frappe-mauve);
-	border-color: var(--ctp-frappe-mauve);
+:root[data-theme='catppuccin'] .btn-secondary {
+  color: var(--ctp-frappe-crust);
+  background-color: var(--ctp-frappe-mauve);
+  border-color: var(--ctp-frappe-mauve);
 }
 
-:root[data-theme="catppuccin"] .btn-secondary:hover {
-	background-color: var(--ctp-frappe-pink);
-	border-color: var(--ctp-frappe-pink);
+:root[data-theme='catppuccin'] .btn-secondary:hover {
+  background-color: var(--ctp-frappe-pink);
+  border-color: var(--ctp-frappe-pink);
 }
 
-:root[data-theme="catppuccin"] .btn-accent {
-	color: var(--ctp-frappe-crust);
-	background-color: var(--ctp-frappe-teal);
-	border-color: var(--ctp-frappe-teal);
+:root[data-theme='catppuccin'] .btn-accent {
+  color: var(--ctp-frappe-crust);
+  background-color: var(--ctp-frappe-teal);
+  border-color: var(--ctp-frappe-teal);
 }
 
-:root[data-theme="catppuccin"] .btn-accent:hover {
-	background-color: var(--ctp-frappe-sky);
-	border-color: var(--ctp-frappe-sky);
+:root[data-theme='catppuccin'] .btn-accent:hover {
+  background-color: var(--ctp-frappe-sky);
+  border-color: var(--ctp-frappe-sky);
 }
 
-:root[data-theme="catppuccin"] .btn-ghost {
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .btn-ghost {
+  color: var(--ctp-frappe-text);
 }
 
-:root[data-theme="catppuccin"] .btn-ghost:hover {
-	background-color: var(--ctp-frappe-surface0);
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .btn-ghost:hover {
+  background-color: var(--ctp-frappe-surface0);
+  color: var(--ctp-frappe-text);
 }
 
-:root[data-theme="catppuccin"] .btn-link {
-	color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .btn-link {
+  color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .link {
-	color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .link {
+  color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .link:hover {
-	color: var(--ctp-frappe-lavender);
+:root[data-theme='catppuccin'] .link:hover {
+  color: var(--ctp-frappe-lavender);
 }
 
 /* Card styling */
-:root[data-theme="catppuccin"] .card {
-	background-color: var(--ctp-frappe-mantle);
-	border: 1px solid var(--ctp-frappe-surface0);
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+:root[data-theme='catppuccin'] .card {
+  background-color: var(--ctp-frappe-mantle);
+  border: 1px solid var(--ctp-frappe-surface0);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
-:root[data-theme="catppuccin"] .card-title {
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .card-title {
+  color: var(--ctp-frappe-text);
 }
 
-:root[data-theme="catppuccin"] .card-body {
-	padding: 1.5rem;
+:root[data-theme='catppuccin'] .card-body {
+  padding: 1.5rem;
 }
 
-:root[data-theme="catppuccin"] .card-actions {
-	padding: 0 1.5rem 1.5rem;
+:root[data-theme='catppuccin'] .card-actions {
+  padding: 0 1.5rem 1.5rem;
 }
 
 /* Alert styling with improved contrast */
-:root[data-theme="catppuccin"] .alert {
-	background-color: var(--ctp-frappe-crust);
-	border: 1px solid var(--ctp-frappe-surface1);
-	border-left-width: 4px;
-	color: var(--ctp-frappe-text);
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+:root[data-theme='catppuccin'] .alert {
+  background-color: var(--ctp-frappe-crust);
+  border: 1px solid var(--ctp-frappe-surface1);
+  border-left-width: 4px;
+  color: var(--ctp-frappe-text);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-:root[data-theme="catppuccin"] .alert svg {
-	stroke-width: 2.5;
-	filter: drop-shadow(0 0 1px currentColor);
+:root[data-theme='catppuccin'] .alert svg {
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 1px currentColor);
 }
 
-:root[data-theme="catppuccin"] .alert-info {
-	background-color: color-mix(
-		in srgb,
-		var(--ctp-frappe-sky) 12%,
-		var(--ctp-frappe-crust)
-	);
-	border-color: var(--ctp-frappe-sky);
+:root[data-theme='catppuccin'] .alert-info {
+  background-color: color-mix(in srgb, var(--ctp-frappe-sky) 12%, var(--ctp-frappe-crust));
+  border-color: var(--ctp-frappe-sky);
 }
 
-:root[data-theme="catppuccin"] .alert-info svg {
-	color: var(--ctp-frappe-sky);
-	filter: drop-shadow(0 0 2px rgba(153, 209, 219, 0.5));
+:root[data-theme='catppuccin'] .alert-info svg {
+  color: var(--ctp-frappe-sky);
+  filter: drop-shadow(0 0 2px rgba(153, 209, 219, 0.5));
 }
 
-:root[data-theme="catppuccin"] .alert-success {
-	background-color: color-mix(
-		in srgb,
-		var(--ctp-frappe-green) 12%,
-		var(--ctp-frappe-crust)
-	);
-	border-color: var(--ctp-frappe-green);
+:root[data-theme='catppuccin'] .alert-success {
+  background-color: color-mix(in srgb, var(--ctp-frappe-green) 12%, var(--ctp-frappe-crust));
+  border-color: var(--ctp-frappe-green);
 }
 
-:root[data-theme="catppuccin"] .alert-success svg {
-	color: var(--ctp-frappe-green);
-	filter: drop-shadow(0 0 2px rgba(166, 209, 137, 0.5));
+:root[data-theme='catppuccin'] .alert-success svg {
+  color: var(--ctp-frappe-green);
+  filter: drop-shadow(0 0 2px rgba(166, 209, 137, 0.5));
 }
 
-:root[data-theme="catppuccin"] .alert-warning {
-	background-color: color-mix(
-		in srgb,
-		var(--ctp-frappe-yellow) 12%,
-		var(--ctp-frappe-crust)
-	);
-	border-color: var(--ctp-frappe-yellow);
+:root[data-theme='catppuccin'] .alert-warning {
+  background-color: color-mix(in srgb, var(--ctp-frappe-yellow) 12%, var(--ctp-frappe-crust));
+  border-color: var(--ctp-frappe-yellow);
 }
 
-:root[data-theme="catppuccin"] .alert-warning svg {
-	color: var(--ctp-frappe-yellow);
-	filter: drop-shadow(0 0 2px rgba(229, 200, 144, 0.5));
+:root[data-theme='catppuccin'] .alert-warning svg {
+  color: var(--ctp-frappe-yellow);
+  filter: drop-shadow(0 0 2px rgba(229, 200, 144, 0.5));
 }
 
-:root[data-theme="catppuccin"] .alert-error {
-	background-color: color-mix(
-		in srgb,
-		var(--ctp-frappe-red) 12%,
-		var(--ctp-frappe-crust)
-	);
-	border-color: var(--ctp-frappe-red);
+:root[data-theme='catppuccin'] .alert-error {
+  background-color: color-mix(in srgb, var(--ctp-frappe-red) 12%, var(--ctp-frappe-crust));
+  border-color: var(--ctp-frappe-red);
 }
 
-:root[data-theme="catppuccin"] .alert-error svg {
-	color: var(--ctp-frappe-red);
-	filter: drop-shadow(0 0 2px rgba(231, 130, 132, 0.5));
+:root[data-theme='catppuccin'] .alert-error svg {
+  color: var(--ctp-frappe-red);
+  filter: drop-shadow(0 0 2px rgba(231, 130, 132, 0.5));
 }
 
-:root[data-theme="catppuccin"] .alert .btn {
-	background-color: var(--ctp-frappe-surface0);
-	color: var(--ctp-frappe-text);
-	border-color: var(--ctp-frappe-surface1);
+:root[data-theme='catppuccin'] .alert .btn {
+  background-color: var(--ctp-frappe-surface0);
+  color: var(--ctp-frappe-text);
+  border-color: var(--ctp-frappe-surface1);
 }
 
-:root[data-theme="catppuccin"] .alert .btn:hover {
-	background-color: var(--ctp-frappe-surface1);
-	border-color: var(--ctp-frappe-surface2);
+:root[data-theme='catppuccin'] .alert .btn:hover {
+  background-color: var(--ctp-frappe-surface1);
+  border-color: var(--ctp-frappe-surface2);
 }
 
 /* Input styling */
-:root[data-theme="catppuccin"] .input,
-:root[data-theme="catppuccin"] .select,
-:root[data-theme="catppuccin"] .textarea {
-	background-color: var(--ctp-frappe-crust);
-	border-color: var(--ctp-frappe-surface0);
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .input,
+:root[data-theme='catppuccin'] .select,
+:root[data-theme='catppuccin'] .textarea {
+  background-color: var(--ctp-frappe-crust);
+  border-color: var(--ctp-frappe-surface0);
+  color: var(--ctp-frappe-text);
 }
 
-:root[data-theme="catppuccin"] .input:focus,
-:root[data-theme="catppuccin"] .select:focus,
-:root[data-theme="catppuccin"] .textarea:focus {
-	border-color: var(--ctp-frappe-blue);
-	box-shadow: 0 0 0 2px
-		color-mix(in srgb, var(--ctp-frappe-blue) 20%, transparent);
+:root[data-theme='catppuccin'] .input:focus,
+:root[data-theme='catppuccin'] .select:focus,
+:root[data-theme='catppuccin'] .textarea:focus {
+  border-color: var(--ctp-frappe-blue);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ctp-frappe-blue) 20%, transparent);
 }
 
-:root[data-theme="catppuccin"] .input-bordered,
-:root[data-theme="catppuccin"] .select-bordered,
-:root[data-theme="catppuccin"] .textarea-bordered {
-	border-color: var(--ctp-frappe-surface1);
+:root[data-theme='catppuccin'] .input-bordered,
+:root[data-theme='catppuccin'] .select-bordered,
+:root[data-theme='catppuccin'] .textarea-bordered {
+  border-color: var(--ctp-frappe-surface1);
 }
 
-:root[data-theme="catppuccin"] .input-ghost {
-	background-color: transparent;
+:root[data-theme='catppuccin'] .input-ghost {
+  background-color: transparent;
 }
 
-:root[data-theme="catppuccin"] .label-text {
-	color: var(--ctp-frappe-subtext0);
+:root[data-theme='catppuccin'] .label-text {
+  color: var(--ctp-frappe-subtext0);
 }
 
 /* Tab styling */
-:root[data-theme="catppuccin"] .tabs-boxed {
-	background-color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .tabs-boxed {
+  background-color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .tab {
-	color: var(--ctp-frappe-subtext0);
+:root[data-theme='catppuccin'] .tab {
+  color: var(--ctp-frappe-subtext0);
 }
 
-:root[data-theme="catppuccin"] .tab:hover {
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .tab:hover {
+  color: var(--ctp-frappe-text);
 }
 
-:root[data-theme="catppuccin"] .tab.tab-active {
-	background-color: var(--ctp-frappe-blue);
-	color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .tab.tab-active {
+  background-color: var(--ctp-frappe-blue);
+  color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .tab-bordered {
-	border-color: var(--ctp-frappe-surface0);
+:root[data-theme='catppuccin'] .tab-bordered {
+  border-color: var(--ctp-frappe-surface0);
 }
 
-:root[data-theme="catppuccin"] .tab-lifted.tab-active {
-	border-color: var(--ctp-frappe-surface0);
-	border-bottom-color: transparent;
+:root[data-theme='catppuccin'] .tab-lifted.tab-active {
+  border-color: var(--ctp-frappe-surface0);
+  border-bottom-color: transparent;
 }
 
 /* Modal styling */
-:root[data-theme="catppuccin"] .modal-box {
-	background-color: var(--ctp-frappe-base);
-	border: 1px solid var(--ctp-frappe-surface0);
-	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+:root[data-theme='catppuccin'] .modal-box {
+  background-color: var(--ctp-frappe-base);
+  border: 1px solid var(--ctp-frappe-surface0);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
-:root[data-theme="catppuccin"] .modal-action {
-	margin-top: 1.5rem;
+:root[data-theme='catppuccin'] .modal-action {
+  margin-top: 1.5rem;
 }
 
 /* Dropdown styling */
-:root[data-theme="catppuccin"] .dropdown-content {
-	background-color: var(--ctp-frappe-mantle);
-	border: 1px solid var(--ctp-frappe-surface0);
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+:root[data-theme='catppuccin'] .dropdown-content {
+  background-color: var(--ctp-frappe-mantle);
+  border: 1px solid var(--ctp-frappe-surface0);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
-:root[data-theme="catppuccin"] .menu {
-	background-color: var(--ctp-frappe-mantle);
-	border-radius: var(--rounded-box);
+:root[data-theme='catppuccin'] .menu {
+  background-color: var(--ctp-frappe-mantle);
+  border-radius: var(--rounded-box);
 }
 
-:root[data-theme="catppuccin"] .menu li > a:active,
-:root[data-theme="catppuccin"] .menu li > a:hover,
-:root[data-theme="catppuccin"] .menu li > a.active {
-	background-color: var(--ctp-frappe-surface0);
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .menu li > a:active,
+:root[data-theme='catppuccin'] .menu li > a:hover,
+:root[data-theme='catppuccin'] .menu li > a.active {
+  background-color: var(--ctp-frappe-surface0);
+  color: var(--ctp-frappe-text);
 }
 
 /* Form components */
-:root[data-theme="catppuccin"] .checkbox {
-	border-color: var(--ctp-frappe-overlay0);
-	background-color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .checkbox {
+  border-color: var(--ctp-frappe-overlay0);
+  background-color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .checkbox:checked {
-	background-color: var(--ctp-frappe-blue);
-	border-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .checkbox:checked {
+  background-color: var(--ctp-frappe-blue);
+  border-color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .toggle {
-	background-color: var(--ctp-frappe-surface1);
-	border-color: var(--ctp-frappe-overlay0);
+:root[data-theme='catppuccin'] .toggle {
+  background-color: var(--ctp-frappe-surface1);
+  border-color: var(--ctp-frappe-overlay0);
 }
 
-:root[data-theme="catppuccin"] .toggle:checked {
-	background-color: var(--ctp-frappe-blue);
-	border-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .toggle:checked {
+  background-color: var(--ctp-frappe-blue);
+  border-color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .radio {
-	border-color: var(--ctp-frappe-overlay0);
-	background-color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .radio {
+  border-color: var(--ctp-frappe-overlay0);
+  background-color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .radio:checked {
-	background-color: var(--ctp-frappe-blue);
-	border-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .radio:checked {
+  background-color: var(--ctp-frappe-blue);
+  border-color: var(--ctp-frappe-blue);
 }
 
 /* Table styling */
-:root[data-theme="catppuccin"] .table {
-	color: var(--ctp-frappe-text);
+:root[data-theme='catppuccin'] .table {
+  color: var(--ctp-frappe-text);
 }
 
-:root[data-theme="catppuccin"] .table th {
-	color: var(--ctp-frappe-subtext0);
-	background-color: var(--ctp-frappe-mantle);
+:root[data-theme='catppuccin'] .table th {
+  color: var(--ctp-frappe-subtext0);
+  background-color: var(--ctp-frappe-mantle);
 }
 
-:root[data-theme="catppuccin"] .table tr:nth-child(even) {
-	background-color: color-mix(
-		in srgb,
-		var(--ctp-frappe-surface0) 40%,
-		transparent
-	);
+:root[data-theme='catppuccin'] .table tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--ctp-frappe-surface0) 40%, transparent);
 }
 
-:root[data-theme="catppuccin"] .table-zebra tbody tr:nth-child(even) {
-	background-color: color-mix(
-		in srgb,
-		var(--ctp-frappe-surface0) 60%,
-		transparent
-	);
+:root[data-theme='catppuccin'] .table-zebra tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--ctp-frappe-surface0) 60%, transparent);
 }
 
 /* Progress bar */
-:root[data-theme="catppuccin"] .progress {
-	background-color: var(--ctp-frappe-surface0);
+:root[data-theme='catppuccin'] .progress {
+  background-color: var(--ctp-frappe-surface0);
 }
 
-:root[data-theme="catppuccin"] .progress::-webkit-progress-bar {
-	background-color: var(--ctp-frappe-surface0);
+:root[data-theme='catppuccin'] .progress::-webkit-progress-bar {
+  background-color: var(--ctp-frappe-surface0);
 }
 
-:root[data-theme="catppuccin"] .progress::-webkit-progress-value {
-	background-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .progress::-webkit-progress-value {
+  background-color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .progress::-moz-progress-bar {
-	background-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .progress::-moz-progress-bar {
+  background-color: var(--ctp-frappe-blue);
 }
 
 /* Badge styling */
-:root[data-theme="catppuccin"] .badge {
-	border: 1px solid transparent;
+:root[data-theme='catppuccin'] .badge {
+  border: 1px solid transparent;
 }
 
-:root[data-theme="catppuccin"] .badge-primary {
-	background-color: var(--ctp-frappe-blue);
-	color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .badge-primary {
+  background-color: var(--ctp-frappe-blue);
+  color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .badge-secondary {
-	background-color: var(--ctp-frappe-mauve);
-	color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .badge-secondary {
+  background-color: var(--ctp-frappe-mauve);
+  color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .badge-accent {
-	background-color: var(--ctp-frappe-teal);
-	color: var(--ctp-frappe-crust);
+:root[data-theme='catppuccin'] .badge-accent {
+  background-color: var(--ctp-frappe-teal);
+  color: var(--ctp-frappe-crust);
 }
 
-:root[data-theme="catppuccin"] .badge-outline {
-	background-color: transparent;
+:root[data-theme='catppuccin'] .badge-outline {
+  background-color: transparent;
 }
 
-:root[data-theme="catppuccin"] .badge-outline.badge-primary {
-	color: var(--ctp-frappe-blue);
-	border-color: var(--ctp-frappe-blue);
+:root[data-theme='catppuccin'] .badge-outline.badge-primary {
+  color: var(--ctp-frappe-blue);
+  border-color: var(--ctp-frappe-blue);
 }
 
-:root[data-theme="catppuccin"] .badge-outline.badge-secondary {
-	color: var(--ctp-frappe-mauve);
-	border-color: var(--ctp-frappe-mauve);
+:root[data-theme='catppuccin'] .badge-outline.badge-secondary {
+  color: var(--ctp-frappe-mauve);
+  border-color: var(--ctp-frappe-mauve);
 }
 
-:root[data-theme="catppuccin"] .badge-outline.badge-accent {
-	color: var(--ctp-frappe-teal);
-	border-color: var(--ctp-frappe-teal);
+:root[data-theme='catppuccin'] .badge-outline.badge-accent {
+  color: var(--ctp-frappe-teal);
+  border-color: var(--ctp-frappe-teal);
 }

@@ -1,15 +1,15 @@
-import { ActionPanel } from "@raycast/api";
-import { CopyToClipboardAction } from "./index";
+import { ActionPanel } from '@raycast/api'
+import { CopyToClipboardAction } from './index'
 
 export const CopyActionSection = ({
-	question,
-	answer,
+  question,
+  answer
 }: {
-	question: string;
-	answer: string;
+  question: string
+  answer: string
 }) => (
-	<ActionPanel.Section title="Copy">
-		<CopyToClipboardAction title="Copy Answer" content={answer} />
-		<CopyToClipboardAction title="Copy Question" content={question} />
-	</ActionPanel.Section>
-);
+  <ActionPanel.Section title="Copy">
+    <CopyToClipboardAction title="Copy Answer" content={answer} />
+    <CopyToClipboardAction title="Copy Question" content={question} />
+  </ActionPanel.Section>
+)

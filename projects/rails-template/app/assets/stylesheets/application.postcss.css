@@ -1,8 +1,8 @@
 /* Entry point for your PostCSS build */
 
-@import "tailwindcss";
-@import "synthwave84.css";
-@import "catppuccin.css";
+@import 'tailwindcss';
+@import 'synthwave84.css';
+@import 'catppuccin.css';
 
 @plugin "daisyui";
 

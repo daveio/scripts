@@ -1,21 +1,21 @@
 {
-	"name": "Keycheck",
-	"short_name": "Keycheck",
-	"description": "Check if your private key has been compromised on the dark web",
-	"start_url": "/",
-	"display": "standalone",
-	"background_color": "#0f172a",
-	"theme_color": "#0f172a",
-	"icons": [
-		{
-			"src": "/app_icon_192x192.png",
-			"sizes": "192x192",
-			"type": "image/png"
-		},
-		{
-			"src": "/app_icon_512x512.png",
-			"sizes": "512x512",
-			"type": "image/png"
-		}
-	]
+  "name": "Keycheck",
+  "short_name": "Keycheck",
+  "description": "Check if your private key has been compromised on the dark web",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/app_icon_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/app_icon_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

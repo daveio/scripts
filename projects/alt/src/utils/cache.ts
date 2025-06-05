@@ -1,21 +1,21 @@
-import { Cache } from "@raycast/api";
+import { Cache } from '@raycast/api'
 
 export class CacheAdapter {
-	private readonly key: string;
-	private readonly cache: Cache;
+  private readonly key: string
+  private readonly cache: Cache
 
-	constructor(key: string) {
-		this.key = key;
-		this.cache = new Cache({
-			namespace: "abielzulio.chatgpt",
-		});
-	}
+  constructor(key: string) {
+    this.key = key
+    this.cache = new Cache({
+      namespace: 'abielzulio.chatgpt'
+    })
+  }
 
-	get() {
-		return this.cache.get(this.key);
-	}
+  get() {
+    return this.cache.get(this.key)
+  }
 
-	set(value: string) {
-		this.cache.set(this.key, value);
-	}
+  set(value: string) {
+    this.cache.set(this.key, value)
+  }
 }
