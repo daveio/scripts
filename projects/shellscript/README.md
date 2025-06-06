@@ -2,7 +2,7 @@
 
 This is a collection of small shellscripts which you should be quiet or I will replace you with.
 
-## `clone_repos.sh`
+## `clone-repos.bash`
 
 Pipe a file with a list of GitHub repos, of format:
 
