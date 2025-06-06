@@ -2,7 +2,7 @@ $schema: ./mcp.schema.json
 config:
   defaults:
     enabled: true
-    timeout: 300
+    timeout: 1200
     type: stdio
   output:
     CUSTOM-DEFINITION:
@@ -32,12 +32,12 @@ servers:
     args:
       - ableton-mcp
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Ableton Live DAW integration
+    description: Ableton Live DAW integration.
     enabled: false
     env: {}
     name: Ableton Live
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   claude-code:
     args:
@@ -46,12 +46,12 @@ servers:
       - mcp
       - serve
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Claude Code tools for development assistance
+    description: Claude Code tools for development assistance.
     enabled: true
     env: {}
     name: Claude Code
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-ai:
     args:
@@ -59,12 +59,12 @@ servers:
       - mcp-remote
       - https://ai-gateway.mcp.cloudflare.com/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Cloudflare AI Gateway integration
+    description: Cloudflare AI Gateway integration.
     enabled: false
     env: {}
     name: Cloudflare AI Gateway
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-audit:
     args:
@@ -72,12 +72,12 @@ servers:
       - mcp-remote
       - https://auditlogs.mcp.cloudflare.com/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Cloudflare audit logs and security monitoring
+    description: Cloudflare audit logs and security monitoring.
     enabled: false
     env: {}
     name: Cloudflare Audit Logs
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-autorag:
     args:
@@ -85,12 +85,12 @@ servers:
       - mcp-remote
       - https://autorag.mcp.cloudflare.com/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Cloudflare AutoRAG document search and retrieval
+    description: Cloudflare AutoRAG document search and retrieval.
     enabled: false
     env: {}
     name: Cloudflare AutoRAG
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-bindings:
     args:
@@ -101,9 +101,9 @@ servers:
     description: Cloudflare Workers storage and compute bindings
     enabled: false
     env: {}
-    name: Cloudflare Workers Bindings
+    name: Cloudflare Workers Bindings.
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-container:
     args:
@@ -111,12 +111,12 @@ servers:
       - mcp-remote
       - https://containers.mcp.cloudflare.com/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Spin up containers and interact with them
+    description: Spin up remote containers and interact with them.
     enabled: true
     env: {}
     name: Cloudflare Container
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-dns:
     args:
@@ -124,12 +124,12 @@ servers:
       - mcp-remote
       - https://dns-analytics.mcp.cloudflare.com/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: DNS performance analytics and debugging
+    description: DNS performance analytics and debugging.
     enabled: false
     env: {}
     name: Cloudflare DNS Analytics
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-documentation:
     args:
@@ -140,9 +140,9 @@ servers:
     description: Access to Cloudflare Developer Documentation
     enabled: true
     env: {}
-    name: Cloudflare Documentation
+    name: Cloudflare Documentation.
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-observability:
     args:
@@ -153,9 +153,9 @@ servers:
     description: Cloudflare Workers Observability and monitoring
     enabled: true
     env: {}
-    name: Cloudflare Observability
+    name: Cloudflare Observability.
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-radar:
     args:
@@ -166,9 +166,9 @@ servers:
     description: Global Internet traffic insights and trends
     enabled: false
     env: {}
-    name: Cloudflare Radar
+    name: Cloudflare Radar.
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   cloudflare-rendering:
     args:
@@ -179,90 +179,108 @@ servers:
     description: Browser rendering and screenshot capabilities
     enabled: true
     env: {}
-    name: Cloudflare Browser Rendering
+    name: Cloudflare Browser Rendering.
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   console-ninja:
     args:
       - run
       - ~/.console-ninja/mcp/
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Console output monitoring and debugging
+    description: Console output monitoring and debugging.
     enabled: true
     env: {}
     name: Console Ninja
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   context7:
     args:
       - x
       - "@upstash/context7-mcp"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Documentation database and context search
+    description: Documentation database and context search.
     enabled: true
     env: {}
     name: Context7
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   docker:
     args:
       - ai
       - mcpserver
     command: docker
-    description: Docker container management and integration
+    description: Docker container management and integration.
     enabled: true
     env: {}
     name: Docker
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   duckduckgo:
     args:
       - duckduckgo-mcp-server
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Web search and page fetching capabilities
+    description: Web search and page fetching capabilities.
     enabled: true
     env: {}
     name: DuckDuckGo
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   fetch:
     args:
       - mcp-server-fetch
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Web content fetching and processing
+    description: Web content fetching and processing.
     enabled: true
     env: {}
     name: Fetch
     settings: {}
-    timeout: 300
+    timeout: 1200
+    type: stdio
+  filesystem:
+    args:
+      - x
+      - "@modelcontextprotocol/server-filesystem"
+      - /Applications
+      - /private/tmp
+      - /private/var/tmp
+      - /tmp
+      - /Users/dave
+      - /Volumes
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: File system access and manipulation.
+    enabled: false
+    env: {}
+    name: File System
+    settings: {}
+    timeout: 1200
     type: stdio
   git:
     args:
       - mcp-server-git
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Git repository management and version control
+    description: Git repository management and version control.
     enabled: true
     env: {}
     name: Git
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   github:
     args:
       - x
       - "@modelcontextprotocol/server-github"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: GitHub API integration for repositories and issues
+    description: GitHub API integration for repositories and issues.
     enabled: false
     env: {}
     name: GitHub
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   linear:
     args:
@@ -270,19 +288,19 @@ servers:
       - mcp-remote
       - https://mcp.linear.app/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Linear project management integration
+    description: Linear project management integration.
     enabled: false
     env: {}
     name: Linear
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   notion:
     args:
       - x
       - "@notionhq/notion-mcp-server"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Notion workspace integration
+    description: Notion workspace integration.
     enabled: false
     env:
       OPENAPI_MCP_HEADERS: >-
@@ -290,54 +308,90 @@ servers:
         "2022-06-28"}
     name: Notion
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   pdf-reader:
     args:
       - mcp-read-pdf
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Read and process PDF documents
+    description: Read and process PDF documents.
     enabled: true
     env: {}
     name: PDF Reader
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio
   pieces:
     args:
       - x
       - mcp-remote
-      - http://localhost:39300/model_context_protocol/2024-11-05/sse
+      - http://localhost:391200/model_context_protocol/2024-11-05/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Pieces long-term memory engine integration
+    description: Pieces long-term memory engine integration.
     enabled: true
     env: {}
     name: Pieces
     settings: {}
-    timeout: 300
+    timeout: 1200
+    type: stdio
+  sequential-thinking:
+    args:
+      - x
+      - "@modelcontextprotocol/server-sequential-thinking"
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Tools for dynamic and reflective problem-solving through a structured thinking process.
+    enabled: true
+    env: {}
+    name: Sequential Thinking
+    settings: {}
+    timeout: 1200
     type: stdio
   shared-memory:
     args:
       - x
       - "@modelcontextprotocol/server-memory"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Persistent memory storage and retrieval
+    description: Persistent memory storage and retrieval.
     enabled: true
     env:
       MEMORY_FILE_PATH: /Users/dave/.memory
     name: Shared Memory
     settings: {}
-    timeout: 300
+    timeout: 1200
+    type: stdio
+  slack:
+    args:
+      - x
+      - "@modelcontextprotocol/server-slack"
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Slack ChatOps and chat integration.
+    enabled: true
+    env: {}
+    name: Slack
+    settings: {}
+    timeout: 1200
+    type: stdio
+  time:
+    args:
+      - mcp_server_time
+      - --local-timezone=Europe/London
+    command: /Users/dave/.local/share/mise/shims/uvx
+    description: Time and date management, with time zone support and conversion.
+    enabled: true
+    env: {}
+    name: Time
+    settings: {}
+    timeout: 1200
     type: stdio
   vscode:
     args:
       - x
       - vscode-mcp-server
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Visual Studio Code integration
+    description: Visual Studio Code integration.
     enabled: false
     env: {}
     name: VS Code
     settings: {}
-    timeout: 300
+    timeout: 1200
     type: stdio

@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/daveio/myriad/projects/mcp/config/mcp.schema.json",
+  "title": "MCP Configuration Schema",
+  "description": "Schema for Model Context Protocol (MCP) configuration files",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "The JSON schema to validate this document against"
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration settings for MCP",
+      "properties": {
+        "defaults": {
+          "type": "object",
+          "description": "Default values for server configurations",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Default enabled state for servers"
+            },
+            "timeout": {
+              "type": "integer",
+              "description": "Default timeout in seconds"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["stdio", "builtin"],
+              "description": "Default connection type"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": {
+          "type": "object",
+          "description": "Output configuration for different targets",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "object",
+              "properties": {
+                "format": {
+                  "type": "string",
+                  "enum": ["json", "yaml"],
+                  "description": "Output format"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Output file path"
+                },
+                "template": {
+                  "type": "string",
+                  "description": "Template to use for output"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "servers": {
+      "type": "object",
+      "description": "MCP server configurations",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Command line arguments for the server"
+            },
+            "command": {
+              "type": "string",
+              "description": "Command to execute the server"
+            },
+            "description": {
+              "type": "string",
+              "description": "Human-readable description of the server"
+            },
+            "enabled": {
+              "type": "boolean",
+              "description": "Whether the server is enabled"
+            },
+            "env": {
+              "type": "object",
+              "patternProperties": {
+                "^[A-Z_][A-Z0-9_]*$": {
+                  "type": "string"
+                }
+              },
+              "description": "Environment variables for the server",
+              "additionalProperties": false
+            },
+            "name": {
+              "type": "string",
+              "description": "Display name for the server"
+            },
+            "settings": {
+              "type": "object",
+              "description": "Additional settings for the server",
+              "additionalProperties": true
+            },
+            "timeout": {
+              "type": "integer",
+              "description": "Timeout in seconds"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["stdio", "builtin"],
+              "description": "Connection type"
+            }
+          },
+          "required": ["args", "type"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["servers"],
+  "additionalProperties": false
+}
