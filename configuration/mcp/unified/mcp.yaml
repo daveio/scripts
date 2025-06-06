@@ -183,18 +183,6 @@ servers:
     settings: {}
     timeout: 1200
     type: stdio
-  console-ninja:
-    args:
-      - run
-      - ~/.console-ninja/mcp/
-    command: /Users/dave/.local/share/mise/shims/bun
-    description: Console output monitoring and debugging.
-    enabled: true
-    env: {}
-    name: Console Ninja
-    settings: {}
-    timeout: 1200
-    type: stdio
   context7:
     args:
       - x
@@ -304,8 +292,7 @@ servers:
     enabled: false
     env:
       OPENAPI_MCP_HEADERS: >-
-        {"Authorization": "Bearer $NOTION_TOKEN", "Notion-Version":
-        "2022-06-28"}
+        {"Authorization": "Bearer ${NOTION_TOKEN}", "Notion-Version": "2022-06-28"}
     name: Notion
     settings: {}
     timeout: 1200
@@ -366,14 +353,16 @@ servers:
     command: /Users/dave/.local/share/mise/shims/bun
     description: Slack ChatOps and chat integration.
     enabled: true
-    env: {}
+    env:
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+      SLACK_TEAM_ID: ${SLACK_TEAM_ID}
     name: Slack
     settings: {}
     timeout: 1200
     type: stdio
   time:
     args:
-      - mcp_server_time
+      - mcp-server-time
       - --local-timezone=Europe/London
     command: /Users/dave/.local/share/mise/shims/uvx
     description: Time and date management, with time zone support and conversion.

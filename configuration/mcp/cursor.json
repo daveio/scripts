@@ -1,0 +1,137 @@
+{
+  "mcpServers": {
+    "abletonLive": {
+      "args": [
+        "ableton-mcp"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "claudeCode": {
+      "args": [
+        "x",
+        "@anthropic-ai/claude-code",
+        "mcp",
+        "serve"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "context7": {
+      "args": [
+        "x",
+        "@upstash/context7-mcp"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "docker": {
+      "args": [
+        "ai",
+        "mcpserver"
+      ],
+      "command": "docker"
+    },
+    "duckduckgo": {
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "fetch": {
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "filesystem": {
+      "args": [
+        "x",
+        "@modelcontextprotocol/server-filesystem",
+        "/Applications",
+        "/private/tmp",
+        "/private/var/tmp",
+        "/tmp",
+        "/Users/dave",
+        "/Volumes"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "git": {
+      "args": [
+        "mcp-server-git"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "github": {
+      "args": [
+        "x",
+        "@modelcontextprotocol/server-github"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "linear": {
+      "args": [
+        "x",
+        "mcp-remote",
+        "https://mcp.linear.app/sse"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "notion": {
+      "args": [
+        "x",
+        "@notionhq/notion-mcp-server"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun",
+      "env": {
+        "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer ${CURSOR_NOTION_TOKEN}\", \"Notion-Version\": \"2022-06-28\" }"
+      }
+    },
+    "pdfReader": {
+      "args": [
+        "mcp-read-pdf"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "sequentialThinking": {
+      "args": [
+        "x",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "sharedMemory": {
+      "args": [
+        "x",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun",
+      "env": {
+        "MEMORY_FILE_PATH": "/Users/dave/.memory"
+      }
+    },
+    "slack": {
+      "args": [
+        "x",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun",
+      "env": {
+        "SLACK_BOT_TOKEN": "${CURSOR_SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${CURSOR_SLACK_TEAM_ID}"
+      }
+    },
+    "time": {
+      "args": [
+        "mcp-server-time",
+        "--local-timezone=Europe/London"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    },
+    "vscode": {
+      "args": [
+        "x",
+        "vscode-mcp-server"
+      ],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    }
+  }
+}
