@@ -11,7 +11,7 @@ env:
   GEOIPUPDATE_VERSION: 7.1.0
 jobs:
   prefetch:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
@@ -63,7 +63,7 @@ jobs:
             jdxcode/mise@sha256:cff42e2bf1063ae6a8729c148a1003357d5befa2fe7656c5d0c99e62b68aab7d \
             -c "apt-get update && cp -r /var/lib/apt/lists /cache/ && cp -r /var/cache/apt /cache/ && rm -f /cache/apt/archives/lock /cache/lists/lock && rm -rf /cache/apt/archives/partial /cache/lists/partial"
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: prefetch
     strategy:
       fail-fast: false
@@ -181,7 +181,7 @@ jobs:
           echo "digest-${{ matrix.platform }}=${{ steps.push.outputs.digest }}" >> "$GITHUB_OUTPUT"
 
   manifest:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: build
     outputs:
       image: ${{ steps.metadata.outputs.tags }}
