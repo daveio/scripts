@@ -228,6 +228,10 @@ See [LICENSE](LICENSE) for the legal bits. TL;DR: Don't be evil, give credit whe
 - **Discussions**: [GitHub Discussions](https://github.com/daveio/myriad/discussions) - For philosophical debates about semicolons
 - **Email**: <dave@dave.io> - For when GitHub is down (which happens more than we'd like)
 
+## Pending Additions 📝
+
+This README needs documentation of the GitHub Actions builds.
+
 ## Final Thoughts 💭
 
 This monorepo represents years of accumulated digital detritus, polished into something resembling usefulness. It's a testament to the fact that sometimes the best way to organize chaos is to embrace it and add really good documentation.
