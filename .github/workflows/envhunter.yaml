@@ -1,70 +1,12 @@
 # yaml-language-server: $schema=../../submodules/schemastore--schemastore/src/schemas/json/github-workflow.json
-name: netflow
+name: envhunter
 on: push
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: netflow
-  GO_VERSION: 1.24.3
-  NDPI_VERSION: 4.14
-  NTOP_VERSION: 6.4
-  NETFLOW2NG_VERSION: 0.0.5
-  GEOIPUPDATE_VERSION: 7.1.0
+  IMAGE_NAME: envhunter
 jobs:
-  prefetch:
-    runs-on: ubuntu-latest
-    outputs:
-      cache-key: ${{ steps.cache-key.outputs.key }}
-    steps:
-      - name: checkout
-        uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
-      - name: cache-key
-        id: cache-key
-        run: |
-          DOCKERFILE_HASH=$(sha256sum projects/netflow/components/Dockerfile | cut -d' ' -f1)
-          PATCH_HASH="${{ hashFiles('projects/netflow/components/allow-flows-from-netflow2ng.patch') }}"
-          CACHE_KEY="deps-${{ env.NDPI_VERSION }}-${{ env.NTOP_VERSION }}-${{ env.NETFLOW2NG_VERSION }}-${{ env.GO_VERSION }}-${{ env.GEOIPUPDATE_VERSION }}-${DOCKERFILE_HASH}-${PATCH_HASH}"
-          echo "key=$CACHE_KEY" >> "$GITHUB_OUTPUT"
-          echo "dockerfile-hash=${DOCKERFILE_HASH}" >> "$GITHUB_OUTPUT"
-          echo "packages-hash=$(echo '${{ env.GO_VERSION }}${{ env.GEOIPUPDATE_VERSION }}' | sha256sum | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
-      - name: dependency-cache
-        id: dependency-cache
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
-        with:
-          path: |
-            /tmp/prefetch-cache
-            /tmp/package-metadata-cache
-          key: ${{ steps.cache-key.outputs.key }}
-      - name: package-metadata-cache
-        id: package-metadata-cache
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
-        with:
-          path: |
-            /tmp/apt-metadata-cache
-          key: packages-metadata-${{ steps.cache-key.outputs.packages-hash }}-${{ steps.cache-key.outputs.dockerfile-hash }}
-      - name: buildx
-        if: steps.dependency-cache.outputs.cache-hit != 'true'
-        uses: docker/setup-buildx-action@3f1544eb9eff0b4d4d279b33f704a06fcf8d0e43
-      - name: prefetch-dependencies
-        if: steps.dependency-cache.outputs.cache-hit != 'true'
-        run: |
-          docker buildx build \
-            --target dependency-prefetch \
-            --build-arg NDPI_VERSION=${{ env.NDPI_VERSION }} \
-            --build-arg NTOP_VERSION=${{ env.NTOP_VERSION }} \
-            --build-arg NETFLOW2NG_VERSION=${{ env.NETFLOW2NG_VERSION }} \
-            --output type=local,dest=/tmp/prefetch-cache \
-            ./projects/netflow/components
-      - name: prefetch-package-metadata
-        if: steps.package-metadata-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p /tmp/apt-metadata-cache
-          docker run --rm --entrypoint=/bin/bash \
-            -v /tmp/apt-metadata-cache:/cache \
-            jdxcode/mise@sha256:cff42e2bf1063ae6a8729c148a1003357d5befa2fe7656c5d0c99e62b68aab7d \
-            -c "apt-get update && cp -r /var/lib/apt/lists /cache/ && cp -r /var/cache/apt /cache/ && rm -f /cache/apt/archives/lock /cache/lists/lock && rm -rf /cache/apt/archives/partial /cache/lists/partial"
   build:
     runs-on: ubuntu-latest
-    needs: prefetch
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -110,7 +52,6 @@ jobs:
         run: |
           {
             echo "image=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.platform }}"
-            echo "cache-image=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:cache-${{ matrix.platform }}"
             echo "labels=org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}"
             echo "labels=org.opencontainers.image.revision=${{ github.sha }}"
           } >> "$GITHUB_OUTPUT"
@@ -118,33 +59,11 @@ jobs:
         id: push
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
         with:
-          context: ./projects/netflow/components
-          file: ./projects/netflow/components/Dockerfile
+          context: ./projects/envhunter
+          file: ./projects/envhunter/Dockerfile
           push: true
-          tags: |
-            ${{ steps.metadata.outputs.image }}
-            ${{ steps.metadata.outputs.cache-image }}
+          tags: ${{ steps.metadata.outputs.image }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: |
-            type=gha,scope=${{ matrix.platform }}-main
-            type=gha,scope=${{ matrix.platform }}-runtime-deps-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,scope=${{ matrix.platform }}-build-deps-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,scope=${{ matrix.platform }}-mise-tools-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,scope=shared-mise-go-${{ env.GO_VERSION }}
-            type=gha,scope=shared-deps-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,scope=shared-packages-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,scope=shared-geoip-${{ env.GEOIPUPDATE_VERSION }}
-            type=registry,ref=${{ steps.metadata.outputs.cache-image }}
-          cache-to: |
-            type=gha,mode=max,scope=${{ matrix.platform }}-main
-            type=gha,mode=max,scope=${{ matrix.platform }}-runtime-deps-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,mode=max,scope=${{ matrix.platform }}-build-deps-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,mode=max,scope=${{ matrix.platform }}-mise-tools-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,mode=max,scope=shared-mise-go-${{ env.GO_VERSION }}
-            type=gha,mode=max,scope=shared-deps-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,mode=max,scope=shared-packages-${{ needs.prefetch.outputs.cache-key }}
-            type=gha,mode=max,scope=shared-geoip-${{ env.GEOIPUPDATE_VERSION }}
-            type=registry,ref=${{ steps.metadata.outputs.cache-image }},mode=max
           platforms: linux/${{ matrix.platform }}
           provenance: mode=max
           sbom: true
@@ -152,28 +71,7 @@ jobs:
             BUILDKIT_MULTI_PLATFORM=1
             BUILDPLATFORM=${{ matrix.platform }}
             TARGETPLATFORM=linux/${{ matrix.platform }}
-            GO_VERSION=${{ env.GO_VERSION }}
-            NDPI_VERSION=${{ env.NDPI_VERSION }}
-            NTOP_VERSION=${{ env.NTOP_VERSION }}
-            NETFLOW2NG_VERSION=${{ env.NETFLOW2NG_VERSION }}
-            GEOIPUPDATE_VERSION=${{ env.GEOIPUPDATE_VERSION }}
           outputs: type=image,name=${{ steps.metadata.outputs.image }},push=true
-          no-cache-filters: dependency-prefetch
-          secrets: |
-            APT_METADATA_CACHE=/tmp/apt-metadata-cache
-      - name: dependency-cache-restore
-        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684
-        with:
-          path: |
-            /tmp/prefetch-cache
-            /tmp/package-metadata-cache
-          key: ${{ needs.prefetch.outputs.cache-key }}
-      - name: package-metadata-cache-restore
-        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684
-        with:
-          path: |
-            /tmp/apt-metadata-cache
-          key: packages-metadata-${{ needs.prefetch.outputs.cache-key }}
       - name: generate-artifact-attestation
         uses: actions/attest-build-provenance@39cb715ce0ddd23df1f705e863f642bfb72dfb2b
         with:
@@ -185,7 +83,6 @@ jobs:
         run: |
           echo "image-${{ matrix.platform }}=${{ steps.metadata.outputs.image }}" >> "$GITHUB_OUTPUT"
           echo "digest-${{ matrix.platform }}=${{ steps.push.outputs.digest }}" >> "$GITHUB_OUTPUT"
-
   manifest:
     runs-on: ubuntu-latest
     needs: build

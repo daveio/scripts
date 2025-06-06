@@ -6,7 +6,7 @@ RUN useradd -m envhunter
 
 COPY . .
 
-RUN gem install bundler:2.6.7 && \
+RUN gem install bundler:2.6.9 && \
     bundle install && \
     chown -R envhunter:envhunter /app
 
