@@ -1,0 +1,40 @@
+PATH
+  remote: .
+  specs:
+    envhunter (1.0.0)
+      commander
+      csv
+      httparty
+      json
+      yaml
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bigdecimal (3.2.2)
+    commander (5.0.0)
+      highline (~> 3.0.0)
+    csv (3.3.5)
+    highline (3.0.1)
+    httparty (0.23.1)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
+    json (2.12.2)
+    mini_mime (1.1.5)
+    multi_xml (0.7.2)
+      bigdecimal (~> 3.1)
+    yaml (0.4.0)
+
+PLATFORMS
+  arm64-darwin-24
+  ruby
+
+DEPENDENCIES
+  envhunter!
+
+RUBY VERSION
+   ruby 3.4.4p34
+
+BUNDLED WITH
+   2.6.7

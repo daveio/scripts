@@ -2,6 +2,6 @@
 
 source 'https://rubygems.org' # https://github.com/rubygems/rubygems
 
-ruby '3.4.3'
+ruby '3.4.4'
 
 gemspec
