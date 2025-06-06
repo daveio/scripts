@@ -74,8 +74,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libpcre2-16-0 \
       libpcre2-32-0 \
       libpcre2-posix3 \
+      libprotobuf-c-dev \
+      libprotobuf-c1 \
+      libprotobuf-dev \
       libprotobuf32 \
-      libprotobuf-mutator0 \
       libradcli4 \
       librrd8 \
       libsensors-config \
@@ -90,6 +92,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       netcat-openbsd \
       nginx \
       procps \
+      protobuf-c-compiler \
+      protobuf-compiler \
       redis-server \
       rrdtool \
       wget \
@@ -143,7 +147,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libpango1.0-dev \
       libpcap-dev \
       libprotobuf-dev \
-      libprotobuf-mutator-dev \
+      libprotobuf-c-dev \
+      libprotobuf-c1 \
+      libprotobuf-dev \
+      libprotobuf32 \
       libradcli-dev \
       libreadline-dev \
       protobuf-compiler \
@@ -157,6 +164,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libzmq3-dev \
       patch \
       pkg-config \
+      protobuf-c-compiler \
+      protobuf-compiler \
       rename \
       vim \
       wget \
