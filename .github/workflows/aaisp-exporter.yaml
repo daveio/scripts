@@ -7,16 +7,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      max-parallel: 2
-      matrix:
-        platform: [amd64, arm64]
     outputs:
-      image-amd64: ${{ steps.output.outputs.image-amd64 }}
-      image-arm64: ${{ steps.output.outputs.image-arm64 }}
-      digest-amd64: ${{ steps.output.outputs.digest-amd64 }}
-      digest-arm64: ${{ steps.output.outputs.digest-arm64 }}
+      image: ${{ steps.metadata.outputs.tags }}
+      digest: ${{ steps.build.outputs.digest }}
     permissions:
       contents: read
       packages: write
@@ -51,97 +44,45 @@ jobs:
         id: metadata
         run: |
           {
-            echo "image=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.platform }}"
-            echo "labels=org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}"
-            echo "labels=org.opencontainers.image.revision=${{ github.sha }}"
-          } >> "$GITHUB_OUTPUT"
-      - name: push
-        id: push
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
-        with:
-          context: ./projects/aaisp-exporter
-          file: ./projects/aaisp-exporter/Dockerfile
-          push: true
-          tags: ${{ steps.metadata.outputs.image }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          platforms: linux/${{ matrix.platform }}
-          provenance: mode=max
-          sbom: true
-          build-args: |
-            BUILDKIT_MULTI_PLATFORM=1
-            BUILDPLATFORM=${{ matrix.platform }}
-            TARGETPLATFORM=linux/${{ matrix.platform }}
-          outputs: type=image,name=${{ steps.metadata.outputs.image }},push=true
-      - name: generate-artifact-attestation
-        uses: actions/attest-build-provenance@39cb715ce0ddd23df1f705e863f642bfb72dfb2b
-        with:
-          subject-name: ${{ steps.metadata.outputs.image }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
-      - name: output
-        id: output
-        run: |
-          echo "image-${{ matrix.platform }}=${{ steps.metadata.outputs.image }}" >> "$GITHUB_OUTPUT"
-          echo "digest-${{ matrix.platform }}=${{ steps.push.outputs.digest }}" >> "$GITHUB_OUTPUT"
-  manifest:
-    runs-on: ubuntu-latest
-    needs: build
-    outputs:
-      image: ${{ steps.metadata.outputs.tags }}
-      digest: ${{ steps.manifest.outputs.digest }}
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: login
-        id: login
-        uses: docker/login-action@6d4b68b490aef8836e8fb5e50ee7b3bdfa5894f0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: metadata
-        id: metadata
-        run: |
-          {
             echo "tags<<EOF"
             echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
             echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
             echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}"
             echo "EOF"
+            echo "labels<<EOF"
+            echo "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}"
+            echo "org.opencontainers.image.revision=${{ github.sha }}"
+            echo "org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "org.opencontainers.image.title=${{ env.IMAGE_NAME }}"
+            echo "org.opencontainers.image.description=Go Prometheus exporter for AAISP services"
+            echo "EOF"
           } >> "$GITHUB_OUTPUT"
-      - name: manifest
-        id: manifest
-        run: |
-          # Create and push multi-arch manifest for SHA tag
-          docker buildx imagetools create \
-            --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            ${{ needs.build.outputs.image-amd64 }} \
-            ${{ needs.build.outputs.image-arm64 }}
-
-          # Create and push multi-arch manifest for latest tag
-          docker buildx imagetools create \
-            --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest \
-            ${{ needs.build.outputs.image-amd64 }} \
-            ${{ needs.build.outputs.image-arm64 }}
-
-          # Create and push multi-arch manifest for branch tag
-          docker buildx imagetools create \
-            --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
-            ${{ needs.build.outputs.image-amd64 }} \
-            ${{ needs.build.outputs.image-arm64 }}
-
-          # Get digest of the SHA-tagged manifest
-          DIGEST=$(docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }} --format '{{.Manifest.Digest}}' | grep "^Digest:" | sed 's/.*Digest: *//')
-          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
-      - name: image
-        id: image
+      - name: build
+        id: build
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
+        with:
+          context: ./projects/aaisp-exporter
+          file: ./projects/aaisp-exporter/Dockerfile
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          provenance: mode=max
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: generate-artifact-attestation
+        uses: actions/attest-build-provenance@39cb715ce0ddd23df1f705e863f642bfb72dfb2b
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+      - name: summary
+        id: summary
         run: |
           echo "Multi-arch images created:"
           echo "  - ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           echo "  - ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest"
           echo "  - ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}"
-          echo "Short SHA: ${{ github.sha }}"
-          echo "Manifest digest: ${{ steps.manifest.outputs.digest }}"
-          echo "AMD64 digest: ${{ needs.build.outputs.digest-amd64 }}"
-          echo "ARM64 digest: ${{ needs.build.outputs.digest-arm64 }}"
+          echo "Platforms: linux/amd64, linux/arm64"
+          echo "Digest: ${{ steps.build.outputs.digest }}"
