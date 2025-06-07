@@ -61,8 +61,8 @@ jobs:
         id: build
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
         with:
-          context: ./projects/envhunter
-          file: ./projects/envhunter/Dockerfile
+          context: ./code/cli/envhunter
+          file: ./code/cli/envhunter/Dockerfile
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
