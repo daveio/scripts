@@ -111,7 +111,7 @@ async function main() {
   const useQnap = shouldUseQnapTemplate()
 
   // Always read template from the netflow directory
-  const netflowDir = join(cwd, 'projects', 'netflow')
+  const netflowDir = join(cwd, 'code', 'docker', 'netflow')
   const templateFileName = useQnap ? 'docker-compose.qnap.template.yml' : 'docker-compose.template.yml'
   const templatePath = join(netflowDir, templateFileName)
   const envPath = join(cwd, '.env') // still use .env from cwd

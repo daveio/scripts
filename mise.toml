@@ -13,3 +13,7 @@ go = { version = '1.24.4' }
 
 [tasks]
 'hello' = { run = "echo 'Hello, world!'" }
+'netflow:up' = { run = "docker compose -f code/docker/netflow/docker-compose.template.yml up" }
+'netflow:down' = { run = "docker compose -f code/docker/netflow/docker-compose.template.yml down" }
+'netflow:logs' = { run = "docker compose -f code/docker/netflow/docker-compose.template.yml logs -f" }
+'netflow:rm' = { run = "docker compose -f code/docker/netflow/docker-compose.template.yml rm" }

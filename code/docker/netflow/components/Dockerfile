@@ -7,10 +7,6 @@ ARG NTOP_VERSION="6.4"
 ARG NETFLOW2NG_VERSION="0.0.5"
 ARG GO_VERSION="1.24.3"
 
-
-
-
-
 # Enable BuildKit features
 ARG BUILDKIT_INLINE_CACHE=1
 
@@ -262,6 +258,7 @@ RUN mkdir -p \
       /var/log/redis \
       /var/run/redis \
       /usr/share/GeoIP \
+      /var/lib/GeoIP \
       /etc/GeoIP \
       /var/lock
 
@@ -297,6 +294,7 @@ RUN touch /etc/GeoIP.conf \
       /var/run/ntopng \
       /usr/local/share/ntopng \
       /usr/share/GeoIP \
+      /var/lib/GeoIP \
       /etc/GeoIP \
       /etc/GeoIP.conf \
     && chown -R redis:redis \
