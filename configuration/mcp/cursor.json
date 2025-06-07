@@ -1,11 +1,5 @@
 {
   "mcpServers": {
-    "abletonLive": {
-      "args": [
-        "ableton-mcp"
-      ],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
     "claudeCode": {
       "args": [
         "x",
@@ -67,24 +61,6 @@
       ],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
-    "linear": {
-      "args": [
-        "x",
-        "mcp-remote",
-        "https://mcp.linear.app/sse"
-      ],
-      "command": "/Users/dave/.local/share/mise/shims/bun"
-    },
-    "notion": {
-      "args": [
-        "x",
-        "@notionhq/notion-mcp-server"
-      ],
-      "command": "/Users/dave/.local/share/mise/shims/bun",
-      "env": {
-        "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer ${CURSOR_NOTION_TOKEN}\", \"Notion-Version\": \"2022-06-28\" }"
-      }
-    },
     "pdfReader": {
       "args": [
         "mcp-read-pdf"
@@ -108,30 +84,12 @@
         "MEMORY_FILE_PATH": "/Users/dave/.memory"
       }
     },
-    "slack": {
-      "args": [
-        "x",
-        "@modelcontextprotocol/server-slack"
-      ],
-      "command": "/Users/dave/.local/share/mise/shims/bun",
-      "env": {
-        "SLACK_BOT_TOKEN": "${CURSOR_SLACK_BOT_TOKEN}",
-        "SLACK_TEAM_ID": "${CURSOR_SLACK_TEAM_ID}"
-      }
-    },
     "time": {
       "args": [
         "mcp-server-time",
         "--local-timezone=Europe/London"
       ],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
-    "vscode": {
-      "args": [
-        "x",
-        "vscode-mcp-server"
-      ],
-      "command": "/Users/dave/.local/share/mise/shims/bun"
     }
   }
 }
