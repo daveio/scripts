@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth" data-theme="cupcake">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphQL: An Interactive Jaunt (DaisyUI Edition)</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: DaisyUI 'cupcake' + Catppuccin Themes -->
+    <!-- Application Structure Plan: A single-page application using a DaisyUI drawer for navigation. A theme switcher in the sidebar allows users to select between Catppuccin themes (Latte, Frappé, Macchiato, Mocha) and the default. Themes are defined using CSS variables and applied dynamically with JavaScript. -->
+    <!-- Visualization & Content Choices: The application retains its structure. The key addition is dynamic theming. The Mermaid.js diagram's theme is now synchronized with the main page theme (light/dark) to ensure visual consistency. -->
+    <!-- CONFIRMATION: Inline SVGs and Mermaid JS are now used as per the latest instruction. Catppuccin themes added. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      .font-lora {
+        font-family: "Lora", serif;
+        font-weight: 600;
+      }
+      .sidebar-link.active {
+        background-color: hsl(var(--p) / 0.1);
+        color: hsl(var(--pc));
+        font-weight: 600;
+      }
+
+      /* Subscription Animation Keyframes */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(1.1);
+        }
+      }
+      @keyframes travel {
+        to {
+          transform: translateX(250%) scale(0.8);
+          opacity: 0;
+        }
+      }
+      @keyframes travel-back {
+        to {
+          transform: translateX(-250%) scale(0.8);
+          opacity: 0;
+        }
+      }
+      .subscription-animation-dot {
+        position: absolute;
+        width: 2rem; /* Increased size for SVGs */
+        height: 2rem;
+        display: none;
+      }
+      .mermaid > svg {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Catppuccin Theme Definitions for DaisyUI */
+      [data-theme="catppuccin-latte"] {
+        color-scheme: light;
+        --p: 259 93% 69%;
+        --pc: 224 44% 95%;
+        --s: 16 93% 69%;
+        --sc: 224 44% 95%;
+        --a: 334 72% 64%;
+        --ac: 224 44% 95%;
+        --n: 258 13% 30%;
+        --nc: 224 44% 95%;
+        --b1: 0 0% 100%;
+        --b2: 260 21% 94%;
+        --b3: 260 21% 89%;
+        --bc: 258 13% 30%;
+        --in: 217 60% 64%;
+        --inc: 224 44% 95%;
+        --su: 153 53% 54%;
+        --suc: 224 44% 95%;
+        --wa: 43 93% 69%;
+        --wac: 224 44% 95%;
+        --er: 357 84% 63%;
+        --erc: 224 44% 95%;
+      }
+      [data-theme="catppuccin-frappe"] {
+        color-scheme: dark;
+        --p: 262 82% 82%;
+        --pc: 258 19% 24%;
+        --s: 18 92% 78%;
+        --sc: 258 19% 24%;
+        --a: 341 82% 82%;
+        --ac: 258 19% 24%;
+        --n: 258 16% 36%;
+        --nc: 258 18% 78%;
+        --b1: 258 19% 18%;
+        --b2: 258 19% 15%;
+        --b3: 258 19% 12%;
+        --bc: 258 18% 78%;
+        --in: 216 88% 82%;
+        --inc: 258 19% 24%;
+        --su: 156 72% 78%;
+        --suc: 258 19% 24%;
+        --wa: 46 95% 81%;
+        --wac: 258 19% 24%;
+        --er: 359 86% 81%;
+        --erc: 258 19% 24%;
+      }
+      [data-theme="catppuccin-macchiato"] {
+        color-scheme: dark;
+        --p: 262 93% 86%;
+        --pc: 258 23% 18%;
+        --s: 18 95% 84%;
+        --sc: 258 23% 18%;
+        --a: 341 93% 86%;
+        --ac: 258 23% 18%;
+        --n: 258 19% 34%;
+        --nc: 258 22% 82%;
+        --b1: 258 23% 14%;
+        --b2: 258 23% 11%;
+        --b3: 258 23% 8%;
+        --bc: 258 22% 82%;
+        --in: 216 93% 86%;
+        --inc: 258 23% 18%;
+        --su: 156 81% 82%;
+        --suc: 258 23% 18%;
+        --wa: 46 95% 86%;
+        --wac: 258 23% 18%;
+        --er: 359 89% 84%;
+        --erc: 258 23% 18%;
+      }
+      [data-theme="catppuccin-mocha"] {
+        color-scheme: dark;
+        --p: 262 97% 88%;
+        --pc: 258 27% 12%;
+        --s: 18 96% 86%;
+        --sc: 258 27% 12%;
+        --a: 341 97% 88%;
+        --ac: 258 27% 12%;
+        --n: 258 15% 26%;
+        --nc: 258 25% 84%;
+        --b1: 258 27% 10%;
+        --b2: 258 27% 7%;
+        --b3: 258 27% 4%;
+        --bc: 258 25% 84%;
+        --in: 216 97% 88%;
+        --inc: 258 27% 12%;
+        --su: 156 86% 84%;
+        --suc: 258 27% 12%;
+        --wa: 46 95% 88%;
+        --wac: 258 27% 12%;
+        --er: 359 92% 86%;
+        --erc: 258 27% 12%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="drawer lg:drawer-open">
+      <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex flex-col">
+        <!-- Navbar for Mobile -->
+        <div class="w-full navbar bg-base-300 lg:hidden">
+          <div class="flex-none lg:hidden">
+            <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block w-6 h-6 stroke-current"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </label>
+          </div>
+          <div class="flex-1 px-2 mx-2 font-bold font-lora">GraphQL: An Interactive Jaunt</div>
+        </div>
+        <!-- Main Page Content -->
+        <main class="flex-1 p-4 sm:p-8 md:p-12">
+          <div class="max-w-4xl mx-auto prose lg:prose-xl">
+            <section id="intro">
+              <h1>GraphQL: A Reasonably Thorough Jaunt</h1>
+              <p class="text-lg">
+                Right then. You're a clever sort, but GraphQL has thus far remained a mysterious acronym. Fear not.
+                We're aiming for enlightenment with a side of dry wit, and examples that might raise an eyebrow.
+              </p>
+              <h2>So, What's All This GraphQL Malarkey Then?</h2>
+              <p>
+                The tech world loves to throw new toys out of the pram. GraphQL, conceived at Facebook, is a different
+                way for your whizzy front-end applications to have a chinwag with the servers at the back. Before we
+                dive in, let's have a brief, grumbling look at what came before: REST.
+              </p>
+              <h3>The Pains of REST</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 not-prose">
+                <div class="card bg-base-100 shadow-xl">
+                  <div class="card-body">
+                    <h4 class="card-title text-error">Over-fetching</h4>
+                    <p>
+                      The "I asked for a teaspoon, you gave me the entire cutlery drawer" problem. REST endpoints often
+                      return far more data than you need.
+                    </p>
+                  </div>
+                </div>
+                <div class="card bg-base-100 shadow-xl">
+                  <div class="card-body">
+                    <h4 class="card-title text-warning">Under-fetching</h4>
+                    <p>
+                      The "death by a thousand API calls" problem. A single endpoint doesn't give you enough, forcing
+                      you to make multiple requests (the N+1 problem).
+                    </p>
+                  </div>
+                </div>
+                <div class="card bg-base-100 shadow-xl">
+                  <div class="card-body">
+                    <h4 class="card-title text-info">Endpoint Sprawl</h4>
+                    <p>
+                      The "which of these 74 doors do I knock on?" problem. REST APIs can have a bewildering number of
+                      endpoints, making them hard to navigate.
+                    </p>
+                  </div>
+                </div>
+                <div class="card bg-base-100 shadow-xl">
+                  <div class="card-body">
+                    <h4 class="card-title text-primary">Versioning Headaches</h4>
+                    <p>
+                      The "is it `/v1`, `/v2`, or `/v2_final_for_real`?" problem. Evolving REST APIs often means
+                      maintaining multiple, clunky versions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <h3>Enter GraphQL</h3>
+              <blockquote>
+                GraphQL's core idea is deceptively simple: instead of the server dictating what data you get, the
+                <strong>client</strong> asks for exactly the data it needs, and gets precisely that – no more, no less.
+              </blockquote>
+              <p>
+                It's a query language for your API that typically operates over a single endpoint. This shift in control
+                from server to client is the key to solving the RESTful woes we just grumbled about.
+              </p>
+            </section>
+            <section id="schemas">
+              <h2>The Blueprint of Your Data Dreams – Schemas and Types</h2>
+              <p>
+                GraphQL isn't psychic. It relies on a <strong>Schema</strong> – the API's constitution, its meticulously
+                drafted rulebook. This schema is the contract between client and server, written in the GraphQL Schema
+                Definition Language (SDL).
+              </p>
+              <div class="collapse collapse-arrow bg-base-200 my-4">
+                <input type="checkbox" />
+                <div class="collapse-title text-xl font-medium">Example: The Lost Umbrella Schema</div>
+                <div class="collapse-content">
+                  <div class="mockup-code">
+                    <pre data-prefix="1"><code># A type for a particularly British predicament</code></pre>
+                    <pre data-prefix="2"><code>type LostUmbrella {</code></pre>
+                    <pre
+                      data-prefix="3"
+                    ><code>  id: ID! # '!' means non-nullable, like the rain in Manchester</code></pre>
+                    <pre data-prefix="4"><code>  lastSeenLocation: String</code></pre>
+                    <pre data-prefix="5"><code>  colour: String!</code></pre>
+                    <pre data-prefix="6"><code>  isProbablyInAPubSomewhere: Boolean</code></pre>
+                    <pre data-prefix="7"><code>}</code></pre>
+                    <pre data-prefix="8"><code></code></pre>
+                    <pre data-prefix="9"><code># This is how we'll ask for lost umbrellas</code></pre>
+                    <pre data-prefix="10"><code>type Query {</code></pre>
+                    <pre data-prefix="11"><code>  allLostUmbrellas: [LostUmbrella]</code></pre>
+                    <pre data-prefix="12"><code>  findMyUmbrella(colour: String): LostUmbrella</code></pre>
+                    <pre data-prefix="13"><code>}</code></pre>
+                  </div>
+                </div>
+              </div>
+              <h3>Types, Glorious Types!</h3>
+              <p>
+                GraphQL is <strong>strongly typed</strong>. Every piece of data has a specific type. The main categories
+                are:
+              </p>
+              <ul>
+                <li>
+                  <strong>Scalar Types:</strong> <code>Int</code>, <code>Float</code>, <code>String</code>,
+                  <code>Boolean</code>, and <code>ID</code>.
+                </li>
+                <li><strong>Object Types:</strong> Custom types like our <code>LostUmbrella</code>.</li>
+                <li><strong>Query & Mutation Types:</strong> Special root types for reading or changing data.</li>
+                <li>
+                  <strong>Enums, Lists, and Non-Null:</strong> For defining a set of allowed values, lists of a type
+                  (e.g., <code>[LostUmbrella]</code>), and mandatory fields (e.g., <code>String!</code>).
+                </li>
+              </ul>
+            </section>
+            <section id="queries">
+              <h2>"Can I Just Have the Biscuits, Please?" – Mastering Queries</h2>
+              <p>
+                Queries are how you ask for data. You specify the fields you want, and only those fields are returned.
+                Let's make this interactive.
+              </p>
+              <h3>Interactive Query Builder</h3>
+              <p>
+                Imagine we're querying our "National Register of Queuing Grievances". Use the checkboxes to build your
+                query and see the JSON response change instantly.
+              </p>
+              <div class="card lg:card-side bg-base-100 shadow-xl my-8 not-prose">
+                <div class="card-body">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 class="card-title mb-4">Select Fields:</h4>
+                      <form id="query-builder" class="flex flex-col gap-2">
+                        <label class="label cursor-pointer">
+                          <span class="label-text">id</span>
+                          <input type="checkbox" name="id" checked="checked" class="checkbox checkbox-primary" />
+                        </label>
+                        <label class="label cursor-pointer">
+                          <span class="label-text">description</span>
+                          <input
+                            type="checkbox"
+                            name="description"
+                            checked="checked"
+                            class="checkbox checkbox-primary"
+                          />
+                        </label>
+                        <label class="label cursor-pointer">
+                          <span class="label-text">severity</span>
+                          <input type="checkbox" name="severity" class="checkbox checkbox-primary" />
+                        </label>
+                        <label class="label cursor-pointer">
+                          <span class="label-text">reportedAt</span>
+                          <input type="checkbox" name="reportedAt" class="checkbox checkbox-primary" />
+                        </label>
+                        <label class="label cursor-pointer">
+                          <span class="label-text">location { name }</span>
+                          <input type="checkbox" name="location" class="checkbox checkbox-primary" />
+                        </label>
+                      </form>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-lg mb-2">Your GraphQL Query:</h4>
+                      <div class="mockup-code text-sm">
+                        <pre id="query-output"></pre>
+                      </div>
+                      <h4 class="font-bold text-lg mt-4 mb-2">Simulated JSON Response:</h4>
+                      <div class="mockup-code text-sm">
+                        <pre id="response-output"></pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h3>Arguments, Aliases, and Fragments</h3>
+              <p>GraphQL queries can be made more powerful with:</p>
+              <ul>
+                <li>
+                  <strong>Arguments:</strong> To filter or specify parameters, e.g., <code>grievance(id: "123")</code>.
+                </li>
+                <li>
+                  <strong>Aliases:</strong> To rename fields in your results, e.g.,
+                  <code>severeGrievances: grievances(severity: "HIGH")</code>.
+                </li>
+                <li><strong>Fragments:</strong> To create reusable sets of fields.</li>
+                <li><strong>Variables:</strong> To pass dynamic values into queries.</li>
+              </ul>
+            </section>
+            <section id="mutations">
+              <h2>"Right, Let's Stir Things Up" – Mutations</h2>
+              <p>
+                When you want to change data, you use a <strong>Mutation</strong>. They handle Create, Update, and
+                Delete operations, and you can ask for the new state of the data back in the same request.
+              </p>
+              <h3>Interactive Mutation Simulator</h3>
+              <p>
+                Let's report a new queuing grievance. Fill out the form to see how a mutation is constructed and what
+                data it can return.
+              </p>
+              <div class="card lg:card-side bg-base-100 shadow-xl my-8 not-prose">
+                <div class="card-body">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 class="card-title mb-4">Report a New Grievance:</h4>
+                      <form id="mutation-builder" class="space-y-4">
+                        <label class="form-control w-full">
+                          <div class="label">
+                            <span class="label-text">Description</span>
+                          </div>
+                          <input
+                            type="text"
+                            id="grievance-desc"
+                            value="Person ahead paid for a single stamp with a £50 note."
+                            class="input input-bordered w-full"
+                          />
+                        </label>
+                        <label class="form-control w-full">
+                          <div class="label">
+                            <span class="label-text">Severity</span>
+                          </div>
+                          <select id="grievance-severity" class="select select-bordered">
+                            <option>MILD_TUTTING</option>
+                            <option selected>AUDIBLE_SIGH</option>
+                            <option>MUTTERING_UNDER_BREATH</option>
+                            <option>ACTUAL_CONFRONTATION</option>
+                          </select>
+                        </label>
+                      </form>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-lg mb-2">Your GraphQL Mutation:</h4>
+                      <div class="mockup-code text-sm">
+                        <pre id="mutation-output"></pre>
+                      </div>
+                      <h4 class="font-bold text-lg mt-4 mb-2">Simulated Response Payload:</h4>
+                      <div class="mockup-code text-sm">
+                        <pre id="mutation-response-output"></pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="subscriptions">
+              <h2>"Is the Kettle Boiling Yet?" – Subscriptions</h2>
+              <p>
+                For real-time updates, GraphQL offers <strong>Subscriptions</strong>. You open a persistent connection
+                (usually a WebSocket) and the server pushes updates to you when specific events happen.
+              </p>
+              <h3>How Subscriptions Work</h3>
+              <p>
+                It's like a very efficient town crier. A client subscribes, a mutation triggers an event, and the server
+                pushes the new data down the WebSocket. This is often handled with a Publish/Subscribe (or "Pub/Sub")
+                system on the back-end.
+              </p>
+              <div class="bg-base-200 p-4 rounded-box my-6">
+                <pre class="mermaid text-center">
+                                sequenceDiagram
+                                    participant C as Client
+                                    participant S as GraphQL Server
+                                    participant P as Pub/Sub System
+                                    C->>S: subscription newGrievance {...}
+                                    S->>P: Listen for 'NEW_GRIEVANCE' event
+                                    Note over S,P: Connection is now open
+                                    User->>S: mutation reportGrievance(...)
+                                    S->>P: Publish 'NEW_GRIEVANCE' event
+                                    P-->>S: Notifies server of event
+                                                                    S-->>C: Pushes new grievance data
+                                                        </pre
+                >
+              </div>
+              <p>You can also see a simplified visual animation of this flow below. Click the button to start.</p>
+              <div class="card bg-base-100 shadow-xl my-8 not-prose">
+                <div class="card-body">
+                  <div class="relative h-48 flex items-center justify-around text-center w-full">
+                    <div class="z-10 text-center">
+                      <p class="font-bold">Client</p>
+                      <div class="w-16 h-16 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-12 w-12 text-info"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="z-10 text-center">
+                      <p class="font-bold">GraphQL Server</p>
+                      <div class="w-16 h-16 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-12 w-12 text-error"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="z-10 text-center">
+                      <p class="font-bold">Database/Event</p>
+                      <div class="w-16 h-16 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-12 w-12 text-warning"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7a8 8 0 0116 0M12 11a4 4 0 100-8 4 4 0 000 8z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div
+                      id="sub-dot-1"
+                      class="subscription-animation-dot flex items-center justify-center"
+                      style="left: 10%; top: 50%; transform: translateY(-50%)"
+                    >
+                      <div class="bg-primary rounded-full w-full h-full opacity-80"></div>
+                    </div>
+                    <div
+                      id="sub-dot-2"
+                      class="subscription-animation-dot flex items-center justify-center"
+                      style="right: 10%; top: 50%; transform: translateY(-50%)"
+                    >
+                      <div class="bg-secondary rounded-full w-full h-full opacity-80"></div>
+                    </div>
+                  </div>
+                  <div class="card-actions justify-center">
+                    <button id="run-animation-btn" class="btn btn-primary mt-4">Run Animation</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="comparison">
+              <h2>GraphQL vs. REST: A Barbed Comparison</h2>
+              <p>
+                Let's put them side-by-side, like two contestants in a village bake-off. One is a reliable Victoria
+                sponge (REST), the other a fancy, deconstructed pavlova (GraphQL).
+              </p>
+              <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      <th>GraphQL Approach</th>
+                      <th>REST Approach</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>Data Fetching</th>
+                      <td>Ask for exactly what you need. (Bespoke suit)</td>
+                      <td>Get a fixed menu. (Off-the-peg)</td>
+                    </tr>
+                    <tr>
+                      <th>Endpoints</th>
+                      <td>Typically one magical door for everything.</td>
+                      <td>A different door for every room.</td>
+                    </tr>
+                    <tr>
+                      <th>Error Handling</th>
+                      <td>A `200 OK` with an `errors` array. (Polite note)</td>
+                      <td>HTTP status codes (404, 500 etc). (Slammed door)</td>
+                    </tr>
+                    <tr>
+                      <th>Caching</th>
+                      <td>More complex, often client-side. (Craft ale)</td>
+                      <td>Simple HTTP caching. (Pint at the local)</td>
+                    </tr>
+                    <tr>
+                      <th>Versioning</th>
+                      <td>Evolve by adding fields, no `/v2` needed.</td>
+                      <td>Painful `/v1`, `/v2` paths are common.</td>
+                    </tr>
+                    <tr>
+                      <th>Schema/Typing</th>
+                      <td>Strongly typed via a mandatory schema.</td>
+                      <td>No built-in schema; relies on docs.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="security">
+              <h2>A Fleeting, Mildly Terrifying Mention of Security</h2>
+              <p>
+                With great power comes great responsibility. GraphQL's flexibility means you need to be thoughtful about
+                security.
+              </p>
+              <div class="space-y-4">
+                <div class="collapse collapse-plus bg-base-200">
+                  <input type="radio" name="security-accordion" checked="checked" />
+                  <div class="collapse-title text-xl font-medium">Authorization</div>
+                  <div class="collapse-content">
+                    <p>
+                      Just because a client can ask for a field doesn't mean they should get it. You must implement
+                      checks to ensure users only see data they're permitted to see.
+                    </p>
+                  </div>
+                </div>
+                <div class="collapse collapse-plus bg-base-200">
+                  <input type="radio" name="security-accordion" />
+                  <div class="collapse-title text-xl font-medium">Query Complexity & Depth Limiting</div>
+                  <div class="collapse-content">
+                    <p>
+                      Prevent malicious queries from melting your server by setting limits on how deep or complex a
+                      query can be.
+                    </p>
+                  </div>
+                </div>
+                <div class="collapse collapse-plus bg-base-200">
+                  <input type="radio" name="security-accordion" />
+                  <div class="collapse-title text-xl font-medium">Input Validation</div>
+                  <div class="collapse-content">
+                    <p>The eternal rule: never trust user input. Validate and sanitize everything, always.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="farewell">
+              <h2>So, Are We Done Here?</h2>
+              <blockquote>
+                So there you have it. GraphQL. Not so terrifying after all, eh? More like a slightly eccentric but
+                surprisingly capable new colleague who, once you get to know their ways, actually makes your life a bit
+                easier.
+              </blockquote>
+              <p>
+                Now, if you'll excuse me, all this talk of APIs, schemas, and the existential dread of an empty biscuit
+                tin has made me rather thirsty. Time for a cuppa. Milk in last, obviously. Or is it?
+              </p>
+            </section>
+          </div>
+        </main>
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+        <aside class="p-4 w-80 min-h-full bg-base-200 text-base-content">
+          <h1 class="text-xl font-bold text-base-content mb-4 p-4 font-lora">GraphQL: An Interactive Jaunt</h1>
+          <ul id="sidebar-nav" class="menu p-0">
+            <li>
+              <a href="#intro" class="sidebar-link">What's This Malarkey?</a>
+            </li>
+            <li>
+              <a href="#schemas" class="sidebar-link">Schemas & Types</a>
+            </li>
+            <li>
+              <a href="#queries" class="sidebar-link">Mastering Queries</a>
+            </li>
+            <li>
+              <a href="#mutations" class="sidebar-link">Stirring Things Up</a>
+            </li>
+            <li>
+              <a href="#subscriptions" class="sidebar-link">Real-Time Updates</a>
+            </li>
+            <li>
+              <a href="#comparison" class="sidebar-link">GraphQL vs. REST</a>
+            </li>
+            <li>
+              <a href="#security" class="sidebar-link">A Word on Security</a>
+            </li>
+            <li>
+              <a href="#farewell" class="sidebar-link">The Farewell</a>
+            </li>
+          </ul>
+          <div class="divider"></div>
+          <div class="dropdown dropdown-top w-full">
+            <div tabindex="0" role="button" class="btn btn-outline w-full">
+              <span>Theme</span>
+              <svg
+                width="12px"
+                height="12px"
+                class="h-2 w-2 fill-current opacity-60 inline-block"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 2048 2048"
+              >
+                <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+              </svg>
+            </div>
+            <ul
+              id="theme-switcher"
+              tabindex="0"
+              class="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-full"
+            >
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Cupcake"
+                  value="cupcake"
+                />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Latte"
+                  value="catppuccin-latte"
+                />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Frappé"
+                  value="catppuccin-frappe"
+                />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Macchiato"
+                  value="catppuccin-macchiato"
+                />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Mocha"
+                  value="catppuccin-mocha"
+                />
+              </li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeSwitcher = document.getElementById("theme-switcher");
+        const html = document.documentElement;
+
+        const setTheme = (theme) => {
+          html.setAttribute("data-theme", theme);
+          localStorage.setItem("theme", theme);
+
+          // Update mermaid theme
+          const isDark =
+            theme === "catppuccin-frappe" || theme === "catppuccin-macchiato" || theme === "catppuccin-mocha";
+          const mermaidTheme = isDark ? "dark" : "base";
+          const primaryColor = isDark ? "#cba6f7" : "#ef9fbc"; // Mocha Mauve or Cupcake Pink
+
+          // Re-initialize and render mermaid charts
+          mermaid.initialize({
+            startOnLoad: false,
+            theme: mermaidTheme,
+            themeVariables: {
+              primaryColor: primaryColor,
+              primaryTextColor: isDark ? "#11111b" : "#3d4451",
+              lineColor: isDark ? "#a6adc8" : "#6b7280",
+              actorBkg: isDark ? "#1e1e2e" : "#f9f9f9",
+              actorBorder: isDark ? "#cdd6f4" : "#6b7280",
+              noteBkgColor: isDark ? "#1e1e2e" : "#fffbe8",
+              noteTextColor: isDark ? "#cdd6f4" : "#3d4451",
+            },
+          });
+          mermaid.run();
+
+          // Set the correct radio button
+          const currentThemeRadio = document.querySelector(`.theme-controller[value="${theme}"]`);
+          if (currentThemeRadio) {
+            currentThemeRadio.checked = true;
+          }
+        };
+
+        themeSwitcher.addEventListener("click", (e) => {
+          if (e.target.tagName === "INPUT") {
+            setTheme(e.target.value);
+          }
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem("theme") || "cupcake";
+        setTheme(savedTheme);
+
+        // --- Interactive Query Builder ---
+        const queryBuilderForm = document.getElementById("query-builder");
+        const queryOutput = document.getElementById("query-output");
+        const responseOutput = document.getElementById("response-output");
+
+        const grievanceData = {
+          id: '"grief-abc-123"',
+          description: '"Person ahead attempting to pay for a single stamp with a £50 note."',
+          severity: '"MILD_TUTTING"',
+          reportedAt: '"2025-06-07T09:30:00Z"',
+          location: { name: '"Post Office, Upper Backwash"' },
+        };
+
+        function updateQuery() {
+          const selectedFields = Array.from(queryBuilderForm.elements)
+            .filter((el) => el.type === "checkbox" && el.checked)
+            .map((el) => el.name);
+
+          if (selectedFields.length === 0) {
+            queryOutput.textContent =
+              "query GetGrievances {\n  allGrievances {\n    # Please select at least one field\n  }\n}";
+            responseOutput.textContent =
+              '{\n  "data": null,\n  "errors": [\n    {\n      "message": "Validation error."\n    }\n  ]\n}';
+            return;
+          }
+
+          const fieldsString = selectedFields
+            .map((field) => {
+              if (field === "location") return "    location {\n      name\n    }";
+              return `    ${field}`;
+            })
+            .join("\n");
+
+          queryOutput.textContent = `query GetGrievances {\n  allGrievances {\n${fieldsString}\n  }\n}`;
+
+          const responseData = { allGrievances: [{}] };
+          selectedFields.forEach((field) => {
+            if (field === "location") {
+              responseData.allGrievances[0].location = { name: grievanceData.location.name };
+            } else {
+              responseData.allGrievances[0][field] = grievanceData[field];
+            }
+          });
+
+          responseOutput.textContent = JSON.stringify({ data: responseData }, null, 2);
+        }
+        queryBuilderForm.addEventListener("change", updateQuery);
+        updateQuery();
+
+        // --- Interactive Mutation Builder ---
+        const mutationBuilderForm = document.getElementById("mutation-builder");
+        const mutationOutput = document.getElementById("mutation-output");
+        const mutationResponseOutput = document.getElementById("mutation-response-output");
+
+        function updateMutation() {
+          const description = document.getElementById("grievance-desc").value;
+          const severity = document.getElementById("grievance-severity").value;
+
+          const mutationString = `mutation ReportNewGrievance {\n  reportGrievance(input: {\n    description: "${description.replace(/"/g, '\\"')}"\n    severity: ${severity}\n  }) {\n    id\n    description\n    severity\n    reportedAt\n  }\n}`;
+          mutationOutput.textContent = mutationString;
+
+          const responseData = {
+            reportGrievance: {
+              id: `"grief-${Math.random().toString(36).substr(2, 9)}"`,
+              description: `"${description}"`,
+              severity: `"${severity}"`,
+              reportedAt: `"${new Date().toISOString()}"`,
+            },
+          };
+          mutationResponseOutput.textContent = JSON.stringify({ data: responseData }, null, 2);
+        }
+        mutationBuilderForm.addEventListener("input", updateMutation);
+        updateMutation();
+
+        // --- Sidebar Active State on Scroll ---
+        const sections = document.querySelectorAll("main section");
+        const navLinks = document.querySelectorAll("#sidebar-nav a");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const id = entry.target.getAttribute("id");
+                navLinks.forEach((link) => {
+                  link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
+                });
+              }
+            });
+          },
+          { rootMargin: "-30% 0px -70% 0px" },
+        );
+
+        sections.forEach((section) => observer.observe(section));
+
+        // --- Subscription Animation ---
+        const runAnimationBtn = document.getElementById("run-animation-btn");
+        const dot1 = document.getElementById("sub-dot-1");
+        const dot2 = document.getElementById("sub-dot-2");
+
+        runAnimationBtn.addEventListener("click", () => {
+          runAnimationBtn.disabled = true;
+          runAnimationBtn.innerHTML = `<span class="loading loading-spinner"></span> Animating...`;
+
+          // Reset
+          [dot1, dot2].forEach((dot) => {
+            dot.style.display = "none";
+            dot.style.animation = "none";
+          });
+
+          setTimeout(() => {
+            // 1. Client sends subscription request
+            dot1.style.transform = "translateX(0)";
+            dot1.style.opacity = "1";
+            dot1.style.display = "flex";
+            dot1.style.animation = "travel 1.5s ease-in-out forwards";
+          }, 100);
+          setTimeout(() => {
+            // 2. Mutation happens, server publishes event
+            dot2.style.transform = "translateX(0)";
+            dot2.style.opacity = "1";
+            dot2.style.display = "flex";
+            dot2.style.animation = "pulse 1s ease-in-out";
+          }, 1600);
+          setTimeout(() => {
+            // 3. Server pushes update to client
+            dot1.style.transform = "translateX(0)";
+            dot1.style.opacity = "1";
+            dot1.style.display = "flex";
+            dot1.style.animation = "travel-back 1.5s ease-in-out forwards";
+          }, 2700);
+
+          setTimeout(() => {
+            runAnimationBtn.disabled = false;
+            runAnimationBtn.innerHTML = "Run Animation Again";
+          }, 4300);
+        });
+      });
+    </script>
+  </body>
+</html>
