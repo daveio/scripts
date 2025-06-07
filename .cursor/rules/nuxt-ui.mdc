@@ -1,0 +1,640 @@
+---
+description: This rule provides comprehensive best practices for using Nuxt UI.
+globs: *.ts,*.tsx,*.css,*.html,*.vue
+---
+
+# Nuxt UI v3 Documentation for AI Agents
+
+## Overview
+
+Nuxt UI is an open-source UI library that provides 50+ customizable Vue components built with Tailwind CSS v4 and Reka UI. It's designed to help developers build beautiful, responsive, and accessible web applications quickly for both Vue and Nuxt projects.
+
+### Key Features
+
+- **55+ Fully Styled Components**: Pre-built components that are beautiful by default
+- **Built on Reka UI**: Provides robust accessibility and keyboard navigation out of the box
+- **Tailwind CSS v4 Integration**: Leverages the latest Tailwind features with 5x faster performance
+- **TypeScript Support**: Full auto-completion and type safety for all components
+- **Dark Mode Ready**: Seamless integration with @nuxtjs/color-mode
+- **Icon Integration**: Access to 200,000+ icons from Iconify
+- **Internationalization**: Translated into 30+ languages with RTL/LTR support
+- **Vue 3 Compatible**: Works with both Nuxt and standalone Vue applications
+
+## Installation
+
+### For Nuxt Projects
+
+```bash
+npx nuxi@latest init my-app -t ui
+# or add to existing project
+npx nuxi@latest module add ui
+```
+
+**Configuration in `nuxt.config.ts`:**
+```typescript
+export default defineNuxtConfig({
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css'], // Your Tailwind CSS file
+  ui: {
+    prefix: 'U',  // Component prefix (default: 'U')
+    fonts: true,  // Enable @nuxt/fonts integration
+    colorMode: true,  // Enable @nuxtjs/color-mode integration
+    theme: {
+      colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error', 'neutral']
+    }
+  }
+})
+```
+
+### For Vue Projects
+
+```bash
+npm install @nuxt/ui
+```
+
+**Vite Configuration:**
+```javascript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import ui from '@nuxt/ui/vite'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    ui({
+      ui: {
+        colors: {
+          primary: 'green',
+          neutral: 'slate'
+        }
+      }
+    })
+  ]
+})
+```
+
+**Main App Setup:**
+```javascript
+// main.js
+import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import ui from '@nuxt/ui/vue-plugin'
+import App from './App.vue'
+
+const app = createApp(App)
+const router = createRouter({
+  routes: [],
+  history: createWebHistory()
+})
+
+app.use(router)
+app.use(ui)
+app.mount('#app')
+```
+
+### CSS Setup
+
+Create a main CSS file with Tailwind directives:
+```css
+/* ~/assets/css/main.css */
+@import "tailwindcss";
+@import "@nuxt/ui";
+```
+
+### Important Notes
+
+- If using **pnpm**, set `shamefully-hoist=true` in `.npmrc` or install `tailwindcss` in the root
+- The `<App>` component must wrap your application for Toast, Tooltip, and Overlay components to work
+- VSCode users should install Tailwind CSS IntelliSense extension with proper configuration
+
+## Core Concepts
+
+### 1. Component Architecture
+
+All components follow a consistent pattern using Tailwind Variants:
+
+```vue
+<template>
+  <UButton
+    color="primary"
+    variant="solid"
+    size="md"
+    :ui="{ base: 'font-bold' }"
+    class="custom-class"
+  >
+    Click me
+  </UButton>
+</template>
+```
+
+### 2. Theming System
+
+#### Color System
+Nuxt UI uses semantic color aliases that can be configured at runtime:
+
+```typescript
+// app.config.ts
+export default defineAppConfig({
+  ui: {
+    colors: {
+      primary: 'blue',    // Any Tailwind color
+      secondary: 'indigo',
+      success: 'green',
+      info: 'sky',
+      warning: 'yellow',
+      error: 'red',
+      neutral: 'zinc'
+    }
+  }
+})
+```
+
+#### Design Tokens
+Customize global styling with CSS variables:
+
+```css
+@theme {
+  --ui-radius: 0.25rem;        /* Global border radius */
+  --ui-container: 90rem;       /* Container max-width */
+  --ui-bg: var(--ui-color-neutral-50);
+  --ui-text: var(--ui-color-neutral-900);
+  --ui-border: var(--ui-color-neutral-200);
+}
+
+.dark {
+  --ui-bg: var(--ui-color-neutral-950);
+  --ui-text: var(--ui-color-neutral-100);
+  --ui-border: var(--ui-color-neutral-800);
+}
+```
+
+### 3. Component Customization
+
+Three levels of customization:
+
+1. **Global Configuration** (app.config.ts):
+```typescript
+export default defineAppConfig({
+  ui: {
+    button: {
+      slots: {
+        base: 'font-bold rounded-lg',
+        label: 'text-sm'
+      },
+      defaultVariants: {
+        color: 'primary',
+        variant: 'solid'
+      }
+    }
+  }
+})
+```
+
+2. **Component-level** (ui prop):
+```vue
+<UButton
+  :ui="{
+    base: 'custom-base-class',
+    leadingIcon: 'text-xl'
+  }"
+/>
+```
+
+3. **Direct styling** (class prop):
+```vue
+<UButton class="my-custom-button" />
+```
+
+## Component Categories
+
+### 1. Form Components
+
+- **Form**: Validation and submission handling with schema support (Zod, Yup, Valibot)
+- **FormField**: Wrapper for form elements with error handling
+- **Input**: Text input with variants and states
+- **Textarea**: Multi-line text input
+- **Select/SelectMenu**: Dropdown selection components
+- **Checkbox/CheckboxGroup**: Single and multiple selection
+- **RadioGroup**: Single selection from options
+- **Toggle**: Binary on/off switch
+- **Range**: Numeric value slider
+- **ColorPicker**: Color selection component
+- **InputMenu**: Autocomplete input with suggestions
+- **PinInput**: PIN/OTP input fields
+
+**Form Example:**
+```vue
+<script setup lang="ts">
+import { z } from 'zod'
+
+const schema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Must be at least 8 characters')
+})
+
+const state = reactive({
+  email: '',
+  password: ''
+})
+
+async function onSubmit(event: FormSubmitEvent<typeof state>) {
+  console.log('Submitted:', event.data)
+}
+</script>
+
+<template>
+  <UForm :schema="schema" :state="state" @submit="onSubmit">
+    <UFormField label="Email" name="email">
+      <UInput v-model="state.email" />
+    </UFormField>
+
+    <UFormField label="Password" name="password">
+      <UInput v-model="state.password" type="password" />
+    </UFormField>
+
+    <UButton type="submit">Submit</UButton>
+  </UForm>
+</template>
+```
+
+### 2. Data Display
+
+- **Table**: Responsive data tables with sorting and pagination
+- **Card**: Content container with header/body/footer
+- **Accordion**: Collapsible content sections
+- **Badge**: Status indicators and labels
+- **Chip**: Compact information display
+- **Progress**: Progress indicators
+- **Carousel**: Image/content carousel
+- **Avatar/AvatarGroup**: User avatars
+
+### 3. Navigation
+
+- **Tabs**: Tabbed navigation
+- **Breadcrumb**: Navigation path display
+- **Pagination**: Page navigation
+- **NavigationMenu**: Dropdown navigation menus
+- **CommandPalette**: Search and command interface
+
+### 4. Overlays
+
+- **Modal**: Dialog windows
+- **Slideover**: Side panel overlays
+- **Popover**: Contextual floating content
+- **Tooltip**: Hover tooltips
+- **ContextMenu**: Right-click menus
+- **DropdownMenu**: Click-triggered menus
+
+### 5. Feedback
+
+- **Alert**: Information messages
+- **Toast**: Temporary notifications
+- **Notification**: Persistent messages
+- **Skeleton**: Loading placeholders
+
+### 6. Layout
+
+- **Container**: Responsive content wrapper
+- **Divider**: Content separator
+- **App**: Global app wrapper (required for overlays)
+
+## Key Composables
+
+### useToast
+
+Programmatically display toast notifications:
+
+```typescript
+const toast = useToast()
+
+// Add a toast
+toast.add({
+  title: 'Success',
+  description: 'Action completed',
+  color: 'success',
+  timeout: 5000
+})
+
+// Update a toast
+toast.update(id, { title: 'Updated' })
+
+// Remove specific toast
+toast.remove(id)
+
+// Clear all toasts
+toast.clear()
+```
+
+### useOverlay
+
+Control Modal and Slideover components programmatically:
+
+```typescript
+const overlay = useOverlay()
+
+// Create modal instance
+const modal = overlay.create(MyModalComponent, {
+  props: { title: 'Welcome' }
+})
+
+// Open modal
+const instance = modal.open()
+
+// Get result from modal
+const result = await instance.result
+
+// Update props
+modal.patch({ title: 'Updated' })
+
+// Close
+await modal.close()
+```
+
+### useColorMode
+
+Manage dark/light theme:
+
+```typescript
+const colorMode = useColorMode()
+
+const isDark = computed({
+  get: () => colorMode.value === 'dark',
+  set: (value) => {
+    colorMode.preference = value ? 'dark' : 'light'
+  }
+})
+```
+
+## Icon System
+
+### Using Icons
+
+Nuxt UI integrates with Iconify for 200,000+ icons:
+
+```vue
+<!-- Using icon prop -->
+<UButton icon="i-lucide-rocket" />
+
+<!-- Using Icon component -->
+<Icon name="i-heroicons-check" />
+
+<!-- Custom size and color -->
+<Icon name="i-lucide-star" size="24" class="text-yellow-500" />
+```
+
+### Icon Collections
+
+Popular collections:
+- **Lucide**: `i-lucide-*`
+- **Heroicons**: `i-heroicons-*`
+- **Material Design**: `i-mdi-*`
+- **Font Awesome**: `i-fa6-solid-*`
+- **Simple Icons**: `i-simple-icons-*`
+
+### Custom Icons
+
+Add local SVG icons:
+
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  icon: {
+    customCollections: [{
+      prefix: 'custom',
+      dir: './assets/icons'
+    }]
+  }
+})
+```
+
+Usage: `<Icon name="custom:my-icon" />`
+
+### Configuring Default Icons
+
+Override component icons globally:
+
+```typescript
+// app.config.ts
+export default defineAppConfig({
+  ui: {
+    icons: {
+      check: 'i-lucide-check',
+      close: 'i-lucide-x',
+      loading: 'i-lucide-loader-circle',
+      chevronDown: 'i-lucide-chevron-down',
+      // ... more icon overrides
+    }
+  }
+})
+```
+
+## Best Practices
+
+### 1. Component Usage
+
+- **Always wrap your app** with `<App>` component for overlays to work
+- **Use semantic colors** (primary, secondary, etc.) instead of hardcoded colors
+- **Leverage the ui prop** for component-specific customization
+- **Use FormField** for consistent form validation and error display
+
+### 2. Performance
+
+- **Install only needed icon collections** to reduce bundle size
+- **Use loading states** with the `loading` prop on interactive components
+- **Implement proper pagination** for large datasets in Tables
+- **Lazy load heavy components** like modals using dynamic imports
+
+### 3. Accessibility
+
+- **Keyboard navigation** is built-in for all interactive components
+- **ARIA attributes** are automatically applied
+- **Focus management** is handled by Reka UI
+- **Screen reader support** is included by default
+
+### 4. Styling
+
+- **Use Tailwind utility classes** for styling
+- **Avoid inline styles** - use classes instead
+- **Leverage CSS variables** for dynamic theming
+- **Use the `ui` prop** for slot-specific styling
+
+### 5. TypeScript
+
+- **Full type safety** for all component props
+- **Auto-completion** for theme configuration
+- **Generic components** support for better type inference
+- **Typed events** for form submissions and interactions
+
+## Common Patterns
+
+### Dynamic Forms
+
+```vue
+<script setup lang="ts">
+const fields = [
+  { name: 'name', label: 'Name', type: 'text' },
+  { name: 'email', label: 'Email', type: 'email' },
+  { name: 'role', label: 'Role', type: 'select', options: ['Admin', 'User'] }
+]
+
+const state = reactive({
+  name: '',
+  email: '',
+  role: ''
+})
+</script>
+
+<template>
+  <UForm :state="state">
+    <UFormField
+      v-for="field in fields"
+      :key="field.name"
+      :label="field.label"
+      :name="field.name"
+    >
+      <UInput
+        v-if="field.type !== 'select'"
+        v-model="state[field.name]"
+        :type="field.type"
+      />
+      <USelect
+        v-else
+        v-model="state[field.name]"
+        :options="field.options"
+      />
+    </UFormField>
+  </UForm>
+</template>
+```
+
+### Programmatic Modals
+
+```vue
+<script setup lang="ts">
+// Modal component (MyModal.vue)
+const props = defineProps<{
+  title: string
+  message: string
+}>()
+
+const emit = defineEmits<{
+  close: [result: boolean]
+}>()
+
+function confirm() {
+  emit('close', true)
+}
+
+function cancel() {
+  emit('close', false)
+}
+</script>
+
+<!-- In parent component -->
+<script setup lang="ts">
+const overlay = useOverlay()
+
+async function showConfirmation() {
+  const modal = overlay.create(MyModal, {
+    props: {
+      title: 'Confirm Action',
+      message: 'Are you sure?'
+    }
+  })
+
+  const instance = modal.open()
+  const confirmed = await instance.result
+
+  if (confirmed) {
+    // Proceed with action
+  }
+}
+</script>
+```
+
+### Data Tables with Actions
+
+```vue
+<script setup lang="ts">
+const columns = [{
+  key: 'name',
+  label: 'Name'
+}, {
+  key: 'email',
+  label: 'Email'
+}, {
+  key: 'actions',
+  label: 'Actions'
+}]
+
+const data = ref([
+  { id: 1, name: 'John Doe', email: 'john@example.com' },
+  // ... more data
+])
+
+const actions = (row) => [[{
+  label: 'Edit',
+  icon: 'i-lucide-edit',
+  click: () => editUser(row)
+}, {
+  label: 'Delete',
+  icon: 'i-lucide-trash',
+  color: 'error',
+  click: () => deleteUser(row)
+}]]
+</script>
+
+<template>
+  <UTable :columns="columns" :rows="data">
+    <template #actions-data="{ row }">
+      <UDropdownMenu :items="actions(row)">
+        <UButton
+          icon="i-lucide-more-vertical"
+          variant="ghost"
+          size="xs"
+        />
+      </UDropdownMenu>
+    </template>
+  </UTable>
+</template>
+```
+
+## Migration from v2 to v3
+
+Key changes:
+- **Reka UI** replaces Headless UI as the component foundation
+- **Tailwind CSS v4** with new configuration approach
+- **Tailwind Variants** for component styling
+- **Improved TypeScript** support with generics
+- **New component API** with slots-based customization
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Icons not showing**: Install the icon collection package (e.g., `@iconify-json/lucide`)
+2. **Styles not applied**: Ensure Tailwind CSS is properly configured
+3. **Components not auto-imported**: Check module registration in config
+4. **Dark mode not working**: Verify color-mode module is enabled
+5. **Overlay components not working**: Wrap app with `<App>` component
+
+### Performance Tips
+
+- Use `v-show` instead of `v-if` for frequently toggled content
+- Implement virtual scrolling for large lists
+- Lazy load modal/slideover content
+- Use `loading-auto` prop for automatic loading states
+- Minimize custom theme overrides
+
+## Resources
+
+- **Documentation**: https://ui.nuxt.com
+- **GitHub**: https://github.com/nuxt/ui
+- **Icon Browser**: https://icones.js.org
+- **Tailwind CSS v4**: https://tailwindcss.com
+- **Reka UI**: https://reka-ui.com
+
+## Summary
+
+Nuxt UI v3 is a comprehensive UI library that combines the power of Vue 3, Tailwind CSS v4, and Reka UI to provide a robust foundation for building modern web applications. With its extensive component library, flexible theming system, and built-in accessibility features, it significantly accelerates development while maintaining high standards for user experience and code quality.

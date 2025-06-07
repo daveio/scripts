@@ -6,8 +6,11 @@
     "@biomejs/biome": "^1.9.4",
     "@openai/codex": "^0.1.2505172129",
     "@trunkio/launcher": "1.3.4",
-    "@types/bun": "1.2.15",
-    "typescript": "5.8.3"
+    "@types/bun": "^1.2.15",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.15.30",
+    "@types/semver": "^7.7.0",
+    "typescript": "^5.8.3"
   },
   "trustedDependencies": ["@anthropic-ai/claude-code", "@biomejs/biome"],
   "module": "index.ts",
@@ -16,6 +19,13 @@
     "netflow": "bun run bin/netflow.ts"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0"
+    "@iarna/toml": "^2.2.5",
+    "axios": "^1.9.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "js-yaml": "^4.1.0",
+    "ora": "^8.2.0",
+    "semver": "^7.7.2"
   }
 }
