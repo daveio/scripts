@@ -12,7 +12,7 @@ var Holder = Holder || {}
 ;((app, win) => {
   var preempted = false,
     fallback = false,
-    canvas = document.createElement('canvas')
+    canvas = document.createElement("canvas")
   var dpr = 1,
     bsr = 1
   var resizable_images = []
@@ -20,11 +20,11 @@ var Holder = Holder || {}
   if (!canvas.getContext) {
     fallback = true
   } else {
-    if (canvas.toDataURL('image/png').indexOf('data:image/png') < 0) {
+    if (canvas.toDataURL("image/png").indexOf("data:image/png") < 0) {
       //Android doesn't support data URI
       fallback = true
     } else {
-      var ctx = canvas.getContext('2d')
+      var ctx = canvas.getContext("2d")
     }
   }
 
@@ -42,42 +42,42 @@ var Holder = Holder || {}
   var ratio = dpr / bsr
 
   var settings = {
-    domain: 'holder.js',
-    images: 'img',
-    bgnodes: '.holderjs',
+    domain: "holder.js",
+    images: "img",
+    bgnodes: ".holderjs",
     themes: {
       gray: {
-        background: '#eee',
-        foreground: '#aaa',
+        background: "#eee",
+        foreground: "#aaa",
         size: 12
       },
       social: {
-        background: '#3a5a97',
-        foreground: '#fff',
+        background: "#3a5a97",
+        foreground: "#fff",
         size: 12
       },
       industrial: {
-        background: '#434A52',
-        foreground: '#C2F200',
+        background: "#434A52",
+        foreground: "#C2F200",
         size: 12
       },
       sky: {
-        background: '#0D8FDB',
-        foreground: '#fff',
+        background: "#0D8FDB",
+        foreground: "#fff",
         size: 12
       },
       vine: {
-        background: '#39DBAC',
-        foreground: '#1E292C',
+        background: "#39DBAC",
+        foreground: "#1E292C",
         size: 12
       },
       lava: {
-        background: '#F8591A',
-        foreground: '#1C2846',
+        background: "#F8591A",
+        foreground: "#1C2846",
         size: 12
       }
     },
-    stylesheet: ''
+    stylesheet: ""
   }
   app.flags = {
     dimensions: {
@@ -106,8 +106,8 @@ var Holder = Holder || {}
         var exec = this.regex.exec(val)
         return {
           size: settings.themes.gray.size,
-          foreground: '#' + exec[2],
-          background: '#' + exec[1]
+          foreground: "#" + exec[2],
+          background: "#" + exec[1]
         }
       }
     },
@@ -142,12 +142,12 @@ var Holder = Holder || {}
         r,
         i,
         s = []
-      if (t.querySelectorAll) return t.querySelectorAll('.' + e)
+      if (t.querySelectorAll) return t.querySelectorAll("." + e)
       if (t.evaluate) {
         ;(r = ".//*[contains(concat(' ', @class, ' '), ' " + e + " ')]"), (n = t.evaluate(r, t, null, 0, null))
         while ((i = n.iterateNext())) s.push(i)
       } else {
-        ;(n = t.getElementsByTagName('*')), (r = new RegExp('(^|\\s)' + e + '(\\s|$)'))
+        ;(n = t.getElementsByTagName("*")), (r = new RegExp("(^|\\s)" + e + "(\\s|$)"))
         for (i = 0; i < n.length; i++) r.test(n[i].className) && s.push(n[i])
       }
       return s
@@ -161,7 +161,7 @@ var Holder = Holder || {}
         (this.getPropertyValue = (t) => {
           var n = /(\-([a-z]){1})/g
           return (
-            t == 'float' && (t = 'styleFloat'),
+            t == "float" && (t = "styleFloat"),
             n.test(t) && (t = t.replace(n, () => arguments[2].toUpperCase())),
             e.currentStyle[t] ? e.currentStyle[t] : null
           )
@@ -172,30 +172,30 @@ var Holder = Holder || {}
 
   //http://javascript.nwbox.com/ContentLoaded by Diego Perini with modifications
   function contentLoaded(n, t) {
-    var l = 'complete',
-      s = 'readystatechange',
+    var l = "complete",
+      s = "readystatechange",
       u = !1,
       h = u,
       c = !0,
       i = n.document,
       a = i.documentElement,
-      e = i.addEventListener ? 'addEventListener' : 'attachEvent',
-      v = i.addEventListener ? 'removeEventListener' : 'detachEvent',
-      f = i.addEventListener ? '' : 'on',
+      e = i.addEventListener ? "addEventListener" : "attachEvent",
+      v = i.addEventListener ? "removeEventListener" : "detachEvent",
+      f = i.addEventListener ? "" : "on",
       r = (e) => {
         ;(e.type != s || i.readyState == l) &&
-          ((e.type == 'load' ? n : i)[v](f + e.type, r, u), !h && (h = !0) && t.call(n, null))
+          ((e.type == "load" ? n : i)[v](f + e.type, r, u), !h && (h = !0) && t.call(n, null))
       },
       o = () => {
         try {
-          a.doScroll('left')
+          a.doScroll("left")
         } catch (n) {
           setTimeout(o, 50)
           return
         }
-        r('poll')
+        r("poll")
       }
-    if (i.readyState == l) t.call(n, 'lazy')
+    if (i.readyState == l) t.call(n, "lazy")
     else {
       if (i.createEventObject && a.doScroll) {
         try {
@@ -203,14 +203,14 @@ var Holder = Holder || {}
         } catch (y) {}
         c && o()
       }
-      i[e](f + 'DOMContentLoaded', r, u), i[e](f + s, r, u), n[e](f + 'load', r, u)
+      i[e](f + "DOMContentLoaded", r, u), i[e](f + s, r, u), n[e](f + "load", r, u)
     }
   }
 
   //https://gist.github.com/991057 by Jed Schmidt with modifications
   function selector(a) {
     a = a.match(/^(\W)?(.*)/)
-    var b = document['getElement' + (a[1] ? (a[1] == '#' ? 'ById' : 'sByClassName') : 'sByTagName')](a[2])
+    var b = document["getElement" + (a[1] ? (a[1] == "#" ? "ById" : "sByClassName") : "sByTagName")](a[2])
     var ret = []
     b !== null && (b.length ? (ret = b) : b.length === 0 ? (ret = b) : (ret = [b]))
     return ret
@@ -259,45 +259,45 @@ var Holder = Holder || {}
     var template = args.template
     var ratio = args.ratio
     var holder = args.holder
-    var literal = holder.textmode == 'literal'
-    var exact = holder.textmode == 'exact'
+    var literal = holder.textmode == "literal"
+    var exact = holder.textmode == "exact"
 
     var ts = text_size(dimensions.width, dimensions.height, template)
     var text_height = ts.height
     var width = dimensions.width * ratio,
       height = dimensions.height * ratio
-    var font = template.font ? template.font : 'sans-serif'
+    var font = template.font ? template.font : "sans-serif"
     canvas.width = width
     canvas.height = height
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
     ctx.fillStyle = template.background
     ctx.fillRect(0, 0, width, height)
     ctx.fillStyle = template.foreground
-    ctx.font = 'bold ' + text_height + 'px ' + font
-    var text = template.text ? template.text : Math.floor(dimensions.width) + 'x' + Math.floor(dimensions.height)
+    ctx.font = "bold " + text_height + "px " + font
+    var text = template.text ? template.text : Math.floor(dimensions.width) + "x" + Math.floor(dimensions.height)
     if (literal) {
       var dimensions = holder.dimensions
-      text = dimensions.width + 'x' + dimensions.height
+      text = dimensions.width + "x" + dimensions.height
     } else if (exact && holder.exact_dimensions) {
       var dimensions = holder.exact_dimensions
-      text = Math.floor(dimensions.width) + 'x' + Math.floor(dimensions.height)
+      text = Math.floor(dimensions.width) + "x" + Math.floor(dimensions.height)
     }
     var text_width = ctx.measureText(text).width
     if (text_width / width >= 0.75) {
       text_height = Math.floor(text_height * 0.75 * (width / text_width))
     }
     //Resetting font size if necessary
-    ctx.font = 'bold ' + text_height * ratio + 'px ' + font
+    ctx.font = "bold " + text_height * ratio + "px " + font
     ctx.fillText(text, width / 2, height / 2, width)
-    return canvas.toDataURL('image/png')
+    return canvas.toDataURL("image/png")
   }
 
   function render(mode, el, holder, src) {
     var dimensions = holder.dimensions,
       theme = holder.theme,
       text = holder.text ? decodeURIComponent(holder.text) : holder.text
-    var dimensions_caption = dimensions.width + 'x' + dimensions.height
+    var dimensions_caption = dimensions.width + "x" + dimensions.height
     theme = text
       ? extend(theme, {
           text: text
@@ -308,24 +308,24 @@ var Holder = Holder || {}
           font: holder.font
         })
       : theme
-    el.setAttribute('data-src', src)
+    el.setAttribute("data-src", src)
     holder.theme = theme
     el.holder_data = holder
 
-    if (mode == 'image') {
+    if (mode == "image") {
       el.setAttribute(
-        'alt',
-        text ? text : theme.text ? theme.text + ' [' + dimensions_caption + ']' : dimensions_caption
+        "alt",
+        text ? text : theme.text ? theme.text + " [" + dimensions_caption + "]" : dimensions_caption
       )
       if (fallback || !holder.auto) {
-        el.style.width = dimensions.width + 'px'
-        el.style.height = dimensions.height + 'px'
+        el.style.width = dimensions.width + "px"
+        el.style.height = dimensions.height + "px"
       }
       if (fallback) {
         el.style.backgroundColor = theme.background
       } else {
         el.setAttribute(
-          'src',
+          "src",
           draw({
             ctx: ctx,
             dimensions: dimensions,
@@ -335,15 +335,15 @@ var Holder = Holder || {}
           })
         )
 
-        if (holder.textmode && holder.textmode == 'exact') {
+        if (holder.textmode && holder.textmode == "exact") {
           resizable_images.push(el)
           resizable_update(el)
         }
       }
-    } else if (mode == 'background') {
+    } else if (mode == "background") {
       if (!fallback) {
         el.style.backgroundImage =
-          'url(' +
+          "url(" +
           draw({
             ctx: ctx,
             dimensions: dimensions,
@@ -351,26 +351,26 @@ var Holder = Holder || {}
             ratio: ratio,
             holder: holder
           }) +
-          ')'
-        el.style.backgroundSize = dimensions.width + 'px ' + dimensions.height + 'px'
+          ")"
+        el.style.backgroundSize = dimensions.width + "px " + dimensions.height + "px"
       }
-    } else if (mode == 'fluid') {
+    } else if (mode == "fluid") {
       el.setAttribute(
-        'alt',
-        text ? text : theme.text ? theme.text + ' [' + dimensions_caption + ']' : dimensions_caption
+        "alt",
+        text ? text : theme.text ? theme.text + " [" + dimensions_caption + "]" : dimensions_caption
       )
-      if (dimensions.height.slice(-1) == '%') {
+      if (dimensions.height.slice(-1) == "%") {
         el.style.height = dimensions.height
       } else {
-        el.style.height = dimensions.height + 'px'
+        el.style.height = dimensions.height + "px"
       }
-      if (dimensions.width.slice(-1) == '%') {
+      if (dimensions.width.slice(-1) == "%") {
         el.style.width = dimensions.width
       } else {
-        el.style.width = dimensions.width + 'px'
+        el.style.width = dimensions.width + "px"
       }
-      if (el.style.display == 'inline' || el.style.display === '' || el.style.display == 'none') {
-        el.style.display = 'block'
+      if (el.style.display == "inline" || el.style.display === "" || el.style.display == "none") {
+        el.style.display = "block"
       }
       if (fallback) {
         el.style.backgroundColor = theme.background
@@ -387,17 +387,17 @@ var Holder = Holder || {}
       width: el.clientWidth
     }
     if (!dimensions.height && !dimensions.width) {
-      if (el.hasAttribute('data-holder-invisible')) {
-        throw new Error('Holder: placeholder is not visible')
+      if (el.hasAttribute("data-holder-invisible")) {
+        throw new Error("Holder: placeholder is not visible")
       } else {
-        el.setAttribute('data-holder-invisible', true)
+        el.setAttribute("data-holder-invisible", true)
         setTimeout(function () {
           callback.call(this, el)
         }, 1)
         return null
       }
     } else {
-      el.removeAttribute('data-holder-invisible')
+      el.removeAttribute("data-holder-invisible")
     }
     return dimensions
   }
@@ -420,7 +420,7 @@ var Holder = Holder || {}
         if (dimensions) {
           if (holder.fluid) {
             el.setAttribute(
-              'src',
+              "src",
               draw({
                 ctx: ctx,
                 dimensions: dimensions,
@@ -430,10 +430,10 @@ var Holder = Holder || {}
               })
             )
           }
-          if (holder.textmode && holder.textmode == 'exact') {
+          if (holder.textmode && holder.textmode == "exact") {
             holder.exact_dimensions = dimensions
             el.setAttribute(
-              'src',
+              "src",
               draw({
                 ctx: ctx,
                 dimensions: holder.dimensions,
@@ -496,8 +496,8 @@ var Holder = Holder || {}
     var node = selector(el)
     if (node.length) {
       for (var i = 0, l = node.length; i < l; i++) {
-        var img = document.createElement('img')
-        img.setAttribute('data-src', src)
+        var img = document.createElement("img")
+        img.setAttribute("data-src", src)
         node[i].appendChild(img)
       }
     }
@@ -510,7 +510,7 @@ var Holder = Holder || {}
       images = [],
       imageNodes = [],
       bgnodes = []
-    if (typeof options.images == 'string') {
+    if (typeof options.images == "string") {
       imageNodes = selector(options.images)
     } else if (window.NodeList && options.images instanceof window.NodeList) {
       imageNodes = options.images
@@ -518,7 +518,7 @@ var Holder = Holder || {}
       imageNodes = [options.images]
     }
 
-    if (typeof options.bgnodes == 'string') {
+    if (typeof options.bgnodes == "string") {
       bgnodes = selector(options.bgnodes)
     } else if (window.NodeList && options.elements instanceof window.NodeList) {
       bgnodes = options.bgnodes
@@ -526,12 +526,12 @@ var Holder = Holder || {}
       bgnodes = [options.bgnodes]
     }
     for (i = 0, l = imageNodes.length; i < l; i++) images.push(imageNodes[i])
-    var holdercss = document.getElementById('holderjs-style')
+    var holdercss = document.getElementById("holderjs-style")
     if (!holdercss) {
-      holdercss = document.createElement('style')
-      holdercss.setAttribute('id', 'holderjs-style')
-      holdercss.type = 'text/css'
-      document.getElementsByTagName('head')[0].appendChild(holdercss)
+      holdercss = document.createElement("style")
+      holdercss.setAttribute("id", "holderjs-style")
+      holdercss.type = "text/css"
+      document.getElementsByTagName("head")[0].appendChild(holdercss)
     }
     if (!options.nocss) {
       if (holdercss.styleSheet) {
@@ -542,21 +542,21 @@ var Holder = Holder || {}
     }
     var cssregex = new RegExp(options.domain + '/(.*?)"?\\)')
     for (var l = bgnodes.length, i = 0; i < l; i++) {
-      var src = window.getComputedStyle(bgnodes[i], null).getPropertyValue('background-image')
+      var src = window.getComputedStyle(bgnodes[i], null).getPropertyValue("background-image")
       var flags = src.match(cssregex)
-      var bgsrc = bgnodes[i].getAttribute('data-background-src')
+      var bgsrc = bgnodes[i].getAttribute("data-background-src")
       if (flags) {
-        var holder = parse_flags(flags[1].split('/'), options)
+        var holder = parse_flags(flags[1].split("/"), options)
         if (holder) {
-          render('background', bgnodes[i], holder, src)
+          render("background", bgnodes[i], holder, src)
         }
       } else if (bgsrc != null) {
         var holder = parse_flags(
-          bgsrc.substr(bgsrc.lastIndexOf(options.domain) + options.domain.length + 1).split('/'),
+          bgsrc.substr(bgsrc.lastIndexOf(options.domain) + options.domain.length + 1).split("/"),
           options
         )
         if (holder) {
-          render('background', bgnodes[i], holder, src)
+          render("background", bgnodes[i], holder, src)
         }
       }
     }
@@ -564,8 +564,8 @@ var Holder = Holder || {}
       var attr_data_src, attr_src
       attr_src = attr_data_src = src = null
       try {
-        attr_src = images[i].getAttribute('src')
-        attr_datasrc = images[i].getAttribute('data-src')
+        attr_src = images[i].getAttribute("src")
+        attr_datasrc = images[i].getAttribute("data-src")
       } catch (e) {}
       if (attr_datasrc == null && !!attr_src && attr_src.indexOf(options.domain) >= 0) {
         src = attr_src
@@ -574,14 +574,14 @@ var Holder = Holder || {}
       }
       if (src) {
         var holder = parse_flags(
-          src.substr(src.lastIndexOf(options.domain) + options.domain.length + 1).split('/'),
+          src.substr(src.lastIndexOf(options.domain) + options.domain.length + 1).split("/"),
           options
         )
         if (holder) {
           if (holder.fluid) {
-            render('fluid', images[i], holder, src)
+            render("fluid", images[i], holder, src)
           } else {
-            render('image', images[i], holder, src)
+            render("image", images[i], holder, src)
           }
         }
       }
@@ -590,14 +590,14 @@ var Holder = Holder || {}
   }
   contentLoaded(win, () => {
     if (window.addEventListener) {
-      window.addEventListener('resize', resizable_update, false)
-      window.addEventListener('orientationchange', resizable_update, false)
+      window.addEventListener("resize", resizable_update, false)
+      window.addEventListener("orientationchange", resizable_update, false)
     } else {
-      window.attachEvent('onresize', resizable_update)
+      window.attachEvent("onresize", resizable_update)
     }
     preempted || app.run()
   })
-  if (typeof define === 'function' && define.amd) {
+  if (typeof define === "function" && define.amd) {
     define([], () => app)
   }
 })(Holder, window)

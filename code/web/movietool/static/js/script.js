@@ -3,7 +3,7 @@
  * Handles UI interactions and displays scan results
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Initialize Feather icons
   feather.replace()
 
@@ -14,28 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const confettiCelebration = new Confetti()
 
   // Get Elements
-  const scanForm = document.getElementById('scan-form')
-  const scanResults = document.getElementById('scan-results')
-  const generateScriptBtn = document.getElementById('generate-script-btn')
-  const scriptModal = document.getElementById('script-modal')
-  const closeModalBtn = scriptModal.querySelector('.close-btn')
-  const copyScriptBtn = document.getElementById('copy-script-btn')
-  const downloadScriptBtn = document.getElementById('download-script-btn')
-  const showOnlyDuplicates = document.getElementById('show-only-duplicates')
+  const scanForm = document.getElementById("scan-form")
+  const scanResults = document.getElementById("scan-results")
+  const generateScriptBtn = document.getElementById("generate-script-btn")
+  const scriptModal = document.getElementById("script-modal")
+  const closeModalBtn = scriptModal.querySelector(".close-btn")
+  const copyScriptBtn = document.getElementById("copy-script-btn")
+  const downloadScriptBtn = document.getElementById("download-script-btn")
+  const showOnlyDuplicates = document.getElementById("show-only-duplicates")
   // Synthetic delay controls removed
 
   // Initialize chart
   const fileDistributionChart = null
 
   // Handle scan form submission
-  scanForm.addEventListener('submit', async (e) => {
+  scanForm.addEventListener("submit", async (e) => {
     e.preventDefault()
 
     try {
-      const directoryPath = document.getElementById('directory-path').value
-      const fileExtensions = document.getElementById('file-extensions').value
-      const includePattern = document.getElementById('include-pattern').value
-      const excludePattern = document.getElementById('exclude-pattern').value
+      const directoryPath = document.getElementById("directory-path").value
+      const fileExtensions = document.getElementById("file-extensions").value
+      const includePattern = document.getElementById("include-pattern").value
+      const excludePattern = document.getElementById("exclude-pattern").value
 
       // Build scan options
       const scanOptions = {
@@ -63,14 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
           // Play a cheerful sound (optional)
           const audio = new Audio()
           audio.src =
-            'data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'
-          audio.play().catch((e) => console.log('Audio play prevented by browser policy'))
+            "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+          audio.play().catch((e) => console.log("Audio play prevented by browser policy"))
         }, 800)
       }
 
       // If it was saved to the database, we can show a notification
       if (results.scan_id) {
-        showNotification('Scan saved to history. You can access it later.')
+        showNotification("Scan saved to history. You can access it later.")
       }
     } catch (error) {
       showError(`Error scanning directory: ${error.message}`)
@@ -78,21 +78,21 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // Handle generate script button click
-  generateScriptBtn.addEventListener('click', async () => {
+  generateScriptBtn.addEventListener("click", async () => {
     try {
       const scriptTypeEl = document.querySelector('input[name="script-type"]:checked')
-      const scriptType = scriptTypeEl ? scriptTypeEl.value : 'bash'
+      const scriptType = scriptTypeEl ? scriptTypeEl.value : "bash"
 
       const scriptResult = await fileScanner.generateDeletionScript(scriptType)
 
       // Update modal with script content
-      document.getElementById('script-content').textContent = scriptResult.script
-      document.getElementById('script-file-count').textContent = scriptResult.file_count
-      document.getElementById('script-file-size').textContent = formatSize(scriptResult.total_size)
+      document.getElementById("script-content").textContent = scriptResult.script
+      document.getElementById("script-file-count").textContent = scriptResult.file_count
+      document.getElementById("script-file-size").textContent = formatSize(scriptResult.total_size)
 
       // Show modal
-      scriptModal.classList.remove('hidden')
-      scriptModal.classList.add('visible')
+      scriptModal.classList.remove("hidden")
+      scriptModal.classList.add("visible")
 
       // Re-initialize feather icons in the modal
       feather.replace()
@@ -102,35 +102,35 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // Handle close modal button click
-  closeModalBtn.addEventListener('click', () => {
-    scriptModal.classList.remove('visible')
+  closeModalBtn.addEventListener("click", () => {
+    scriptModal.classList.remove("visible")
     setTimeout(() => {
-      scriptModal.classList.add('hidden')
+      scriptModal.classList.add("hidden")
     }, 300)
   })
 
   // Handle copy script button click
-  copyScriptBtn.addEventListener('click', () => {
-    const scriptContent = document.getElementById('script-content').textContent
+  copyScriptBtn.addEventListener("click", () => {
+    const scriptContent = document.getElementById("script-content").textContent
     navigator.clipboard
       .writeText(scriptContent)
       .then(() => {
-        showNotification('Script copied to clipboard')
+        showNotification("Script copied to clipboard")
       })
       .catch((err) => {
-        showError('Failed to copy script to clipboard')
+        showError("Failed to copy script to clipboard")
       })
   })
 
   // Handle download script button click
-  downloadScriptBtn.addEventListener('click', () => {
-    const scriptContent = document.getElementById('script-content').textContent
+  downloadScriptBtn.addEventListener("click", () => {
+    const scriptContent = document.getElementById("script-content").textContent
     const scriptType = document.querySelector('input[name="script-type"]:checked').value
-    const extension = scriptType === 'bash' ? 'sh' : 'bat'
+    const extension = scriptType === "bash" ? "sh" : "bat"
 
-    const blob = new Blob([scriptContent], { type: 'text/plain' })
+    const blob = new Blob([scriptContent], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    const a = document.createElement("a")
 
     a.href = url
     a.download = `delete_flagged_files.${extension}`
@@ -145,12 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // Handle filter for directories with duplicates
-  showOnlyDuplicates.addEventListener('change', () => {
+  showOnlyDuplicates.addEventListener("change", () => {
     displayDirectories(fileScanner.scanResults?.directories || [])
   })
 
   // Click outside modal to close
-  scriptModal.addEventListener('click', (e) => {
+  scriptModal.addEventListener("click", (e) => {
     if (e.target === scriptModal) {
       closeModalBtn.click()
     }
@@ -161,44 +161,44 @@ document.addEventListener('DOMContentLoaded', () => {
   // Display scan results in the UI
   function displayScanResults(results) {
     // Show results section
-    scanResults.classList.remove('hidden')
+    scanResults.classList.remove("hidden")
 
     // Play duplicate sound if duplicates found
     if (results.stats && results.stats.flagged_files > 0) {
-      soundManager.playSound('duplicate')
+      soundManager.playSound("duplicate")
     }
 
     // Update statistics with animated counters
-    animateCounter('stat-total-dirs', 0, results.stats.total_dirs)
-    animateCounter('stat-dirs-with-duplicates', 0, results.stats.dirs_with_duplicates)
-    animateCounter('stat-total-files', 0, results.stats.total_files)
-    animateCounter('stat-flagged-files', 0, results.stats.flagged_files)
+    animateCounter("stat-total-dirs", 0, results.stats.total_dirs)
+    animateCounter("stat-dirs-with-duplicates", 0, results.stats.dirs_with_duplicates)
+    animateCounter("stat-total-files", 0, results.stats.total_files)
+    animateCounter("stat-flagged-files", 0, results.stats.flagged_files)
 
     // Set the size values directly since they are strings
-    const totalSizeEl = document.getElementById('stat-total-size')
-    const flaggedSizeEl = document.getElementById('stat-potential-savings')
+    const totalSizeEl = document.getElementById("stat-total-size")
+    const flaggedSizeEl = document.getElementById("stat-potential-savings")
 
-    totalSizeEl.textContent = '0 B'
-    flaggedSizeEl.textContent = '0 B'
+    totalSizeEl.textContent = "0 B"
+    flaggedSizeEl.textContent = "0 B"
 
     setTimeout(() => {
-      totalSizeEl.style.animation = 'number-pop 0.5s'
+      totalSizeEl.style.animation = "number-pop 0.5s"
       totalSizeEl.textContent = results.stats.total_size_readable
 
       setTimeout(() => {
-        flaggedSizeEl.style.animation = 'number-pop 0.5s'
+        flaggedSizeEl.style.animation = "number-pop 0.5s"
         flaggedSizeEl.textContent = results.stats.flagged_size_readable
       }, 200)
 
       // Remove animation after it completes
       setTimeout(() => {
-        totalSizeEl.style.animation = ''
-        flaggedSizeEl.style.animation = ''
+        totalSizeEl.style.animation = ""
+        flaggedSizeEl.style.animation = ""
       }, 1000)
     }, 800)
 
     // Create chart
-    const chartCanvas = document.getElementById('file-distribution-chart')
+    const chartCanvas = document.getElementById("file-distribution-chart")
     fileScanner.createDistributionChart(chartCanvas)
 
     // Display directories
@@ -208,16 +208,16 @@ document.addEventListener('DOMContentLoaded', () => {
     feather.replace()
 
     // Scroll to results
-    scanResults.scrollIntoView({ behavior: 'smooth' })
+    scanResults.scrollIntoView({ behavior: "smooth" })
   }
 
   // Display directory listings
   function displayDirectories(directories) {
-    const directoriesContainer = document.getElementById('directories-container')
+    const directoriesContainer = document.getElementById("directories-container")
     const showOnlyDuplicatesChecked = showOnlyDuplicates.checked
 
     // Clear previous content
-    directoriesContainer.innerHTML = ''
+    directoriesContainer.innerHTML = ""
 
     // Filter directories if needed
     const filteredDirs = showOnlyDuplicatesChecked ? directories.filter((dir) => dir.has_duplicates) : directories
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filteredDirs.length === 0) {
       directoriesContainer.innerHTML = `
                 <div class="empty-state">
-                    <p>No directories ${showOnlyDuplicatesChecked ? 'with duplicates ' : ''}found.</p>
+                    <p>No directories ${showOnlyDuplicatesChecked ? "with duplicates " : ""}found.</p>
                 </div>
             `
       return
@@ -233,8 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create directory cards
     filteredDirs.forEach((dir) => {
-      const dirCard = document.createElement('div')
-      dirCard.className = 'directory-card'
+      const dirCard = document.createElement("div")
+      dirCard.className = "directory-card"
       dirCard.innerHTML = `
                 <div class="directory-header">
                     <div>
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${dir.files
                       .map(
                         (file) => `
-                        <div class="file-item ${file.flagged ? 'flagged' : 'keep'}">
+                        <div class="file-item ${file.flagged ? "flagged" : "keep"}">
                             <div class="file-info">
                                 <div class="file-name">
                                     ${file.name}
@@ -270,44 +270,44 @@ document.addEventListener('DOMContentLoaded', () => {
                                 ${
                                   dir.files.length > 1
                                     ? '<button class="compare-files-btn"><span>Compare</span></button>'
-                                    : ''
+                                    : ""
                                 }</div>
                         </div>
                     `
                       )
-                      .join('')}
+                      .join("")}
                 </div>
             `
 
       // Complete rewrite of the click handling to ensure the entire header is clickable
       const toggleDirectory = (dirCard) => {
         // Toggle the card expanded state
-        dirCard.classList.toggle('expanded')
-        const icon = dirCard.querySelector('.toggle-icon')
-        if (dirCard.classList.contains('expanded')) {
-          icon.setAttribute('data-feather', 'chevron-up')
+        dirCard.classList.toggle("expanded")
+        const icon = dirCard.querySelector(".toggle-icon")
+        if (dirCard.classList.contains("expanded")) {
+          icon.setAttribute("data-feather", "chevron-up")
         } else {
-          icon.setAttribute('data-feather', 'chevron-down')
+          icon.setAttribute("data-feather", "chevron-down")
         }
         feather.replace()
 
         // Play a subtle sound if available
-        if (typeof soundManager !== 'undefined') {
-          soundManager.playSound('click')
+        if (typeof soundManager !== "undefined") {
+          soundManager.playSound("click")
         }
       }
 
       // Style the entire card to look clickable
-      dirCard.style.cursor = 'pointer'
+      dirCard.style.cursor = "pointer"
 
       // Make the entire directory card clickable for the header part
       dirCard.onclick = (event) => {
         // Only handle clicks on the top part of the card (not the expanded file list)
-        const fileList = dirCard.querySelector('.file-list')
+        const fileList = dirCard.querySelector(".file-list")
         if (
-          event.target.closest('.file-list') ||
-          event.target.closest('.btn') ||
-          event.target.closest('.compare-files-btn')
+          event.target.closest(".file-list") ||
+          event.target.closest(".btn") ||
+          event.target.closest(".compare-files-btn")
         ) {
           return
         }
@@ -316,9 +316,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Add direct click handler to the entire directory card header (for redundancy)
-      dirCard.querySelector('.directory-header').onclick = (event) => {
+      dirCard.querySelector(".directory-header").onclick = (event) => {
         // Prevent toggling if click was on a button inside the header
-        if (event.target.closest('.btn') || event.target.closest('.compare-files-btn')) {
+        if (event.target.closest(".btn") || event.target.closest(".compare-files-btn")) {
           return
         }
 
@@ -327,19 +327,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Also allow clicking directly on the h4 title and path to toggle
-      dirCard.querySelector('h4').onclick = (event) => {
+      dirCard.querySelector("h4").onclick = (event) => {
         event.stopPropagation()
         toggleDirectory(dirCard)
       }
 
-      dirCard.querySelector('.directory-path').onclick = (event) => {
+      dirCard.querySelector(".directory-path").onclick = (event) => {
         event.stopPropagation()
         toggleDirectory(dirCard)
       }
 
       // Make the flagged/keep labels directly clickable too
       const directoryLabel = dirCard.querySelector(
-        '.directory-summary > .flagged-label, .directory-summary > .keep-label'
+        ".directory-summary > .flagged-label, .directory-summary > .keep-label"
       )
       if (directoryLabel) {
         directoryLabel.onclick = (event) => {
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Make the toggle icon directly clickable
-      const toggleIcon = dirCard.querySelector('.toggle-icon')
+      const toggleIcon = dirCard.querySelector(".toggle-icon")
       if (toggleIcon) {
         toggleIcon.onclick = (event) => {
           event.stopPropagation()
@@ -360,12 +360,12 @@ document.addEventListener('DOMContentLoaded', () => {
       directoriesContainer.appendChild(dirCard)
 
       // Add file comparison functionality
-      dirCard.querySelectorAll('.compare-files-btn').forEach((compareBtn) => {
-        compareBtn.addEventListener('click', (e) => {
+      dirCard.querySelectorAll(".compare-files-btn").forEach((compareBtn) => {
+        compareBtn.addEventListener("click", (e) => {
           e.stopPropagation() // Prevent directory toggle
 
           // Find the directory and its files
-          const dirName = dirCard.querySelector('h4').textContent
+          const dirName = dirCard.querySelector("h4").textContent
           const targetDir = filteredDirs.find((d) => d.name === dirName)
 
           if (targetDir && targetDir.files && targetDir.files.length > 1) {
@@ -385,11 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error(message)
 
     // Play alert sound
-    soundManager.playSound('alert')
+    soundManager.playSound("alert")
 
     // Create error notification element
-    const errorNotification = document.createElement('div')
-    errorNotification.className = 'notification error'
+    const errorNotification = document.createElement("div")
+    errorNotification.className = "notification error"
     errorNotification.innerHTML = `
             <div class="notification-content">
                 <i data-feather="alert-circle"></i>
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
     feather.replace()
 
     // Add close functionality
-    errorNotification.querySelector('.notification-close').addEventListener('click', () => {
+    errorNotification.querySelector(".notification-close").addEventListener("click", () => {
       errorNotification.remove()
     })
 
@@ -422,11 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show notification
   function showNotification(message) {
     // Play success sound
-    soundManager.playSound('success')
+    soundManager.playSound("success")
 
     // Create notification element
-    const notification = document.createElement('div')
-    notification.className = 'notification'
+    const notification = document.createElement("div")
+    notification.className = "notification"
     notification.innerHTML = `
             <div class="notification-content">
                 <i data-feather="check-circle"></i>
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
     feather.replace()
 
     // Add close functionality
-    notification.querySelector('.notification-close').addEventListener('click', () => {
+    notification.querySelector(".notification-close").addEventListener("click", () => {
       notification.remove()
     })
 
@@ -458,9 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper function to format file size
   function formatSize(bytes) {
-    if (bytes === 0) return '0 B'
+    if (bytes === 0) return "0 B"
 
-    const units = ['B', 'KB', 'MB', 'GB', 'TB']
+    const units = ["B", "KB", "MB", "GB", "TB"]
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
 
     return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentValue = Math.floor(start + range * easeOutQuart)
 
       element.textContent = currentValue
-      element.style.animation = 'number-pop 0.5s'
+      element.style.animation = "number-pop 0.5s"
 
       if (progress < 1) {
         setTimeout(updateNumber, stepTime)
@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
         element.textContent = end
         // Remove animation after it's done
         setTimeout(() => {
-          element.style.animation = ''
+          element.style.animation = ""
         }, 500)
       }
     }

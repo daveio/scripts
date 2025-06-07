@@ -2,13 +2,13 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from './application'
+import { application } from "./application"
 
-import HelloController from './hello_controller'
-application.register('hello', HelloController)
+import HelloController from "./hello_controller"
+application.register("hello", HelloController)
 
-import ThemeController from './theme_controller'
-application.register('theme', ThemeController)
+import ThemeController from "./theme_controller"
+application.register("theme", ThemeController)
 
-import SynthwaveController from './synthwave_controller'
-application.register('synthwave', SynthwaveController)
+import SynthwaveController from "./synthwave_controller"
+application.register("synthwave", SynthwaveController)

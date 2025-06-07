@@ -10,14 +10,14 @@ class Confetti {
     this.duration = options.duration || 3000 // ms
     this.particles = []
     this.colors = options.colors || [
-      '#ffd86d', // yellow
-      '#8caaee', // blue
-      '#a6d189', // green
-      '#ef9f76', // peach
-      '#ca9ee6', // mauve
-      '#e78284', // red
-      '#99d1db', // sky
-      '#f4b8e4' // pink
+      "#ffd86d", // yellow
+      "#8caaee", // blue
+      "#a6d189", // green
+      "#ef9f76", // peach
+      "#ca9ee6", // mauve
+      "#e78284", // red
+      "#99d1db", // sky
+      "#f4b8e4" // pink
     ]
     this.initialized = false
   }
@@ -27,34 +27,34 @@ class Confetti {
     this.initialized = true
 
     // Create a container element for the confetti
-    this.element = document.createElement('div')
-    this.element.className = 'confetti-container'
-    this.element.style.position = 'fixed'
-    this.element.style.top = '0'
-    this.element.style.left = '0'
-    this.element.style.width = '100%'
-    this.element.style.height = '100%'
-    this.element.style.pointerEvents = 'none'
-    this.element.style.zIndex = '9999'
+    this.element = document.createElement("div")
+    this.element.className = "confetti-container"
+    this.element.style.position = "fixed"
+    this.element.style.top = "0"
+    this.element.style.left = "0"
+    this.element.style.width = "100%"
+    this.element.style.height = "100%"
+    this.element.style.pointerEvents = "none"
+    this.element.style.zIndex = "9999"
     this.container.appendChild(this.element)
 
     // Create the confetti particles
     for (let i = 0; i < this.count; i++) {
-      const particle = document.createElement('div')
-      particle.className = 'confetti-particle'
+      const particle = document.createElement("div")
+      particle.className = "confetti-particle"
 
       const size = Math.random() * 10 + 5 // 5-15px
 
-      particle.style.position = 'absolute'
+      particle.style.position = "absolute"
       particle.style.width = `${size}px`
       particle.style.height = `${size / 2}px`
       particle.style.background = this.colors[Math.floor(Math.random() * this.colors.length)]
-      particle.style.borderRadius = '50%'
+      particle.style.borderRadius = "50%"
       particle.style.opacity = Math.random() * 0.8 + 0.2 // 0.2-1.0
 
       // Set random starting positions at the top
-      particle.style.left = Math.random() * 100 + 'vw'
-      particle.style.top = '-10px'
+      particle.style.left = Math.random() * 100 + "vw"
+      particle.style.top = "-10px"
 
       // Random rotation
       particle.style.transform = `rotate(${Math.random() * 360}deg)`
@@ -74,19 +74,19 @@ class Confetti {
   start() {
     if (!this.initialized) this.init()
 
-    this.element.style.display = 'block'
+    this.element.style.display = "block"
     this.animationStartTime = Date.now()
     this.animating = true
 
     // Play celebration sound if available
-    if (typeof soundManager !== 'undefined' && soundManager.isSoundEnabled()) {
-      soundManager.playSound('complete')
+    if (typeof soundManager !== "undefined" && soundManager.isSoundEnabled()) {
+      soundManager.playSound("complete")
     }
 
     // Reset particles
     this.particles.forEach((particle) => {
-      particle.element.style.left = Math.random() * 100 + 'vw'
-      particle.element.style.top = '-10px'
+      particle.element.style.left = Math.random() * 100 + "vw"
+      particle.element.style.top = "-10px"
       particle.element.style.opacity = Math.random() * 0.8 + 0.2
       particle.element.style.transform = `rotate(${Math.random() * 360}deg)`
     })
@@ -101,7 +101,7 @@ class Confetti {
     this.animating = false
     setTimeout(() => {
       if (this.element) {
-        this.element.style.display = 'none'
+        this.element.style.display = "none"
       }
     }, 100)
   }
@@ -115,11 +115,11 @@ class Confetti {
     this.particles.forEach((particle) => {
       const top = Number.parseFloat(particle.element.style.top)
       const left = Number.parseFloat(particle.element.style.left)
-      const rotation = Number.parseFloat(particle.element.style.transform.replace(/[^0-9.-]/g, '') || 0)
+      const rotation = Number.parseFloat(particle.element.style.transform.replace(/[^0-9.-]/g, "") || 0)
 
       // Move particle
-      particle.element.style.top = top + particle.speedY + 'px'
-      particle.element.style.left = left + particle.speedX + 'vw'
+      particle.element.style.top = top + particle.speedY + "px"
+      particle.element.style.left = left + particle.speedX + "vw"
 
       // Rotate particle
       particle.element.style.transform = `rotate(${rotation + particle.rotation}deg)`

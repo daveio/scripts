@@ -10,11 +10,11 @@ class FileComparison {
     this.videoProperties = {
       // Mock data for video properties we might extract
       // In a real implementation, these would be determined by analyzing the file
-      resolutions: ['480p', '720p', '1080p', '2160p', '4K'],
-      codecs: ['H.264', 'H.265/HEVC', 'VP9', 'AV1', 'MPEG-4'],
-      containers: ['MP4', 'MKV', 'AVI', 'MOV', 'WebM'],
-      audioFormats: ['AAC', 'MP3', 'DTS', 'Dolby Digital', 'Dolby Atmos'],
-      bitRates: ['1000 kbps', '2500 kbps', '5000 kbps', '8000 kbps', '15000 kbps']
+      resolutions: ["480p", "720p", "1080p", "2160p", "4K"],
+      codecs: ["H.264", "H.265/HEVC", "VP9", "AV1", "MPEG-4"],
+      containers: ["MP4", "MKV", "AVI", "MOV", "WebM"],
+      audioFormats: ["AAC", "MP3", "DTS", "Dolby Digital", "Dolby Atmos"],
+      bitRates: ["1000 kbps", "2500 kbps", "5000 kbps", "8000 kbps", "15000 kbps"]
     }
   }
 
@@ -25,9 +25,9 @@ class FileComparison {
     if (this.initialized) return
 
     // Create modal element
-    this.modalElement = document.createElement('div')
-    this.modalElement.className = 'modal comparison-modal'
-    this.modalElement.id = 'file-comparison-modal'
+    this.modalElement = document.createElement("div")
+    this.modalElement.className = "modal comparison-modal"
+    this.modalElement.id = "file-comparison-modal"
 
     // Create modal content
     this.modalElement.innerHTML = `
@@ -65,14 +65,14 @@ class FileComparison {
     document.body.appendChild(this.modalElement)
 
     // Add event listeners
-    const closeBtn = this.modalElement.querySelector('.close-btn')
-    const closeButtonFooter = this.modalElement.querySelector('#comparison-close-btn')
+    const closeBtn = this.modalElement.querySelector(".close-btn")
+    const closeButtonFooter = this.modalElement.querySelector("#comparison-close-btn")
 
-    closeBtn.addEventListener('click', () => this.hideModal())
-    closeButtonFooter.addEventListener('click', () => this.hideModal())
+    closeBtn.addEventListener("click", () => this.hideModal())
+    closeButtonFooter.addEventListener("click", () => this.hideModal())
 
     // Close on click outside
-    this.modalElement.addEventListener('click', (e) => {
+    this.modalElement.addEventListener("click", (e) => {
       if (e.target === this.modalElement) {
         this.hideModal()
       }
@@ -95,17 +95,17 @@ class FileComparison {
     const filesToCompare = files.slice(0, 3)
 
     // Get container elements
-    const filesContainer = this.modalElement.querySelector('.comparison-files')
-    const specsContainer = this.modalElement.querySelector('.specs-grid')
+    const filesContainer = this.modalElement.querySelector(".comparison-files")
+    const specsContainer = this.modalElement.querySelector(".specs-grid")
 
     // Clear previous content
-    filesContainer.innerHTML = ''
-    specsContainer.innerHTML = ''
+    filesContainer.innerHTML = ""
+    specsContainer.innerHTML = ""
 
     // Add files to the comparison
     filesToCompare.forEach((file) => {
       filesContainer.innerHTML += `
-                <div class="comparison-file ${file.flagged ? 'flagged' : 'keep'}">
+                <div class="comparison-file ${file.flagged ? "flagged" : "keep"}">
                     <h4 class="file-name-header">${file.name}</h4>
                     <div class="file-size-badge">${file.size_readable}</div>
                     <div class="comparison-file-label">
@@ -122,12 +122,12 @@ class FileComparison {
     // Generate random "specs" for demo purposes
     // In a real implementation these would be extracted from the files
     const specs = [
-      { name: 'Resolution', icon: 'maximize' },
-      { name: 'Video Codec', icon: 'film' },
-      { name: 'Container', icon: 'package' },
-      { name: 'Audio Format', icon: 'volume-2' },
-      { name: 'Bitrate', icon: 'bar-chart-2' },
-      { name: 'Frame Rate', icon: 'activity' }
+      { name: "Resolution", icon: "maximize" },
+      { name: "Video Codec", icon: "film" },
+      { name: "Container", icon: "package" },
+      { name: "Audio Format", icon: "volume-2" },
+      { name: "Bitrate", icon: "bar-chart-2" },
+      { name: "Frame Rate", icon: "activity" }
     ]
 
     // Add specs rows
@@ -142,44 +142,44 @@ class FileComparison {
 
       // Add values for each file
       filesToCompare.forEach((file) => {
-        let value = ''
+        let value = ""
 
         // Generate plausible values for demo
         switch (spec.name) {
-          case 'Resolution':
+          case "Resolution":
             // Higher resolution for larger files
             value = this.getResolutionBasedOnSize(file.size)
             break
-          case 'Video Codec':
+          case "Video Codec":
             // Newer codec for larger files
             value = this.getCodecBasedOnSize(file.size)
             break
-          case 'Container':
+          case "Container":
             value = this.getRandomFromArray(this.videoProperties.containers)
             break
-          case 'Audio Format':
+          case "Audio Format":
             value = this.getRandomFromArray(this.videoProperties.audioFormats)
             break
-          case 'Bitrate':
+          case "Bitrate":
             // Higher bitrate for larger files
             value = this.getBitrateBasedOnSize(file.size)
             break
-          case 'Frame Rate':
+          case "Frame Rate":
             // Common frame rates
-            value = this.getRandomFromArray(['23.976 fps', '24 fps', '25 fps', '29.97 fps', '30 fps', '60 fps'])
+            value = this.getRandomFromArray(["23.976 fps", "24 fps", "25 fps", "29.97 fps", "30 fps", "60 fps"])
             break
           default:
-            value = 'Unknown'
+            value = "Unknown"
         }
 
         specsRow += `
-                    <div class="spec-value ${file.flagged ? 'flagged' : 'keep'}">
+                    <div class="spec-value ${file.flagged ? "flagged" : "keep"}">
                         ${value}
                     </div>
                 `
       })
 
-      specsRow += '</div>'
+      specsRow += "</div>"
       specsContainer.innerHTML += specsRow
     })
 
@@ -190,8 +190,8 @@ class FileComparison {
     this.showModal()
 
     // Play a sound if available
-    if (typeof soundManager !== 'undefined') {
-      soundManager.playSound('success')
+    if (typeof soundManager !== "undefined") {
+      soundManager.playSound("success")
     }
   }
 
@@ -201,15 +201,15 @@ class FileComparison {
   getResolutionBasedOnSize(size) {
     // Calculate size in MB for easier comparison
     const sizeInMB =
-      typeof size === 'number'
+      typeof size === "number"
         ? size / (1024 * 1024)
-        : Number.parseInt(size.replace(/[^0-9.]/g, '')) * (size.toLowerCase().includes('gb') ? 1024 : 1)
+        : Number.parseInt(size.replace(/[^0-9.]/g, "")) * (size.toLowerCase().includes("gb") ? 1024 : 1)
 
-    if (sizeInMB > 4000) return '4K (3840x2160)'
-    if (sizeInMB > 2000) return '2160p (3840x2160)'
-    if (sizeInMB > 1000) return '1080p (1920x1080)'
-    if (sizeInMB > 500) return '720p (1280x720)'
-    return '480p (854x480)'
+    if (sizeInMB > 4000) return "4K (3840x2160)"
+    if (sizeInMB > 2000) return "2160p (3840x2160)"
+    if (sizeInMB > 1000) return "1080p (1920x1080)"
+    if (sizeInMB > 500) return "720p (1280x720)"
+    return "480p (854x480)"
   }
 
   /**
@@ -218,15 +218,15 @@ class FileComparison {
   getCodecBasedOnSize(size) {
     // Calculate size in MB
     const sizeInMB =
-      typeof size === 'number'
+      typeof size === "number"
         ? size / (1024 * 1024)
-        : Number.parseInt(size.replace(/[^0-9.]/g, '')) * (size.toLowerCase().includes('gb') ? 1024 : 1)
+        : Number.parseInt(size.replace(/[^0-9.]/g, "")) * (size.toLowerCase().includes("gb") ? 1024 : 1)
 
     // Larger files might use newer codecs that are more efficient
-    if (sizeInMB > 4000) return 'AV1'
-    if (sizeInMB > 2000) return 'H.265/HEVC'
-    if (sizeInMB > 1000) return 'H.264 (High Profile)'
-    return 'H.264 (Main Profile)'
+    if (sizeInMB > 4000) return "AV1"
+    if (sizeInMB > 2000) return "H.265/HEVC"
+    if (sizeInMB > 1000) return "H.264 (High Profile)"
+    return "H.264 (Main Profile)"
   }
 
   /**
@@ -235,15 +235,15 @@ class FileComparison {
   getBitrateBasedOnSize(size) {
     // Calculate size in MB
     const sizeInMB =
-      typeof size === 'number'
+      typeof size === "number"
         ? size / (1024 * 1024)
-        : Number.parseInt(size.replace(/[^0-9.]/g, '')) * (size.toLowerCase().includes('gb') ? 1024 : 1)
+        : Number.parseInt(size.replace(/[^0-9.]/g, "")) * (size.toLowerCase().includes("gb") ? 1024 : 1)
 
-    if (sizeInMB > 4000) return '20000 kbps'
-    if (sizeInMB > 2000) return '15000 kbps'
-    if (sizeInMB > 1000) return '8000 kbps'
-    if (sizeInMB > 500) return '5000 kbps'
-    return '2500 kbps'
+    if (sizeInMB > 4000) return "20000 kbps"
+    if (sizeInMB > 2000) return "15000 kbps"
+    if (sizeInMB > 1000) return "8000 kbps"
+    if (sizeInMB > 500) return "5000 kbps"
+    return "2500 kbps"
   }
 
   /**
@@ -257,14 +257,14 @@ class FileComparison {
    * Show the comparison modal
    */
   showModal() {
-    this.modalElement.classList.add('visible')
+    this.modalElement.classList.add("visible")
   }
 
   /**
    * Hide the comparison modal
    */
   hideModal() {
-    this.modalElement.classList.remove('visible')
+    this.modalElement.classList.remove("visible")
   }
 }
 

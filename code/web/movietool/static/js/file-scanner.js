@@ -20,9 +20,9 @@ class FileScanner {
       this.showProgress()
 
       // Convert extensions to array if provided as comma-separated string
-      if (typeof options.extensions === 'string') {
+      if (typeof options.extensions === "string") {
         options.extensions = options.extensions
-          .split(',')
+          .split(",")
           .map((ext) => ext.trim())
           .filter((ext) => ext)
       }
@@ -31,10 +31,10 @@ class FileScanner {
       const scanEventSource = new EventSource(`/api/scan-progress?timestamp=${Date.now()}`)
 
       // Start the actual scan in a separate request
-      const scanPromise = fetch('/api/scan', {
-        method: 'POST',
+      const scanPromise = fetch("/api/scan", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(options)
       })
@@ -53,15 +53,15 @@ class FileScanner {
           // Just keep particles floating for visual interest
           if (this.particles) {
             this.particles.forEach((p) => {
-              if (!p.style.animation || p.style.animation === 'none') {
-                p.style.animation = 'float 1.5s ease-in-out infinite'
+              if (!p.style.animation || p.style.animation === "none") {
+                p.style.animation = "float 1.5s ease-in-out infinite"
               }
             })
           }
 
           // Log entries removed as requested
         } catch (e) {
-          console.error('Error parsing progress data:', e)
+          console.error("Error parsing progress data:", e)
         }
       }
 
@@ -78,7 +78,7 @@ class FileScanner {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to scan directory')
+        throw new Error(errorData.error || "Failed to scan directory")
       }
 
       this.scanResults = await response.json()
@@ -101,13 +101,13 @@ class FileScanner {
   async generateDeletionScript(scriptType) {
     try {
       if (!this.flaggedFiles || this.flaggedFiles.length === 0) {
-        throw new Error('No files have been flagged for deletion')
+        throw new Error("No files have been flagged for deletion")
       }
 
-      const response = await fetch('/api/generate-script', {
-        method: 'POST',
+      const response = await fetch("/api/generate-script", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           files: this.flaggedFiles,
@@ -117,12 +117,12 @@ class FileScanner {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to generate deletion script')
+        throw new Error(errorData.error || "Failed to generate deletion script")
       }
 
       return await response.json()
     } catch (error) {
-      console.error('Error generating deletion script:', error)
+      console.error("Error generating deletion script:", error)
       throw error
     }
   }
@@ -131,27 +131,27 @@ class FileScanner {
    * Show progress indicator
    */
   showProgress() {
-    const progressSection = document.getElementById('scan-progress')
+    const progressSection = document.getElementById("scan-progress")
     if (progressSection) {
-      progressSection.classList.remove('hidden')
+      progressSection.classList.remove("hidden")
 
       // Get all progress elements
-      this.progressFill = progressSection.querySelector('.progress-fill')
-      this.progressText = progressSection.querySelector('.progress-text')
-      this.progressPercentage = progressSection.querySelector('.progress-percentage')
+      this.progressFill = progressSection.querySelector(".progress-fill")
+      this.progressText = progressSection.querySelector(".progress-text")
+      this.progressPercentage = progressSection.querySelector(".progress-percentage")
 
       // Set progress bar to full width for continuous animation
       if (this.progressFill) {
-        this.progressFill.style.width = '100%'
+        this.progressFill.style.width = "100%"
       }
 
       // Set progress text to indicate scanning is in progress
       if (this.progressPercentage) {
-        this.progressPercentage.textContent = 'Scanning...'
+        this.progressPercentage.textContent = "Scanning..."
       }
 
       if (this.progressText) {
-        this.progressText.textContent = 'Processing files...'
+        this.progressText.textContent = "Processing files..."
       }
 
       // No particles to animate (removed)
@@ -164,27 +164,27 @@ class FileScanner {
    * Hide progress indicator
    */
   hideProgress() {
-    const progressSection = document.getElementById('scan-progress')
+    const progressSection = document.getElementById("scan-progress")
     if (progressSection) {
       // Complete the progress bar animation
-      const progressFill = progressSection.querySelector('.progress-fill')
-      progressFill.style.width = '100%'
+      const progressFill = progressSection.querySelector(".progress-fill")
+      progressFill.style.width = "100%"
 
       if (this.progressPercentage) {
-        this.progressPercentage.textContent = '100%'
+        this.progressPercentage.textContent = "100%"
       }
 
       if (this.progressText) {
-        this.progressText.textContent = 'Scan completed successfully!'
+        this.progressText.textContent = "Scan completed successfully!"
       }
 
       // Play completion sound
-      soundManager.playSound('complete')
+      soundManager.playSound("complete")
 
       // Hide the progress section after a short delay
       setTimeout(() => {
-        progressSection.classList.add('hidden')
-        progressFill.style.width = '0%'
+        progressSection.classList.add("hidden")
+        progressFill.style.width = "0%"
       }, 1000)
     }
   }
@@ -203,21 +203,21 @@ class FileScanner {
       this.chart.destroy()
     }
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
     this.chart = new Chart(ctx, {
-      type: 'pie',
+      type: "pie",
       data: {
-        labels: ['Flagged Files', 'Kept Files'],
+        labels: ["Flagged Files", "Kept Files"],
         datasets: [
           {
             data: [stats.flagged_files, stats.total_files - stats.flagged_files],
             backgroundColor: [
-              getComputedStyle(document.body).getPropertyValue('--red').trim(),
-              getComputedStyle(document.body).getPropertyValue('--green').trim()
+              getComputedStyle(document.body).getPropertyValue("--red").trim(),
+              getComputedStyle(document.body).getPropertyValue("--green").trim()
             ],
             borderColor: [
-              getComputedStyle(document.body).getPropertyValue('--base').trim(),
-              getComputedStyle(document.body).getPropertyValue('--base').trim()
+              getComputedStyle(document.body).getPropertyValue("--base").trim(),
+              getComputedStyle(document.body).getPropertyValue("--base").trim()
             ],
             borderWidth: 1
           }
@@ -228,9 +228,9 @@ class FileScanner {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'bottom',
+            position: "bottom",
             labels: {
-              color: getComputedStyle(document.body).getPropertyValue('--text').trim(),
+              color: getComputedStyle(document.body).getPropertyValue("--text").trim(),
               font: {
                 family: "'Inter', sans-serif",
                 size: 14
@@ -238,17 +238,17 @@ class FileScanner {
             }
           },
           tooltip: {
-            backgroundColor: getComputedStyle(document.body).getPropertyValue('--overlay').trim(),
-            titleColor: getComputedStyle(document.body).getPropertyValue('--text').trim(),
-            bodyColor: getComputedStyle(document.body).getPropertyValue('--text').trim(),
-            borderColor: getComputedStyle(document.body).getPropertyValue('--accent').trim(),
+            backgroundColor: getComputedStyle(document.body).getPropertyValue("--overlay").trim(),
+            titleColor: getComputedStyle(document.body).getPropertyValue("--text").trim(),
+            bodyColor: getComputedStyle(document.body).getPropertyValue("--text").trim(),
+            borderColor: getComputedStyle(document.body).getPropertyValue("--accent").trim(),
             borderWidth: 1,
             displayColors: true,
             padding: 10,
             titleFont: {
               family: "'Inter', sans-serif",
               size: 14,
-              weight: 'bold'
+              weight: "bold"
             },
             bodyFont: {
               family: "'Inter', sans-serif",
@@ -256,7 +256,7 @@ class FileScanner {
             },
             callbacks: {
               label: (context) => {
-                const label = context.label || ''
+                const label = context.label || ""
                 const value = context.raw || 0
                 const total = context.dataset.data.reduce((a, b) => a + b, 0)
                 const percentage = Math.round((value / total) * 100)

@@ -2,10 +2,10 @@
 
 // Configuration - Update these values as needed
 
-const CF_API_KEY = '' // Global API Key
-const CF_EMAIL = '' // Account email
-const CF_ACCOUNT_ID = ''
-const CF_PAGES_PROJECT_NAME = ''
+const CF_API_KEY = "" // Global API Key
+const CF_EMAIL = "" // Account email
+const CF_ACCOUNT_ID = ""
+const CF_PAGES_PROJECT_NAME = ""
 const CF_DELETE_ALIASED_DEPLOYMENTS = true
 
 const MAX_RETRIES = 3
@@ -15,20 +15,20 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // API headers
 const headers = {
-  'X-Auth-Key': CF_API_KEY,
-  'X-Auth-Email': CF_EMAIL,
-  'Content-Type': 'application/json'
+  "X-Auth-Key": CF_API_KEY,
+  "X-Auth-Email": CF_EMAIL,
+  "Content-Type": "application/json"
 }
 
 /**
  * Get the production deployment ID (canonical deployment)
  */
 async function getProductionDeploymentId() {
-  console.log('🔍 Fetching production deployment info...')
+  console.log("🔍 Fetching production deployment info...")
 
   const response = await fetch(
     `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT_NAME}`,
-    { method: 'GET', headers }
+    { method: "GET", headers }
   )
 
   if (!response.ok) {
@@ -38,13 +38,13 @@ async function getProductionDeploymentId() {
   const data = await response.json()
 
   if (!data.success) {
-    console.error('❌ API Error:', JSON.stringify(data.errors, null, 2))
-    throw new Error(data.errors[0]?.message || 'Failed to get project info')
+    console.error("❌ API Error:", JSON.stringify(data.errors, null, 2))
+    throw new Error(data.errors[0]?.message || "Failed to get project info")
   }
 
   const prodDeploymentId = data.result?.canonical_deployment?.id
   if (!prodDeploymentId) {
-    throw new Error('No production deployment found')
+    throw new Error("No production deployment found")
   }
 
   console.log(`✅ Production deployment: ${prodDeploymentId}`)
@@ -55,7 +55,7 @@ async function getProductionDeploymentId() {
  * List all deployments with pagination
  */
 async function listAllDeployments() {
-  console.log('📋 Fetching all deployments...')
+  console.log("📋 Fetching all deployments...")
 
   const deployments = []
   let page = 1
@@ -66,7 +66,7 @@ async function listAllDeployments() {
 
     const response = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT_NAME}/deployments?per_page=${perPage}&page=${page}`,
-      { method: 'GET', headers }
+      { method: "GET", headers }
     )
 
     if (!response.ok) {
@@ -76,8 +76,8 @@ async function listAllDeployments() {
     const data = await response.json()
 
     if (!data.success) {
-      console.error('❌ API Error:', JSON.stringify(data.errors, null, 2))
-      throw new Error(data.errors[0]?.message || 'Failed to list deployments')
+      console.error("❌ API Error:", JSON.stringify(data.errors, null, 2))
+      throw new Error(data.errors[0]?.message || "Failed to list deployments")
     }
 
     const pageDeployments = data.result || []
@@ -104,10 +104,10 @@ async function deleteDeployment(deployment, retryCount = 0) {
 
   try {
     const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT_NAME}/deployments/${id}`
-    const params = CF_DELETE_ALIASED_DEPLOYMENTS ? '?force=true' : ''
+    const params = CF_DELETE_ALIASED_DEPLOYMENTS ? "?force=true" : ""
 
     const response = await fetch(`${url}${params}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers
     })
 
@@ -118,7 +118,7 @@ async function deleteDeployment(deployment, retryCount = 0) {
     const data = await response.json()
 
     if (!data.success) {
-      throw new Error(data.errors[0]?.message || 'Deletion failed')
+      throw new Error(data.errors[0]?.message || "Deletion failed")
     }
 
     console.log(`🗑️  Deleted: ${id} (${environment}, ${created_on})`)
@@ -138,20 +138,20 @@ async function deleteDeployment(deployment, retryCount = 0) {
  * Main execution
  */
 async function main() {
-  console.log('🚀 Starting Cloudflare Pages deployment cleanup...\n')
+  console.log("🚀 Starting Cloudflare Pages deployment cleanup...\n")
 
   // Validate configuration
   if (!CF_API_KEY) {
-    throw new Error('CF_API_KEY is required')
+    throw new Error("CF_API_KEY is required")
   }
   if (!CF_EMAIL) {
-    throw new Error('CF_EMAIL is required')
+    throw new Error("CF_EMAIL is required")
   }
   if (!CF_ACCOUNT_ID) {
-    throw new Error('CF_ACCOUNT_ID is required')
+    throw new Error("CF_ACCOUNT_ID is required")
   }
   if (!CF_PAGES_PROJECT_NAME) {
-    throw new Error('CF_PAGES_PROJECT_NAME is required')
+    throw new Error("CF_PAGES_PROJECT_NAME is required")
   }
 
   try {
@@ -162,7 +162,7 @@ async function main() {
     const deployments = await listAllDeployments()
 
     if (deployments.length === 0) {
-      console.log('ℹ️  No deployments found')
+      console.log("ℹ️  No deployments found")
       return
     }
 
@@ -174,7 +174,7 @@ async function main() {
     )
 
     if (deploymentsToDelete.length === 0) {
-      console.log('ℹ️  No deployments to delete')
+      console.log("ℹ️  No deployments to delete")
       return
     }
 
@@ -194,10 +194,10 @@ async function main() {
       await sleep(DELAY_BETWEEN_REQUESTS)
     }
 
-    console.log('\n✅ Cleanup complete!')
+    console.log("\n✅ Cleanup complete!")
     console.log(`   Deleted: ${deleted}`)
     console.log(`   Failed: ${failed}`)
-    console.log('   Kept (production): 1')
+    console.log("   Kept (production): 1")
   } catch (error) {
     console.error(`\n❌ Error: ${error.message}`)
     process.exit(1)
