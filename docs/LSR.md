@@ -9,7 +9,7 @@ lights I have, but for now this is it.
 
 ## What the hell is a lightswitch rave?
 
-https://www.youtube.com/watch?v=O4gqsuww6lw
+<https://www.youtube.com/watch?v=O4gqsuww6lw>
 
 ## `main.py`
 
