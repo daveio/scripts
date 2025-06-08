@@ -1,37 +1,33 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "dnstool-dave-io",
-	"main": ".open-next/worker.js",
-	"compatibility_date": "2025-05-14",
-	"compatibility_flags": [
-		"nodejs_compat",
-		"nodejs_compat_populate_process_env",
-		"global_fetch_strictly_public"
-	],
-	"assets": {
-		"binding": "ASSETS",
-		"directory": ".open-next/assets"
-	},
-	"services": [
-		{
-			"binding": "WORKER_SELF_REFERENCE",
-			// The service should match the "name" of your worker
-			"service": "dnstool-dave-io"
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "NEXT_INC_CACHE_R2_BUCKET",
-			"bucket_name": "cache-dnstool-dave-io"
-		}
-	],
-	"observability": {
-		"enabled": true
-	},
-	"routes": [
-		{
-			"pattern": "dnstool.dave.io",
-			"custom_domain": true
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dnstool-dave-io",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-05-14",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      // The service should match the "name" of your worker
+      "service": "dnstool-dave-io"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "cache-dnstool-dave-io"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "dnstool.dave.io",
+      "custom_domain": true
+    }
+  ]
 }
