@@ -1,6 +1,14 @@
 # yaml-language-server: $schema=../../submodules/schemastore--schemastore/src/schemas/json/github-workflow.json
 name: hath
-on: push
+on:
+  push:
+    paths:
+      - code/docker/hath/**
+      - .github/workflows/hath.yaml
+  pull_request:
+    paths:
+      - code/docker/hath/**
+      - .github/workflows/hath.yaml
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: hath

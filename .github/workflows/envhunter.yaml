@@ -1,6 +1,14 @@
 # yaml-language-server: $schema=../../submodules/schemastore--schemastore/src/schemas/json/github-workflow.json
 name: envhunter
-on: push
+on:
+  push:
+    paths:
+      - code/cli/envhunter/**
+      - .github/workflows/envhunter.yaml
+  pull_request:
+    paths:
+      - code/cli/envhunter/**
+      - .github/workflows/envhunter.yaml
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: envhunter

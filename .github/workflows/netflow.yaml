@@ -1,6 +1,14 @@
 # yaml-language-server: $schema=../../submodules/schemastore--schemastore/src/schemas/json/github-workflow.json
 name: netflow
-on: push
+on:
+  push:
+    paths:
+      - code/docker/netflow/**
+      - .github/workflows/netflow.yaml
+  pull_request:
+    paths:
+      - code/docker/netflow/**
+      - .github/workflows/netflow.yaml
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: netflow

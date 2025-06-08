@@ -1,6 +1,14 @@
 # yaml-language-server: $schema=../../submodules/schemastore--schemastore/src/schemas/json/github-workflow.json
 name: aaisp-exporter
-on: push
+on:
+  push:
+    paths:
+      - code/cli/aaisp-exporter/**
+      - .github/workflows/aaisp-exporter.yaml
+  pull_request:
+    paths:
+      - code/cli/aaisp-exporter/**
+      - .github/workflows/aaisp-exporter.yaml
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: aaisp-exporter

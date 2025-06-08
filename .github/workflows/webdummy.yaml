@@ -1,6 +1,14 @@
 # yaml-language-server: $schema=../../submodules/schemastore--schemastore/src/schemas/json/github-workflow.json
 name: webdummy
-on: push
+on:
+  push:
+    paths:
+      - code/docker/webdummy/**
+      - .github/workflows/webdummy.yaml
+  pull_request:
+    paths:
+      - code/docker/webdummy/**
+      - .github/workflows/webdummy.yaml
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: webdummy
