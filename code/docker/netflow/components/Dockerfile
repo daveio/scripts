@@ -173,10 +173,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 FROM build-deps AS mise-tools
 
 # Install Go with mise and cache the installation
+# trunk-ignore(hadolint/SC2086): breaks if quoted
 RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
-    mise use "go@${GO_VERSION}" \
-    && mise install "go@${GO_VERSION}" \
-    && mise which "go@${GO_VERSION}"
+    mise use go@${GO_VERSION} \
+    && mise install go@${GO_VERSION} \
+    && mise which go@${GO_VERSION}
 
 # Set mise environment for subsequent stages
 ENV PATH="/root/.local/share/mise/installs/go/${GO_VERSION}/bin:${PATH}"
@@ -198,9 +199,10 @@ FROM source-prepared AS netflow2ng-builder
 WORKDIR /src/netflow2ng
 
 # Build netflow2ng with Go module and build caches
+# trunk-ignore(hadolint/SC2086): breaks if quoted
 RUN --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
     --mount=type=cache,target=/go/pkg/mod,sharing=locked \
-    mise exec "go@${GO_VERSION}" -- go build -ldflags="-s -w" -o /usr/local/bin/netflow2ng ./cmd/...
+    mise exec go@${GO_VERSION} -- go build -ldflags="-s -w" -o /usr/local/bin/netflow2ng ./cmd/...
 
 # nDPI build stage
 FROM source-prepared AS ndpi-builder
