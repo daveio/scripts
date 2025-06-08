@@ -16,9 +16,11 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "netflow": "bun run bin/netflow.ts"
+    "netflow": "bun run bin/netflow.ts",
+    "ai": "bun run ai.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.53.0",
     "@iarna/toml": "^2.2.5",
     "axios": "^1.9.0",
     "boxen": "^8.0.1",
