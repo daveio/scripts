@@ -232,7 +232,7 @@ FROM build-deps AS mise-tools
 RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
     mise use go@${GO_VERSION} \
     && mise install go@${GO_VERSION} \
-    && mise which go@${GO_VERSION}
+    && mise which go
 
 # Set mise environment for subsequent stages
 ENV PATH="/root/.local/share/mise/installs/go/${GO_VERSION}/bin:${PATH}"
