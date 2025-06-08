@@ -4,10 +4,7 @@ services:
     # Or build from local Dockerfile:
     # build: ./components
     container_name: ntopng
-    environment:
-      # GeoIP credentials (optional - remove or set to 0 if not using)
-      - GEOIPUPDATE_ACCOUNT_ID=${GEOIPUPDATE_ACCOUNT_ID:-0}
-      - GEOIPUPDATE_LICENSE_KEY=${GEOIPUPDATE_LICENSE_KEY:-000000000000}
+    # environment:
       # Optional: Use remote Redis instead of local
       # - REMOTE_REDIS=redis.example.com:6379
     ports:

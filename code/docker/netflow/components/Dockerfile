@@ -7,6 +7,10 @@ ARG NTOP_VERSION="6.4"
 ARG NETFLOW2NG_VERSION="0.0.5"
 ARG GO_VERSION="1.24.3"
 
+# GeoIP credentials for build-time download
+ARG GEOIPUPDATE_ACCOUNT_ID
+ARG GEOIPUPDATE_LICENSE_KEY
+
 # Enable BuildKit features
 ARG BUILDKIT_INLINE_CACHE=1
 
@@ -20,6 +24,69 @@ RUN --mount=type=cache,target=/root/.cache/git,sharing=locked \
     git clone --depth 1 --branch "${NDPI_VERSION}" https://github.com/ntop/nDPI.git nDPI \
     && git clone --depth 1 --branch "${NTOP_VERSION}" https://github.com/ntop/ntopng.git ntopng \
     && git clone --depth 1 --branch "v${NETFLOW2NG_VERSION}" https://github.com/synfinatic/netflow2ng.git netflow2ng
+
+# GeoIP data fetch stage
+FROM base AS geoip-fetcher
+
+WORKDIR /geoip
+
+# Install curl and jq for API calls
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update \
+    && apt-get install -y --no-install-recommends curl jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Fetch GeoIP databases at build time
+RUN --mount=type=cache,target=/tmp/geoip-cache,sharing=locked \
+    if [ -n "${GEOIPUPDATE_ACCOUNT_ID}" ] && [ -n "${GEOIPUPDATE_LICENSE_KEY}" ] && [ "${GEOIPUPDATE_ACCOUNT_ID}" != "0" ]; then \
+        echo "Fetching GeoIP databases..."; \
+        mkdir -p /usr/share/GeoIP; \
+        for edition in GeoLite2-City GeoLite2-Country GeoLite2-ASN; do \
+            echo "Processing ${edition}..."; \
+            # Get metadata to find current date
+            METADATA=$(curl -u "${GEOIPUPDATE_ACCOUNT_ID}:${GEOIPUPDATE_LICENSE_KEY}" \
+                -H "User-Agent: geoipupdate/7.1.0" \
+                -s "https://updates.maxmind.com/geoip/updates/metadata?edition_id=${edition}"); \
+            if [ $? -eq 0 ]; then \
+                DATE=$(echo "$METADATA" | jq -r '.databases[0].date // empty'); \
+                if [ -n "$DATE" ] && [ "$DATE" != "null" ]; then \
+                    # Convert date format (remove dashes)
+                    DATE_FORMATTED=$(echo "$DATE" | tr -d '-'); \
+                    echo "Downloading ${edition} for date ${DATE}..."; \
+                    # Check cache first
+                    CACHE_FILE="/tmp/geoip-cache/${edition}-${DATE}.tar.gz"; \
+                    if [ ! -f "$CACHE_FILE" ]; then \
+                        curl -u "${GEOIPUPDATE_ACCOUNT_ID}:${GEOIPUPDATE_LICENSE_KEY}" \
+                            -H "User-Agent: geoipupdate/7.1.0" \
+                            -L -o "$CACHE_FILE" \
+                            "https://updates.maxmind.com/geoip/databases/${edition}/download?date=${DATE_FORMATTED}&suffix=tar.gz"; \
+                    fi; \
+                    # Extract database
+                    if [ -f "$CACHE_FILE" ]; then \
+                        tar -xzf "$CACHE_FILE" -C /tmp/; \
+                        find /tmp -name "${edition}.mmdb" -exec cp {} /usr/share/GeoIP/ \;; \
+                        echo "Successfully downloaded ${edition}"; \
+                    else \
+                        echo "Failed to download ${edition}"; \
+                        touch "/usr/share/GeoIP/${edition}.mmdb"; \
+                    fi; \
+                else \
+                    echo "Failed to get date for ${edition}, creating placeholder"; \
+                    touch "/usr/share/GeoIP/${edition}.mmdb"; \
+                fi; \
+            else \
+                echo "Failed to get metadata for ${edition}, creating placeholder"; \
+                touch "/usr/share/GeoIP/${edition}.mmdb"; \
+            fi; \
+        done; \
+    else \
+        echo "No GeoIP credentials provided, creating placeholder databases"; \
+        mkdir -p /usr/share/GeoIP; \
+        touch /usr/share/GeoIP/GeoLite2-Country.mmdb; \
+        touch /usr/share/GeoIP/GeoLite2-City.mmdb; \
+        touch /usr/share/GeoIP/GeoLite2-ASN.mmdb; \
+    fi
 
 # Runtime dependencies stage
 FROM base AS runtime-deps
@@ -97,18 +164,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       /tmp/* \
       /var/log/* \
       /var/lib/apt/lists/*
-
-# Download and install geoipupdate manually since it's not in repos
-RUN --mount=type=cache,target=/tmp/downloads,sharing=locked \
-    ARCH=$(dpkg --print-architecture) \
-    && GEOIP_VERSION="7.1.0" \
-    && if [ ! -f "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" ]; then \
-         wget --progress=dot:giga -O "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" \
-           "https://github.com/maxmind/geoipupdate/releases/download/v${GEOIP_VERSION}/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb"; \
-       fi \
-    && dpkg -i "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" || true \
-    && apt-get update && apt-get install --no-install-recommends -f -y \
-    && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies stage
 FROM runtime-deps AS build-deps
@@ -248,7 +303,8 @@ RUN --mount=from=ntopng-builder,source=/tmp/ntopng-install,target=/mnt/install \
     && if [ -d /mnt/install/usr/local/share ]; then cp -r /mnt/install/usr/local/share/* /usr/local/share/ 2>/dev/null || true; fi \
     && if [ -d /mnt/install/usr/local/include ]; then cp -r /mnt/install/usr/local/include/* /usr/local/include/ 2>/dev/null || true; fi
 
-
+# Copy GeoIP databases from build-time fetch
+COPY --from=geoip-fetcher /usr/share/GeoIP /usr/share/GeoIP
 
 # Create non-root users for security
 RUN useradd -r -m -d /var/run/netflow -s /bin/false netflow \
@@ -262,34 +318,17 @@ RUN mkdir -p \
       /var/lib/redis \
       /var/log/redis \
       /var/run/redis \
-      /usr/share/GeoIP \
       /var/lib/GeoIP \
       /etc/GeoIP \
       /var/lock
-
-# Set up GeoIP environment variables
-ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-Country GeoLite2-City GeoLite2-ASN" \
-    GEOIPUPDATE_DB_DIR="/usr/share/GeoIP" \
-    GEOIPUPDATE_HOST="updates.maxmind.com" \
-    GEOIPUPDATE_VERBOSE="1" \
-    GEOIPUPDATE_PRESERVE_FILE_TIMES="0" \
-    GEOIPUPDATE_LOCK_FILE="/var/lock/geoipupdate.lock" \
-    GEOIPUPDATE_RETRY_FOR="5m"
-
-# Create placeholder GeoIP databases
-RUN touch /usr/share/GeoIP/GeoLite2-Country.mmdb \
-    && touch /usr/share/GeoIP/GeoLite2-City.mmdb \
-    && touch /usr/share/GeoIP/GeoLite2-ASN.mmdb
 
 # Copy configuration files
 COPY ntopng.conf /etc/ntopng.conf
 COPY redis.conf /etc/redis/redis.conf
 COPY ntopng.bash /opt/ntopng.bash
-COPY geoip.bash /opt/geoip.bash
 
 # Set proper permissions in a single layer
-RUN touch /etc/GeoIP.conf \
-    && chmod +x /opt/ntopng.bash /opt/geoip.bash \
+RUN chmod +x /opt/ntopng.bash \
     && chown -R ntopng:ntopng \
       /etc/ntopng \
       /opt/ntopng.bash \
@@ -301,7 +340,6 @@ RUN touch /etc/GeoIP.conf \
       /usr/share/GeoIP \
       /var/lib/GeoIP \
       /etc/GeoIP \
-      /etc/GeoIP.conf \
     && chown -R redis:redis \
       /var/lib/redis \
       /var/log/redis \
@@ -324,12 +362,12 @@ ENTRYPOINT ["/opt/ntopng.bash"]
 
 LABEL \
     org.opencontainers.image.title="ntopng" \
-    org.opencontainers.image.description="ntopng with zeromq patch - fully optimized build" \
+    org.opencontainers.image.description="ntopng with zeromq patch - fully optimized build with build-time GeoIP" \
     org.opencontainers.image.authors="Dave Williams <dave@dave.io>" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.url="https://github.com/daveio/ntopng" \
     org.opencontainers.image.source="https://github.com/daveio/ntopng" \
-    org.opencontainers.image.version="6.4-001-optimized" \
+    org.opencontainers.image.version="6.4-002-buildtime-geoip" \
     org.opencontainers.image.base.digest="sha256:cff42e2bf1063ae6a8729c148a1003357d5befa2fe7656c5d0c99e62b68aab7d" \
     netflow.go.version="${GO_VERSION}" \
     netflow.ndpi.version="${NDPI_VERSION}" \
