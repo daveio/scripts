@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { AlertCircle, Copy, FileDown, Loader2, Terminal } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { AlertCircle, Copy, FileDown, Loader2, Terminal } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export function Instructions() {
-  const [scriptContent, setScriptContent] = useState<string>('')
+  const [scriptContent, setScriptContent] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -16,7 +16,7 @@ export function Instructions() {
     async function fetchScript() {
       try {
         setIsLoading(true)
-        const response = await fetch('/dns-analysis.py')
+        const response = await fetch("/dns-analysis.py")
         if (!response.ok) {
           throw new Error(`Failed to load script: ${response.status} ${response.statusText}`)
         }
@@ -24,8 +24,8 @@ export function Instructions() {
         setScriptContent(content)
         setError(null)
       } catch (err) {
-        console.error('Error loading script:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load script')
+        console.error("Error loading script:", err)
+        setError(err instanceof Error ? err.message : "Failed to load script")
       } finally {
         setIsLoading(false)
       }
@@ -39,17 +39,17 @@ export function Instructions() {
   }
 
   const downloadScript = () => {
-    const element = document.createElement('a')
-    element.setAttribute('href', '/dns-analysis.py')
-    element.setAttribute('download', 'dns-analysis.py')
-    element.style.display = 'none'
+    const element = document.createElement("a")
+    element.setAttribute("href", "/dns-analysis.py")
+    element.setAttribute("download", "dns-analysis.py")
+    element.style.display = "none"
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
   }
 
   const pythonCommand =
-    'python dns-analysis.py --routeros router.log --nextdns nextdns.csv --blocklist blocklist.txt --output analysis.json'
+    "python dns-analysis.py --routeros router.log --nextdns nextdns.csv --blocklist blocklist.txt --output analysis.json"
 
   return (
     <Card className="mb-6">
@@ -102,7 +102,7 @@ export function Instructions() {
                 <FileDown className="mr-2 h-4 w-4" />
                 Download Script
               </Button>
-              <Button variant="outline" onClick={() => window.open('https://www.python.org/downloads/', '_blank')}>
+              <Button variant="outline" onClick={() => window.open("https://www.python.org/downloads/", "_blank")}>
                 <Terminal className="mr-2 h-4 w-4" />
                 Get Python
               </Button>

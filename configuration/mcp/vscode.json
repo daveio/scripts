@@ -1,44 +1,27 @@
 {
   "servers": {
     "abletonLive": {
-      "args": [
-        "ableton-mcp"
-      ],
+      "args": ["ableton-mcp"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "claudeCode": {
-      "args": [
-        "x",
-        "@anthropic-ai/claude-code",
-        "mcp",
-        "serve"
-      ],
+      "args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "context7": {
-      "args": [
-        "x",
-        "@upstash/context7-mcp"
-      ],
+      "args": ["x", "@upstash/context7-mcp"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "docker": {
-      "args": [
-        "ai",
-        "mcpserver"
-      ],
+      "args": ["ai", "mcpserver"],
       "command": "docker"
     },
     "duckduckgo": {
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
+      "args": ["duckduckgo-mcp-server"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "fetch": {
-      "args": [
-        "mcp-server-fetch"
-      ],
+      "args": ["mcp-server-fetch"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "filesystem": {
@@ -55,64 +38,41 @@
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "git": {
-      "args": [
-        "mcp-server-git"
-      ],
+      "args": ["mcp-server-git"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "github": {
-      "args": [
-        "x",
-        "@modelcontextprotocol/server-github"
-      ],
+      "args": ["x", "@modelcontextprotocol/server-github"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "linear": {
-      "args": [
-        "x",
-        "mcp-remote",
-        "https://mcp.linear.app/sse"
-      ],
+      "args": ["x", "mcp-remote", "https://mcp.linear.app/sse"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "notion": {
-      "args": [
-        "x",
-        "@notionhq/notion-mcp-server"
-      ],
+      "args": ["x", "@notionhq/notion-mcp-server"],
       "command": "/Users/dave/.local/share/mise/shims/bun",
       "env": {
         "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer ${VSCODE_NOTION_TOKEN}\", \"Notion-Version\": \"2022-06-28\" }"
       }
     },
     "pdfReader": {
-      "args": [
-        "mcp-read-pdf"
-      ],
+      "args": ["mcp-read-pdf"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "sequentialThinking": {
-      "args": [
-        "x",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
+      "args": ["x", "@modelcontextprotocol/server-sequential-thinking"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "sharedMemory": {
-      "args": [
-        "x",
-        "@modelcontextprotocol/server-memory"
-      ],
+      "args": ["x", "@modelcontextprotocol/server-memory"],
       "command": "/Users/dave/.local/share/mise/shims/bun",
       "env": {
         "MEMORY_FILE_PATH": "/Users/dave/.memory"
       }
     },
     "slack": {
-      "args": [
-        "x",
-        "@modelcontextprotocol/server-slack"
-      ],
+      "args": ["x", "@modelcontextprotocol/server-slack"],
       "command": "/Users/dave/.local/share/mise/shims/bun",
       "env": {
         "SLACK_BOT_TOKEN": "${VSCODE_SLACK_BOT_TOKEN}",
@@ -120,17 +80,11 @@
       }
     },
     "time": {
-      "args": [
-        "mcp-server-time",
-        "--local-timezone=Europe/London"
-      ],
+      "args": ["mcp-server-time", "--local-timezone=Europe/London"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "vscode": {
-      "args": [
-        "x",
-        "vscode-mcp-server"
-      ],
+      "args": ["x", "vscode-mcp-server"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     }
   }

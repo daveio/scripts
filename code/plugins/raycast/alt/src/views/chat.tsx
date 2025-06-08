@@ -1,13 +1,13 @@
-import { ActionPanel, Icon, List, clearSearchBar } from '@raycast/api'
-import { v4 as uuidv4 } from 'uuid'
-import { DestructiveAction, PrimaryAction, TextToSpeechAction } from '../actions'
-import { CopyActionSection } from '../actions/copy'
-import { FormInputActionSection } from '../actions/form-input'
-import { PreferencesActionSection } from '../actions/preferences'
-import { SaveActionSection } from '../actions/save'
-import type { Chat, ChatViewProps } from '../type'
-import { AnswerDetailView } from './answer-detail'
-import { EmptyView } from './empty'
+import { ActionPanel, Icon, List, clearSearchBar } from "@raycast/api"
+import { v4 as uuidv4 } from "uuid"
+import { DestructiveAction, PrimaryAction, TextToSpeechAction } from "../actions"
+import { CopyActionSection } from "../actions/copy"
+import { FormInputActionSection } from "../actions/form-input"
+import { PreferencesActionSection } from "../actions/preferences"
+import { SaveActionSection } from "../actions/save"
+import type { Chat, ChatViewProps } from "../type"
+import { AnswerDetailView } from "./answer-detail"
+import { EmptyView } from "./empty"
 
 export const ChatView = ({
   data,
@@ -57,8 +57,8 @@ export const ChatView = ({
             title="Start New Conversation"
             icon={Icon.RotateAntiClockwise}
             dialog={{
-              title: 'Are you sure you want to start a new conversation?',
-              primaryButton: 'Start New'
+              title: "Are you sure you want to start a new conversation?",
+              primaryButton: "Start New"
             }}
             onAction={() => {
               setConversation({
@@ -66,14 +66,14 @@ export const ChatView = ({
                 chats: [],
                 model: conversation.model,
                 pinned: false,
-                updated_at: '',
+                updated_at: "",
                 created_at: new Date().toISOString()
               })
               use.chats.clear()
               clearSearchBar()
               use.chats.setLoading(false)
             }}
-            shortcut={{ modifiers: ['cmd', 'shift'], key: 'n' }}
+            shortcut={{ modifiers: ["cmd", "shift"], key: "n" }}
           />
         </ActionPanel.Section>
       )}

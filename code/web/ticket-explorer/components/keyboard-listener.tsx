@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
 interface KeyboardListenerProps {
   onCheatCodeActivated: () => void
@@ -8,7 +8,7 @@ interface KeyboardListenerProps {
 
 export function KeyboardListener({ onCheatCodeActivated }: KeyboardListenerProps) {
   const onCheatCodeActivatedRef = useRef(onCheatCodeActivated)
-  const keySequenceRef = useRef('')
+  const keySequenceRef = useRef("")
 
   // Update the ref when the callback changes
   useEffect(() => {
@@ -22,18 +22,18 @@ export function KeyboardListener({ onCheatCodeActivated }: KeyboardListenerProps
         keySequenceRef.current = (keySequenceRef.current + e.key).slice(-5).toLowerCase()
 
         // Check for the cheat code
-        if (keySequenceRef.current === 'iddqd') {
+        if (keySequenceRef.current === "iddqd") {
           // Use setTimeout to avoid state updates during rendering
           setTimeout(() => {
             onCheatCodeActivatedRef.current()
           }, 0)
-          keySequenceRef.current = ''
+          keySequenceRef.current = ""
         }
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
   }, []) // Remove onCheatCodeActivated from dependencies
 
   return null // This component doesn't render anything

@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { faGithub, faMastodon, faSquareFacebook, faThreads } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Link from 'next/link'
-import { BlueskyIcon } from './icons/bluesky-icon'
+import { faGithub, faMastodon, faSquareFacebook, faThreads } from "@fortawesome/free-brands-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Link from "next/link"
+import { BlueskyIcon } from "./icons/bluesky-icon"
 
 export default function SocialLinks() {
   return (

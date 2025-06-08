@@ -1,31 +1,31 @@
-import { Action, ActionPanel, Detail, Toast, getPreferenceValues, showToast } from '@raycast/api'
-import { Stream } from 'openai/streaming'
-import { useEffect, useState } from 'react'
+import { Action, ActionPanel, Detail, Toast, getPreferenceValues, showToast } from "@raycast/api"
+import { Stream } from "openai/streaming"
+import { useEffect, useState } from "react"
 
-import { useChatGPT } from '../hooks/useChatGPT'
-import type { AskImageProps, Model } from '../type'
-import { toUnit } from '../utils'
-import { type LoadFrom, loadFromClipboard, loadFromFinder } from '../utils/load'
-import { countImageTokens, countToken, estimateImagePrice, estimatePrice } from '../utils/token'
+import { useChatGPT } from "../hooks/useChatGPT"
+import type { AskImageProps, Model } from "../type"
+import { toUnit } from "../utils"
+import { type LoadFrom, loadFromClipboard, loadFromFinder } from "../utils/load"
+import { countImageTokens, countToken, estimateImagePrice, estimatePrice } from "../utils/token"
 
 const preferences = getPreferenceValues<Preferences>()
 
-const visionModelName: string = (preferences.useVisionModel && preferences.visionModelName) || 'gpt-4o'
+const visionModelName: string = (preferences.useVisionModel && preferences.visionModelName) || "gpt-4o"
 
 const VISION_MODEL: Model = {
   id: visionModelName,
   updated_at: new Date().toISOString(),
   created_at: new Date().toISOString(),
-  name: 'Default',
-  prompt: 'You are a helpful vision assistant.',
+  name: "Default",
+  prompt: "You are a helpful vision assistant.",
   option: visionModelName,
-  temperature: '1',
+  temperature: "1",
   pinned: false,
   vision: true
 }
 
 function bufferToDataUrl(mimeType: string, buffer: Buffer) {
-  const base64String = buffer.toString('base64')
+  const base64String = buffer.toString("base64")
   return `data:${mimeType};base64,${base64String}`
 }
 
@@ -38,7 +38,7 @@ export function VisionView(props: AskImageProps) {
   })
 
   const { user_prompt, toast_title, load } = props
-  const [response, setResponse] = useState('')
+  const [response, setResponse] = useState("")
   const [loading, setLoading] = useState(true)
 
   const [imageMeta, setImageMeta] = useState<{
@@ -60,15 +60,15 @@ export function VisionView(props: AskImageProps) {
     try {
       let data: LoadFrom | undefined
 
-      if (load === 'selected') {
+      if (load === "selected") {
         data = await loadFromFinder()
       } else {
         data = await loadFromClipboard()
       }
 
-      let imageUrl = ''
+      let imageUrl = ""
       if (!data) {
-        await showToast({ style: Toast.Style.Failure, title: 'Error' })
+        await showToast({ style: Toast.Style.Failure, title: "Error" })
         setLoading(false)
         setResponse("## ⚠️ Data couldn't load. Check image selection or clipboard and try again.")
         return
@@ -81,18 +81,18 @@ export function VisionView(props: AskImageProps) {
         stream: useStream,
         messages: [
           {
-            role: 'system',
+            role: "system",
             content: `${VISION_MODEL.prompt}`
           },
           {
-            role: 'user',
+            role: "user",
             content: [
               {
-                type: 'text',
-                text: `${prompt ? prompt : 'Describe this image:'}`
+                type: "text",
+                text: `${prompt ? prompt : "Describe this image:"}`
               },
               {
-                type: 'image_url',
+                type: "image_url",
                 image_url: { url: imageUrl }
               }
             ]
@@ -111,10 +111,10 @@ export function VisionView(props: AskImageProps) {
       setPromptTokenCount(countToken(VISION_MODEL.prompt + prompt))
       return streamOrCompletion
     } catch (error) {
-      await showToast({ style: Toast.Style.Failure, title: 'Error' })
+      await showToast({ style: Toast.Style.Failure, title: "Error" })
       setLoading(false)
       setResponse(
-        '## ⚠️ Issue when accessing the API. \n\n' + `Error Message: \n\n \`\`\`${(error as Error).message}\`\`\``
+        "## ⚠️ Issue when accessing the API. \n\n" + `Error Message: \n\n \`\`\`${(error as Error).message}\`\`\``
       )
       return
     }
@@ -128,7 +128,7 @@ export function VisionView(props: AskImageProps) {
     const resp = await getChatResponse(user_prompt)
     if (!resp) return
 
-    let response_ = ''
+    let response_ = ""
     function appendResponse(part: string) {
       response_ += part
       setResponse(response_)
@@ -137,10 +137,10 @@ export function VisionView(props: AskImageProps) {
 
     if (resp instanceof Stream) {
       for await (const part of resp) {
-        appendResponse(part.choices[0]?.delta?.content ?? '')
+        appendResponse(part.choices[0]?.delta?.content ?? "")
       }
     } else {
-      appendResponse(resp.choices[0]?.message?.content ?? '')
+      appendResponse(resp.choices[0]?.message?.content ?? "")
     }
 
     setLoading(false)
@@ -188,7 +188,7 @@ export function VisionView(props: AskImageProps) {
               <>
                 <Detail.Metadata.Separator />
                 <Detail.Metadata.Label title="Cumulative Tokens" text={cumulative_tokens.toString()} />
-                <Detail.Metadata.Label title="Cumulative Cost" text={cumulative_cost.toFixed(4) + ' ¢'} />
+                <Detail.Metadata.Label title="Cumulative Cost" text={cumulative_cost.toFixed(4) + " ¢"} />
               </>
             )}
           </Detail.Metadata>

@@ -1,6 +1,6 @@
-import { LocalStorage, Toast, showToast } from '@raycast/api'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { Chat, SavedChat, SavedChatHook } from '../type'
+import { LocalStorage, Toast, showToast } from "@raycast/api"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { Chat, SavedChat, SavedChatHook } from "../type"
 
 export function useSavedChat(): SavedChatHook {
   const [data, setData] = useState<SavedChat[]>([])
@@ -8,7 +8,7 @@ export function useSavedChat(): SavedChatHook {
 
   useEffect(() => {
     ;(async () => {
-      const storedSavedChats = await LocalStorage.getItem<string>('savedChats')
+      const storedSavedChats = await LocalStorage.getItem<string>("savedChats")
 
       if (storedSavedChats) {
         setData((previous) => [...previous, ...JSON.parse(storedSavedChats)])
@@ -18,13 +18,13 @@ export function useSavedChat(): SavedChatHook {
   }, [])
 
   useEffect(() => {
-    LocalStorage.setItem('savedChats', JSON.stringify(data))
+    LocalStorage.setItem("savedChats", JSON.stringify(data))
   }, [data])
 
   const add = useCallback(
     async (chat: Chat) => {
       const toast = await showToast({
-        title: 'Saving your answer...',
+        title: "Saving your answer...",
         style: Toast.Style.Animated
       })
       const newSavedChat: SavedChat = {
@@ -32,7 +32,7 @@ export function useSavedChat(): SavedChatHook {
         saved_at: new Date().toISOString()
       }
       setData([...data, newSavedChat])
-      toast.title = 'Answer saved!'
+      toast.title = "Answer saved!"
       toast.style = Toast.Style.Success
     },
     [setData, data]
@@ -41,12 +41,12 @@ export function useSavedChat(): SavedChatHook {
   const remove = useCallback(
     async (chat: Chat) => {
       const toast = await showToast({
-        title: 'Unsaving your answer...',
+        title: "Unsaving your answer...",
         style: Toast.Style.Animated
       })
       const newSavedChats = data.filter((savedAnswer) => savedAnswer.id !== chat.id)
       setData(newSavedChats)
-      toast.title = 'Answer unsaved!'
+      toast.title = "Answer unsaved!"
       toast.style = Toast.Style.Success
     },
     [setData, data]
@@ -54,11 +54,11 @@ export function useSavedChat(): SavedChatHook {
 
   const clear = useCallback(async () => {
     const toast = await showToast({
-      title: 'Clearing your saved answers...',
+      title: "Clearing your saved answers...",
       style: Toast.Style.Animated
     })
     setData([])
-    toast.title = 'Saved answers cleared!'
+    toast.title = "Saved answers cleared!"
     toast.style = Toast.Style.Success
   }, [setData])
 

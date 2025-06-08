@@ -1,18 +1,18 @@
-import { Action, ActionPanel, Icon, List, useNavigation } from '@raycast/api'
-import { useState } from 'react'
-import { DestructiveAction, PinAction } from './actions'
-import { PreferencesActionSection } from './actions/preferences'
-import { COMMAND_MODEL_PREFIX } from './hooks/useCommand'
-import { DEFAULT_MODEL, useModel } from './hooks/useModel'
-import type { Model as ModelType } from './type'
-import { ExportData, ImportData } from './utils/import-export'
-import { ImportForm } from './views/import-form'
-import { ModelForm } from './views/model/form'
-import { ModelListItem, ModelListView } from './views/model/list'
+import { Action, ActionPanel, Icon, List, useNavigation } from "@raycast/api"
+import { useState } from "react"
+import { DestructiveAction, PinAction } from "./actions"
+import { PreferencesActionSection } from "./actions/preferences"
+import { COMMAND_MODEL_PREFIX } from "./hooks/useCommand"
+import { DEFAULT_MODEL, useModel } from "./hooks/useModel"
+import type { Model as ModelType } from "./type"
+import { ExportData, ImportData } from "./utils/import-export"
+import { ImportForm } from "./views/import-form"
+import { ModelForm } from "./views/model/form"
+import { ModelListItem, ModelListView } from "./views/model/list"
 
 export default function Model() {
   const models = useModel()
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>("")
   const [selectedModelId, setSelectedModelId] = useState<string | null>(null)
 
   const { push } = useNavigation()
@@ -21,29 +21,29 @@ export default function Model() {
     <ActionPanel>
       {!model.id.startsWith(COMMAND_MODEL_PREFIX) && (
         <Action
-          title={'Edit Model'}
-          shortcut={{ modifiers: ['cmd'], key: 'e' }}
+          title={"Edit Model"}
+          shortcut={{ modifiers: ["cmd"], key: "e" }}
           icon={Icon.Text}
           onAction={() => push(<ModelForm model={model} use={{ models }} />)}
         />
       )}
       <Action
-        title={'Create Model'}
-        shortcut={{ modifiers: ['cmd'], key: 'n' }}
+        title={"Create Model"}
+        shortcut={{ modifiers: ["cmd"], key: "n" }}
         icon={Icon.Text}
         onAction={() => push(<ModelForm name={searchText} use={{ models }} />)}
       />
       <ActionPanel.Section title="Actions">
-        <Action title={'Export Models'} icon={Icon.Upload} onAction={() => ExportData(models.data, 'Models')} />
+        <Action title={"Export Models"} icon={Icon.Upload} onAction={() => ExportData(models.data, "Models")} />
         <Action
-          title={'Import Models'}
+          title={"Import Models"}
           icon={Icon.Download}
           onAction={() =>
             push(
               <ImportForm
                 moduleName="Models"
                 onSubmit={async (file) => {
-                  ImportData<ModelType>('models', file).then((data) => {
+                  ImportData<ModelType>("models", file).then((data) => {
                     models.setModels(data.reduce((acc, model) => ({ ...acc, [model.id]: model }), {}))
                   })
                 }}
@@ -52,10 +52,10 @@ export default function Model() {
           }
         />
       </ActionPanel.Section>
-      {model.id !== 'default' && !model.id.startsWith(COMMAND_MODEL_PREFIX) && (
+      {model.id !== "default" && !model.id.startsWith(COMMAND_MODEL_PREFIX) && (
         <>
           <PinAction
-            title={model.pinned ? 'Unpin Model' : 'Pin Model'}
+            title={model.pinned ? "Unpin Model" : "Pin Model"}
             isPinned={model.pinned}
             onAction={() => models.update({ ...model, pinned: !model.pinned })}
           />
@@ -63,7 +63,7 @@ export default function Model() {
             <DestructiveAction
               title="Remove"
               dialog={{
-                title: 'Are you sure you want to remove this model from your collection?'
+                title: "Are you sure you want to remove this model from your collection?"
               }}
               onAction={() => models.remove(model)}
             />
@@ -81,7 +81,7 @@ export default function Model() {
   const filteredModels = sortedModels
     .filter((value, index, self) => index === self.findIndex((model) => model.id === value.id))
     .filter((model) => {
-      if (searchText === '') {
+      if (searchText === "") {
         return true
       }
       return (

@@ -1,4 +1,4 @@
-import path from 'node:path'
+import path from "node:path"
 import {
   Action,
   ActionPanel,
@@ -9,11 +9,11 @@ import {
   getSelectedFinderItems,
   showToast,
   useNavigation
-} from '@raycast/api'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { DEFAULT_MODEL } from '../../hooks/useModel'
-import type { QuestionFormProps } from '../../type'
-import { checkFileValidity, formats } from '../../utils'
+} from "@raycast/api"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { DEFAULT_MODEL } from "../../hooks/useModel"
+import type { QuestionFormProps } from "../../type"
+import { checkFileValidity, formats } from "../../utils"
 
 export const QuestionForm = ({
   initialQuestion,
@@ -25,12 +25,12 @@ export const QuestionForm = ({
 }: QuestionFormProps) => {
   const { pop } = useNavigation()
 
-  const [question, setQuestion] = useState<string>(initialQuestion ?? '')
+  const [question, setQuestion] = useState<string>(initialQuestion ?? "")
   const [questionError, setQuestionError] = useState<string | undefined>()
   const [attachmentError, setAttachmentError] = useState<string | undefined>()
 
-  const separateDefaultModel = models.filter((x) => x.id !== 'default')
-  const defaultModel = models.find((x) => x.id === 'default') ?? DEFAULT_MODEL
+  const separateDefaultModel = models.filter((x) => x.id !== "default")
+  const defaultModel = models.find((x) => x.id === "default") ?? DEFAULT_MODEL
 
   const visionMap = useMemo(() => {
     const map = new Map<string, boolean>()
@@ -55,7 +55,7 @@ export const QuestionForm = ({
     const { text, file } = await Clipboard.read()
     // console.log(`text`, text);
     // console.log(`file`, file);
-    if (file && (text.startsWith('Image') || Object.keys(formats).includes(path.extname(file)))) {
+    if (file && (text.startsWith("Image") || Object.keys(formats).includes(path.extname(file)))) {
       setFiles((files) => [...new Set([...files, file!])].sort())
     }
   }, [setFiles])
@@ -76,14 +76,14 @@ export const QuestionForm = ({
             icon={Icon.Checkmark}
             onSubmit={async () => {
               if (question.length === 0) {
-                setQuestionError('Required')
+                setQuestionError("Required")
                 return
               }
               let searchFiles: string[] = []
               if (enableVision) {
                 // If the model not enable vision, don't pass files to API
                 if (!validateAttachments(files)) {
-                  setAttachmentError('Contain Invalid File')
+                  setAttachmentError("Contain Invalid File")
                   return
                 }
                 searchFiles = files
@@ -97,15 +97,15 @@ export const QuestionForm = ({
               <Action
                 title="Upload Selected Files"
                 shortcut={{
-                  modifiers: ['cmd'],
-                  key: '.'
+                  modifiers: ["cmd"],
+                  key: "."
                 }}
                 icon={Icon.Plus}
                 onAction={() =>
                   addFromSelected(async (error) => {
                     await showToast({
                       style: Toast.Style.Failure,
-                      title: 'Cannot copy file path',
+                      title: "Cannot copy file path",
                       message: String(error)
                     })
                   })
@@ -114,8 +114,8 @@ export const QuestionForm = ({
               <Action
                 title="Upload Clipboard File"
                 shortcut={{
-                  modifiers: ['shift', 'cmd'],
-                  key: '.'
+                  modifiers: ["shift", "cmd"],
+                  key: "."
                 }}
                 icon={Icon.Clipboard}
                 onAction={addFromClipboard}
@@ -141,7 +141,7 @@ export const QuestionForm = ({
           if (e.target.value && e.target.value.length > 0) {
             setQuestionError(undefined)
           } else {
-            setQuestionError('Required')
+            setQuestionError("Required")
           }
         }}
       />
@@ -175,7 +175,7 @@ export const QuestionForm = ({
             }
             if (enableVision && files && files.length > 0) {
               if (!validateAttachments(files)) {
-                setAttachmentError('Contain Invalid File')
+                setAttachmentError("Contain Invalid File")
               }
             }
             setFiles(files)
@@ -194,7 +194,7 @@ export const QuestionForm = ({
 
 const validateAttachments = (files: string[]) => {
   for (const file of files) {
-    if (path.extname(file) === '') {
+    if (path.extname(file) === "") {
       // this is clipboard image file
       continue
     }

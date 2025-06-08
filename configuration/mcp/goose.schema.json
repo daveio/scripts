@@ -44,12 +44,7 @@
     "GOOSE_PLANNER_MODEL": {
       "type": "string",
       "description": "Model to use specifically for planning mode",
-      "examples": [
-        "claude-3-5-sonnet-20241022",
-        "claude-3-5-haiku-20241022",
-        "gpt-4o",
-        "gpt-4o-mini"
-      ]
+      "examples": ["claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", "gpt-4o", "gpt-4o-mini"]
     },
     "GOOSE_MAX_TOKENS": {
       "type": "integer",

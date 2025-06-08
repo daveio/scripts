@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { Dashboard } from '@/components/dashboard'
-import { Instructions } from '@/components/instructions'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { Upload } from '@/components/upload'
-import type { AnalysisData } from '@/lib/types'
-import { useState } from 'react'
+import { Dashboard } from "@/components/dashboard"
+import { Instructions } from "@/components/instructions"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { Upload } from "@/components/upload"
+import type { AnalysisData } from "@/lib/types"
+import { useState } from "react"
 
 export default function Home() {
   const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null)

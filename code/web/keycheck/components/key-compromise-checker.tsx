@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import type React from 'react'
+import type React from "react"
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import { useAnalytics } from '@/hooks/use-analytics'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { useAnalytics } from "@/hooks/use-analytics"
 import {
   AlertTriangle,
   Briefcase,
@@ -17,19 +17,19 @@ import {
   Server,
   Shield,
   Unlock
-} from 'lucide-react'
-import { useEffect, useState } from 'react'
+} from "lucide-react"
+import { useEffect, useState } from "react"
 
-type KeyType = 'PKCS#8' | 'SSH' | 'Unknown' | null
-type ScanState = 'idle' | 'scanning' | 'analyzing' | 'revealing' | 'revealed'
+type KeyType = "PKCS#8" | "SSH" | "Unknown" | null
+type ScanState = "idle" | "scanning" | "analyzing" | "revealing" | "revealed"
 
 export default function KeyCompromiseChecker() {
-  const [privateKey, setPrivateKey] = useState('')
+  const [privateKey, setPrivateKey] = useState("")
   const [keyType, setKeyType] = useState<KeyType>(null)
-  const [scanState, setScanState] = useState<ScanState>('idle')
+  const [scanState, setScanState] = useState<ScanState>("idle")
   const [progress, setProgress] = useState(0)
-  const [glitchClass, setGlitchClass] = useState('')
-  const [scanMessage, setScanMessage] = useState('')
+  const [glitchClass, setGlitchClass] = useState("")
+  const [scanMessage, setScanMessage] = useState("")
   const [showKeyNotSent, setShowKeyNotSent] = useState(false)
   const [showSystemMessage, setShowSystemMessage] = useState(false)
   const [showDevOpsMessage, setShowDevOpsMessage] = useState(false)
@@ -39,15 +39,15 @@ export default function KeyCompromiseChecker() {
     if (!key.trim()) return null
 
     if (
-      key.includes('-----BEGIN PRIVATE KEY-----') ||
-      key.includes('-----BEGIN RSA PRIVATE KEY-----') ||
-      key.includes('-----BEGIN EC PRIVATE KEY-----')
+      key.includes("-----BEGIN PRIVATE KEY-----") ||
+      key.includes("-----BEGIN RSA PRIVATE KEY-----") ||
+      key.includes("-----BEGIN EC PRIVATE KEY-----")
     ) {
-      return 'PKCS#8'
-    } else if (key.includes('-----BEGIN OPENSSH PRIVATE KEY-----')) {
-      return 'SSH'
+      return "PKCS#8"
+    } else if (key.includes("-----BEGIN OPENSSH PRIVATE KEY-----")) {
+      return "SSH"
     } else {
-      return 'Unknown'
+      return "Unknown"
     }
   }
 
@@ -56,34 +56,34 @@ export default function KeyCompromiseChecker() {
     setPrivateKey(value)
     const detectedType = detectKeyType(value)
     setKeyType(detectedType)
-    setScanState('idle')
+    setScanState("idle")
     setProgress(0)
 
     if (detectedType) {
-      trackEvent('key_type_detected', { type: detectedType })
+      trackEvent("key_type_detected", { type: detectedType })
     }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setScanState('scanning')
+    setScanState("scanning")
     setProgress(0)
     setShowKeyNotSent(false)
     setShowSystemMessage(false)
     setShowDevOpsMessage(false)
 
-    trackEvent('scan_started', { keyType: keyType || 'unknown' })
+    trackEvent("scan_started", { keyType: keyType || "unknown" })
 
     // Fake scanning messages
     const scanMessages = [
-      'Initializing secure connection...',
-      'Encrypting transmission channel...',
-      'Connecting to breach database...',
-      'Searching dark web repositories...',
-      'Checking against known leaks...',
-      'Analyzing key fingerprint...',
-      'Running cryptographic validation...',
-      'Cross-referencing with threat intelligence...'
+      "Initializing secure connection...",
+      "Encrypting transmission channel...",
+      "Connecting to breach database...",
+      "Searching dark web repositories...",
+      "Checking against known leaks...",
+      "Analyzing key fingerprint...",
+      "Running cryptographic validation...",
+      "Cross-referencing with threat intelligence..."
     ]
 
     let messageIndex = 0
@@ -98,33 +98,33 @@ export default function KeyCompromiseChecker() {
   }
 
   useEffect(() => {
-    if (scanState === 'scanning') {
+    if (scanState === "scanning") {
       const interval = setInterval(() => {
         setProgress((prev) => {
           const newProgress = prev + Math.random() * 15
           if (newProgress >= 100) {
             clearInterval(interval)
-            setScanState('revealing')
-            setGlitchClass('glitch')
-            trackEvent('scan_revealing')
+            setScanState("revealing")
+            setGlitchClass("glitch")
+            trackEvent("scan_revealing")
 
             setTimeout(() => {
-              setScanState('revealed')
-              setGlitchClass('')
-              trackEvent('scan_revealed')
+              setScanState("revealed")
+              setGlitchClass("")
+              trackEvent("scan_revealed")
 
               // Set timers for the additional messages
               setTimeout(() => {
                 setShowKeyNotSent(true)
-                trackEvent('key_not_sent_shown')
+                trackEvent("key_not_sent_shown")
 
                 setTimeout(() => {
                   setShowDevOpsMessage(true)
-                  trackEvent('devops_message_shown')
+                  trackEvent("devops_message_shown")
 
                   setTimeout(() => {
                     setShowSystemMessage(true)
-                    trackEvent('system_message_shown')
+                    trackEvent("system_message_shown")
                   }, 2000) // Show system message 2s after DevOps message
                 }, 2500) // Show DevOps message 2.5s after key not sent message
               }, 8500) // Show key not sent message 8.5s after reveal
@@ -139,14 +139,14 @@ export default function KeyCompromiseChecker() {
   }, [scanState, trackEvent])
 
   const getKeyTypeColor = () => {
-    if (keyType === 'PKCS#8') return 'text-emerald-400'
-    if (keyType === 'SSH') return 'text-cyan-400'
-    if (keyType === 'Unknown') return 'text-yellow-400'
-    return ''
+    if (keyType === "PKCS#8") return "text-emerald-400"
+    if (keyType === "SSH") return "text-cyan-400"
+    if (keyType === "Unknown") return "text-yellow-400"
+    return ""
   }
 
   const handleCVLinkClick = () => {
-    trackEvent('cv_link_clicked')
+    trackEvent("cv_link_clicked")
   }
 
   return (
@@ -167,7 +167,7 @@ export default function KeyCompromiseChecker() {
 
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4 pt-6">
-          {scanState === 'idle' && (
+          {scanState === "idle" && (
             <div className="space-y-2">
               <Textarea
                 placeholder="Paste your private key here..."
@@ -184,7 +184,7 @@ export default function KeyCompromiseChecker() {
             </div>
           )}
 
-          {scanState === 'scanning' && (
+          {scanState === "scanning" && (
             <div className="space-y-4 py-8">
               <div className="flex justify-center mb-4">
                 <div className="relative w-16 h-16">
@@ -206,7 +206,7 @@ export default function KeyCompromiseChecker() {
             </div>
           )}
 
-          {scanState === 'revealing' && (
+          {scanState === "revealing" && (
             <div className="space-y-4 py-8 glitch-content">
               <div className="flex justify-center mb-4">
                 <Unlock className="w-16 h-16 text-red-500 animate-pulse" />
@@ -218,7 +218,7 @@ export default function KeyCompromiseChecker() {
             </div>
           )}
 
-          {scanState === 'revealed' && (
+          {scanState === "revealed" && (
             <div className="space-y-4 terminal-output">
               <div className="bg-black text-green-500 p-4 font-mono text-sm rounded-md border-2 border-green-500 overflow-hidden shadow-[0_0_15px_rgba(0,255,0,0.5)]">
                 <div className="flex items-center gap-2 mb-2 pb-2 border-b border-green-500">
@@ -317,20 +317,20 @@ export default function KeyCompromiseChecker() {
             type="button"
             variant="outline"
             onClick={() => {
-              setPrivateKey('')
+              setPrivateKey("")
               setKeyType(null)
-              setScanState('idle')
+              setScanState("idle")
               setProgress(0)
               setShowKeyNotSent(false)
               setShowSystemMessage(false)
               setShowDevOpsMessage(false)
-              trackEvent('form_cleared')
+              trackEvent("form_cleared")
             }}
             className="border-cyan-700 text-cyan-400 hover:bg-cyan-950 hover:text-cyan-300"
           >
             Clear
           </Button>
-          {scanState === 'idle' && (
+          {scanState === "idle" && (
             <Button
               type="submit"
               disabled={!privateKey.trim()}

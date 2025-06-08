@@ -12,7 +12,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
   [Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string
 }
 declare namespace NodeJS {
-  interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, 'NEXTJS_ENV'>> {}
+  interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXTJS_ENV">> {}
 }
 
 // Begin runtime types
@@ -150,7 +150,7 @@ declare namespace WebAssembly {
   class RuntimeError extends Error {
     constructor(message?: string)
   }
-  type ValueType = 'anyfunc' | 'externref' | 'f32' | 'f64' | 'i32' | 'i64' | 'v128'
+  type ValueType = "anyfunc" | "externref" | "f32" | "f64" | "i32" | "i64" | "v128"
   interface GlobalDescriptor {
     value: ValueType
     mutable?: boolean
@@ -179,7 +179,7 @@ declare namespace WebAssembly {
     readonly buffer: ArrayBuffer
     grow(delta: number): number
   }
-  type ImportExportKind = 'function' | 'global' | 'memory' | 'table'
+  type ImportExportKind = "function" | "global" | "memory" | "table"
   interface ModuleExportDescriptor {
     kind: ImportExportKind
     name: string
@@ -194,7 +194,7 @@ declare namespace WebAssembly {
     static exports(module: Module): ModuleExportDescriptor[]
     static imports(module: Module): ModuleImportDescriptor[]
   }
-  type TableKind = 'anyfunc' | 'externref'
+  type TableKind = "anyfunc" | "externref"
   interface TableDescriptor {
     element: TableKind
     initial: number
@@ -474,7 +474,7 @@ interface DurableObject {
 }
 type DurableObjectStub<T extends Rpc.DurableObjectBranded | undefined = undefined> = Fetcher<
   T,
-  'alarm' | 'webSocketMessage' | 'webSocketClose' | 'webSocketError'
+  "alarm" | "webSocketMessage" | "webSocketClose" | "webSocketError"
 > & {
   readonly id: DurableObjectId
   readonly name?: string
@@ -491,11 +491,11 @@ interface DurableObjectNamespace<T extends Rpc.DurableObjectBranded | undefined 
   get(id: DurableObjectId, options?: DurableObjectNamespaceGetDurableObjectOptions): DurableObjectStub<T>
   jurisdiction(jurisdiction: DurableObjectJurisdiction): DurableObjectNamespace<T>
 }
-type DurableObjectJurisdiction = 'eu' | 'fedramp'
+type DurableObjectJurisdiction = "eu" | "fedramp"
 interface DurableObjectNamespaceNewUniqueIdOptions {
   jurisdiction?: DurableObjectJurisdiction
 }
-type DurableObjectLocationHint = 'wnam' | 'enam' | 'sam' | 'weur' | 'eeur' | 'apac' | 'oc' | 'afr' | 'me'
+type DurableObjectLocationHint = "wnam" | "enam" | "sam" | "weur" | "eeur" | "apac" | "oc" | "afr" | "me"
 interface DurableObjectNamespaceGetDurableObjectOptions {
   locationHint?: DurableObjectLocationHint
 }
@@ -1450,7 +1450,7 @@ interface Response extends Body {
   webSocket: WebSocket | null
   cf: any | undefined
   /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/Response/type) */
-  type: 'default' | 'error'
+  type: "default" | "error"
 }
 interface ResponseInit {
   status?: number
@@ -1458,7 +1458,7 @@ interface ResponseInit {
   headers?: HeadersInit
   cf?: any
   webSocket?: WebSocket | null
-  encodeBody?: 'automatic' | 'manual'
+  encodeBody?: "automatic" | "manual"
 }
 type RequestInfo<CfHostMetadata = unknown, Cf = CfProperties<CfHostMetadata>> = Request<CfHostMetadata, Cf> | string
 /**
@@ -1526,7 +1526,7 @@ interface Request<CfHostMetadata = unknown, Cf = CfProperties<CfHostMetadata>> e
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/cache)
    */
-  cache?: 'no-store'
+  cache?: "no-store"
 }
 interface RequestInit<Cf = CfProperties> {
   /* A string to set request's method. */
@@ -1540,18 +1540,18 @@ interface RequestInit<Cf = CfProperties> {
   fetcher?: Fetcher | null
   cf?: Cf
   /* A string indicating how the request will interact with the browser's cache to set request's cache. */
-  cache?: 'no-store'
+  cache?: "no-store"
   /* A cryptographic hash of the resource to be fetched by request. Sets request's integrity. */
   integrity?: string
   /* An AbortSignal to set request's signal. */
   signal?: AbortSignal | null
-  encodeResponseBody?: 'automatic' | 'manual'
+  encodeResponseBody?: "automatic" | "manual"
 }
 type Service<T extends Rpc.WorkerEntrypointBranded | undefined = undefined> = Fetcher<T>
 type Fetcher<
   T extends Rpc.EntrypointBranded | undefined = undefined,
   Reserved extends string = never
-> = (T extends Rpc.EntrypointBranded ? Rpc.Provider<T, Reserved | 'fetch' | 'connect'> : unknown) & {
+> = (T extends Rpc.EntrypointBranded ? Rpc.Provider<T, Reserved | "fetch" | "connect"> : unknown) & {
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>
   connect(address: SocketAddress | string, options?: SocketOptions): Socket
 }
@@ -1574,21 +1574,21 @@ type KVNamespaceListResult<Metadata, Key extends string = string> =
     }
 interface KVNamespace<Key extends string = string> {
   get(key: Key, options?: Partial<KVNamespaceGetOptions<undefined>>): Promise<string | null>
-  get(key: Key, type: 'text'): Promise<string | null>
-  get<ExpectedValue = unknown>(key: Key, type: 'json'): Promise<ExpectedValue | null>
-  get(key: Key, type: 'arrayBuffer'): Promise<ArrayBuffer | null>
-  get(key: Key, type: 'stream'): Promise<ReadableStream | null>
-  get(key: Key, options?: KVNamespaceGetOptions<'text'>): Promise<string | null>
-  get<ExpectedValue = unknown>(key: Key, options?: KVNamespaceGetOptions<'json'>): Promise<ExpectedValue | null>
-  get(key: Key, options?: KVNamespaceGetOptions<'arrayBuffer'>): Promise<ArrayBuffer | null>
-  get(key: Key, options?: KVNamespaceGetOptions<'stream'>): Promise<ReadableStream | null>
-  get(key: Array<Key>, type: 'text'): Promise<Map<string, string | null>>
-  get<ExpectedValue = unknown>(key: Array<Key>, type: 'json'): Promise<Map<string, ExpectedValue | null>>
+  get(key: Key, type: "text"): Promise<string | null>
+  get<ExpectedValue = unknown>(key: Key, type: "json"): Promise<ExpectedValue | null>
+  get(key: Key, type: "arrayBuffer"): Promise<ArrayBuffer | null>
+  get(key: Key, type: "stream"): Promise<ReadableStream | null>
+  get(key: Key, options?: KVNamespaceGetOptions<"text">): Promise<string | null>
+  get<ExpectedValue = unknown>(key: Key, options?: KVNamespaceGetOptions<"json">): Promise<ExpectedValue | null>
+  get(key: Key, options?: KVNamespaceGetOptions<"arrayBuffer">): Promise<ArrayBuffer | null>
+  get(key: Key, options?: KVNamespaceGetOptions<"stream">): Promise<ReadableStream | null>
+  get(key: Array<Key>, type: "text"): Promise<Map<string, string | null>>
+  get<ExpectedValue = unknown>(key: Array<Key>, type: "json"): Promise<Map<string, ExpectedValue | null>>
   get(key: Array<Key>, options?: Partial<KVNamespaceGetOptions<undefined>>): Promise<Map<string, string | null>>
-  get(key: Array<Key>, options?: KVNamespaceGetOptions<'text'>): Promise<Map<string, string | null>>
+  get(key: Array<Key>, options?: KVNamespaceGetOptions<"text">): Promise<Map<string, string | null>>
   get<ExpectedValue = unknown>(
     key: Array<Key>,
-    options?: KVNamespaceGetOptions<'json'>
+    options?: KVNamespaceGetOptions<"json">
   ): Promise<Map<string, ExpectedValue | null>>
   list<Metadata = unknown>(options?: KVNamespaceListOptions): Promise<KVNamespaceListResult<Metadata, Key>>
   put(
@@ -1602,43 +1602,43 @@ interface KVNamespace<Key extends string = string> {
   ): Promise<KVNamespaceGetWithMetadataResult<string, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Key,
-    type: 'text'
+    type: "text"
   ): Promise<KVNamespaceGetWithMetadataResult<string, Metadata>>
   getWithMetadata<ExpectedValue = unknown, Metadata = unknown>(
     key: Key,
-    type: 'json'
+    type: "json"
   ): Promise<KVNamespaceGetWithMetadataResult<ExpectedValue, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Key,
-    type: 'arrayBuffer'
+    type: "arrayBuffer"
   ): Promise<KVNamespaceGetWithMetadataResult<ArrayBuffer, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Key,
-    type: 'stream'
+    type: "stream"
   ): Promise<KVNamespaceGetWithMetadataResult<ReadableStream, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Key,
-    options: KVNamespaceGetOptions<'text'>
+    options: KVNamespaceGetOptions<"text">
   ): Promise<KVNamespaceGetWithMetadataResult<string, Metadata>>
   getWithMetadata<ExpectedValue = unknown, Metadata = unknown>(
     key: Key,
-    options: KVNamespaceGetOptions<'json'>
+    options: KVNamespaceGetOptions<"json">
   ): Promise<KVNamespaceGetWithMetadataResult<ExpectedValue, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Key,
-    options: KVNamespaceGetOptions<'arrayBuffer'>
+    options: KVNamespaceGetOptions<"arrayBuffer">
   ): Promise<KVNamespaceGetWithMetadataResult<ArrayBuffer, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Key,
-    options: KVNamespaceGetOptions<'stream'>
+    options: KVNamespaceGetOptions<"stream">
   ): Promise<KVNamespaceGetWithMetadataResult<ReadableStream, Metadata>>
   getWithMetadata<Metadata = unknown>(
     key: Array<Key>,
-    type: 'text'
+    type: "text"
   ): Promise<Map<string, KVNamespaceGetWithMetadataResult<string, Metadata>>>
   getWithMetadata<ExpectedValue = unknown, Metadata = unknown>(
     key: Array<Key>,
-    type: 'json'
+    type: "json"
   ): Promise<Map<string, KVNamespaceGetWithMetadataResult<ExpectedValue, Metadata>>>
   getWithMetadata<Metadata = unknown>(
     key: Array<Key>,
@@ -1646,11 +1646,11 @@ interface KVNamespace<Key extends string = string> {
   ): Promise<Map<string, KVNamespaceGetWithMetadataResult<string, Metadata>>>
   getWithMetadata<Metadata = unknown>(
     key: Array<Key>,
-    options?: KVNamespaceGetOptions<'text'>
+    options?: KVNamespaceGetOptions<"text">
   ): Promise<Map<string, KVNamespaceGetWithMetadataResult<string, Metadata>>>
   getWithMetadata<ExpectedValue = unknown, Metadata = unknown>(
     key: Array<Key>,
-    options?: KVNamespaceGetOptions<'json'>
+    options?: KVNamespaceGetOptions<"json">
   ): Promise<Map<string, KVNamespaceGetWithMetadataResult<ExpectedValue, Metadata>>>
   delete(key: Key): Promise<void>
 }
@@ -1673,7 +1673,7 @@ interface KVNamespaceGetWithMetadataResult<Value, Metadata> {
   metadata: Metadata | null
   cacheStatus: string | null
 }
-type QueueContentType = 'text' | 'bytes' | 'json' | 'v8'
+type QueueContentType = "text" | "bytes" | "json" | "v8"
 interface Queue<Body = unknown> {
   send(message: Body, options?: QueueSendOptions): Promise<void>
   sendBatch(messages: Iterable<MessageSendRequest<Body>>, options?: QueueSendBatchOptions): Promise<void>
@@ -1726,7 +1726,7 @@ interface R2ListOptions {
   cursor?: string
   delimiter?: string
   startAfter?: string
-  include?: ('httpMetadata' | 'customMetadata')[]
+  include?: ("httpMetadata" | "customMetadata")[]
 }
 declare abstract class R2Bucket {
   head(key: string): Promise<R2Object | null>
@@ -1894,14 +1894,14 @@ interface UnderlyingSink<W = any> {
   close?: () => void | Promise<void>
 }
 interface UnderlyingByteSource {
-  type: 'bytes'
+  type: "bytes"
   autoAllocateChunkSize?: number
   start?: (controller: ReadableByteStreamController) => void | Promise<void>
   pull?: (controller: ReadableByteStreamController) => void | Promise<void>
   cancel?: (reason: any) => void | Promise<void>
 }
 interface UnderlyingSource<R = any> {
-  type?: '' | undefined
+  type?: "" | undefined
   start?: (controller: ReadableStreamDefaultController<R>) => void | Promise<void>
   pull?: (controller: ReadableStreamDefaultController<R>) => void | Promise<void>
   cancel?: (reason: any) => void | Promise<void>
@@ -2011,7 +2011,7 @@ interface ReadableStreamGetReaderOptions {
    *
    * This call behaves the same way as the no-argument variant, except that it only works on readable byte streams, i.e. streams which were constructed specifically with the ability to handle "bring your own buffer" reading. The returned BYOB reader provides the ability to directly read individual chunks from the stream via its read() method, into developer-supplied buffers, allowing more precise control over allocation.
    */
-  mode: 'byob'
+  mode: "byob"
 }
 /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest) */
 declare abstract class ReadableStreamBYOBRequest {
@@ -2142,11 +2142,11 @@ interface ReadableStreamValuesOptions {
 }
 /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/CompressionStream) */
 declare class CompressionStream extends TransformStream<ArrayBuffer | ArrayBufferView, Uint8Array> {
-  constructor(format: 'gzip' | 'deflate' | 'deflate-raw')
+  constructor(format: "gzip" | "deflate" | "deflate-raw")
 }
 /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/DecompressionStream) */
 declare class DecompressionStream extends TransformStream<ArrayBuffer | ArrayBufferView, Uint8Array> {
-  constructor(format: 'gzip' | 'deflate' | 'deflate-raw')
+  constructor(format: "gzip" | "deflate" | "deflate-raw")
 }
 /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoderStream) */
 declare class TextEncoderStream extends TransformStream<string, Uint8Array> {
@@ -2633,7 +2633,7 @@ interface Socket {
   get closed(): Promise<void>
   get opened(): Promise<SocketInfo>
   get upgraded(): boolean
-  get secureTransport(): 'on' | 'off' | 'starttls'
+  get secureTransport(): "on" | "off" | "starttls"
   close(): Promise<void>
   startTls(options?: TlsOptions): Socket
 }
@@ -2838,7 +2838,7 @@ declare abstract class BaseAiTextEmbeddings {
   postProcessedOutputs: AiTextEmbeddingsOutput
 }
 type RoleScopedChatInput = {
-  role: 'user' | 'assistant' | 'system' | 'tool' | (string & NonNullable<unknown>)
+  role: "user" | "assistant" | "system" | "tool" | (string & NonNullable<unknown>)
   content: string
   name?: string
 }
@@ -2846,7 +2846,7 @@ type AiTextGenerationToolLegacyInput = {
   name: string
   description: string
   parameters?: {
-    type: 'object' | (string & NonNullable<unknown>)
+    type: "object" | (string & NonNullable<unknown>)
     properties: {
       [key: string]: {
         type: string
@@ -2857,12 +2857,12 @@ type AiTextGenerationToolLegacyInput = {
   }
 }
 type AiTextGenerationToolInput = {
-  type: 'function' | (string & NonNullable<unknown>)
+  type: "function" | (string & NonNullable<unknown>)
   function: {
     name: string
     description: string
     parameters?: {
-      type: 'object' | (string & NonNullable<unknown>)
+      type: "object" | (string & NonNullable<unknown>)
       properties: {
         [key: string]: {
           type: string
@@ -3216,7 +3216,7 @@ interface BGEM3OutputEmbeddingForContexts {
   /**
    * The pooling method used in the embedding process.
    */
-  pooling?: 'mean' | 'cls'
+  pooling?: "mean" | "cls"
 }
 interface BGEM3OuputEmbedding {
   shape?: number[]
@@ -3227,7 +3227,7 @@ interface BGEM3OuputEmbedding {
   /**
    * The pooling method used in the embedding process.
    */
-  pooling?: 'mean' | 'cls'
+  pooling?: "mean" | "cls"
 }
 declare abstract class Base_Ai_Cf_Baai_Bge_M3 {
   inputs: Ai_Cf_Baai_Bge_M3_Input
@@ -3484,7 +3484,7 @@ interface Ai_Cf_Meta_Llama_Guard_3_8B_Input {
     /**
      * The role of the message sender must alternate between 'user' and 'assistant'.
      */
-    role: 'user' | 'assistant'
+    role: "user" | "assistant"
     /**
      * The content of the message as a string.
      */
@@ -3852,72 +3852,72 @@ declare abstract class Base_Ai_Cf_Meta_Llama_4_Scout_17B_16E_Instruct {
   postProcessedOutputs: Ai_Cf_Meta_Llama_4_Scout_17B_16E_Instruct_Output
 }
 interface AiModels {
-  '@cf/huggingface/distilbert-sst-2-int8': BaseAiTextClassification
-  '@cf/stabilityai/stable-diffusion-xl-base-1.0': BaseAiTextToImage
-  '@cf/runwayml/stable-diffusion-v1-5-inpainting': BaseAiTextToImage
-  '@cf/runwayml/stable-diffusion-v1-5-img2img': BaseAiTextToImage
-  '@cf/lykon/dreamshaper-8-lcm': BaseAiTextToImage
-  '@cf/bytedance/stable-diffusion-xl-lightning': BaseAiTextToImage
-  '@cf/myshell-ai/melotts': BaseAiTextToSpeech
-  '@cf/baai/bge-base-en-v1.5': BaseAiTextEmbeddings
-  '@cf/baai/bge-small-en-v1.5': BaseAiTextEmbeddings
-  '@cf/baai/bge-large-en-v1.5': BaseAiTextEmbeddings
-  '@cf/microsoft/resnet-50': BaseAiImageClassification
-  '@cf/facebook/detr-resnet-50': BaseAiObjectDetection
-  '@cf/meta/llama-2-7b-chat-int8': BaseAiTextGeneration
-  '@cf/mistral/mistral-7b-instruct-v0.1': BaseAiTextGeneration
-  '@cf/meta/llama-2-7b-chat-fp16': BaseAiTextGeneration
-  '@hf/thebloke/llama-2-13b-chat-awq': BaseAiTextGeneration
-  '@hf/thebloke/mistral-7b-instruct-v0.1-awq': BaseAiTextGeneration
-  '@hf/thebloke/zephyr-7b-beta-awq': BaseAiTextGeneration
-  '@hf/thebloke/openhermes-2.5-mistral-7b-awq': BaseAiTextGeneration
-  '@hf/thebloke/neural-chat-7b-v3-1-awq': BaseAiTextGeneration
-  '@hf/thebloke/llamaguard-7b-awq': BaseAiTextGeneration
-  '@hf/thebloke/deepseek-coder-6.7b-base-awq': BaseAiTextGeneration
-  '@hf/thebloke/deepseek-coder-6.7b-instruct-awq': BaseAiTextGeneration
-  '@cf/deepseek-ai/deepseek-math-7b-instruct': BaseAiTextGeneration
-  '@cf/defog/sqlcoder-7b-2': BaseAiTextGeneration
-  '@cf/openchat/openchat-3.5-0106': BaseAiTextGeneration
-  '@cf/tiiuae/falcon-7b-instruct': BaseAiTextGeneration
-  '@cf/thebloke/discolm-german-7b-v1-awq': BaseAiTextGeneration
-  '@cf/qwen/qwen1.5-0.5b-chat': BaseAiTextGeneration
-  '@cf/qwen/qwen1.5-7b-chat-awq': BaseAiTextGeneration
-  '@cf/qwen/qwen1.5-14b-chat-awq': BaseAiTextGeneration
-  '@cf/tinyllama/tinyllama-1.1b-chat-v1.0': BaseAiTextGeneration
-  '@cf/microsoft/phi-2': BaseAiTextGeneration
-  '@cf/qwen/qwen1.5-1.8b-chat': BaseAiTextGeneration
-  '@cf/mistral/mistral-7b-instruct-v0.2-lora': BaseAiTextGeneration
-  '@hf/nousresearch/hermes-2-pro-mistral-7b': BaseAiTextGeneration
-  '@hf/nexusflow/starling-lm-7b-beta': BaseAiTextGeneration
-  '@hf/google/gemma-7b-it': BaseAiTextGeneration
-  '@cf/meta-llama/llama-2-7b-chat-hf-lora': BaseAiTextGeneration
-  '@cf/google/gemma-2b-it-lora': BaseAiTextGeneration
-  '@cf/google/gemma-7b-it-lora': BaseAiTextGeneration
-  '@hf/mistral/mistral-7b-instruct-v0.2': BaseAiTextGeneration
-  '@cf/meta/llama-3-8b-instruct': BaseAiTextGeneration
-  '@cf/fblgit/una-cybertron-7b-v2-bf16': BaseAiTextGeneration
-  '@cf/meta/llama-3-8b-instruct-awq': BaseAiTextGeneration
-  '@hf/meta-llama/meta-llama-3-8b-instruct': BaseAiTextGeneration
-  '@cf/meta/llama-3.1-8b-instruct': BaseAiTextGeneration
-  '@cf/meta/llama-3.1-8b-instruct-fp8': BaseAiTextGeneration
-  '@cf/meta/llama-3.1-8b-instruct-awq': BaseAiTextGeneration
-  '@cf/meta/llama-3.2-3b-instruct': BaseAiTextGeneration
-  '@cf/meta/llama-3.2-1b-instruct': BaseAiTextGeneration
-  '@cf/meta/llama-3.3-70b-instruct-fp8-fast': BaseAiTextGeneration
-  '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b': BaseAiTextGeneration
-  '@cf/meta/m2m100-1.2b': BaseAiTranslation
-  '@cf/facebook/bart-large-cnn': BaseAiSummarization
-  '@cf/llava-hf/llava-1.5-7b-hf': BaseAiImageToText
-  '@cf/openai/whisper': Base_Ai_Cf_Openai_Whisper
-  '@cf/unum/uform-gen2-qwen-500m': Base_Ai_Cf_Unum_Uform_Gen2_Qwen_500M
-  '@cf/openai/whisper-tiny-en': Base_Ai_Cf_Openai_Whisper_Tiny_En
-  '@cf/openai/whisper-large-v3-turbo': Base_Ai_Cf_Openai_Whisper_Large_V3_Turbo
-  '@cf/baai/bge-m3': Base_Ai_Cf_Baai_Bge_M3
-  '@cf/black-forest-labs/flux-1-schnell': Base_Ai_Cf_Black_Forest_Labs_Flux_1_Schnell
-  '@cf/meta/llama-3.2-11b-vision-instruct': Base_Ai_Cf_Meta_Llama_3_2_11B_Vision_Instruct
-  '@cf/meta/llama-guard-3-8b': Base_Ai_Cf_Meta_Llama_Guard_3_8B
-  '@cf/baai/bge-reranker-base': Base_Ai_Cf_Baai_Bge_Reranker_Base
-  '@cf/meta/llama-4-scout-17b-16e-instruct': Base_Ai_Cf_Meta_Llama_4_Scout_17B_16E_Instruct
+  "@cf/huggingface/distilbert-sst-2-int8": BaseAiTextClassification
+  "@cf/stabilityai/stable-diffusion-xl-base-1.0": BaseAiTextToImage
+  "@cf/runwayml/stable-diffusion-v1-5-inpainting": BaseAiTextToImage
+  "@cf/runwayml/stable-diffusion-v1-5-img2img": BaseAiTextToImage
+  "@cf/lykon/dreamshaper-8-lcm": BaseAiTextToImage
+  "@cf/bytedance/stable-diffusion-xl-lightning": BaseAiTextToImage
+  "@cf/myshell-ai/melotts": BaseAiTextToSpeech
+  "@cf/baai/bge-base-en-v1.5": BaseAiTextEmbeddings
+  "@cf/baai/bge-small-en-v1.5": BaseAiTextEmbeddings
+  "@cf/baai/bge-large-en-v1.5": BaseAiTextEmbeddings
+  "@cf/microsoft/resnet-50": BaseAiImageClassification
+  "@cf/facebook/detr-resnet-50": BaseAiObjectDetection
+  "@cf/meta/llama-2-7b-chat-int8": BaseAiTextGeneration
+  "@cf/mistral/mistral-7b-instruct-v0.1": BaseAiTextGeneration
+  "@cf/meta/llama-2-7b-chat-fp16": BaseAiTextGeneration
+  "@hf/thebloke/llama-2-13b-chat-awq": BaseAiTextGeneration
+  "@hf/thebloke/mistral-7b-instruct-v0.1-awq": BaseAiTextGeneration
+  "@hf/thebloke/zephyr-7b-beta-awq": BaseAiTextGeneration
+  "@hf/thebloke/openhermes-2.5-mistral-7b-awq": BaseAiTextGeneration
+  "@hf/thebloke/neural-chat-7b-v3-1-awq": BaseAiTextGeneration
+  "@hf/thebloke/llamaguard-7b-awq": BaseAiTextGeneration
+  "@hf/thebloke/deepseek-coder-6.7b-base-awq": BaseAiTextGeneration
+  "@hf/thebloke/deepseek-coder-6.7b-instruct-awq": BaseAiTextGeneration
+  "@cf/deepseek-ai/deepseek-math-7b-instruct": BaseAiTextGeneration
+  "@cf/defog/sqlcoder-7b-2": BaseAiTextGeneration
+  "@cf/openchat/openchat-3.5-0106": BaseAiTextGeneration
+  "@cf/tiiuae/falcon-7b-instruct": BaseAiTextGeneration
+  "@cf/thebloke/discolm-german-7b-v1-awq": BaseAiTextGeneration
+  "@cf/qwen/qwen1.5-0.5b-chat": BaseAiTextGeneration
+  "@cf/qwen/qwen1.5-7b-chat-awq": BaseAiTextGeneration
+  "@cf/qwen/qwen1.5-14b-chat-awq": BaseAiTextGeneration
+  "@cf/tinyllama/tinyllama-1.1b-chat-v1.0": BaseAiTextGeneration
+  "@cf/microsoft/phi-2": BaseAiTextGeneration
+  "@cf/qwen/qwen1.5-1.8b-chat": BaseAiTextGeneration
+  "@cf/mistral/mistral-7b-instruct-v0.2-lora": BaseAiTextGeneration
+  "@hf/nousresearch/hermes-2-pro-mistral-7b": BaseAiTextGeneration
+  "@hf/nexusflow/starling-lm-7b-beta": BaseAiTextGeneration
+  "@hf/google/gemma-7b-it": BaseAiTextGeneration
+  "@cf/meta-llama/llama-2-7b-chat-hf-lora": BaseAiTextGeneration
+  "@cf/google/gemma-2b-it-lora": BaseAiTextGeneration
+  "@cf/google/gemma-7b-it-lora": BaseAiTextGeneration
+  "@hf/mistral/mistral-7b-instruct-v0.2": BaseAiTextGeneration
+  "@cf/meta/llama-3-8b-instruct": BaseAiTextGeneration
+  "@cf/fblgit/una-cybertron-7b-v2-bf16": BaseAiTextGeneration
+  "@cf/meta/llama-3-8b-instruct-awq": BaseAiTextGeneration
+  "@hf/meta-llama/meta-llama-3-8b-instruct": BaseAiTextGeneration
+  "@cf/meta/llama-3.1-8b-instruct": BaseAiTextGeneration
+  "@cf/meta/llama-3.1-8b-instruct-fp8": BaseAiTextGeneration
+  "@cf/meta/llama-3.1-8b-instruct-awq": BaseAiTextGeneration
+  "@cf/meta/llama-3.2-3b-instruct": BaseAiTextGeneration
+  "@cf/meta/llama-3.2-1b-instruct": BaseAiTextGeneration
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast": BaseAiTextGeneration
+  "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b": BaseAiTextGeneration
+  "@cf/meta/m2m100-1.2b": BaseAiTranslation
+  "@cf/facebook/bart-large-cnn": BaseAiSummarization
+  "@cf/llava-hf/llava-1.5-7b-hf": BaseAiImageToText
+  "@cf/openai/whisper": Base_Ai_Cf_Openai_Whisper
+  "@cf/unum/uform-gen2-qwen-500m": Base_Ai_Cf_Unum_Uform_Gen2_Qwen_500M
+  "@cf/openai/whisper-tiny-en": Base_Ai_Cf_Openai_Whisper_Tiny_En
+  "@cf/openai/whisper-large-v3-turbo": Base_Ai_Cf_Openai_Whisper_Large_V3_Turbo
+  "@cf/baai/bge-m3": Base_Ai_Cf_Baai_Bge_M3
+  "@cf/black-forest-labs/flux-1-schnell": Base_Ai_Cf_Black_Forest_Labs_Flux_1_Schnell
+  "@cf/meta/llama-3.2-11b-vision-instruct": Base_Ai_Cf_Meta_Llama_3_2_11B_Vision_Instruct
+  "@cf/meta/llama-guard-3-8b": Base_Ai_Cf_Meta_Llama_Guard_3_8B
+  "@cf/baai/bge-reranker-base": Base_Ai_Cf_Baai_Bge_Reranker_Base
+  "@cf/meta/llama-4-scout-17b-16e-instruct": Base_Ai_Cf_Meta_Llama_4_Scout_17B_16E_Instruct
 }
 type AiOptions = {
   gateway?: GatewayOptions
@@ -3928,7 +3928,7 @@ type AiOptions = {
 type ConversionResponse = {
   name: string
   mimeType: string
-  format: 'markdown'
+  format: "markdown"
   tokens: number
   data: string
 }
@@ -3966,14 +3966,14 @@ declare abstract class Ai<AiModelList extends AiModelListType = AiModels> {
   autorag(autoragId: string): AutoRAG
   run<Name extends keyof AiModelList, Options extends AiOptions>(
     model: Name,
-    inputs: AiModelList[Name]['inputs'],
+    inputs: AiModelList[Name]["inputs"],
     options?: Options
   ): Promise<
     Options extends {
       returnRawResponse: true
     }
       ? Response
-      : AiModelList[Name]['postProcessedOutputs']
+      : AiModelList[Name]["postProcessedOutputs"]
   >
   models(params?: AiModelsSearchParams): Promise<AiModelsSearchObject[]>
   toMarkdown(
@@ -4000,7 +4000,7 @@ declare abstract class Ai<AiModelList extends AiModelListType = AiModels> {
 type GatewayRetries = {
   maxAttempts?: 1 | 2 | 3 | 4 | 5
   retryDelayMs?: number
-  backoff?: 'constant' | 'linear' | 'exponential'
+  backoff?: "constant" | "linear" | "exponential"
 }
 type GatewayOptions = {
   id: string
@@ -4046,29 +4046,29 @@ type AiGatewayLog = {
   created_at: Date
 }
 type AIGatewayProviders =
-  | 'workers-ai'
-  | 'anthropic'
-  | 'aws-bedrock'
-  | 'azure-openai'
-  | 'google-vertex-ai'
-  | 'huggingface'
-  | 'openai'
-  | 'perplexity-ai'
-  | 'replicate'
-  | 'groq'
-  | 'cohere'
-  | 'google-ai-studio'
-  | 'mistral'
-  | 'grok'
-  | 'openrouter'
-  | 'deepseek'
-  | 'cerebras'
-  | 'cartesia'
-  | 'elevenlabs'
-  | 'adobe-firefly'
+  | "workers-ai"
+  | "anthropic"
+  | "aws-bedrock"
+  | "azure-openai"
+  | "google-vertex-ai"
+  | "huggingface"
+  | "openai"
+  | "perplexity-ai"
+  | "replicate"
+  | "groq"
+  | "cohere"
+  | "google-ai-studio"
+  | "mistral"
+  | "grok"
+  | "openrouter"
+  | "deepseek"
+  | "cerebras"
+  | "cartesia"
+  | "elevenlabs"
+  | "adobe-firefly"
 type AIGatewayHeaders = {
-  'cf-aig-metadata': Record<string, number | string | boolean | null | bigint> | string
-  'cf-aig-custom-cost':
+  "cf-aig-metadata": Record<string, number | string | boolean | null | bigint> | string
+  "cf-aig-custom-cost":
     | {
         per_token_in?: number
         per_token_out?: number
@@ -4077,17 +4077,17 @@ type AIGatewayHeaders = {
         total_cost?: number
       }
     | string
-  'cf-aig-cache-ttl': number | string
-  'cf-aig-skip-cache': boolean | string
-  'cf-aig-cache-key': string
-  'cf-aig-event-id': string
-  'cf-aig-request-timeout': number | string
-  'cf-aig-max-attempts': number | string
-  'cf-aig-retry-delay': number | string
-  'cf-aig-backoff': string
-  'cf-aig-collect-log': boolean | string
+  "cf-aig-cache-ttl": number | string
+  "cf-aig-skip-cache": boolean | string
+  "cf-aig-cache-key": string
+  "cf-aig-event-id": string
+  "cf-aig-request-timeout": number | string
+  "cf-aig-max-attempts": number | string
+  "cf-aig-retry-delay": number | string
+  "cf-aig-backoff": string
+  "cf-aig-collect-log": boolean | string
   Authorization: string
-  'Content-Type': string
+  "Content-Type": string
   [key: string]: string | number | boolean | object
 }
 type AIGatewayUniversalRequest = {
@@ -4115,11 +4115,11 @@ interface AutoRAGNotFoundError extends Error {}
 interface AutoRAGUnauthorizedError extends Error {}
 type ComparisonFilter = {
   key: string
-  type: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte'
+  type: "eq" | "ne" | "gt" | "gte" | "lt" | "lte"
   value: string | number | boolean
 }
 type CompoundFilter = {
-  type: 'and' | 'or'
+  type: "and" | "or"
   filters: ComparisonFilter[]
 }
 type AutoRagSearchRequest = {
@@ -4135,11 +4135,11 @@ type AutoRagSearchRequest = {
 type AutoRagAiSearchRequest = AutoRagSearchRequest & {
   stream?: boolean
 }
-type AutoRagAiSearchRequestStreaming = Omit<AutoRagAiSearchRequest, 'stream'> & {
+type AutoRagAiSearchRequestStreaming = Omit<AutoRagAiSearchRequest, "stream"> & {
   stream: true
 }
 type AutoRagSearchResponse = {
-  object: 'vector_store.search_results.page'
+  object: "vector_store.search_results.page"
   search_query: string
   data: {
     file_id: string
@@ -4147,7 +4147,7 @@ type AutoRagSearchResponse = {
     score: number
     attributes: Record<string, string | number | boolean | null>
     content: {
-      type: 'text'
+      type: "text"
       text: string
     }[]
   }[]
@@ -4198,7 +4198,7 @@ interface BasicImageTransformations {
    *  - squeeze: Stretches and deforms to the width and height given, even if it
    *    breaks aspect ratio
    */
-  fit?: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad' | 'squeeze'
+  fit?: "scale-down" | "contain" | "cover" | "crop" | "pad" | "squeeze"
   /**
    * When cropping with fit: "cover", this defines the side or point that should
    * be left uncropped. The value is either a string
@@ -4212,13 +4212,13 @@ interface BasicImageTransformations {
    * source image.
    */
   gravity?:
-    | 'left'
-    | 'right'
-    | 'top'
-    | 'bottom'
-    | 'center'
-    | 'auto'
-    | 'entropy'
+    | "left"
+    | "right"
+    | "top"
+    | "bottom"
+    | "center"
+    | "auto"
+    | "entropy"
     | BasicImageTransformationsGravityCoordinates
   /**
    * Background color to add underneath the image. Applies only to images with
@@ -4235,7 +4235,7 @@ interface BasicImageTransformations {
 interface BasicImageTransformationsGravityCoordinates {
   x?: number
   y?: number
-  mode?: 'remainder' | 'box-center'
+  mode?: "remainder" | "box-center"
 }
 /**
  * In addition to the properties you can set in the RequestInit dict
@@ -4280,7 +4280,7 @@ interface RequestInitCfProperties extends Record<string, unknown> {
   image?: RequestInitCfPropertiesImage
   minify?: RequestInitCfPropertiesImageMinify
   mirage?: boolean
-  polish?: 'lossy' | 'lossless' | 'off'
+  polish?: "lossy" | "lossless" | "off"
   r2?: RequestInitCfPropertiesR2
   /**
    * Redirects the request to an alternate origin server. You can use this,
@@ -4317,7 +4317,7 @@ interface RequestInitCfPropertiesImageDraw extends BasicImageTransformations {
    * - If set to "y", the overlay image will be tiled vertically only
    *   (form a line).
    */
-  repeat?: true | 'x' | 'y'
+  repeat?: true | "x" | "y"
   /**
    * Position of the overlay image relative to a given edge. Each property is
    * an offset in pixels. 0 aligns exactly to the edge. For example, left: 10
@@ -4356,7 +4356,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    *    - keep: the number of pixels of border to keep
    */
   trim?:
-    | 'border'
+    | "border"
     | {
         top?: number
         bottom?: number
@@ -4377,7 +4377,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    * make images look worse, but load faster. The default is 85. It applies only
    * to JPEG and WebP images. It doesn’t have any effect on PNG.
    */
-  quality?: number | 'low' | 'medium-low' | 'medium-high' | 'high'
+  quality?: number | "low" | "medium-low" | "medium-high" | "high"
   /**
    * Output format to generate. It can be:
    *  - avif: generate images in AVIF format.
@@ -4389,7 +4389,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    * - jpeg: generate images in JPEG format.
    * - png: generate images in PNG format.
    */
-  format?: 'avif' | 'webp' | 'json' | 'jpeg' | 'png' | 'baseline-jpeg' | 'png-force' | 'svg'
+  format?: "avif" | "webp" | "json" | "jpeg" | "png" | "baseline-jpeg" | "png-force" | "svg"
   /**
    * Whether to preserve animation frames from input files. Default is true.
    * Setting it to false reduces animations to still images. This setting is
@@ -4412,7 +4412,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    *  - none: Discard all invisible EXIF metadata. Currently WebP and PNG
    *    output formats always discard metadata.
    */
-  metadata?: 'keep' | 'copyright' | 'none'
+  metadata?: "keep" | "copyright" | "none"
   /**
    * Strength of sharpening filter to apply to the image. Floating-point
    * number between 0 (no sharpening, default) and 10 (maximum). 1.0 is a
@@ -4434,7 +4434,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    * pass authentication headers (Authorization, Cookie, etc.) through to
    * the origin.
    */
-  'origin-auth'?: 'share-publicly'
+  "origin-auth"?: "share-publicly"
   /**
    * Adds a border around the image. The border is added after resizing. Border
    * width takes dpr into account, and can be specified either using a single
@@ -4480,7 +4480,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    * rotation, so if you apply flip=h,rotate=90 then the image will be flipped
    * horizontally, then rotated by 90 degrees.
    */
-  flip?: 'h' | 'v' | 'hv'
+  flip?: "h" | "v" | "hv"
   /**
    * Slightly reduces latency on a cache miss by selecting a
    * quickest-to-compress file format, at a cost of increased file size and
@@ -4489,7 +4489,7 @@ interface RequestInitCfPropertiesImage extends BasicImageTransformations {
    * unusual circumstances like resizing uncacheable dynamically-generated
    * images.
    */
-  compression?: 'fast'
+  compression?: "fast"
 }
 interface RequestInitCfPropertiesImageMinify {
   javascript?: boolean
@@ -4709,13 +4709,13 @@ interface IncomingRequestCfPropertiesGeographicInformation {
    *
    * @example "GB"
    */
-  country?: Iso3166Alpha2Code | 'T1'
+  country?: Iso3166Alpha2Code | "T1"
   /**
    * If present, this property indicates that the request originated in the EU
    *
    * @example "1"
    */
-  isEUCountry?: '1'
+  isEUCountry?: "1"
   /**
    * A two-letter code indicating the continent the request originated from.
    *
@@ -4776,19 +4776,19 @@ interface IncomingRequestCfPropertiesGeographicInformation {
 /** Data about the incoming request's TLS certificate */
 interface IncomingRequestCfPropertiesTLSClientAuth {
   /** Always `"1"`, indicating that the certificate was presented */
-  certPresented: '1'
+  certPresented: "1"
   /**
    * Result of certificate verification.
    *
    * @example "FAILED:self signed certificate"
    */
-  certVerified: Exclude<CertVerificationStatus, 'NONE'>
+  certVerified: Exclude<CertVerificationStatus, "NONE">
   /** The presented certificate's revokation status.
    *
    * - A value of `"1"` indicates the certificate has been revoked
    * - A value of `"0"` indicates the certificate has not been revoked
    */
-  certRevoked: '1' | '0'
+  certRevoked: "1" | "0"
   /**
    * The certificate issuer's [distinguished name](https://knowledge.digicert.com/generalinformation/INFO1745.html)
    *
@@ -4868,40 +4868,40 @@ interface IncomingRequestCfPropertiesTLSClientAuth {
 }
 /** Placeholder values for TLS Client Authorization */
 interface IncomingRequestCfPropertiesTLSClientAuthPlaceholder {
-  certPresented: '0'
-  certVerified: 'NONE'
-  certRevoked: '0'
-  certIssuerDN: ''
-  certSubjectDN: ''
-  certIssuerDNRFC2253: ''
-  certSubjectDNRFC2253: ''
-  certIssuerDNLegacy: ''
-  certSubjectDNLegacy: ''
-  certSerial: ''
-  certIssuerSerial: ''
-  certSKI: ''
-  certIssuerSKI: ''
-  certFingerprintSHA1: ''
-  certFingerprintSHA256: ''
-  certNotBefore: ''
-  certNotAfter: ''
+  certPresented: "0"
+  certVerified: "NONE"
+  certRevoked: "0"
+  certIssuerDN: ""
+  certSubjectDN: ""
+  certIssuerDNRFC2253: ""
+  certSubjectDNRFC2253: ""
+  certIssuerDNLegacy: ""
+  certSubjectDNLegacy: ""
+  certSerial: ""
+  certIssuerSerial: ""
+  certSKI: ""
+  certIssuerSKI: ""
+  certFingerprintSHA1: ""
+  certFingerprintSHA256: ""
+  certNotBefore: ""
+  certNotAfter: ""
 }
 /** Possible outcomes of TLS verification */
 declare type CertVerificationStatus =
   /** Authentication succeeded */
-  | 'SUCCESS'
+  | "SUCCESS"
   /** No certificate was presented */
-  | 'NONE'
+  | "NONE"
   /** Failed because the certificate was self-signed */
-  | 'FAILED:self signed certificate'
+  | "FAILED:self signed certificate"
   /** Failed because the certificate failed a trust chain check */
-  | 'FAILED:unable to verify the first certificate'
+  | "FAILED:unable to verify the first certificate"
   /** Failed because the certificate not yet valid */
-  | 'FAILED:certificate is not yet valid'
+  | "FAILED:certificate is not yet valid"
   /** Failed because the certificate is expired */
-  | 'FAILED:certificate has expired'
+  | "FAILED:certificate has expired"
   /** Failed for another unspecified reason */
-  | 'FAILED'
+  | "FAILED"
 /**
  * An upstream endpoint's response to a TCP `keepalive` message from Cloudflare.
  */
@@ -4914,257 +4914,257 @@ declare type IncomingRequestCfPropertiesEdgeRequestKeepAliveStatus =
   | 5 /** connection re-use, accepted by the origin server */
 /** ISO 3166-1 Alpha-2 codes */
 declare type Iso3166Alpha2Code =
-  | 'AD'
-  | 'AE'
-  | 'AF'
-  | 'AG'
-  | 'AI'
-  | 'AL'
-  | 'AM'
-  | 'AO'
-  | 'AQ'
-  | 'AR'
-  | 'AS'
-  | 'AT'
-  | 'AU'
-  | 'AW'
-  | 'AX'
-  | 'AZ'
-  | 'BA'
-  | 'BB'
-  | 'BD'
-  | 'BE'
-  | 'BF'
-  | 'BG'
-  | 'BH'
-  | 'BI'
-  | 'BJ'
-  | 'BL'
-  | 'BM'
-  | 'BN'
-  | 'BO'
-  | 'BQ'
-  | 'BR'
-  | 'BS'
-  | 'BT'
-  | 'BV'
-  | 'BW'
-  | 'BY'
-  | 'BZ'
-  | 'CA'
-  | 'CC'
-  | 'CD'
-  | 'CF'
-  | 'CG'
-  | 'CH'
-  | 'CI'
-  | 'CK'
-  | 'CL'
-  | 'CM'
-  | 'CN'
-  | 'CO'
-  | 'CR'
-  | 'CU'
-  | 'CV'
-  | 'CW'
-  | 'CX'
-  | 'CY'
-  | 'CZ'
-  | 'DE'
-  | 'DJ'
-  | 'DK'
-  | 'DM'
-  | 'DO'
-  | 'DZ'
-  | 'EC'
-  | 'EE'
-  | 'EG'
-  | 'EH'
-  | 'ER'
-  | 'ES'
-  | 'ET'
-  | 'FI'
-  | 'FJ'
-  | 'FK'
-  | 'FM'
-  | 'FO'
-  | 'FR'
-  | 'GA'
-  | 'GB'
-  | 'GD'
-  | 'GE'
-  | 'GF'
-  | 'GG'
-  | 'GH'
-  | 'GI'
-  | 'GL'
-  | 'GM'
-  | 'GN'
-  | 'GP'
-  | 'GQ'
-  | 'GR'
-  | 'GS'
-  | 'GT'
-  | 'GU'
-  | 'GW'
-  | 'GY'
-  | 'HK'
-  | 'HM'
-  | 'HN'
-  | 'HR'
-  | 'HT'
-  | 'HU'
-  | 'ID'
-  | 'IE'
-  | 'IL'
-  | 'IM'
-  | 'IN'
-  | 'IO'
-  | 'IQ'
-  | 'IR'
-  | 'IS'
-  | 'IT'
-  | 'JE'
-  | 'JM'
-  | 'JO'
-  | 'JP'
-  | 'KE'
-  | 'KG'
-  | 'KH'
-  | 'KI'
-  | 'KM'
-  | 'KN'
-  | 'KP'
-  | 'KR'
-  | 'KW'
-  | 'KY'
-  | 'KZ'
-  | 'LA'
-  | 'LB'
-  | 'LC'
-  | 'LI'
-  | 'LK'
-  | 'LR'
-  | 'LS'
-  | 'LT'
-  | 'LU'
-  | 'LV'
-  | 'LY'
-  | 'MA'
-  | 'MC'
-  | 'MD'
-  | 'ME'
-  | 'MF'
-  | 'MG'
-  | 'MH'
-  | 'MK'
-  | 'ML'
-  | 'MM'
-  | 'MN'
-  | 'MO'
-  | 'MP'
-  | 'MQ'
-  | 'MR'
-  | 'MS'
-  | 'MT'
-  | 'MU'
-  | 'MV'
-  | 'MW'
-  | 'MX'
-  | 'MY'
-  | 'MZ'
-  | 'NA'
-  | 'NC'
-  | 'NE'
-  | 'NF'
-  | 'NG'
-  | 'NI'
-  | 'NL'
-  | 'NO'
-  | 'NP'
-  | 'NR'
-  | 'NU'
-  | 'NZ'
-  | 'OM'
-  | 'PA'
-  | 'PE'
-  | 'PF'
-  | 'PG'
-  | 'PH'
-  | 'PK'
-  | 'PL'
-  | 'PM'
-  | 'PN'
-  | 'PR'
-  | 'PS'
-  | 'PT'
-  | 'PW'
-  | 'PY'
-  | 'QA'
-  | 'RE'
-  | 'RO'
-  | 'RS'
-  | 'RU'
-  | 'RW'
-  | 'SA'
-  | 'SB'
-  | 'SC'
-  | 'SD'
-  | 'SE'
-  | 'SG'
-  | 'SH'
-  | 'SI'
-  | 'SJ'
-  | 'SK'
-  | 'SL'
-  | 'SM'
-  | 'SN'
-  | 'SO'
-  | 'SR'
-  | 'SS'
-  | 'ST'
-  | 'SV'
-  | 'SX'
-  | 'SY'
-  | 'SZ'
-  | 'TC'
-  | 'TD'
-  | 'TF'
-  | 'TG'
-  | 'TH'
-  | 'TJ'
-  | 'TK'
-  | 'TL'
-  | 'TM'
-  | 'TN'
-  | 'TO'
-  | 'TR'
-  | 'TT'
-  | 'TV'
-  | 'TW'
-  | 'TZ'
-  | 'UA'
-  | 'UG'
-  | 'UM'
-  | 'US'
-  | 'UY'
-  | 'UZ'
-  | 'VA'
-  | 'VC'
-  | 'VE'
-  | 'VG'
-  | 'VI'
-  | 'VN'
-  | 'VU'
-  | 'WF'
-  | 'WS'
-  | 'YE'
-  | 'YT'
-  | 'ZA'
-  | 'ZM'
-  | 'ZW'
+  | "AD"
+  | "AE"
+  | "AF"
+  | "AG"
+  | "AI"
+  | "AL"
+  | "AM"
+  | "AO"
+  | "AQ"
+  | "AR"
+  | "AS"
+  | "AT"
+  | "AU"
+  | "AW"
+  | "AX"
+  | "AZ"
+  | "BA"
+  | "BB"
+  | "BD"
+  | "BE"
+  | "BF"
+  | "BG"
+  | "BH"
+  | "BI"
+  | "BJ"
+  | "BL"
+  | "BM"
+  | "BN"
+  | "BO"
+  | "BQ"
+  | "BR"
+  | "BS"
+  | "BT"
+  | "BV"
+  | "BW"
+  | "BY"
+  | "BZ"
+  | "CA"
+  | "CC"
+  | "CD"
+  | "CF"
+  | "CG"
+  | "CH"
+  | "CI"
+  | "CK"
+  | "CL"
+  | "CM"
+  | "CN"
+  | "CO"
+  | "CR"
+  | "CU"
+  | "CV"
+  | "CW"
+  | "CX"
+  | "CY"
+  | "CZ"
+  | "DE"
+  | "DJ"
+  | "DK"
+  | "DM"
+  | "DO"
+  | "DZ"
+  | "EC"
+  | "EE"
+  | "EG"
+  | "EH"
+  | "ER"
+  | "ES"
+  | "ET"
+  | "FI"
+  | "FJ"
+  | "FK"
+  | "FM"
+  | "FO"
+  | "FR"
+  | "GA"
+  | "GB"
+  | "GD"
+  | "GE"
+  | "GF"
+  | "GG"
+  | "GH"
+  | "GI"
+  | "GL"
+  | "GM"
+  | "GN"
+  | "GP"
+  | "GQ"
+  | "GR"
+  | "GS"
+  | "GT"
+  | "GU"
+  | "GW"
+  | "GY"
+  | "HK"
+  | "HM"
+  | "HN"
+  | "HR"
+  | "HT"
+  | "HU"
+  | "ID"
+  | "IE"
+  | "IL"
+  | "IM"
+  | "IN"
+  | "IO"
+  | "IQ"
+  | "IR"
+  | "IS"
+  | "IT"
+  | "JE"
+  | "JM"
+  | "JO"
+  | "JP"
+  | "KE"
+  | "KG"
+  | "KH"
+  | "KI"
+  | "KM"
+  | "KN"
+  | "KP"
+  | "KR"
+  | "KW"
+  | "KY"
+  | "KZ"
+  | "LA"
+  | "LB"
+  | "LC"
+  | "LI"
+  | "LK"
+  | "LR"
+  | "LS"
+  | "LT"
+  | "LU"
+  | "LV"
+  | "LY"
+  | "MA"
+  | "MC"
+  | "MD"
+  | "ME"
+  | "MF"
+  | "MG"
+  | "MH"
+  | "MK"
+  | "ML"
+  | "MM"
+  | "MN"
+  | "MO"
+  | "MP"
+  | "MQ"
+  | "MR"
+  | "MS"
+  | "MT"
+  | "MU"
+  | "MV"
+  | "MW"
+  | "MX"
+  | "MY"
+  | "MZ"
+  | "NA"
+  | "NC"
+  | "NE"
+  | "NF"
+  | "NG"
+  | "NI"
+  | "NL"
+  | "NO"
+  | "NP"
+  | "NR"
+  | "NU"
+  | "NZ"
+  | "OM"
+  | "PA"
+  | "PE"
+  | "PF"
+  | "PG"
+  | "PH"
+  | "PK"
+  | "PL"
+  | "PM"
+  | "PN"
+  | "PR"
+  | "PS"
+  | "PT"
+  | "PW"
+  | "PY"
+  | "QA"
+  | "RE"
+  | "RO"
+  | "RS"
+  | "RU"
+  | "RW"
+  | "SA"
+  | "SB"
+  | "SC"
+  | "SD"
+  | "SE"
+  | "SG"
+  | "SH"
+  | "SI"
+  | "SJ"
+  | "SK"
+  | "SL"
+  | "SM"
+  | "SN"
+  | "SO"
+  | "SR"
+  | "SS"
+  | "ST"
+  | "SV"
+  | "SX"
+  | "SY"
+  | "SZ"
+  | "TC"
+  | "TD"
+  | "TF"
+  | "TG"
+  | "TH"
+  | "TJ"
+  | "TK"
+  | "TL"
+  | "TM"
+  | "TN"
+  | "TO"
+  | "TR"
+  | "TT"
+  | "TV"
+  | "TW"
+  | "TZ"
+  | "UA"
+  | "UG"
+  | "UM"
+  | "US"
+  | "UY"
+  | "UZ"
+  | "VA"
+  | "VC"
+  | "VE"
+  | "VG"
+  | "VI"
+  | "VN"
+  | "VU"
+  | "WF"
+  | "WS"
+  | "YE"
+  | "YT"
+  | "ZA"
+  | "ZM"
+  | "ZW"
 /** The 2-letter continent codes Cloudflare uses */
-declare type ContinentCode = 'AF' | 'AN' | 'AS' | 'EU' | 'NA' | 'OC' | 'SA'
+declare type ContinentCode = "AF" | "AN" | "AS" | "EU" | "NA" | "OC" | "SA"
 type CfProperties<HostMetadata = unknown> = IncomingRequestCfProperties<HostMetadata> | RequestInitCfProperties
 interface D1Meta {
   duration: number
@@ -5205,11 +5205,11 @@ type D1SessionConstraint =
   // Indicates that the first query should go to the primary, and the rest queries
   // using the same D1DatabaseSession will go to any replica that is consistent with
   // the bookmark maintained by the session (returned by the first query).
-  | 'first-primary'
+  | "first-primary"
   // Indicates that the first query can go anywhere (primary or replica), and the rest queries
   // using the same D1DatabaseSession will go to any replica that is consistent with
   // the bookmark maintained by the session (returned by the first query).
-  | 'first-unconstrained'
+  | "first-unconstrained"
 type D1SessionBookmark = string
 declare abstract class D1Database {
   prepare(query: string): D1PreparedStatement
@@ -5320,7 +5320,7 @@ declare type EmailExportedHandler<Env = unknown> = (
   env: Env,
   ctx: ExecutionContext
 ) => void | Promise<void>
-declare module 'cloudflare:email' {
+declare module "cloudflare:email" {
   let _EmailMessage: {
     prototype: EmailMessage
     new (from: string, to: string, raw: ReadableStream | string): EmailMessage
@@ -5379,7 +5379,7 @@ interface Hyperdrive {
 //     https://opensource.org/licenses/Apache-2.0
 type ImageInfoResponse =
   | {
-      format: 'image/svg+xml'
+      format: "image/svg+xml"
     }
   | {
       format: string
@@ -5405,27 +5405,27 @@ type ImageTransform = {
       }
   brightness?: number
   contrast?: number
-  fit?: 'scale-down' | 'contain' | 'pad' | 'squeeze' | 'cover' | 'crop'
-  flip?: 'h' | 'v' | 'hv'
+  fit?: "scale-down" | "contain" | "pad" | "squeeze" | "cover" | "crop"
+  flip?: "h" | "v" | "hv"
   gamma?: number
   gravity?:
-    | 'left'
-    | 'right'
-    | 'top'
-    | 'bottom'
-    | 'center'
-    | 'auto'
-    | 'entropy'
+    | "left"
+    | "right"
+    | "top"
+    | "bottom"
+    | "center"
+    | "auto"
+    | "entropy"
     | {
         x?: number
         y?: number
-        mode: 'remainder' | 'box-center'
+        mode: "remainder" | "box-center"
       }
   rotate?: 0 | 90 | 180 | 270
   saturation?: number
   sharpen?: number
   trim?:
-    | 'border'
+    | "border"
     | {
         top?: number
         bottom?: number
@@ -5451,7 +5451,7 @@ type ImageDrawOptions = {
   right?: number
 }
 type ImageOutputOptions = {
-  format: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' | 'image/avif' | 'rgb' | 'rgba'
+  format: "image/jpeg" | "image/png" | "image/gif" | "image/webp" | "image/avif" | "rgb" | "rgba"
   quality?: number
   background?: string
 }
@@ -5550,13 +5550,13 @@ type PagesPluginFunction<
   Data extends Record<string, unknown> = Record<string, unknown>,
   PluginArgs = unknown
 > = (context: EventPluginContext<Env, Params, Data, PluginArgs>) => Response | Promise<Response>
-declare module 'assets:*' {
+declare module "assets:*" {
   export const onRequest: PagesFunction
 }
 // Copyright (c) 2022-2023 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
-declare module 'cloudflare:pipelines' {
+declare module "cloudflare:pipelines" {
   export abstract class PipelineTransformationEntrypoint<
     Env = unknown,
     I extends PipelineRecord = PipelineRecord,
@@ -5644,11 +5644,11 @@ declare namespace Rpc {
   // TypeScript uses *structural* typing meaning anything with the same shape as type `T` is a `T`.
   // For the classes exported by `cloudflare:workers` we want *nominal* typing (i.e. we only want to
   // accept `WorkerEntrypoint` from `cloudflare:workers`, not any other class with the same shape)
-  export const __RPC_STUB_BRAND: '__RPC_STUB_BRAND'
-  export const __RPC_TARGET_BRAND: '__RPC_TARGET_BRAND'
-  export const __WORKER_ENTRYPOINT_BRAND: '__WORKER_ENTRYPOINT_BRAND'
-  export const __DURABLE_OBJECT_BRAND: '__DURABLE_OBJECT_BRAND'
-  export const __WORKFLOW_ENTRYPOINT_BRAND: '__WORKFLOW_ENTRYPOINT_BRAND'
+  export const __RPC_STUB_BRAND: "__RPC_STUB_BRAND"
+  export const __RPC_TARGET_BRAND: "__RPC_TARGET_BRAND"
+  export const __WORKER_ENTRYPOINT_BRAND: "__WORKER_ENTRYPOINT_BRAND"
+  export const __DURABLE_OBJECT_BRAND: "__DURABLE_OBJECT_BRAND"
+  export const __WORKFLOW_ENTRYPOINT_BRAND: "__WORKFLOW_ENTRYPOINT_BRAND"
   export interface RpcTargetBranded {
     [__RPC_TARGET_BRAND]: never
   }
@@ -5797,7 +5797,7 @@ declare namespace Rpc {
 declare namespace Cloudflare {
   type Env = {}
 }
-declare module 'cloudflare:workers' {
+declare module "cloudflare:workers" {
   export type RpcStub<T extends Rpc.Stubable> = Rpc.Stub<T>
   export const RpcStub: {
     new <T extends Rpc.Stubable>(value: T): Rpc.Stub<T>
@@ -5829,11 +5829,11 @@ declare module 'cloudflare:workers' {
     webSocketClose?(ws: WebSocket, code: number, reason: string, wasClean: boolean): void | Promise<void>
     webSocketError?(ws: WebSocket, error: unknown): void | Promise<void>
   }
-  export type WorkflowDurationLabel = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
-  export type WorkflowSleepDuration = `${number} ${WorkflowDurationLabel}${'s' | ''}` | number
+  export type WorkflowDurationLabel = "second" | "minute" | "hour" | "day" | "week" | "month" | "year"
+  export type WorkflowSleepDuration = `${number} ${WorkflowDurationLabel}${"s" | ""}` | number
   export type WorkflowDelayDuration = WorkflowSleepDuration
   export type WorkflowTimeoutDuration = WorkflowSleepDuration
-  export type WorkflowBackoff = 'constant' | 'linear' | 'exponential'
+  export type WorkflowBackoff = "constant" | "linear" | "exponential"
   export type WorkflowStepConfig = {
     retries?: {
       limit: number
@@ -5883,7 +5883,7 @@ interface SecretsStoreSecret {
    */
   get(): Promise<string>
 }
-declare module 'cloudflare:sockets' {
+declare module "cloudflare:sockets" {
   function _connect(address: string | SocketAddress, options?: SocketOptions): Socket
   export { _connect as connect }
 }
@@ -5893,81 +5893,81 @@ declare namespace TailStream {
     readonly value: string
   }
   interface FetchEventInfo {
-    readonly type: 'fetch'
+    readonly type: "fetch"
     readonly method: string
     readonly url: string
     readonly cfJson: string
     readonly headers: Header[]
   }
   interface JsRpcEventInfo {
-    readonly type: 'jsrpc'
+    readonly type: "jsrpc"
     readonly methodName: string
   }
   interface ScheduledEventInfo {
-    readonly type: 'scheduled'
+    readonly type: "scheduled"
     readonly scheduledTime: Date
     readonly cron: string
   }
   interface AlarmEventInfo {
-    readonly type: 'alarm'
+    readonly type: "alarm"
     readonly scheduledTime: Date
   }
   interface QueueEventInfo {
-    readonly type: 'queue'
+    readonly type: "queue"
     readonly queueName: string
     readonly batchSize: number
   }
   interface EmailEventInfo {
-    readonly type: 'email'
+    readonly type: "email"
     readonly mailFrom: string
     readonly rcptTo: string
     readonly rawSize: number
   }
   interface TraceEventInfo {
-    readonly type: 'trace'
+    readonly type: "trace"
     readonly traces: (string | null)[]
   }
   interface HibernatableWebSocketEventInfoMessage {
-    readonly type: 'message'
+    readonly type: "message"
   }
   interface HibernatableWebSocketEventInfoError {
-    readonly type: 'error'
+    readonly type: "error"
   }
   interface HibernatableWebSocketEventInfoClose {
-    readonly type: 'close'
+    readonly type: "close"
     readonly code: number
     readonly wasClean: boolean
   }
   interface HibernatableWebSocketEventInfo {
-    readonly type: 'hibernatableWebSocket'
+    readonly type: "hibernatableWebSocket"
     readonly info:
       | HibernatableWebSocketEventInfoClose
       | HibernatableWebSocketEventInfoError
       | HibernatableWebSocketEventInfoMessage
   }
   interface Resume {
-    readonly type: 'resume'
+    readonly type: "resume"
     readonly attachment?: any
   }
   interface CustomEventInfo {
-    readonly type: 'custom'
+    readonly type: "custom"
   }
   interface FetchResponseInfo {
-    readonly type: 'fetch'
+    readonly type: "fetch"
     readonly statusCode: number
   }
   type EventOutcome =
-    | 'ok'
-    | 'canceled'
-    | 'exception'
-    | 'unknown'
-    | 'killSwitch'
-    | 'daemonDown'
-    | 'exceededCpu'
-    | 'exceededMemory'
-    | 'loadShed'
-    | 'responseStreamDisconnected'
-    | 'scriptNotFound'
+    | "ok"
+    | "canceled"
+    | "exception"
+    | "unknown"
+    | "killSwitch"
+    | "daemonDown"
+    | "exceededCpu"
+    | "exceededMemory"
+    | "loadShed"
+    | "responseStreamDisconnected"
+    | "scriptNotFound"
   interface ScriptVersion {
     readonly id: string
     readonly tag?: string
@@ -5979,7 +5979,7 @@ declare namespace TailStream {
     readonly spanId: string
   }
   interface Onset {
-    readonly type: 'onset'
+    readonly type: "onset"
     readonly dispatchNamespace?: string
     readonly entrypoint?: string
     readonly scriptName?: string
@@ -5999,52 +5999,52 @@ declare namespace TailStream {
       | CustomEventInfo
   }
   interface Outcome {
-    readonly type: 'outcome'
+    readonly type: "outcome"
     readonly outcome: EventOutcome
     readonly cpuTime: number
     readonly wallTime: number
   }
   interface Hibernate {
-    readonly type: 'hibernate'
+    readonly type: "hibernate"
   }
   interface SpanOpen {
-    readonly type: 'spanOpen'
+    readonly type: "spanOpen"
     readonly op?: string
     readonly info?: FetchEventInfo | JsRpcEventInfo | Attribute[]
   }
   interface SpanClose {
-    readonly type: 'spanClose'
+    readonly type: "spanClose"
     readonly outcome: EventOutcome
   }
   interface DiagnosticChannelEvent {
-    readonly type: 'diagnosticChannel'
+    readonly type: "diagnosticChannel"
     readonly channel: string
     readonly message: any
   }
   interface Exception {
-    readonly type: 'exception'
+    readonly type: "exception"
     readonly name: string
     readonly message: string
     readonly stack?: string
   }
   interface Log {
-    readonly type: 'log'
-    readonly level: 'debug' | 'error' | 'info' | 'log' | 'warn'
+    readonly type: "log"
+    readonly level: "debug" | "error" | "info" | "log" | "warn"
     readonly message: string
   }
   interface Return {
-    readonly type: 'return'
+    readonly type: "return"
     readonly info?: FetchResponseInfo | Attribute[]
   }
   interface Link {
-    readonly type: 'link'
+    readonly type: "link"
     readonly label?: string
     readonly traceId: string
     readonly invocationId: string
     readonly spanId: string
   }
   interface Attribute {
-    readonly type: 'attribute'
+    readonly type: "attribute"
     readonly name: string
     readonly value: string | string[] | boolean | boolean[] | number | number[]
   }
@@ -6059,17 +6059,17 @@ declare namespace TailStream {
   }
   type TailEventHandler = (event: TailEvent) => void | Promise<void>
   type TailEventHandlerName =
-    | 'onset'
-    | 'outcome'
-    | 'hibernate'
-    | 'spanOpen'
-    | 'spanClose'
-    | 'diagnosticChannel'
-    | 'exception'
-    | 'log'
-    | 'return'
-    | 'link'
-    | 'attribute'
+    | "onset"
+    | "outcome"
+    | "hibernate"
+    | "spanOpen"
+    | "spanClose"
+    | "diagnosticChannel"
+    | "exception"
+    | "log"
+    | "return"
+    | "link"
+    | "attribute"
   type TailEventHandlerObject = Record<TailEventHandlerName, TailEventHandler>
   type TailEventHandlerType = TailEventHandler | TailEventHandlerObject
 }
@@ -6094,7 +6094,7 @@ interface VectorizeError {
  *
  * This list is expected to grow as support for more operations are released.
  */
-type VectorizeVectorMetadataFilterOp = '$eq' | '$ne'
+type VectorizeVectorMetadataFilterOp = "$eq" | "$ne"
 /**
  * Filter criteria for vector metadata used to limit the retrieved query result set.
  */
@@ -6110,7 +6110,7 @@ type VectorizeVectorMetadataFilter = {
  * Supported distance metrics for an index.
  * Distance metrics determine how other "similar" vectors are determined.
  */
-type VectorizeDistanceMetric = 'euclidean' | 'cosine' | 'dot-product'
+type VectorizeDistanceMetric = "euclidean" | "cosine" | "dot-product"
 /**
  * Metadata return levels for a Vectorize query.
  *
@@ -6120,7 +6120,7 @@ type VectorizeDistanceMetric = 'euclidean' | 'cosine' | 'dot-product'
  * @property indexed  Return all metadata fields configured for indexing in the vector return set. This level of retrieval is "free" in that no additional overhead is incurred returning this data. However, note that indexed metadata is subject to truncation (especially for larger strings).
  * @property none     No indexed metadata will be returned.
  */
-type VectorizeMetadataRetrievalLevel = 'all' | 'indexed' | 'none'
+type VectorizeMetadataRetrievalLevel = "all" | "indexed" | "none"
 interface VectorizeQueryOptions {
   topK?: number
   namespace?: string
@@ -6186,8 +6186,8 @@ interface VectorizeVector {
 /**
  * Represents a matched vector for a query along with its score and (if specified) the matching vector information.
  */
-type VectorizeMatch = Pick<Partial<VectorizeVector>, 'values'> &
-  Omit<VectorizeVector, 'values'> & {
+type VectorizeMatch = Pick<Partial<VectorizeVector>, "values"> &
+  Omit<VectorizeVector, "values"> & {
     /** The score or rank for similarity, when returned as a result */
     score: number
   }
@@ -6363,7 +6363,7 @@ interface DispatchNamespace {
     options?: DynamicDispatchOptions
   ): Fetcher
 }
-declare module 'cloudflare:workflows' {
+declare module "cloudflare:workflows" {
   /**
    * NonRetryableError allows for a user to throw a fatal error
    * that makes a Workflow instance fail immediately without triggering a retry
@@ -6405,15 +6405,15 @@ interface WorkflowInstanceCreateOptions<PARAMS = unknown> {
 }
 type InstanceStatus = {
   status:
-    | 'queued' // means that instance is waiting to be started (see concurrency limits)
-    | 'running'
-    | 'paused'
-    | 'errored'
-    | 'terminated' // user terminated the instance while it was running
-    | 'complete'
-    | 'waiting' // instance is hibernating and waiting for sleep or event to finish
-    | 'waitingForPause' // instance is finishing the current work to pause
-    | 'unknown'
+    | "queued" // means that instance is waiting to be started (see concurrency limits)
+    | "running"
+    | "paused"
+    | "errored"
+    | "terminated" // user terminated the instance while it was running
+    | "complete"
+    | "waiting" // instance is hibernating and waiting for sleep or event to finish
+    | "waitingForPause" // instance is finishing the current work to pause
+    | "unknown"
   error?: string
   output?: object
 }

@@ -1,5 +1,5 @@
-import { ActionPanel } from '@raycast/api'
-import { SaveAction, SaveAsSnippetAction } from './index'
+import { ActionPanel } from "@raycast/api"
+import { SaveAction, SaveAsSnippetAction } from "./index"
 
 export const SaveActionSection = ({
   onSaveConversationAction,
@@ -12,12 +12,12 @@ export const SaveActionSection = ({
 }) => (
   <ActionPanel.Section title="Save">
     {onSaveConversationAction && (
-      <SaveAction title="Save Conversation" onAction={onSaveConversationAction} modifiers={['cmd']} />
+      <SaveAction title="Save Conversation" onAction={onSaveConversationAction} modifiers={["cmd"]} />
     )}
     <SaveAction
       title="Save Answer"
       onAction={onSaveAnswerAction}
-      modifiers={onSaveConversationAction ? ['cmd', 'shift'] : ['cmd']}
+      modifiers={onSaveConversationAction ? ["cmd", "shift"] : ["cmd"]}
     />
     {snippet && <SaveAsSnippetAction text={snippet.text} name={snippet.name} />}
   </ActionPanel.Section>

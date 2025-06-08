@@ -1,5 +1,5 @@
-import { ActionPanel } from '@raycast/api'
-import { CopyToClipboardAction } from './index'
+import { ActionPanel } from "@raycast/api"
+import { CopyToClipboardAction } from "./index"
 
 export const CopyActionSection = ({
   question,

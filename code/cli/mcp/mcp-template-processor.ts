@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, dirname, resolve } from 'node:path'
-import Ajv from 'ajv'
-import * as changeCase from 'change-case'
-import * as yaml from 'js-yaml'
-import { JSONPath } from 'jsonpath-plus'
-import get from 'lodash.get'
-import merge from 'lodash.merge'
-import set from 'lodash.set'
+import { existsSync, readFileSync, writeFileSync } from "node:fs"
+import { basename, dirname, resolve } from "node:path"
+import Ajv from "ajv"
+import * as changeCase from "change-case"
+import * as yaml from "js-yaml"
+import { JSONPath } from "jsonpath-plus"
+import get from "lodash.get"
+import merge from "lodash.merge"
+import set from "lodash.set"
 
 interface MCPServer {
   command: string
@@ -32,7 +32,7 @@ interface MCPConfig {
 
 interface PropertyMapping {
   path?: string
-  transform?: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'omit'
+  transform?: "string" | "number" | "boolean" | "array" | "object" | "omit"
   default?: any
   required?: boolean
 }
@@ -48,7 +48,7 @@ interface Template {
     name: string
     description?: string
     version?: string
-    outputFormat: 'json' | 'yaml'
+    outputFormat: "json" | "yaml"
     targetTool: string
   }
   transform: {
@@ -59,7 +59,7 @@ interface Template {
       exclude?: string[]
     }
     serverNameMapping?: {
-      strategy?: 'keep' | 'singleWord' | 'camelCase' | 'kebab-case'
+      strategy?: "keep" | "singleWord" | "camelCase" | "kebab-case"
       prefix?: string
       suffix?: string
     }
@@ -87,10 +87,10 @@ class MCPTemplateProcessor {
 
   private loadSchema() {
     try {
-      const schemaPath = resolve(__dirname, '../mcp-templates/template.schema.json')
-      this.schema = JSON.parse(readFileSync(schemaPath, 'utf8'))
+      const schemaPath = resolve(__dirname, "../mcp-templates/template.schema.json")
+      this.schema = JSON.parse(readFileSync(schemaPath, "utf8"))
     } catch (error) {
-      console.error('Failed to load template schema:', error)
+      console.error("Failed to load template schema:", error)
       process.exit(1)
     }
   }
@@ -100,11 +100,11 @@ class MCPTemplateProcessor {
       throw new Error(`Template file not found: ${templatePath}`)
     }
 
-    const content = readFileSync(templatePath, 'utf8')
+    const content = readFileSync(templatePath, "utf8")
     let template: Template
 
     try {
-      if (templatePath.endsWith('.yaml') || templatePath.endsWith('.yml')) {
+      if (templatePath.endsWith(".yaml") || templatePath.endsWith(".yml")) {
         template = yaml.load(content) as Template
       } else {
         template = JSON.parse(content)
@@ -127,7 +127,7 @@ class MCPTemplateProcessor {
       throw new Error(`MCP config file not found: ${configPath}`)
     }
 
-    const content = readFileSync(configPath, 'utf8')
+    const content = readFileSync(configPath, "utf8")
     try {
       return yaml.load(content) as MCPConfig
     } catch (error) {
@@ -137,7 +137,7 @@ class MCPTemplateProcessor {
 
   private filterServers(
     servers: Record<string, MCPServer>,
-    filter?: Template['transform']['serverFilter']
+    filter?: Template["transform"]["serverFilter"]
   ): Record<string, MCPServer> {
     if (!filter) return servers
 
@@ -161,24 +161,24 @@ class MCPTemplateProcessor {
     return filtered
   }
 
-  private transformServerName(name: string, mapping?: Template['transform']['serverNameMapping']): string {
+  private transformServerName(name: string, mapping?: Template["transform"]["serverNameMapping"]): string {
     if (!mapping) return name
 
     let transformed = name
 
     // Apply strategy
     switch (mapping.strategy) {
-      case 'singleWord':
+      case "singleWord":
         // Remove hyphens, underscores, and spaces to create single word
-        transformed = name.replace(/[-_\s]/g, '').toLowerCase()
+        transformed = name.replace(/[-_\s]/g, "").toLowerCase()
         break
-      case 'camelCase':
+      case "camelCase":
         transformed = changeCase.camelCase(name)
         break
-      case 'kebab-case':
+      case "kebab-case":
         transformed = changeCase.kebabCase(name)
         break
-      case 'keep':
+      case "keep":
       default:
         // Keep original name
         break
@@ -197,7 +197,7 @@ class MCPTemplateProcessor {
 
   private applyPropertyMappings(
     server: MCPServer,
-    mappings?: Template['transform']['propertyMappings']
+    mappings?: Template["transform"]["propertyMappings"]
   ): Record<string, any> {
     if (!mappings) return { ...server }
 
@@ -206,7 +206,7 @@ class MCPTemplateProcessor {
     for (const [sourceKey, mapping] of Object.entries(mappings)) {
       const sourceValue = get(server, sourceKey)
 
-      if (typeof mapping === 'string') {
+      if (typeof mapping === "string") {
         // Simple string mapping
         if (sourceValue !== undefined) {
           set(result, mapping, sourceValue)
@@ -221,23 +221,23 @@ class MCPTemplateProcessor {
           throw new Error(`Required property ${sourceKey} is missing`)
         }
 
-        if (value !== undefined && transform !== 'omit') {
+        if (value !== undefined && transform !== "omit") {
           // Apply type transformations
           switch (transform) {
-            case 'string':
+            case "string":
               value = String(value)
               break
-            case 'number':
+            case "number":
               value = Number(value)
               break
-            case 'boolean':
+            case "boolean":
               value = Boolean(value)
               break
-            case 'array':
+            case "array":
               value = Array.isArray(value) ? value : [value]
               break
-            case 'object':
-              value = typeof value === 'object' ? value : {}
+            case "object":
+              value = typeof value === "object" ? value : {}
               break
           }
 
@@ -259,7 +259,7 @@ class MCPTemplateProcessor {
   private evaluateCondition(condition: string, server: MCPServer): boolean {
     try {
       // Simple property existence check
-      if (condition.startsWith('$.') && !condition.includes('==') && !condition.includes('!=')) {
+      if (condition.startsWith("$.") && !condition.includes("==") && !condition.includes("!=")) {
         const path = condition.substring(2)
         return get(server, path) !== undefined
       }
@@ -292,7 +292,7 @@ class MCPTemplateProcessor {
     return result
   }
 
-  private postProcess(data: any, options?: Template['postProcess']): any {
+  private postProcess(data: any, options?: Template["postProcess"]): any {
     if (!options) return data
 
     let result = JSON.parse(JSON.stringify(data)) // Deep clone
@@ -315,7 +315,7 @@ class MCPTemplateProcessor {
   private removeNullValues(obj: any): any {
     if (Array.isArray(obj)) {
       return obj.map((item) => this.removeNullValues(item)).filter((item) => item !== null)
-    } else if (obj !== null && typeof obj === 'object') {
+    } else if (obj !== null && typeof obj === "object") {
       const result: any = {}
       for (const [key, value] of Object.entries(obj)) {
         const processedValue = this.removeNullValues(value)
@@ -331,13 +331,13 @@ class MCPTemplateProcessor {
   private removeEmptyObjects(obj: any): any {
     if (Array.isArray(obj)) {
       return obj.map((item) => this.removeEmptyObjects(item))
-    } else if (obj !== null && typeof obj === 'object') {
+    } else if (obj !== null && typeof obj === "object") {
       const result: any = {}
       for (const [key, value] of Object.entries(obj)) {
         const processedValue = this.removeEmptyObjects(value)
         if (
           processedValue !== null &&
-          !(typeof processedValue === 'object' && Object.keys(processedValue).length === 0)
+          !(typeof processedValue === "object" && Object.keys(processedValue).length === 0)
         ) {
           result[key] = processedValue
         }
@@ -350,7 +350,7 @@ class MCPTemplateProcessor {
   private sortKeys(obj: any): any {
     if (Array.isArray(obj)) {
       return obj.map((item) => this.sortKeys(item))
-    } else if (obj !== null && typeof obj === 'object') {
+    } else if (obj !== null && typeof obj === "object") {
       const sortedKeys = Object.keys(obj).sort()
       const result: any = {}
       for (const key of sortedKeys) {
@@ -365,10 +365,10 @@ class MCPTemplateProcessor {
     const result: Record<string, any> = {}
 
     for (const [key, value] of Object.entries(properties)) {
-      if (typeof value === 'string' && value.startsWith('{{') && value.endsWith('}}')) {
+      if (typeof value === "string" && value.startsWith("{{") && value.endsWith("}}")) {
         const templateFunction = value.slice(2, -2)
         result[key] = this.executeTemplateFunction(templateFunction, server)
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         result[key] = this.processTemplateProperties(value, server)
       } else {
         result[key] = value
@@ -380,7 +380,7 @@ class MCPTemplateProcessor {
 
   private executeTemplateFunction(functionName: string, server: MCPServer): any {
     switch (functionName) {
-      case 'extractEnvKeys':
+      case "extractEnvKeys":
         return server.env ? Object.keys(server.env) : []
       default:
         console.warn(`Unknown template function: ${functionName}`)
@@ -396,7 +396,7 @@ class MCPTemplateProcessor {
     const mcpConfig = this.loadMCPConfig(mcpConfigPath)
     const template = this.loadTemplate(templatePath)
 
-    console.log(`Loaded template: ${template.metadata.name} v${template.metadata.version || '1.0.0'}`)
+    console.log(`Loaded template: ${template.metadata.name} v${template.metadata.version || "1.0.0"}`)
 
     // Filter servers
     const filteredServers = this.filterServers(mcpConfig.servers, template.transform.serverFilter)
@@ -439,7 +439,7 @@ class MCPTemplateProcessor {
 
     // Generate output string
     let outputContent: string
-    if (template.metadata.outputFormat === 'yaml') {
+    if (template.metadata.outputFormat === "yaml") {
       outputContent = yaml.dump(output, {
         indent: 2,
         lineWidth: 120,
@@ -451,7 +451,7 @@ class MCPTemplateProcessor {
 
     // Write to file if output path provided
     if (outputPath) {
-      writeFileSync(outputPath, outputContent, 'utf8')
+      writeFileSync(outputPath, outputContent, "utf8")
       console.log(`Generated output: ${outputPath}`)
     }
 
@@ -459,8 +459,8 @@ class MCPTemplateProcessor {
   }
 
   public processAll(mcpConfigPath: string, templatesDir: string, outputDir: string) {
-    const fs = require('fs')
-    const path = require('path')
+    const fs = require("fs")
+    const path = require("path")
 
     if (!existsSync(templatesDir)) {
       throw new Error(`Templates directory not found: ${templatesDir}`)
@@ -472,10 +472,10 @@ class MCPTemplateProcessor {
 
     const templateFiles = fs
       .readdirSync(templatesDir)
-      .filter((file: string) => file.endsWith('.yaml') || file.endsWith('.yml'))
-      .filter((file: string) => file !== 'template.schema.json')
+      .filter((file: string) => file.endsWith(".yaml") || file.endsWith(".yml"))
+      .filter((file: string) => file !== "template.schema.json")
 
-    console.log(`Found ${templateFiles.length} template(s): ${templateFiles.join(', ')}`)
+    console.log(`Found ${templateFiles.length} template(s): ${templateFiles.join(", ")}`)
 
     for (const templateFile of templateFiles) {
       try {
@@ -516,15 +516,15 @@ Examples:
   const processor = new MCPTemplateProcessor()
 
   try {
-    if (args[0] === 'process') {
+    if (args[0] === "process") {
       if (args.length < 3) {
-        console.error('Missing required arguments for process command')
+        console.error("Missing required arguments for process command")
         process.exit(1)
       }
       processor.process(args[1], args[2], args[3])
-    } else if (args[0] === 'process-all') {
+    } else if (args[0] === "process-all") {
       if (args.length < 4) {
-        console.error('Missing required arguments for process-all command')
+        console.error("Missing required arguments for process-all command")
         process.exit(1)
       }
       processor.processAll(args[1], args[2], args[3])
@@ -533,7 +533,7 @@ Examples:
       process.exit(1)
     }
   } catch (error) {
-    console.error('Error:', error)
+    console.error("Error:", error)
     process.exit(1)
   }
 }

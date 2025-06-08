@@ -565,9 +565,9 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ntopng_data_vol:/var/lib/ntopng # Using a named volume
+      - netflow-data_vol:/var/lib/ntopng # Using a named volume
       # Alternatively, use a bind mount:
-      # - ./ntopng_data:/var/lib/ntopng
+      # - ./netflow-data:/var/lib/ntopng
     networks:
       - monitoring_net
     depends_on:
@@ -581,7 +581,7 @@ networks:
     driver: bridge
 
 volumes:
-  ntopng_data_vol: # Definition for the named volume</code></pre>
+  netflow-data_vol: # Definition for the named volume</code></pre>
                     </div>
                     <button id="explain-docker-compose"
                             class="ai-button bg-sky-500 hover:bg-sky-600 text-white">Explain with AI ✨</button>
@@ -591,13 +591,13 @@ volumes:
                             <strong>`netflow2ng` service:</strong> Collects NetFlow on UDP 2055, publishes ZMQ on TCP 5556. Port 2055/udp is exposed on the host.
                         </li>
                         <li>
-                            <strong>`ntopng` service:</strong> Subscribes to `netflow2ng`'s ZMQ feed. Runs in community mode. Defines local networks with `-m`. Exposes web UI on TCP 3000. Persists data using the `ntopng_data_vol` volume. `TZ` sets the timezone.
+                            <strong>`ntopng` service:</strong> Subscribes to `netflow2ng`'s ZMQ feed. Runs in community mode. Defines local networks with `-m`. Exposes web UI on TCP 3000. Persists data using the `netflow-data_vol` volume. `TZ` sets the timezone.
                         </li>
                         <li>
                             <strong>`monitoring_net` network:</strong> Custom bridge network for inter-container communication and DNS resolution by service name.
                         </li>
                         <li>
-                            <strong>`ntopng_data_vol` volume:</strong> Named volume for `ntopng` data persistence.
+                            <strong>`netflow-data_vol` volume:</strong> Named volume for `ntopng` data persistence.
                         </li>
                     </ul>
                     <h2 class="text-2xl font-semibold text-sky-700 mt-6 mb-3">Key `docker-compose.yml` Parameters (Table 3)</h2>
@@ -692,7 +692,7 @@ volumes:
                                         <code>volumes</code>
                                     </td>
                                     <td class="px-4 py-3 text-sm text-slate-600">
-                                        <code>["ntopng_data_vol:/var/lib/ntopng"]</code>
+                                        <code>["netflow-data_vol:/var/lib/ntopng"]</code>
                                     </td>
                                     <td class="px-4 py-3 text-sm text-slate-600">Persist ntopng data.</td>
                                 </tr>
@@ -978,7 +978,7 @@ volumes:
                         <li>Use the `-l` (disable login) option with extreme caution in isolated labs only.</li>
                     </ul>
                     <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.2. Data Persistence and Backups</h3>
-                    <p>Regularly back up the `ntopng_data_vol` volume (or bind mount directory) to prevent data loss.</p>
+                    <p>Regularly back up the `netflow-data_vol` volume (or bind mount directory) to prevent data loss.</p>
                     <h3 class="text-xl font-semibold text-sky-700 mt-4 mb-2">6.3. Tuning Performance</h3>
                     <ul class="list-disc list-inside pl-4">
                         <li>

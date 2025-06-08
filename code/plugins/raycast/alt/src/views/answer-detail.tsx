@@ -1,5 +1,5 @@
-import { List } from '@raycast/api'
-import type { Chat } from '../type'
+import { List } from "@raycast/api"
+import type { Chat } from "../type"
 
 export const AnswerDetailView = (props: {
   chat: Chat
@@ -16,7 +16,7 @@ export const AnswerDetailView = (props: {
         const fileURI = encodeURI(`file://${file}?raycast-width=${width}`)
         return `![](${fileURI})`
       })
-      .join('\n') || ''
+      .join("\n") || ""
 
   const markdown = `${
     isStreaming ? streamData?.answer : chat.answer

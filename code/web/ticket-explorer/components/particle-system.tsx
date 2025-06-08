@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
 interface Particle {
   x: number
@@ -20,7 +20,7 @@ export function ParticleSystem() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
     // Set canvas size
@@ -30,18 +30,18 @@ export function ParticleSystem() {
     }
 
     setCanvasSize()
-    window.addEventListener('resize', setCanvasSize)
+    window.addEventListener("resize", setCanvasSize)
 
     // Create particles
     const particles: Particle[] = []
     const particleCount = 100
 
     const colors = [
-      '#ff00ff', // Pink
-      '#00ffff', // Cyan
-      '#ff00aa', // Magenta
-      '#aa00ff', // Purple
-      '#00aaff' // Blue
+      "#ff00ff", // Pink
+      "#00ffff", // Cyan
+      "#ff00aa", // Magenta
+      "#aa00ff", // Purple
+      "#00aaff" // Blue
     ]
 
     for (let i = 0; i < particleCount; i++) {
@@ -62,7 +62,7 @@ export function ParticleSystem() {
       requestAnimationFrame(animate)
 
       // Clear canvas with slight fade effect for trails
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       // Update and draw particles
@@ -91,7 +91,7 @@ export function ParticleSystem() {
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
         ctx.fillStyle = `${particle.color}${Math.floor(particle.alpha * 255)
           .toString(16)
-          .padStart(2, '0')}`
+          .padStart(2, "0")}`
         ctx.fill()
 
         // Draw glow
@@ -100,7 +100,7 @@ export function ParticleSystem() {
           0,
           `${particle.color}${Math.floor(particle.alpha * 0.5 * 255)
             .toString(16)
-            .padStart(2, '0')}`
+            .padStart(2, "0")}`
         )
         gradient.addColorStop(1, `${particle.color}00`)
 
@@ -115,7 +115,7 @@ export function ParticleSystem() {
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', setCanvasSize)
+      window.removeEventListener("resize", setCanvasSize)
     }
   }, [])
 

@@ -1,0 +1,12 @@
+use_angular: true
+require_scope: true
+types:
+  - experiment
+scopes:
+  - backend
+  - bothends
+  - ci
+  - docs
+  - frontend
+  - ops
+  - tests

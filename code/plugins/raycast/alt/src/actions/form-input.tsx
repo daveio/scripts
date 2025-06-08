@@ -1,6 +1,6 @@
-import { Action, ActionPanel, Icon, useNavigation } from '@raycast/api'
-import type { QuestionFormProps } from '../type'
-import { QuestionForm } from '../views/question/form'
+import { Action, ActionPanel, Icon, useNavigation } from "@raycast/api"
+import type { QuestionFormProps } from "../type"
+import { QuestionForm } from "../views/question/form"
 
 export const FormInputActionSection = (props: QuestionFormProps) => {
   const { push } = useNavigation()
@@ -9,7 +9,7 @@ export const FormInputActionSection = (props: QuestionFormProps) => {
     <ActionPanel.Section title="Input">
       <Action
         title="Full Text Input"
-        shortcut={{ modifiers: ['cmd'], key: 't' }}
+        shortcut={{ modifiers: ["cmd"], key: "t" }}
         icon={Icon.Text}
         onAction={() => {
           push(<QuestionForm {...props} />)

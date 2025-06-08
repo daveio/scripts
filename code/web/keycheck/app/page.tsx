@@ -1,5 +1,5 @@
-import KeyCompromiseChecker from '@/components/key-compromise-checker'
-import SocialLinks from '@/components/social-links'
+import KeyCompromiseChecker from "@/components/key-compromise-checker"
+import SocialLinks from "@/components/social-links"
 
 export default function Home() {
   return (

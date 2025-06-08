@@ -16,22 +16,28 @@ This monitoring stack includes:
 ### Basic Usage (No GeoIP)
 
 ```bash
-# Build the container
-docker build -t ntopng-netflow .
+# Pull the image
+docker pull ghcr.io/daveio/netflow:latest
 
 # Run the container
 docker run -d \
-  --name ntopng \
-  -p 3000:3000 \
+  --name netflow \
+  -p 8849:8849 \
   -p 2055:2055/udp \
-  ntopng-netflow
+  ghcr.io/daveio/netflow:latest
 ```
 
-Access the web interface at `http://localhost:3000`
+Access the web interface at `http://localhost:8849`
 
 ### Using Docker Compose
 
 ```bash
+# Create .env file from example
+cp .env.example .env
+
+# Edit .env and add your MaxMind credentials (optional)
+# nano .env
+
 # Start with docker-compose
 docker-compose up -d
 
@@ -74,12 +80,12 @@ Geographic IP location adds country/city information to the traffic analysis.
 ##### Option A: Environment Variables
 ```bash
 docker run -d \
-  --name ntopng \
+  --name netflow \
   -e GEOIPUPDATE_ACCOUNT_ID=123456 \
   -e GEOIPUPDATE_LICENSE_KEY=your_license_key_here \
-  -p 3000:3000 \
+  -p 8849:8849 \
   -p 2055:2055/udp \
-  ntopng-netflow
+  ghcr.io/daveio/netflow:latest
 ```
 
 ##### Option B: Docker Compose
@@ -93,13 +99,13 @@ environment:
 ##### Option C: Interactive Setup
 ```bash
 # Run setup script inside container
-docker exec -it ntopng /opt/geoip.bash
+docker exec -it netflow /opt/geoip.bash
 
 # Check GeoIP status
-docker exec ntopng /opt/geoip.bash --check
+docker exec netflow /opt/geoip.bash --check
 
 # Update databases only
-docker exec ntopng /opt/geoip.bash --update
+docker exec netflow /opt/geoip.bash --update
 ```
 
 #### GeoIP Status
@@ -132,15 +138,15 @@ Configure NetFlow/sFlow/IPFIX export to:
 ### View Container Logs
 ```bash
 # All logs
-docker logs ntopng
+docker logs netflow
 
 # Follow logs
-docker logs -f ntopng
+docker logs -f netflow
 
 # Service-specific logs (inside container)
-docker exec ntopng tail -f /var/log/ntopng/ntopng-startup.log
-docker exec ntopng tail -f /var/log/ntopng/ntopng.log
-docker exec ntopng tail -f /var/log/ntopng/redis.log
+docker exec netflow tail -f /var/log/ntopng/ntopng-startup.log
+docker exec netflow tail -f /var/log/ntopng/ntopng.log
+docker exec netflow tail -f /var/log/ntopng/redis.log
 ```
 
 ### Health Check
@@ -149,13 +155,13 @@ docker exec ntopng tail -f /var/log/ntopng/redis.log
 docker ps
 
 # Manual health check
-curl http://localhost:3000/lua/rest/v2/get/system/stats.lua
+curl http://localhost:8849/lua/rest/v2/get/system/stats.lua
 ```
 
 ### Update GeoIP Databases
 ```bash
 # Manual update (inside container)
-docker exec ntopng geoipupdate -v
+docker exec netflow geoipupdate -v
 ```
 
 ## Data Persistence
@@ -164,17 +170,17 @@ The container uses volumes for persistent data:
 
 ```yaml
 volumes:
-  - ntopng_data:/var/lib/ntopng    # Database and configuration
-  - ntopng_logs:/var/log/ntopng    # Log files
+  - netflow-data:/var/lib/ntopng    # Database and configuration
+  - netflow-logs:/var/log/ntopng    # Log files
 ```
 
 ### Backup Data
 ```bash
 # Create backup
-docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar czf /backup/ntopng-backup.tar.gz -C /data .
+docker run --rm -v netflow-data:/data -v $(pwd):/backup alpine tar czf /backup/netflow-backup.tar.gz -C /data .
 
 # Restore backup
-docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar xzf /backup/ntopng-backup.tar.gz -C /data
+docker run --rm -v netflow-data:/data -v $(pwd):/backup alpine tar xzf /backup/netflow-backup.tar.gz -C /data
 ```
 
 ## Troubleshooting
@@ -182,19 +188,19 @@ docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar xzf /backup/nt
 ### No Traffic Visible
 1. **Check router configuration**: Ensure NetFlow is enabled and pointing to correct IP:port
 2. **Verify network connectivity**: Test UDP port 2055 is reachable
-3. **Check logs**: `docker logs ntopng` for netflow2ng messages
+3. **Check logs**: `docker logs netflow` for netflow2ng messages
 4. **Firewall**: Ensure Docker host firewall allows UDP 2055
 
 ### ntopng Web Interface Issues
-1. **Port binding**: Verify port 3000 is not in use: `netstat -ln | grep 3000`
+1. **Port binding**: Verify port 8849 is not in use: `netstat -ln | grep 8849`
 2. **Container status**: Check if container is running: `docker ps`
-3. **Health check**: `curl http://localhost:3000`
+3. **Health check**: `curl http://localhost:8849`
 
 ### GeoIP Not Working
 1. **Check credentials**: Verify Account ID and License Key are correct
 2. **Network access**: Container needs internet access to download databases
 3. **Logs**: Check startup logs for GeoIP download status
-4. **Manual test**: `docker exec ntopng geoipupdate -v`
+4. **Manual test**: `docker exec netflow geoipupdate -v`
 
 ### Performance Issues
 1. **Increase limits** in `ntopng.conf`:
@@ -205,7 +211,7 @@ docker run --rm -v ntopng_data:/data -v $(pwd):/backup alpine tar xzf /backup/nt
    ```
 2. **Add more memory** to container:
    ```bash
-   docker run --memory=2g ntopng-netflow
+   docker run --memory=2g ghcr.io/daveio/netflow:latest
    ```
 3. **Filter traffic** to reduce load:
    ```conf
@@ -230,19 +236,19 @@ By default, the container runs a local Redis server. To use an external Redis se
 ```bash
 # Using hostname and port
 docker run -d \
-  --name ntopng \
+  --name netflow \
   -e REMOTE_REDIS="redis.example.com:6379" \
-  -p 3000:3000 \
+  -p 8849:8849 \
   -p 2055:2055/udp \
-  ntopng-netflow
+  ghcr.io/daveio/netflow:latest
 
 # Using hostname only (defaults to port 6379)
 docker run -d \
-  --name ntopng \
+  --name netflow \
   -e REMOTE_REDIS="redis.example.com" \
-  -p 3000:3000 \
+  -p 8849:8849 \
   -p 2055:2055/udp \
-  ntopng-netflow
+  ghcr.io/daveio/netflow:latest
 ```
 
 When `REMOTE_REDIS` is set:
@@ -254,7 +260,7 @@ When `REMOTE_REDIS` is set:
 
 | Port | Protocol | Description |
 |------|----------|-------------|
-| 3000 | TCP | ntopng web interface |
+| 8849 | TCP | ntopng web interface |
 | 2055 | UDP | NetFlow/sFlow/IPFIX input |
 
 ## Project Structure
@@ -308,7 +314,7 @@ docker build \
   --build-arg NTOP_VERSION=6.4 \
   --build-arg NDPI_VERSION=4.14 \
   --build-arg NETFLOW2NG_VERSION=0.0.5 \
-  -t ntopng-netflow .
+  -t ghcr.io/daveio/netflow:custom .
 ```
 
 ### Development Mode
@@ -317,8 +323,8 @@ docker build \
 docker run -d \
   -v $(pwd)/ntopng.conf:/etc/ntopng.conf \
   -v $(pwd)/ntopng.bash:/opt/ntopng.bash \
-  -p 3000:3000 -p 2055:2055/udp \
-  ntopng-netflow
+  -p 8849:8849 -p 2055:2055/udp \
+  ghcr.io/daveio/netflow:latest
 ```
 
 ### Integration with Other Tools
@@ -344,7 +350,7 @@ Run this on the InfluxDB server (can use `bash` shell inside Docker):
 
 ```bash
 export BUCKET_ID="16_hex_chars"
-export USERNAME="ntopng"
+export USERNAME="netflow"
 export PASSWORD="some_password"
 export ORG="home"
 export TOKEN="your_operator_token_or_other_token"
@@ -355,7 +361,7 @@ influx v1 auth create --read-bucket $BUCKET_ID --write-bucket $BUCKET_ID --usern
 
 For issues and questions:
 1. Check the troubleshooting section above
-2. Review container logs: `docker logs ntopng`
+2. Review container logs: `docker logs netflow`
 3. Verify router NetFlow configuration
 4. Check network connectivity and firewall settings
 
@@ -376,7 +382,7 @@ For issues and questions:
 - **Flow export** to InfluxDB, Elasticsearch, and other time-series databases
 
 ### Monitoring Features
-- **Web-based interface** on port 3000 with customizable dashboards
+- **Web-based interface** on port 8849 with customizable dashboards
 - **REST API** for programmatic access to flow data and statistics
 - **Health check endpoints** for container orchestration platforms
 - **Metrics export** for Prometheus integration

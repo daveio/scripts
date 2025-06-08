@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import type React from 'react'
+import type React from "react"
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import { AlertTriangle, CheckCircle2, Copy, KeyRound, Shield } from 'lucide-react'
-import { useState } from 'react'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { AlertTriangle, CheckCircle2, Copy, KeyRound, Shield } from "lucide-react"
+import { useState } from "react"
 
-type KeyType = 'PKCS#8' | 'SSH' | 'Unknown' | null
+type KeyType = "PKCS#8" | "SSH" | "Unknown" | null
 
 export default function KeyCheckForm() {
-  const [privateKey, setPrivateKey] = useState('')
+  const [privateKey, setPrivateKey] = useState("")
   const [keyType, setKeyType] = useState<KeyType>(null)
   const [submitted, setSubmitted] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -21,15 +21,15 @@ export default function KeyCheckForm() {
     if (!key.trim()) return null
 
     if (
-      key.includes('-----BEGIN PRIVATE KEY-----') ||
-      key.includes('-----BEGIN RSA PRIVATE KEY-----') ||
-      key.includes('-----BEGIN EC PRIVATE KEY-----')
+      key.includes("-----BEGIN PRIVATE KEY-----") ||
+      key.includes("-----BEGIN RSA PRIVATE KEY-----") ||
+      key.includes("-----BEGIN EC PRIVATE KEY-----")
     ) {
-      return 'PKCS#8'
-    } else if (key.includes('-----BEGIN OPENSSH PRIVATE KEY-----')) {
-      return 'SSH'
+      return "PKCS#8"
+    } else if (key.includes("-----BEGIN OPENSSH PRIVATE KEY-----")) {
+      return "SSH"
     } else {
-      return 'Unknown'
+      return "Unknown"
     }
   }
 
@@ -53,9 +53,9 @@ export default function KeyCheckForm() {
   }
 
   const getKeyTypeColor = () => {
-    if (keyType === 'PKCS#8' || keyType === 'SSH') return 'text-green-500'
-    if (keyType === 'Unknown') return 'text-yellow-500'
-    return ''
+    if (keyType === "PKCS#8" || keyType === "SSH") return "text-green-500"
+    if (keyType === "Unknown") return "text-yellow-500"
+    return ""
   }
 
   return (
@@ -103,7 +103,7 @@ export default function KeyCheckForm() {
                 <div className="flex justify-end mt-2">
                   <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={copyWarningMessage}>
                     {copied ? <CheckCircle2 className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                    {copied ? 'Copied!' : 'Copy warning'}
+                    {copied ? "Copied!" : "Copy warning"}
                   </Button>
                 </div>
               </AlertDescription>
@@ -115,7 +115,7 @@ export default function KeyCheckForm() {
             type="button"
             variant="outline"
             onClick={() => {
-              setPrivateKey('')
+              setPrivateKey("")
               setKeyType(null)
               setSubmitted(false)
             }}

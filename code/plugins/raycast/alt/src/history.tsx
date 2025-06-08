@@ -1,18 +1,18 @@
-import { ActionPanel, Icon, List } from '@raycast/api'
-import { useState } from 'react'
-import { DestructiveAction, TextToSpeechAction } from './actions'
-import { CopyActionSection } from './actions/copy'
-import { PreferencesActionSection } from './actions/preferences'
-import { SaveActionSection } from './actions/save'
-import { useHistory } from './hooks/useHistory'
-import { useSavedChat } from './hooks/useSavedChat'
-import type { Chat } from './type'
-import { AnswerDetailView } from './views/answer-detail'
+import { ActionPanel, Icon, List } from "@raycast/api"
+import { useState } from "react"
+import { DestructiveAction, TextToSpeechAction } from "./actions"
+import { CopyActionSection } from "./actions/copy"
+import { PreferencesActionSection } from "./actions/preferences"
+import { SaveActionSection } from "./actions/save"
+import { useHistory } from "./hooks/useHistory"
+import { useSavedChat } from "./hooks/useSavedChat"
+import type { Chat } from "./type"
+import { AnswerDetailView } from "./views/answer-detail"
 
 export default function History() {
   const savedChat = useSavedChat()
   const history = useHistory()
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>("")
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null)
 
   const getActionPanel = (chat: Chat) => (
@@ -26,17 +26,17 @@ export default function History() {
         <DestructiveAction
           title="Remove"
           dialog={{
-            title: 'Are you sure you want to remove this answer from your history?'
+            title: "Are you sure you want to remove this answer from your history?"
           }}
           onAction={() => history.remove(chat)}
         />
         <DestructiveAction
           title="Clear History"
           dialog={{
-            title: 'Are you sure you want to clear your history?'
+            title: "Are you sure you want to clear your history?"
           }}
           onAction={() => history.clear()}
-          shortcut={{ modifiers: ['cmd', 'shift'], key: 'delete' }}
+          shortcut={{ modifiers: ["cmd", "shift"], key: "delete" }}
         />
       </ActionPanel.Section>
       <PreferencesActionSection />
@@ -50,7 +50,7 @@ export default function History() {
   const filteredHistory = sortedHistory
     .filter((value, index, self) => index === self.findIndex((history) => history.id === value.id))
     .filter((answer) => {
-      if (searchText === '') {
+      if (searchText === "") {
         return true
       }
       return (

@@ -1,28 +1,28 @@
-import { LocalStorage, Toast, showToast } from '@raycast/api'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { Command, CommandHook, Model } from '../type'
-import { useModel } from './useModel'
+import { LocalStorage, Toast, showToast } from "@raycast/api"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { Command, CommandHook, Model } from "../type"
+import { useModel } from "./useModel"
 
-export const COMMAND_MODEL_PREFIX = 'command'
-export const DEFAULT_AI_COMMAND_ID_PREFIX: string = 'default'
+export const COMMAND_MODEL_PREFIX = "command"
+export const DEFAULT_AI_COMMAND_ID_PREFIX: string = "default"
 export const FIX_SPELLING_AND_GRAMMAR_COMMAND_ID: string = `${DEFAULT_AI_COMMAND_ID_PREFIX}-fix-spelling-and-grammar`
 export const IMPROVE_WRITING_COMMAND_ID: string = `${DEFAULT_AI_COMMAND_ID_PREFIX}-improve-writing`
 export const DEFAULT_COMMANDS: Record<string, Command> = {
   [FIX_SPELLING_AND_GRAMMAR_COMMAND_ID]: {
     id: FIX_SPELLING_AND_GRAMMAR_COMMAND_ID,
-    name: 'Fix Spelling and Grammar',
+    name: "Fix Spelling and Grammar",
     prompt:
       "You are an assistant that fixes spelling, grammar and punctuation. Don't insert any " +
-      'extra information; only provide the corrected text. After receiving corrections, the user can request ' +
-      'clarifications, and you need to answer them in detail.',
-    model: 'gpt-4o-mini',
-    temperature: '0.7',
-    contentSource: 'selectedText',
+      "extra information; only provide the corrected text. After receiving corrections, the user can request " +
+      "clarifications, and you need to answer them in detail.",
+    model: "gpt-4o-mini",
+    temperature: "0.7",
+    contentSource: "selectedText",
     isDisplayInput: true
   },
   [IMPROVE_WRITING_COMMAND_ID]: {
     id: IMPROVE_WRITING_COMMAND_ID,
-    name: 'Improve Writing',
+    name: "Improve Writing",
     prompt: `Act as a spelling corrector, content writer, and text improver/editor. Reply with the rewritten text.
 After receiving corrections, the user can request clarifications, and you need to answer them in detail.
 Strictly follow these rules:
@@ -37,23 +37,23 @@ Strictly follow these rules:
 - ALWAYS maintain the existing tone of voice and style, e.g. formal, casual, polite, etc.
 - NEVER surround the improved text with quotes or any additional formatting
 - If the text is already well-written and requires no improvement, don't change the given text`,
-    model: 'gpt-4o-mini',
-    temperature: '0.7',
-    contentSource: 'selectedText',
+    model: "gpt-4o-mini",
+    temperature: "0.7",
+    contentSource: "selectedText",
     isDisplayInput: true
   },
   [`${DEFAULT_AI_COMMAND_ID_PREFIX}-summarize-webpage`]: {
     id: `${DEFAULT_AI_COMMAND_ID_PREFIX}-summarize-webpage`,
-    name: 'Summarize Webpage',
+    name: "Summarize Webpage",
     prompt:
-      'Read and summarize the main ideas and key points from this text. Summarize the information concisely and clearly.',
-    model: 'gpt-4o-mini',
-    temperature: '1',
-    contentSource: 'browserTab',
+      "Read and summarize the main ideas and key points from this text. Summarize the information concisely and clearly.",
+    model: "gpt-4o-mini",
+    temperature: "1",
+    contentSource: "browserTab",
     isDisplayInput: false
   }
 }
-const COMMANDS_STORAGE_KEY = 'commands'
+const COMMANDS_STORAGE_KEY = "commands"
 
 export function useCommand(): CommandHook {
   const { add: addModel, update: updateModel, remove: removeModel } = useModel()
@@ -64,7 +64,7 @@ export function useCommand(): CommandHook {
   useEffect(() => {
     ;(async () => {
       const storedCommands: Record<string, Command> = JSON.parse(
-        (await LocalStorage.getItem<string>(COMMANDS_STORAGE_KEY)) || '{}'
+        (await LocalStorage.getItem<string>(COMMANDS_STORAGE_KEY)) || "{}"
       )
 
       if (Object.keys(storedCommands).length === 0) {
@@ -100,12 +100,12 @@ export function useCommand(): CommandHook {
   const add = useCallback(
     async (command: Command) => {
       const toast = await showToast({
-        title: 'Saving your AI command...',
+        title: "Saving your AI command...",
         style: Toast.Style.Animated
       })
       setData((prevData) => ({ ...prevData, [command.id]: command }))
       addModel(mapCommandToModel(command))
-      toast.title = 'AI command saved!'
+      toast.title = "AI command saved!"
       toast.style = Toast.Style.Success
     },
     [addModel, setData, data]
@@ -114,7 +114,7 @@ export function useCommand(): CommandHook {
   const update = useCallback(
     async (command: Command) => {
       const toast = await showToast({
-        title: 'Updating your AI command...',
+        title: "Updating your AI command...",
         style: Toast.Style.Animated
       })
       setData((prevData) => ({
@@ -125,7 +125,7 @@ export function useCommand(): CommandHook {
           updated_at: new Date().toISOString()
         }
       }))
-      toast.title = 'AI command updated!'
+      toast.title = "AI command updated!"
       toast.style = Toast.Style.Success
     },
     [updateModel, setData, data]
@@ -134,7 +134,7 @@ export function useCommand(): CommandHook {
   const remove = useCallback(
     async (command: Command) => {
       const toast = await showToast({
-        title: 'Removing your AI command...',
+        title: "Removing your AI command...",
         style: Toast.Style.Animated
       })
       setData((prevData) => {
@@ -143,7 +143,7 @@ export function useCommand(): CommandHook {
         return newData
       })
       removeModel(mapCommandToModel(command))
-      toast.title = 'AI command removed!'
+      toast.title = "AI command removed!"
       toast.style = Toast.Style.Success
     },
     [removeModel, setData, data]
@@ -151,7 +151,7 @@ export function useCommand(): CommandHook {
 
   const clear = useCallback(async () => {
     const toast = await showToast({
-      title: 'Clearing AI commands...',
+      title: "Clearing AI commands...",
       style: Toast.Style.Animated
     })
 
@@ -163,7 +163,7 @@ export function useCommand(): CommandHook {
     })
     setData(DEFAULT_COMMANDS)
 
-    toast.title = 'AI commands cleared!'
+    toast.title = "AI commands cleared!"
     toast.style = Toast.Style.Success
   }, [removeModel, setData, data])
 

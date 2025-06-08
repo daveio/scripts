@@ -1,4 +1,4 @@
-import { TicketExplorer } from '@/components/ticket-explorer'
+import { TicketExplorer } from "@/components/ticket-explorer"
 
 export default function Home() {
   return (

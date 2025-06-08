@@ -1,31 +1,31 @@
-'use client'
+"use client"
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useAnalytics } from '@/hooks/use-analytics'
-import { parseCSV } from '@/lib/data-utils'
-import { organizeEpics, parseHighLevelCSV } from '@/lib/high-level-data'
-import type { Epic, HighLevelTicket } from '@/lib/high-level-data'
-import type { FilterState, Ticket, ViewMode } from '@/lib/types'
-import { AlertTriangle, Database, FileText, GitBranch, Layers, Loader2, Power } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { EpicTransition } from './epic-transition'
-import { EpicView } from './epic-view'
-import { FilterSidebar } from './filter-sidebar'
-import { HighLevelView } from './high-level-view'
-import { KeyboardListener } from './keyboard-listener'
-import { ParticleSystem } from './particle-system'
-import { RelationshipView } from './relationship-view'
-import { SynthwaveBackground } from './synthwave-background'
-import { ThemeToggle } from './theme-toggle'
-import { TicketDetail } from './ticket-detail'
-import { TicketList } from './ticket-list'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useAnalytics } from "@/hooks/use-analytics"
+import { parseCSV } from "@/lib/data-utils"
+import { organizeEpics, parseHighLevelCSV } from "@/lib/high-level-data"
+import type { Epic, HighLevelTicket } from "@/lib/high-level-data"
+import type { FilterState, Ticket, ViewMode } from "@/lib/types"
+import { AlertTriangle, Database, FileText, GitBranch, Layers, Loader2, Power } from "lucide-react"
+import { useEffect, useState } from "react"
+import { EpicTransition } from "./epic-transition"
+import { EpicView } from "./epic-view"
+import { FilterSidebar } from "./filter-sidebar"
+import { HighLevelView } from "./high-level-view"
+import { KeyboardListener } from "./keyboard-listener"
+import { ParticleSystem } from "./particle-system"
+import { RelationshipView } from "./relationship-view"
+import { SynthwaveBackground } from "./synthwave-background"
+import { ThemeToggle } from "./theme-toggle"
+import { TicketDetail } from "./ticket-detail"
+import { TicketList } from "./ticket-list"
 
 // Define the URLs for the data sources
-const TICKETS_URL = 'https://data.dave.io/TICKETS.csv'
-const HIGH_LEVEL_TICKETS_URL = 'https://data.dave.io/HIGH-LEVEL-TICKETS.csv'
+const TICKETS_URL = "https://data.dave.io/TICKETS.csv"
+const HIGH_LEVEL_TICKETS_URL = "https://data.dave.io/HIGH-LEVEL-TICKETS.csv"
 
 export function TicketExplorer() {
   const analytics = useAnalytics()
@@ -37,7 +37,7 @@ export function TicketExplorer() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isCorsError, setIsCorsError] = useState(false)
-  const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const [viewMode, setViewMode] = useState<ViewMode>("list")
   const [isSynthwaveMode, setIsSynthwaveMode] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextThemeState, setNextThemeState] = useState(false)
@@ -46,7 +46,7 @@ export function TicketExplorer() {
     statuses: [],
     priorities: [],
     labels: [],
-    searchTerm: '',
+    searchTerm: "",
     showOnlyParents: false,
     showOnlyChildren: false
   })
@@ -58,10 +58,10 @@ export function TicketExplorer() {
       // CORS errors typically don't provide much information due to security restrictions
       // We can check for common patterns in error messages or if the error was thrown during a fetch
       return (
-        error.message?.includes('CORS') ||
-        error.message?.includes('Cross-Origin') ||
-        error.name === 'TypeError' ||
-        error.message?.includes('Failed to fetch')
+        error.message?.includes("CORS") ||
+        error.message?.includes("Cross-Origin") ||
+        error.name === "TypeError" ||
+        error.message?.includes("Failed to fetch")
       )
     }
 
@@ -138,7 +138,7 @@ export function TicketExplorer() {
         } else {
           setError(`Failed to load ticket data: ${error.message}`)
         }
-        console.error('Error loading CSV:', err)
+        console.error("Error loading CSV:", err)
       } finally {
         setLoading(false)
       }
@@ -172,7 +172,7 @@ export function TicketExplorer() {
     if (filters.labels.length > 0) {
       result = result.filter((ticket) => {
         if (!ticket.Labels) return false
-        const ticketLabels = ticket.Labels.split(',').map((label) => label.trim())
+        const ticketLabels = ticket.Labels.split(",").map((label) => label.trim())
         return filters.labels.some((label) => ticketLabels.includes(label))
       })
     }
@@ -188,11 +188,11 @@ export function TicketExplorer() {
 
     // Filter by parent/child relationship
     if (filters.showOnlyParents) {
-      result = result.filter((ticket) => tickets.some((t) => t['Parent issue'] === ticket.ID))
+      result = result.filter((ticket) => tickets.some((t) => t["Parent issue"] === ticket.ID))
     }
 
     if (filters.showOnlyChildren) {
-      result = result.filter((ticket) => Boolean(ticket['Parent issue']))
+      result = result.filter((ticket) => Boolean(ticket["Parent issue"]))
     }
 
     setFilteredTickets(result)
@@ -225,7 +225,7 @@ export function TicketExplorer() {
     // Then immediately start transition
     setIsTransitioning(true)
     analytics.trackThemeChange({
-      theme: 'synthwave',
+      theme: "synthwave",
       enabled: !isSynthwaveMode
     })
   }
@@ -241,7 +241,7 @@ export function TicketExplorer() {
     setNextThemeState(false)
     setIsTransitioning(true)
     analytics.trackThemeChange({
-      theme: 'synthwave',
+      theme: "synthwave",
       enabled: false
     })
   }
@@ -249,7 +249,7 @@ export function TicketExplorer() {
   // Track view mode changes
   const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode)
-    analytics.track('view_mode_change', {
+    analytics.track("view_mode_change", {
       mode,
       timestamp: new Date().toISOString()
     })
@@ -265,7 +265,7 @@ export function TicketExplorer() {
   // Track errors
   useEffect(() => {
     if (error) {
-      analytics.trackError(new Error(error), 'TicketExplorer')
+      analytics.trackError(new Error(error), "TicketExplorer")
     }
   }, [error, analytics])
 
@@ -312,7 +312,7 @@ export function TicketExplorer() {
                   <h4 className="mt-4 font-semibold">Possible solutions:</h4>
                   <ul className="mt-2 list-disc pl-5">
                     <li>
-                      Configure the server to add the following header:{' '}
+                      Configure the server to add the following header:{" "}
                       <code className="rounded bg-destructive/20 px-1">Access-Control-Allow-Origin: *</code>
                     </li>
                     <li>Create a proxy API route in your Next.js app to fetch the data server-side</li>
@@ -350,7 +350,7 @@ export function TicketExplorer() {
 
       <div
         className={`relative flex h-screen flex-col overflow-hidden bg-background md:flex-row ${
-          isSynthwaveMode ? 'synthwave-mode' : ''
+          isSynthwaveMode ? "synthwave-mode" : ""
         }`}
       >
         <FilterSidebar
@@ -361,7 +361,7 @@ export function TicketExplorer() {
         />
 
         <div className="flex flex-1 flex-col overflow-hidden">
-          <div className={`relative border-b border-border p-4 ${isSynthwaveMode ? 'grid-bg' : ''}`}>
+          <div className={`relative border-b border-border p-4 ${isSynthwaveMode ? "grid-bg" : ""}`}>
             <div className="flex items-center justify-between">
               {/* Only show title in synthwave mode */}
               {isSynthwaveMode ? (
@@ -369,7 +369,7 @@ export function TicketExplorer() {
                   className="text-2xl font-bold text-foreground font-orbitron glitch-text"
                   data-text="Ticket Explorer Pro Ultra Extreme &apos;95"
                 >
-                  <span className="neon-text">Ticket Explorer</span>{' '}
+                  <span className="neon-text">Ticket Explorer</span>{" "}
                   <span className="neon-text-cyan">Pro Ultra Extreme &apos;95</span>
                 </h1>
               ) : null}
@@ -397,20 +397,20 @@ export function TicketExplorer() {
                   <ThemeToggle />
                 )}
                 <Tabs defaultValue="list" onValueChange={(value) => handleViewModeChange(value as ViewMode)}>
-                  <TabsList className={isSynthwaveMode ? 'neon-border cyberpunk-button' : ''}>
-                    <TabsTrigger value="list" className={isSynthwaveMode ? 'text-white' : ''}>
+                  <TabsList className={isSynthwaveMode ? "neon-border cyberpunk-button" : ""}>
+                    <TabsTrigger value="list" className={isSynthwaveMode ? "text-white" : ""}>
                       <Database className="mr-2 h-4 w-4" />
                       List
                     </TabsTrigger>
-                    <TabsTrigger value="relationships" className={isSynthwaveMode ? 'text-white' : ''}>
+                    <TabsTrigger value="relationships" className={isSynthwaveMode ? "text-white" : ""}>
                       <GitBranch className="mr-2 h-4 w-4" />
                       Relationships
                     </TabsTrigger>
-                    <TabsTrigger value="epics" className={isSynthwaveMode ? 'text-white' : ''}>
+                    <TabsTrigger value="epics" className={isSynthwaveMode ? "text-white" : ""}>
                       <Layers className="mr-2 h-4 w-4" />
                       Epics
                     </TabsTrigger>
-                    <TabsTrigger value="high-level" className={isSynthwaveMode ? 'text-white' : ''}>
+                    <TabsTrigger value="high-level" className={isSynthwaveMode ? "text-white" : ""}>
                       <FileText className="mr-2 h-4 w-4" />
                       High-Level
                     </TabsTrigger>
@@ -423,9 +423,9 @@ export function TicketExplorer() {
             )}
           </div>
 
-          <div className={`relative flex flex-1 overflow-hidden ${isSynthwaveMode ? 'sun-grid' : ''}`}>
+          <div className={`relative flex flex-1 overflow-hidden ${isSynthwaveMode ? "sun-grid" : ""}`}>
             <div className="flex-1 overflow-auto p-4">
-              {viewMode === 'list' && (
+              {viewMode === "list" && (
                 <TicketList
                   tickets={filteredTickets}
                   onTicketSelect={handleTicketSelect}
@@ -434,7 +434,7 @@ export function TicketExplorer() {
                 />
               )}
 
-              {viewMode === 'relationships' && (
+              {viewMode === "relationships" && (
                 <RelationshipView
                   tickets={tickets}
                   filteredTickets={filteredTickets}
@@ -443,7 +443,7 @@ export function TicketExplorer() {
                 />
               )}
 
-              {viewMode === 'epics' && (
+              {viewMode === "epics" && (
                 <EpicView
                   epics={epics}
                   tickets={tickets}
@@ -452,7 +452,7 @@ export function TicketExplorer() {
                 />
               )}
 
-              {viewMode === 'high-level' && (
+              {viewMode === "high-level" && (
                 <HighLevelView
                   highLevelTickets={highLevelTickets}
                   tickets={tickets}
@@ -464,7 +464,7 @@ export function TicketExplorer() {
 
             {selectedTicket && (
               <div
-                className={`relative w-full border-l border-border md:w-1/3 lg:w-2/5 ${isSynthwaveMode ? 'neon-border-cyan' : ''}`}
+                className={`relative w-full border-l border-border md:w-1/3 lg:w-2/5 ${isSynthwaveMode ? "neon-border-cyan" : ""}`}
               >
                 <TicketDetail
                   ticket={selectedTicket}

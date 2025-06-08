@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
 
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import boxen from 'boxen'
-import chalk from 'chalk'
-import { Command } from 'commander'
-import yaml from 'js-yaml'
-import JSON5 from 'json5'
-import ora from 'ora'
+import { existsSync, readFileSync, writeFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import boxen from "boxen"
+import chalk from "chalk"
+import { Command } from "commander"
+import yaml from "js-yaml"
+import JSON5 from "json5"
+import ora from "ora"
 
 // Types
 interface MCPServer {
@@ -15,7 +15,7 @@ interface MCPServer {
   description: string
   command?: string
   args?: string[]
-  type?: 'stdio' | 'builtin' | 'sse' | 'http'
+  type?: "stdio" | "builtin" | "sse" | "http"
   enabled?: boolean
   timeout?: number
   env?: Record<string, string>
@@ -37,7 +37,7 @@ interface MCPConfig {
   exports?: Record<
     string,
     {
-      format: 'json' | 'yaml'
+      format: "json" | "yaml"
       path: string
       template: string
       enabled_only?: boolean
@@ -68,26 +68,26 @@ class Logger {
 
   info(message: string) {
     if (state.quiet) return
-    console.log(chalk.blue('ℹ'), message)
+    console.log(chalk.blue("ℹ"), message)
   }
 
   success(message: string) {
     if (state.quiet) return
-    console.log(chalk.green('✓'), message)
+    console.log(chalk.green("✓"), message)
   }
 
   warning(message: string) {
     if (state.quiet) return
-    console.log(chalk.yellow('⚠'), message)
+    console.log(chalk.yellow("⚠"), message)
   }
 
   error(message: string) {
-    console.error(chalk.red('✗'), message)
+    console.error(chalk.red("✗"), message)
   }
 
   debug(message: string) {
     if (!state.verbose) return
-    console.log(chalk.gray('🐛'), chalk.gray(message))
+    console.log(chalk.gray("🐛"), chalk.gray(message))
   }
 
   box(message: string, title?: string) {
@@ -96,10 +96,10 @@ class Logger {
       boxen(message, {
         padding: 1,
         margin: 1,
-        borderStyle: 'round',
-        borderColor: 'blue',
+        borderStyle: "round",
+        borderColor: "blue",
         title: title,
-        titleAlignment: 'center'
+        titleAlignment: "center"
       })
     )
   }
@@ -147,20 +147,20 @@ function loadConfig(path: string): MCPConfig {
     throw new Error(`Configuration file not found: ${path}`)
   }
 
-  const content = readFileSync(path, 'utf-8')
-  const ext = path.split('.').pop()?.toLowerCase()
+  const content = readFileSync(path, "utf-8")
+  const ext = path.split(".").pop()?.toLowerCase()
 
   let rawConfig: unknown
   try {
     switch (ext) {
-      case 'yaml':
-      case 'yml':
+      case "yaml":
+      case "yml":
         rawConfig = yaml.load(content)
         break
-      case 'json':
+      case "json":
         rawConfig = JSON.parse(content)
         break
-      case 'json5':
+      case "json5":
         rawConfig = JSON5.parse(content)
         break
       default:
@@ -190,7 +190,7 @@ function normalizeConfig(rawConfig: unknown): MCPConfig {
     // Goose format
     servers = config.extensions as Record<string, unknown>
   } else {
-    throw new Error('Invalid configuration: missing servers, mcpServers, or extensions section')
+    throw new Error("Invalid configuration: missing servers, mcpServers, or extensions section")
   }
 
   // Normalize each server configuration
@@ -204,7 +204,7 @@ function normalizeConfig(rawConfig: unknown): MCPConfig {
     let args = (serverConfig.args as string[]) || []
 
     // Zed format has nested command object
-    if (typeof command === 'object' && command.path) {
+    if (typeof command === "object" && command.path) {
       args = command.args || []
       command = command.path
     }
@@ -214,16 +214,16 @@ function normalizeConfig(rawConfig: unknown): MCPConfig {
     if (serverConfig.envs) {
       env = { ...env, ...(serverConfig.envs as Record<string, string>) }
     }
-    if (command && typeof command === 'object' && command.env) {
+    if (command && typeof command === "object" && command.env) {
       env = { ...env, ...command.env }
     }
 
     normalizedServers[id] = {
       name: (serverConfig.name as string) || (serverConfig.display_name as string) || id,
       description: (serverConfig.description as string) || `MCP server: ${id}`,
-      command: typeof command === 'string' ? command : (serverConfig.cmd as string),
+      command: typeof command === "string" ? command : (serverConfig.cmd as string),
       args: args,
-      type: (serverConfig.type as 'stdio' | 'builtin' | 'sse' | 'http') || 'stdio',
+      type: (serverConfig.type as "stdio" | "builtin" | "sse" | "http") || "stdio",
       enabled: serverConfig.enabled !== false,
       timeout: (serverConfig.timeout as number) || 300,
       env: env,
@@ -237,13 +237,13 @@ function normalizeConfig(rawConfig: unknown): MCPConfig {
 
   return {
     servers: normalizedServers,
-    config: (config.config as MCPConfig['config']) || {
-      version: '1.0.0',
+    config: (config.config as MCPConfig["config"]) || {
+      version: "1.0.0",
       default_timeout: 300,
-      default_type: 'stdio',
+      default_type: "stdio",
       default_enabled: true
     },
-    exports: (config.exports as MCPConfig['exports']) || {}
+    exports: (config.exports as MCPConfig["exports"]) || {}
   }
 }
 
@@ -278,61 +278,61 @@ function normalizeConfig(rawConfig: unknown): MCPConfig {
 
 // Command implementations
 async function listServers(configPath: string) {
-  logger.startSpinner('Loading MCP configuration...')
+  logger.startSpinner("Loading MCP configuration...")
 
   try {
     const config = loadConfig(configPath)
-    logger.succeedSpinner('Configuration loaded')
+    logger.succeedSpinner("Configuration loaded")
 
     const servers = Object.entries(config.servers)
 
     if (servers.length === 0) {
-      logger.warning('No servers configured')
+      logger.warning("No servers configured")
       return
     }
 
-    logger.box(`Found ${servers.length} MCP server${servers.length === 1 ? '' : 's'}`, 'MCP Servers')
+    logger.box(`Found ${servers.length} MCP server${servers.length === 1 ? "" : "s"}`, "MCP Servers")
 
     for (const [id, server] of servers) {
-      const status = server.enabled !== false ? chalk.green('enabled') : chalk.red('disabled')
+      const status = server.enabled !== false ? chalk.green("enabled") : chalk.red("disabled")
 
-      const type = server.type || 'stdio'
+      const type = server.type || "stdio"
       const timeout = server.timeout || 300
 
       console.log(`${chalk.bold(id)}`)
-      console.log(`  ${chalk.gray('Name:')} ${server.name}`)
-      console.log(`  ${chalk.gray('Description:')} ${server.description}`)
-      console.log(`  ${chalk.gray('Status:')} ${status}`)
-      console.log(`  ${chalk.gray('Type:')} ${type}`)
-      console.log(`  ${chalk.gray('Timeout:')} ${timeout}s`)
+      console.log(`  ${chalk.gray("Name:")} ${server.name}`)
+      console.log(`  ${chalk.gray("Description:")} ${server.description}`)
+      console.log(`  ${chalk.gray("Status:")} ${status}`)
+      console.log(`  ${chalk.gray("Type:")} ${type}`)
+      console.log(`  ${chalk.gray("Timeout:")} ${timeout}s`)
 
       if (server.command) {
-        console.log(`  ${chalk.gray('Command:')} ${server.command}`)
+        console.log(`  ${chalk.gray("Command:")} ${server.command}`)
       }
 
       if (server.args && server.args.length > 0) {
-        console.log(`  ${chalk.gray('Args:')} ${server.args.join(' ')}`)
+        console.log(`  ${chalk.gray("Args:")} ${server.args.join(" ")}`)
       }
 
       if (server.env && Object.keys(server.env).length > 0) {
-        console.log(`  ${chalk.gray('Environment:')} ${Object.keys(server.env).join(', ')}`)
+        console.log(`  ${chalk.gray("Environment:")} ${Object.keys(server.env).join(", ")}`)
       }
 
       console.log()
     }
   } catch (error) {
-    logger.failSpinner('Failed to load configuration')
+    logger.failSpinner("Failed to load configuration")
     logger.error(`${error}`)
     process.exit(1)
   }
 }
 
 async function validateConfig(configPath: string) {
-  logger.startSpinner('Validating MCP configuration...')
+  logger.startSpinner("Validating MCP configuration...")
 
   try {
     const config = loadConfig(configPath)
-    logger.succeedSpinner('Configuration syntax is valid')
+    logger.succeedSpinner("Configuration syntax is valid")
 
     // Basic validation
     let issues = 0
@@ -355,27 +355,27 @@ async function validateConfig(configPath: string) {
     }
 
     if (issues === 0) {
-      logger.success('Configuration validation passed')
+      logger.success("Configuration validation passed")
     } else {
-      logger.error(`Configuration validation failed with ${issues} issue${issues === 1 ? '' : 's'}`)
+      logger.error(`Configuration validation failed with ${issues} issue${issues === 1 ? "" : "s"}`)
       process.exit(1)
     }
   } catch (error) {
-    logger.failSpinner('Configuration validation failed')
+    logger.failSpinner("Configuration validation failed")
     logger.error(`${error}`)
     process.exit(1)
   }
 }
 
 async function exportConfig(configPath: string, exportName?: string) {
-  logger.startSpinner('Loading MCP configuration...')
+  logger.startSpinner("Loading MCP configuration...")
 
   try {
     const config = loadConfig(configPath)
-    logger.succeedSpinner('Configuration loaded')
+    logger.succeedSpinner("Configuration loaded")
 
     if (!config.exports) {
-      logger.error('No export configurations defined')
+      logger.error("No export configurations defined")
       process.exit(1)
     }
 
@@ -395,7 +395,7 @@ async function exportConfig(configPath: string, exportName?: string) {
       logger.warning(`Export implementation for '${name}' not yet implemented`)
     }
   } catch (error) {
-    logger.failSpinner('Export failed')
+    logger.failSpinner("Export failed")
     logger.error(`${error}`)
     process.exit(1)
   }
@@ -405,14 +405,14 @@ async function exportConfig(configPath: string, exportName?: string) {
 const program = new Command()
 
 program
-  .name('mcp')
-  .description('MCP Server Configuration Management Utility')
-  .version('1.0.0', '-V, --version', 'Display version information')
-  .option('-d, --dry-run', 'Show what would be done without making changes')
-  .option('-v, --verbose', 'Enable verbose output')
-  .option('-q, --quiet', 'Suppress non-error output')
-  .option('-y, --yes', 'Automatically confirm all prompts')
-  .hook('preAction', (thisCommand) => {
+  .name("mcp")
+  .description("MCP Server Configuration Management Utility")
+  .version("1.0.0", "-V, --version", "Display version information")
+  .option("-d, --dry-run", "Show what would be done without making changes")
+  .option("-v, --verbose", "Enable verbose output")
+  .option("-q, --quiet", "Suppress non-error output")
+  .option("-y, --yes", "Automatically confirm all prompts")
+  .hook("preAction", (thisCommand) => {
     const options = thisCommand.opts()
     state.dryRun = options.dryRun || false
     state.verbose = options.verbose || false
@@ -420,75 +420,75 @@ program
     state.yes = options.yes || false
 
     if (state.verbose && state.quiet) {
-      logger.error('Cannot use both --verbose and --quiet options')
+      logger.error("Cannot use both --verbose and --quiet options")
       process.exit(1)
     }
   })
 
 program
-  .command('list')
-  .alias('ls')
-  .description('List all configured MCP servers')
-  .option('-c, --config <path>', 'Configuration file path', 'mcp.yaml')
+  .command("list")
+  .alias("ls")
+  .description("List all configured MCP servers")
+  .option("-c, --config <path>", "Configuration file path", "mcp.yaml")
   .action(async (options) => {
     await listServers(options.config)
   })
 
 program
-  .command('validate')
-  .alias('check')
-  .description('Validate MCP configuration file')
-  .option('-c, --config <path>', 'Configuration file path', 'mcp.yaml')
+  .command("validate")
+  .alias("check")
+  .description("Validate MCP configuration file")
+  .option("-c, --config <path>", "Configuration file path", "mcp.yaml")
   .action(async (options) => {
     await validateConfig(options.config)
   })
 
 program
-  .command('export')
-  .description('Export configuration for specific clients')
-  .option('-c, --config <path>', 'Configuration file path', 'mcp.yaml')
-  .option('-t, --target <name>', 'Specific export target (optional)')
+  .command("export")
+  .description("Export configuration for specific clients")
+  .option("-c, --config <path>", "Configuration file path", "mcp.yaml")
+  .option("-t, --target <name>", "Specific export target (optional)")
   .action(async (options) => {
     await exportConfig(options.config, options.target)
   })
 
 program
-  .command('init')
-  .description('Initialize a new MCP configuration file')
-  .option('-f, --force', 'Overwrite existing configuration')
+  .command("init")
+  .description("Initialize a new MCP configuration file")
+  .option("-f, --force", "Overwrite existing configuration")
   .action(async (_options) => {
-    logger.warning('Init command not yet implemented')
+    logger.warning("Init command not yet implemented")
   })
 
 program
-  .command('add')
-  .description('Add a new MCP server configuration')
-  .argument('<name>', 'Server name/identifier')
+  .command("add")
+  .description("Add a new MCP server configuration")
+  .argument("<name>", "Server name/identifier")
   .action(async (name, _options) => {
     logger.warning(`Add server '${name}' command not yet implemented`)
   })
 
 program
-  .command('remove')
-  .alias('rm')
-  .description('Remove an MCP server configuration')
-  .argument('<name>', 'Server name/identifier')
+  .command("remove")
+  .alias("rm")
+  .description("Remove an MCP server configuration")
+  .argument("<name>", "Server name/identifier")
   .action(async (name, _options) => {
     logger.warning(`Remove server '${name}' command not yet implemented`)
   })
 
 program
-  .command('enable')
-  .description('Enable an MCP server')
-  .argument('<name>', 'Server name/identifier')
+  .command("enable")
+  .description("Enable an MCP server")
+  .argument("<name>", "Server name/identifier")
   .action(async (name, _options) => {
     logger.warning(`Enable server '${name}' command not yet implemented`)
   })
 
 program
-  .command('disable')
-  .description('Disable an MCP server')
-  .argument('<name>', 'Server name/identifier')
+  .command("disable")
+  .description("Disable an MCP server")
+  .argument("<name>", "Server name/identifier")
   .action(async (name, _options) => {
     logger.warning(`Disable server '${name}' command not yet implemented`)
   })
@@ -500,8 +500,8 @@ try {
   await program.parseAsync()
 } catch (error: unknown) {
   if (
-    (error as { code?: string }).code === 'commander.version' ||
-    (error as { code?: string }).code === 'commander.help'
+    (error as { code?: string }).code === "commander.version" ||
+    (error as { code?: string }).code === "commander.help"
   ) {
     process.exit(0)
   } else {

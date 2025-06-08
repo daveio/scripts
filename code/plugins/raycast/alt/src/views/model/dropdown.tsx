@@ -1,19 +1,19 @@
-import { List } from '@raycast/api'
-import { useEffect } from 'react'
-import type { ChangeModelProp } from '../../type'
-import { CacheAdapter } from '../../utils/cache'
+import { List } from "@raycast/api"
+import { useEffect } from "react"
+import type { ChangeModelProp } from "../../type"
+import { CacheAdapter } from "../../utils/cache"
 
 export const ModelDropdown = (props: ChangeModelProp) => {
   const { models, onModelChange, selectedModel } = props
-  const separateDefaultModel = models.filter((x) => x.id !== 'default')
-  const defaultModel = models.find((x) => x.id === 'default')
+  const separateDefaultModel = models.filter((x) => x.id !== "default")
+  const defaultModel = models.find((x) => x.id === "default")
 
-  const cache = new CacheAdapter('select_model')
+  const cache = new CacheAdapter("select_model")
 
   // it should same as `DropDown.storeValue`
   useEffect(() => {
     const selectModel = cache.get()
-    onModelChange(selectModel ?? 'default')
+    onModelChange(selectModel ?? "default")
   }, [])
 
   useEffect(() => {

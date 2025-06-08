@@ -1,8 +1,8 @@
-import path from 'path'
-import { Clipboard } from '@raycast/api'
-import fs from 'fs/promises'
-import { imageMeta } from 'image-meta'
-import { runAppleScript } from 'run-applescript'
+import path from "path"
+import { Clipboard } from "@raycast/api"
+import fs from "fs/promises"
+import { imageMeta } from "image-meta"
+import { runAppleScript } from "run-applescript"
 
 type ImageMeta = {
   type: string
@@ -14,7 +14,7 @@ export type LoadFrom = { data: Buffer; type: ImageMeta }
 
 const getType = async (data: Buffer, image: string): Promise<ImageMeta> => {
   const meta = await imageMeta(data)
-  const type = meta.type ?? (path.extname(image).slice(1) || 'png')
+  const type = meta.type ?? (path.extname(image).slice(1) || "png")
   const height = meta.height ?? 0
   const width = meta.width ?? 0
   return { type, height, width }
@@ -41,7 +41,7 @@ export const loadFromClipboard = async () => {
 
   image = decodeURIComponent(image)
 
-  if (image.startsWith('file://')) {
+  if (image.startsWith("file://")) {
     image = image.slice(7)
   }
 

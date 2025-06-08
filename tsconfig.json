@@ -20,6 +20,6 @@
     "target": "ESNext",
     "verbatimModuleSyntax": true
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*"]
+  "exclude": ["node_modules", "dist", "boneyard/**/*", "submodules/**/*"],
+  "include": ["code/**/*.ts", "code/**/*.tsx", "code/**/*.js", "code/**/*.jsx", "configuration/**/*.ts", "bin/**/*.ts"]
 }

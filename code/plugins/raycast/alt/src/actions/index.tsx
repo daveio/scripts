@@ -1,5 +1,5 @@
-import { Action, Alert, Icon, type Image, type Keyboard, confirmAlert } from '@raycast/api'
-import say from 'say'
+import { Action, Alert, Icon, type Image, type Keyboard, confirmAlert } from "@raycast/api"
+import say from "say"
 
 export const PrimaryAction = ({
   title,
@@ -31,7 +31,7 @@ export const TextToSpeechAction = ({ content }: { content: string }) => (
       say.stop()
       say.speak(content)
     }}
-    shortcut={{ modifiers: ['cmd', 'shift'], key: 'p' }}
+    shortcut={{ modifiers: ["cmd", "shift"], key: "p" }}
   />
 )
 
@@ -43,7 +43,7 @@ export const SaveAction = ({
   onAction: () => void
   title: string
   modifiers: Keyboard.KeyModifier[]
-}) => <Action icon={Icon.Star} title={title} onAction={onAction} shortcut={{ modifiers, key: 's' }} />
+}) => <Action icon={Icon.Star} title={title} onAction={onAction} shortcut={{ modifiers, key: "s" }} />
 
 export const SaveAsSnippetAction = ({
   text,
@@ -56,7 +56,7 @@ export const SaveAsSnippetAction = ({
     icon={Icon.Snippets}
     title="Save as a Snippet"
     snippet={{ text, name }}
-    shortcut={{ modifiers: ['cmd'], key: 'n' }}
+    shortcut={{ modifiers: ["cmd"], key: "n" }}
   />
 )
 
@@ -65,7 +65,7 @@ export const DestructiveAction = ({
   title,
   dialog,
   onAction,
-  shortcut = { modifiers: ['ctrl'], key: 'x' }
+  shortcut = { modifiers: ["ctrl"], key: "x" }
 }: {
   icon?: Image.ImageLike
   title: string
@@ -80,7 +80,7 @@ export const DestructiveAction = ({
     onAction={async () => {
       await confirmAlert({
         title: dialog.title ?? title,
-        message: dialog.message ?? 'This action cannot be undone',
+        message: dialog.message ?? "This action cannot be undone",
         icon,
         primaryAction: {
           title: dialog.primaryButton ?? title,

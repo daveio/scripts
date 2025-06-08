@@ -10,18 +10,18 @@ import {
   getFrontmostApplication,
   open,
   useNavigation
-} from '@raycast/api'
-import type React from 'react'
-import { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { PrimaryAction } from '../../actions'
-import Ask from '../../ask'
-import { useChat } from '../../hooks/useChat'
-import { mapCommandToModel, useCommand } from '../../hooks/useCommand'
-import type { ChatHook, Command } from '../../type'
-import { canAccessBrowserExtension } from '../../utils/browser'
-import { fetchContent } from '../../utils/cmd-input'
-import { getAppIconPath } from '../../utils/icon'
+} from "@raycast/api"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { PrimaryAction } from "../../actions"
+import Ask from "../../ask"
+import { useChat } from "../../hooks/useChat"
+import { mapCommandToModel, useCommand } from "../../hooks/useCommand"
+import type { ChatHook, Command } from "../../type"
+import { canAccessBrowserExtension } from "../../utils/browser"
+import { fetchContent } from "../../utils/cmd-input"
+import { getAppIconPath } from "../../utils/icon"
 
 type CommandLaunchContext = { commandId?: string }
 export type CommandLaunchProps = LaunchProps<{
@@ -37,7 +37,7 @@ export default function CommandView(props: CommandLaunchProps) {
   const [userInputError, setUserInputError] = useState<string | null>(null)
   const [frontmostApp, setFrontmostApp] = useState<Application | null>(null)
 
-  const requestedCommandId = props.launchContext?.commandId || ''
+  const requestedCommandId = props.launchContext?.commandId || ""
   const requestedCommand = commands.data[requestedCommandId]
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function CommandView(props: CommandLaunchProps) {
   if (!requestedCommand) {
     return <Detail markdown="" />
   }
-  if (requestedCommand.contentSource === 'browserTab' && !canAccessBrowserExtension()) {
+  if (requestedCommand.contentSource === "browserTab" && !canAccessBrowserExtension()) {
     return BROWSER_EXTENSION_NOT_AVAILABLE_VIEW
   }
 
@@ -128,39 +128,39 @@ class CommandViewBuilder {
   }
 
   buildContent(): string {
-    let inputTemplate = ''
+    let inputTemplate = ""
     if (this.command.isDisplayInput) {
       // Show user input as preformatted text because it allows the text to be displayed
       // exactly as it is. If we don't wrap it or format it as a quote, some symbols may be
       // rendered as Markdown markup.
-      inputTemplate = `\`\`\`\n${(this.userInput || '...').trim()}\n\`\`\``
+      inputTemplate = `\`\`\`\n${(this.userInput || "...").trim()}\n\`\`\``
     }
 
-    let footerMessage = ''
+    let footerMessage = ""
     let chatWidthPx = 7
-    let footerMessageColor: 'gray' | 'yellow' | 'red' = 'gray'
+    let footerMessageColor: "gray" | "yellow" | "red" = "gray"
     if (this.chat.isAborted) {
-      footerMessage = 'Canceled'
-      footerMessageColor = 'yellow'
+      footerMessage = "Canceled"
+      footerMessageColor = "yellow"
     } else if (this.error) {
       chatWidthPx = 6
-      footerMessage = 'An unexpected error occurred; the command execution failed.'
-      footerMessageColor = 'red'
+      footerMessage = "An unexpected error occurred; the command execution failed."
+      footerMessageColor = "red"
     } else if (this.aiAnswer !== null && !this.chat.isLoading) {
       chatWidthPx = 6.1
-      footerMessage = 'Continue in Chat ⌘ + 🅹'
+      footerMessage = "Continue in Chat ⌘ + 🅹"
     }
 
     return `${this.generateTitleSvg(this.command.name)}
 
 ${inputTemplate}
 
-${this.aiAnswer || '...'}
+${this.aiAnswer || "..."}
 
 ${this.generateStatFooterSvg(this.command.model, footerMessage, chatWidthPx, footerMessageColor)}
 
-${this.error ? '---' : ''}
-${this.error || ''}`
+${this.error ? "---" : ""}
+${this.error || ""}`
   }
 
   generateTitleSvg(title: string): string {
@@ -180,11 +180,11 @@ ${this.error || ''}`
 
     return `${this.getFrontmostAppIcon()}![CommandName](data:image/svg+xml;base64,${Buffer.from(
       titleImage,
-      'utf-8'
-    ).toString('base64')})`
+      "utf-8"
+    ).toString("base64")})`
   }
 
-  generateStatFooterSvg(model: string, message: string, charWidthPx = 7, color: 'gray' | 'yellow' | 'red' = 'gray') {
+  generateStatFooterSvg(model: string, message: string, charWidthPx = 7, color: "gray" | "yellow" | "red" = "gray") {
     // charWidthPx is a workaround to align the message to the right edge.
     // I couldn't find a better solution, so for each value that will be sent
     // to the message, you need to calculate charWidthPx manually.
@@ -206,24 +206,24 @@ ${this.error || ''}`
 </svg>`
 
     const modelIcon = `&#x200b;![ModelIcon](icon.png?raycast-width=${this.iconSizePx}&raycast-height=${this.iconSizePx})`
-    return `${modelIcon}![CommandFooter](data:image/svg+xml;base64,${Buffer.from(statImage, 'utf-8').toString(
-      'base64'
+    return `${modelIcon}![CommandFooter](data:image/svg+xml;base64,${Buffer.from(statImage, "utf-8").toString(
+      "base64"
     )})`
   }
 
   getFrontmostAppIcon(): string {
-    let appIconPath = ''
-    if (this.command.contentSource === 'clipboard') {
-      appIconPath = 'clipboard.svg'
+    let appIconPath = ""
+    if (this.command.contentSource === "clipboard") {
+      appIconPath = "clipboard.svg"
     } else if (this.frontmostApp?.path) {
       try {
-        appIconPath = getAppIconPath(this.frontmostApp.path).replace(/ /g, '%20')
+        appIconPath = getAppIconPath(this.frontmostApp.path).replace(/ /g, "%20")
       } catch (e) {
         console.error(e)
       }
     }
     const markdownIcon = `&#x200b;![AppIcon](${appIconPath}?raycast-width=${this.iconSizePx}&raycast-height=${this.iconSizePx}) `
-    return appIconPath ? markdownIcon : ''
+    return appIconPath ? markdownIcon : ""
   }
 
   buildActionPanel(): React.JSX.Element {
@@ -231,13 +231,13 @@ ${this.error || ''}`
     const pasteToActiveApp = (
       <Action.Paste
         key="pasteToActiveApp"
-        title={`Paste Response to ${this.frontmostApp ? this.frontmostApp.name : 'Active App'}`}
-        content={this.aiAnswer || ''}
+        title={`Paste Response to ${this.frontmostApp ? this.frontmostApp.name : "Active App"}`}
+        content={this.aiAnswer || ""}
         icon={this.frontmostApp ? { fileIcon: this.frontmostApp.path } : Icon.AppWindow}
       />
     )
     const copyToClipboard = (
-      <Action.CopyToClipboard key="copyToClipboard" title={`Copy Response`} content={this.aiAnswer || ''} />
+      <Action.CopyToClipboard key="copyToClipboard" title={`Copy Response`} content={this.aiAnswer || ""} />
     )
     const continueInChat = (
       <Action
@@ -258,7 +258,7 @@ ${this.error || ''}`
             />
           )
         }}
-        shortcut={{ modifiers: ['cmd'], key: 'j' }}
+        shortcut={{ modifiers: ["cmd"], key: "j" }}
       />
     )
 
@@ -267,7 +267,7 @@ ${this.error || ''}`
     if (this.chat.isLoading) {
       mainActions.push(cancel)
     } else {
-      if (this.command.contentSource === 'selectedText') {
+      if (this.command.contentSource === "selectedText") {
         mainActions.push(pasteToActiveApp)
         mainActions.push(copyToClipboard)
       } else {
@@ -300,14 +300,14 @@ const BROWSER_EXTENSION_NOT_AVAILABLE_VIEW = (
   <List
     actions={
       <ActionPanel>
-        <PrimaryAction title="Install" onAction={() => open('https://www.raycast.com/browser-extension')} />
+        <PrimaryAction title="Install" onAction={() => open("https://www.raycast.com/browser-extension")} />
       </ActionPanel>
     }
   >
     <List.EmptyView
       icon={Icon.BoltDisabled}
-      title={'Browser Extension Required'}
-      description={'This command need install Raycast browser extension to work. Please install it first'}
+      title={"Browser Extension Required"}
+      description={"This command need install Raycast browser extension to work. Please install it first"}
     />
   </List>
 )

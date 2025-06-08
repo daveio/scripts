@@ -1,5 +1,5 @@
-import { Icon, List } from '@raycast/api'
-import type { Model } from '../../type'
+import { Icon, List } from "@raycast/api"
+import type { Model } from "../../type"
 
 export const ModelListView = ({
   title,
@@ -46,7 +46,7 @@ const ModelDetailView = (props: {
 }) => {
   const { model, markdown } = props
   const icons = [Icon.StackedBars1, Icon.StackedBars2, Icon.StackedBars3, Icon.StackedBars4]
-  const t = Number.parseFloat((model.temperature ?? '0').toString())
+  const t = Number.parseFloat((model.temperature ?? "0").toString())
 
   return (
     <List.Item.Detail
@@ -61,7 +61,7 @@ const ModelDetailView = (props: {
             text={model.temperature.toLocaleString()}
             icon={icons[Math.min(Math.floor(t / 0.5), 3)]}
           />
-          <List.Item.Detail.Metadata.Label title="Vision capabilities" text={model.vision ? 'Enable' : 'Disable'} />
+          <List.Item.Detail.Metadata.Label title="Vision capabilities" text={model.vision ? "Enable" : "Disable"} />
           <List.Item.Detail.Metadata.Separator />
           <List.Item.Detail.Metadata.Label title="ID" text={model.id} />
           <List.Item.Detail.Metadata.Label title="Updated at" text={new Date(model.updated_at ?? 0).toLocaleString()} />

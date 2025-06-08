@@ -1,19 +1,19 @@
-import { Action, ActionPanel, Icon, List, useNavigation } from '@raycast/api'
-import { useEffect, useState } from 'react'
-import { DestructiveAction, PinAction, PrimaryAction } from './actions'
-import { PreferencesActionSection } from './actions/preferences'
-import Ask from './ask'
-import { useConversations } from './hooks/useConversations'
-import type { Conversation as ConversationType } from './type'
-import { ExportData, ImportData } from './utils/import-export'
-import { ConversationListView } from './views/conversation-list'
-import { ImportForm } from './views/import-form'
+import { Action, ActionPanel, Icon, List, useNavigation } from "@raycast/api"
+import { useEffect, useState } from "react"
+import { DestructiveAction, PinAction, PrimaryAction } from "./actions"
+import { PreferencesActionSection } from "./actions/preferences"
+import Ask from "./ask"
+import { useConversations } from "./hooks/useConversations"
+import type { Conversation as ConversationType } from "./type"
+import { ExportData, ImportData } from "./utils/import-export"
+import { ConversationListView } from "./views/conversation-list"
+import { ImportForm } from "./views/import-form"
 
 export default function Conversation() {
   const conversations = useConversations()
   const { push } = useNavigation()
 
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>("")
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
   const [conversation, setConversation] = useState<ConversationType | null>()
 
@@ -54,25 +54,25 @@ export default function Conversation() {
     <ActionPanel>
       <PrimaryAction title="Continue Ask" onAction={() => push(<Ask conversation={conversation} />)} />
       <PinAction
-        title={conversation.pinned ? 'Unpin Conversation' : 'Pin Conversation'}
+        title={conversation.pinned ? "Unpin Conversation" : "Pin Conversation"}
         isPinned={conversation.pinned}
         onAction={() => setConversation({ ...conversation, pinned: !conversation.pinned })}
       />
       <ActionPanel.Section title="Import/Export">
         <Action
-          title={'Export Conversation'}
+          title={"Export Conversation"}
           icon={Icon.Upload}
-          onAction={() => ExportData(conversations.data, 'Conversation')}
+          onAction={() => ExportData(conversations.data, "Conversation")}
         />
         <Action
-          title={'Import Conversation'}
+          title={"Import Conversation"}
           icon={Icon.Download}
           onAction={() =>
             push(
               <ImportForm
                 moduleName="Conversation"
                 onSubmit={async (file) => {
-                  ImportData<ConversationType>('conversations', file).then((data) => {
+                  ImportData<ConversationType>("conversations", file).then((data) => {
                     conversations.setConversations(data)
                   })
                 }}
@@ -85,17 +85,17 @@ export default function Conversation() {
         <DestructiveAction
           title="Remove"
           dialog={{
-            title: 'Are you sure you want to remove this conversation?'
+            title: "Are you sure you want to remove this conversation?"
           }}
           onAction={() => conversations.remove(conversation)}
         />
         <DestructiveAction
           title="Clear"
           dialog={{
-            title: 'Are you sure you want to clear your conversations?'
+            title: "Are you sure you want to clear your conversations?"
           }}
           onAction={() => conversations.clear()}
-          shortcut={{ modifiers: ['cmd', 'shift'], key: 'delete' }}
+          shortcut={{ modifiers: ["cmd", "shift"], key: "delete" }}
         />
       </ActionPanel.Section>
       <PreferencesActionSection />
@@ -126,14 +126,14 @@ export default function Conversation() {
           actions={
             <ActionPanel>
               <Action
-                title={'Import Conversation'}
+                title={"Import Conversation"}
                 icon={Icon.Download}
                 onAction={() =>
                   push(
                     <ImportForm
                       moduleName="Conversation"
                       onSubmit={async (file) => {
-                        ImportData<ConversationType>('conversations', file).then((data) => {
+                        ImportData<ConversationType>("conversations", file).then((data) => {
                           conversations.setConversations(data)
                         })
                       }}

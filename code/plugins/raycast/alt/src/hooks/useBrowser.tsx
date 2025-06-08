@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { canAccessBrowserExtension, getBrowserContent } from '../utils/browser'
+import { useEffect, useState } from "react"
+import { canAccessBrowserExtension, getBrowserContent } from "../utils/browser"
 
 export function useBrowserContent() {
   const [content, setContent] = useState<string | null>(null)

@@ -1,6 +1,6 @@
-import { LocalStorage, Toast, showToast } from '@raycast/api'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { Chat, HistoryHook } from '../type'
+import { LocalStorage, Toast, showToast } from "@raycast/api"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { Chat, HistoryHook } from "../type"
 
 export function useHistory(): HistoryHook {
   const [data, setData] = useState<Chat[]>([])
@@ -8,7 +8,7 @@ export function useHistory(): HistoryHook {
 
   useEffect(() => {
     ;(async () => {
-      const storedHistory = await LocalStorage.getItem<string>('history')
+      const storedHistory = await LocalStorage.getItem<string>("history")
 
       if (storedHistory) {
         setData((previous) => [...previous, ...JSON.parse(storedHistory)])
@@ -18,7 +18,7 @@ export function useHistory(): HistoryHook {
   }, [])
 
   useEffect(() => {
-    LocalStorage.setItem('history', JSON.stringify(data))
+    LocalStorage.setItem("history", JSON.stringify(data))
   }, [data])
 
   const add = useCallback(
@@ -31,12 +31,12 @@ export function useHistory(): HistoryHook {
   const remove = useCallback(
     async (answer: Chat) => {
       const toast = await showToast({
-        title: 'Removing answer...',
+        title: "Removing answer...",
         style: Toast.Style.Animated
       })
       const newHistory: Chat[] = data.filter((item) => item.id !== answer.id)
       setData(newHistory)
-      toast.title = 'Answer removed!'
+      toast.title = "Answer removed!"
       toast.style = Toast.Style.Success
     },
     [setData, data]
@@ -44,11 +44,11 @@ export function useHistory(): HistoryHook {
 
   const clear = useCallback(async () => {
     const toast = await showToast({
-      title: 'Clearing history...',
+      title: "Clearing history...",
       style: Toast.Style.Animated
     })
     setData([])
-    toast.title = 'History cleared!'
+    toast.title = "History cleared!"
     toast.style = Toast.Style.Success
   }, [setData])
 

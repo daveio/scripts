@@ -1,8 +1,8 @@
-import * as fs from 'node:fs'
-import { BrowserExtension, environment, getPreferenceValues } from '@raycast/api'
-import { showFailureToast } from '@raycast/utils'
-import fetch from 'cross-fetch'
-import { YoutubeTranscript } from 'youtube-transcript'
+import * as fs from "node:fs"
+import { BrowserExtension, environment, getPreferenceValues } from "@raycast/api"
+import { showFailureToast } from "@raycast/utils"
+import fetch from "cross-fetch"
+import { YoutubeTranscript } from "youtube-transcript"
 
 global.fetch = fetch
 
@@ -16,33 +16,33 @@ const DEFAULT_PROMPT = `Summarize the text below and give me a list of bullet po
 
 // https://i.stack.imgur.com/g2X8z.gif
 const ASCII_TABLES = Object.entries({
-  '&amp;': '&',
-  '&#32;': ' ',
-  '&#33;': '!',
-  '&#34;': '"',
-  '&#35;': '#',
-  '&#36;': '$',
-  '&#37;': '%',
-  '&#38;': '&',
-  '&#39;': "'",
-  '&#40;': '(',
-  '&#41;': ')',
-  '&#42;': '*',
-  '&#43;': '+',
-  '&#44;': ',',
-  '&#45;': '-',
-  '&#46;': '.',
-  '&#47;': '/',
-  '&#91;': '[',
-  '&#92;': '\\',
-  '&#93;': ']',
-  '&#94;': '^',
-  '&#95;': '_',
-  '&#96;': '`',
-  '&#123;': '{',
-  '&#124;': '|',
-  '&#125;': '}',
-  '&#126;': '~'
+  "&amp;": "&",
+  "&#32;": " ",
+  "&#33;": "!",
+  "&#34;": '"',
+  "&#35;": "#",
+  "&#36;": "$",
+  "&#37;": "%",
+  "&#38;": "&",
+  "&#39;": "'",
+  "&#40;": "(",
+  "&#41;": ")",
+  "&#42;": "*",
+  "&#43;": "+",
+  "&#44;": ",",
+  "&#45;": "-",
+  "&#46;": ".",
+  "&#47;": "/",
+  "&#91;": "[",
+  "&#92;": "\\",
+  "&#93;": "]",
+  "&#94;": "^",
+  "&#95;": "_",
+  "&#96;": "`",
+  "&#123;": "{",
+  "&#124;": "|",
+  "&#125;": "}",
+  "&#126;": "~"
 })
 
 export async function getBrowserContent() {
@@ -64,12 +64,12 @@ export async function getBrowserContent() {
   const activeTab = (tabs.filter((tab) => tab.active) || [])[0]
 
   // todo: add setting to enable/disable this feature
-  if (activeTab && activeTab.url.startsWith('https://www.youtube.com/watch?v=')) {
+  if (activeTab && activeTab.url.startsWith("https://www.youtube.com/watch?v=")) {
     // not official API, so it may break in the future
     const content = await YoutubeTranscript.fetchTranscript(activeTab.url, {
-      lang: 'en'
+      lang: "en"
     }).then((transcript) => {
-      return transcript.map((item) => item.text).join('\n')
+      return transcript.map((item) => item.text).join("\n")
     })
     prompt = promptTemplate2 || DEFAULT_PROMPT
     prompt = prompt.replaceAll(/\{\{\s?content.*?}}/g, content)
@@ -106,7 +106,7 @@ async function dynamicExecution(prompt: string) {
         const { format, cssSelector, tabId } = groups
         try {
           const content = await BrowserExtension.getContent({
-            format: format ? (format as 'markdown' | 'text' | 'html') : 'markdown',
+            format: format ? (format as "markdown" | "text" | "html") : "markdown",
             cssSelector: cssSelector ? cssSelector : undefined,
             tabId: tabId ? Number.parseInt(tabId) : undefined
           })
@@ -118,18 +118,18 @@ async function dynamicExecution(prompt: string) {
     }
   }
   if (errors.length > 0) {
-    await showFailureToast(errors.join('\n'), {
-      title: 'Dynamic execution failed'
+    await showFailureToast(errors.join("\n"), {
+      title: "Dynamic execution failed"
     })
   }
   return result
 }
 
 function replace(prompt: string, entries: [string, string][]): string {
-  prompt = prompt.replace('\\n', '\n')
+  prompt = prompt.replace("\\n", "\n")
 
   let result = entries.reduce((acc, [key, value]) => {
-    const r = new RegExp(`{{\\s*${key}}}\\s*`, 'g')
+    const r = new RegExp(`{{\\s*${key}}}\\s*`, "g")
     return acc.replaceAll(r, value)
   }, prompt)
 
@@ -143,7 +143,7 @@ function replace(prompt: string, entries: [string, string][]): string {
 
 function readFile(path?: string) {
   if (!path) {
-    return ''
+    return ""
   }
-  return fs.readFileSync(path, 'utf-8')
+  return fs.readFileSync(path, "utf-8")
 }

@@ -1,6 +1,6 @@
-import { Toast, getPreferenceValues, getSelectedText, showToast } from '@raycast/api'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { QuestionHook } from '../type'
+import { Toast, getPreferenceValues, getSelectedText, showToast } from "@raycast/api"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { QuestionHook } from "../type"
 
 export function useQuestion(props: {
   initialQuestion: string
@@ -25,12 +25,12 @@ export function useQuestion(props: {
             setData(selectedText.trim())
             await showToast({
               style: Toast.Style.Success,
-              title: 'Selected text loaded!'
+              title: "Selected text loaded!"
             })
           } else {
             await showToast({
               style: Toast.Style.Success,
-              title: 'No text selected!'
+              title: "No text selected!"
             })
           }
         } catch (error) {

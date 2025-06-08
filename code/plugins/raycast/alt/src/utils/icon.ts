@@ -1,6 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-import plist from 'plist'
+import fs from "fs"
+import path from "path"
+import plist from "plist"
 
 /**
  * Retrieves the file path of the application icon from a given macOS application bundle.
@@ -14,20 +14,20 @@ import plist from 'plist'
  * // Outputs: "/Applications/Safari.app/Contents/Resources/compass.icns"
  */
 export function getAppIconPath(appPath: string): string {
-  const plistPath = path.join(appPath, 'Contents', 'Info.plist')
+  const plistPath = path.join(appPath, "Contents", "Info.plist")
   if (!fs.existsSync(plistPath)) {
-    throw new Error('Info.plist file not found')
+    throw new Error("Info.plist file not found")
   }
 
-  const plistContent = fs.readFileSync(plistPath, 'utf8')
+  const plistContent = fs.readFileSync(plistPath, "utf8")
   const plistData = plist.parse(plistContent)
   const iconFile = (plistData as { CFBundleIconFile: string })?.CFBundleIconFile
   if (!iconFile) {
-    throw new Error('CFBundleIconFile key not found in Info.plist')
+    throw new Error("CFBundleIconFile key not found in Info.plist")
   }
 
-  const iconFileName = iconFile.endsWith('.icns') ? iconFile : `${iconFile}.icns`
-  const resourcePath = path.join(appPath, 'Contents', 'Resources')
+  const iconFileName = iconFile.endsWith(".icns") ? iconFile : `${iconFile}.icns`
+  const resourcePath = path.join(appPath, "Contents", "Resources")
   const iconPath = path.join(resourcePath, iconFileName)
 
   if (!fs.existsSync(iconPath)) {

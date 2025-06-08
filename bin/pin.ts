@@ -1,10 +1,10 @@
 #!/usr/bin/env -S bun --enable-source-maps
-import { exec } from 'node:child_process'
-import * as fs from 'node:fs'
-import * as path from 'node:path'
-import { promisify } from 'node:util'
-import { Command } from 'commander'
-import * as yaml from 'js-yaml'
+import { exec } from "node:child_process"
+import * as fs from "node:fs"
+import * as path from "node:path"
+import { promisify } from "node:util"
+import { Command } from "commander"
+import * as yaml from "js-yaml"
 
 const execAsync = promisify(exec)
 
@@ -12,11 +12,11 @@ const execAsync = promisify(exec)
 function getTimestamp(): string {
   const now = new Date()
   const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-  const day = String(now.getDate()).padStart(2, '0')
-  const hours = String(now.getHours()).padStart(2, '0')
-  const minutes = String(now.getMinutes()).padStart(2, '0')
-  const seconds = String(now.getSeconds()).padStart(2, '0')
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const day = String(now.getDate()).padStart(2, "0")
+  const hours = String(now.getHours()).padStart(2, "0")
+  const minutes = String(now.getMinutes()).padStart(2, "0")
+  const seconds = String(now.getSeconds()).padStart(2, "0")
   return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`
 }
 const _MAX_CONCURRENCY = 5
@@ -64,11 +64,11 @@ function findRepositories(rootDir: string): string[] {
     const entries = fs.readdirSync(rootDir, { withFileTypes: true })
 
     for (const entry of entries) {
-      if (entry.isDirectory() && !entry.name.startsWith('.')) {
+      if (entry.isDirectory() && !entry.name.startsWith(".")) {
         const repoPath = path.join(rootDir, entry.name)
 
         // Check if it's a git repository
-        if (fs.existsSync(path.join(repoPath, '.git'))) {
+        if (fs.existsSync(path.join(repoPath, ".git"))) {
           repos.push(repoPath)
         }
       }
@@ -85,26 +85,26 @@ function extractUniqueRepos(repositoriesToProcess: string[]): Set<string> {
   const uniqueRepos = new Set<string>()
 
   for (const repoPath of repositoriesToProcess) {
-    const workflowsDir = path.join(repoPath, '.github', 'workflows')
+    const workflowsDir = path.join(repoPath, ".github", "workflows")
     if (!fs.existsSync(workflowsDir)) continue
 
     const workflowFiles: string[] = []
     const dirEntries = fs.readdirSync(workflowsDir, { withFileTypes: true })
 
     for (const entry of dirEntries) {
-      if (entry.isFile() && (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml'))) {
+      if (entry.isFile() && (entry.name.endsWith(".yml") || entry.name.endsWith(".yaml"))) {
         workflowFiles.push(path.join(workflowsDir, entry.name))
       }
     }
 
     for (const filePath of workflowFiles) {
       try {
-        const content = fs.readFileSync(filePath, 'utf-8')
+        const content = fs.readFileSync(filePath, "utf-8")
         const workflowYaml = yaml.load(content) as Record<string, unknown>
 
         // Extract action references from the YAML
         const extractReposFromNode = (node: Record<string, unknown> | unknown[] | unknown): void => {
-          if (!node || typeof node !== 'object') return
+          if (!node || typeof node !== "object") return
 
           if (Array.isArray(node)) {
             for (const item of node) {
@@ -115,19 +115,19 @@ function extractUniqueRepos(repositoriesToProcess: string[]): Set<string> {
 
           for (const key in node as Record<string, unknown>) {
             const typedNode = node as Record<string, unknown>
-            if (key === 'uses' && typeof typedNode[key] === 'string') {
+            if (key === "uses" && typeof typedNode[key] === "string") {
               const actionRef = (typedNode[key] as string).trim()
 
               // Skip Docker references and local references
-              if (actionRef.startsWith('./') || actionRef.startsWith('docker://')) continue
+              if (actionRef.startsWith("./") || actionRef.startsWith("docker://")) continue
 
               // Check if reference contains a version/commit
-              if (actionRef.includes('@')) {
-                const splitResult = actionRef.split('@')
+              if (actionRef.includes("@")) {
+                const splitResult = actionRef.split("@")
                 if (splitResult.length < 2 || !splitResult[0] || !splitResult[1]) continue
 
                 const actionPath = splitResult[0]
-                const repoPathParts = actionPath.split('/')
+                const repoPathParts = actionPath.split("/")
                 if (repoPathParts.length < 2) continue
 
                 const owner = repoPathParts[0]
@@ -158,7 +158,7 @@ async function buildRepoCache(uniqueRepos: Set<string>): Promise<GitHubRepoCache
   console.log(`🔍 Fetching metadata for ${uniqueRepos.size} unique repositories using GraphQL...`)
 
   // Get GitHub token
-  const { stdout: token } = await execAsync('gh auth token')
+  const { stdout: token } = await execAsync("gh auth token")
   const githubToken = token.trim()
 
   // Convert set to array and split into batches (GraphQL has query size limits)
@@ -180,7 +180,7 @@ async function buildRepoCache(uniqueRepos: Set<string>): Promise<GitHubRepoCache
       // Build GraphQL query for this batch
       const repositoryQueries = batch
         .map((fullRepo, index) => {
-          const [owner, name] = fullRepo.split('/')
+          const [owner, name] = fullRepo.split("/")
           return `
           repo${index}: repository(owner: "${owner}", name: "${name}") {
             nameWithOwner
@@ -194,7 +194,7 @@ async function buildRepoCache(uniqueRepos: Set<string>): Promise<GitHubRepoCache
             }
           }`
         })
-        .join('\n')
+        .join("\n")
 
       const query = `
         query {
@@ -277,13 +277,13 @@ async function buildRepoCache(uniqueRepos: Set<string>): Promise<GitHubRepoCache
 
 // Main function to coordinate the entire process
 async function main() {
-  console.log('🔍 Finding repositories and updating GitHub Action workflows...')
+  console.log("🔍 Finding repositories and updating GitHub Action workflows...")
   // Set up command-line interface using Commander
   const program = new Command()
   program
-    .name('pin')
-    .description('Find repositories and update GitHub Action workflows to specific commit SHAs')
-    .argument('[directory]', 'specific repository directory to process')
+    .name("pin")
+    .description("Find repositories and update GitHub Action workflows to specific commit SHAs")
+    .argument("[directory]", "specific repository directory to process")
     .parse()
 
   // Determine what to process
@@ -299,7 +299,7 @@ async function main() {
     }
 
     // Check if it's a repository itself
-    if (fs.existsSync(path.join(targetPath, '.git'))) {
+    if (fs.existsSync(path.join(targetPath, ".git"))) {
       repositoriesToProcess = [targetPath]
     } else {
       console.error(`❌ Not a git repository: ${targetPath}`)
@@ -307,13 +307,13 @@ async function main() {
     }
   } else {
     // Process all subdirectories of the default path
-    const defaultPath = '/Users/dave/src/github.com/daveio'
+    const defaultPath = "/Users/dave/src/github.com/daveio"
     console.log(`🔍 Scanning for repositories in: ${defaultPath}`)
     repositoriesToProcess = findRepositories(defaultPath)
   }
 
   if (repositoriesToProcess.length === 0) {
-    console.log('No repositories found to process')
+    console.log("No repositories found to process")
     return
   }
 
@@ -323,8 +323,8 @@ async function main() {
   const uniqueRepos = extractUniqueRepos(repositoriesToProcess)
   const repoCache = await buildRepoCache(uniqueRepos)
 
-  const homeDir = process.env.HOME || '~'
-  const backupRoot = path.join(homeDir, '.actions-backups')
+  const homeDir = process.env.HOME || "~"
+  const backupRoot = path.join(homeDir, ".actions-backups")
   // Ensure backup root directory exists
   if (!fs.existsSync(backupRoot)) {
     fs.mkdirSync(backupRoot, { recursive: true })
@@ -383,7 +383,7 @@ async function processRepository(
   }
 
   // Find workflow files
-  const workflowsDir = path.join(repoPath, '.github', 'workflows')
+  const workflowsDir = path.join(repoPath, ".github", "workflows")
   if (!fs.existsSync(workflowsDir)) {
     console.log(`  No workflows directory found in ${repoName}`)
     return repoUpdate
@@ -393,7 +393,7 @@ async function processRepository(
   const dirEntries = fs.readdirSync(workflowsDir, { withFileTypes: true })
 
   for (const entry of dirEntries) {
-    if (entry.isFile() && (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml'))) {
+    if (entry.isFile() && (entry.name.endsWith(".yml") || entry.name.endsWith(".yaml"))) {
       workflowFiles.push(path.join(workflowsDir, entry.name))
     }
   }
@@ -406,7 +406,7 @@ async function processRepository(
   console.log(`  Found ${workflowFiles.length} workflow files`)
 
   // Create backup directory for this repository
-  const repoBackupDir = path.join(backupDir, repoName, '.github', 'workflows')
+  const repoBackupDir = path.join(backupDir, repoName, ".github", "workflows")
   fs.mkdirSync(repoBackupDir, { recursive: true })
 
   // Process each workflow file
@@ -439,7 +439,7 @@ async function processWorkflowFile(
     fs.copyFileSync(filePath, backupPath)
 
     // Read the file and parse YAML
-    const content = fs.readFileSync(filePath, 'utf-8')
+    const content = fs.readFileSync(filePath, "utf-8")
     const workflowYaml = yaml.load(content) as Record<string, unknown>
 
     // Find and process action references
@@ -447,7 +447,7 @@ async function processWorkflowFile(
 
     // Function to recursively update GitHub Actions in the YAML structure
     const processNode = (node: Record<string, unknown> | unknown[] | unknown): boolean => {
-      if (!node || typeof node !== 'object') {
+      if (!node || typeof node !== "object") {
         return false
       }
 
@@ -464,16 +464,16 @@ async function processWorkflowFile(
       for (const key in node as Record<string, unknown>) {
         // If the key is 'uses', this might be a GitHub Action reference
         const typedNode = node as Record<string, unknown>
-        if (key === 'uses' && typeof typedNode[key] === 'string') {
+        if (key === "uses" && typeof typedNode[key] === "string") {
           const actionRef = (typedNode[key] as string).trim()
 
           // Skip Docker references and local references
-          if (actionRef.startsWith('./') || actionRef.startsWith('docker://')) {
+          if (actionRef.startsWith("./") || actionRef.startsWith("docker://")) {
             continue
           }
           // Check if reference contains a version/commit
-          if (actionRef.includes('@')) {
-            const splitResult = actionRef.split('@')
+          if (actionRef.includes("@")) {
+            const splitResult = actionRef.split("@")
             if (splitResult.length < 2 || !splitResult[0] || !splitResult[1]) {
               continue
             }
@@ -481,7 +481,7 @@ async function processWorkflowFile(
             const oldRef = splitResult[1]
 
             // Extract repo from action path (could be owner/repo or owner/repo/path)
-            const repoPathParts = actionPath.split('/')
+            const repoPathParts = actionPath.split("/")
             if (repoPathParts.length < 2) {
               continue // Invalid reference
             }
@@ -543,15 +543,15 @@ async function processWorkflowFile(
 
 // Print summary of all changes
 function printSummary(summary: ProcessingSummary, backupDir: string) {
-  console.log('\n📊 Summary of GitHub Action Updates')
-  console.log('===============================')
+  console.log("\n📊 Summary of GitHub Action Updates")
+  console.log("===============================")
   console.log(`Repositories processed: ${summary.totalReposProcessed}`)
   console.log(`Workflow files processed: ${summary.totalFilesProcessed}`)
   console.log(`Action references updated: ${summary.totalActionsUpdated}`)
   console.log(`Backup location: ${backupDir}`)
 
   if (summary.repoUpdates.length > 0) {
-    console.log('\n🔄 Changes made:')
+    console.log("\n🔄 Changes made:")
 
     for (const repoUpdate of summary.repoUpdates) {
       console.log(`\n📁 Repository: ${repoUpdate.repoName}`)
@@ -567,11 +567,11 @@ function printSummary(summary: ProcessingSummary, backupDir: string) {
       }
     }
   } else {
-    console.log('\n📝 No changes were made.')
+    console.log("\n📝 No changes were made.")
   }
 
   if (summary.errors.length > 0) {
-    console.log('\n❌ Errors:')
+    console.log("\n❌ Errors:")
     for (const error of summary.errors) {
       console.log(`  - ${error}`)
     }

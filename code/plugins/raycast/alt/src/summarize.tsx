@@ -1,15 +1,15 @@
-import { Action, ActionPanel, Form, Icon, List, useNavigation } from '@raycast/api'
-import { open } from '@raycast/api'
-import { showFailureToast } from '@raycast/utils'
-import { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { PrimaryAction } from './actions'
-import Ask from './ask'
-import { useBrowserContent } from './hooks/useBrowser'
-import { DEFAULT_MODEL, useModel } from './hooks/useModel'
-import type { Conversation, Model } from './type'
-import { canAccessBrowserExtension } from './utils/browser'
-import { CacheAdapter } from './utils/cache'
+import { Action, ActionPanel, Form, Icon, List, useNavigation } from "@raycast/api"
+import { open } from "@raycast/api"
+import { showFailureToast } from "@raycast/utils"
+import { useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { PrimaryAction } from "./actions"
+import Ask from "./ask"
+import { useBrowserContent } from "./hooks/useBrowser"
+import { DEFAULT_MODEL, useModel } from "./hooks/useModel"
+import type { Conversation, Model } from "./type"
+import { canAccessBrowserExtension } from "./utils/browser"
+import { CacheAdapter } from "./utils/cache"
 
 export default function Summarize() {
   if (!canAccessBrowserExtension()) {
@@ -17,32 +17,32 @@ export default function Summarize() {
       <List
         actions={
           <ActionPanel>
-            <PrimaryAction title="Install" onAction={() => open('https://www.raycast.com/browser-extension')} />
+            <PrimaryAction title="Install" onAction={() => open("https://www.raycast.com/browser-extension")} />
           </ActionPanel>
         }
       >
         <List.EmptyView
           icon={Icon.BoltDisabled}
-          title={'Browser Extension Required'}
-          description={'This command need install Raycast browser extension to work. Please install it first'}
+          title={"Browser Extension Required"}
+          description={"This command need install Raycast browser extension to work. Please install it first"}
         />
       </List>
     )
   }
 
   const { loading, content, error: browserError, retry } = useBrowserContent()
-  const [question, setQuestion] = useState('')
-  const [error, setError] = useState('')
+  const [question, setQuestion] = useState("")
+  const [error, setError] = useState("")
 
   useEffect(() => {
     if (loading) {
       return
     }
     if (browserError) {
-      showFailureToast(browserError, { title: 'Retrieve content failed' })
+      showFailureToast(browserError, { title: "Retrieve content failed" })
       return
     }
-    setQuestion(content || '')
+    setQuestion(content || "")
   }, [loading, content, browserError])
 
   const { data, isLoading: modelLoading } = useModel()
@@ -52,17 +52,17 @@ export default function Summarize() {
 
   useEffect(() => {
     if (!modelLoading) {
-      setSeparateDefaultModel(Object.values(data).filter((x) => x.id !== 'default'))
-      setDefaultModel(data['default'] ?? DEFAULT_MODEL)
+      setSeparateDefaultModel(Object.values(data).filter((x) => x.id !== "default"))
+      setDefaultModel(data["default"] ?? DEFAULT_MODEL)
     }
   }, [modelLoading])
 
-  const [selectedModelId, setSelectedModelId] = useState<string>('default')
-  const cache = new CacheAdapter('select_model')
+  const [selectedModelId, setSelectedModelId] = useState<string>("default")
+  const cache = new CacheAdapter("select_model")
 
   useEffect(() => {
     const selectModel = cache.get()
-    setSelectedModelId(selectModel || 'default')
+    setSelectedModelId(selectModel || "default")
   }, [])
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function Summarize() {
                 chats: [],
                 model: chooseModel,
                 pinned: false,
-                updated_at: '',
+                updated_at: "",
                 created_at: new Date().toISOString()
               }
               push(<Ask conversation={conversation} initialQuestion={question} />)
@@ -113,13 +113,13 @@ export default function Summarize() {
         error={error || undefined}
         value={question}
         onFocus={() => {
-          setError('')
+          setError("")
         }}
         onBlur={(event) => {
           if (event.target.value?.length == 0) {
-            setError('Required')
+            setError("Required")
           } else {
-            setError('')
+            setError("")
           }
         }}
       />

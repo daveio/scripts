@@ -11,8 +11,8 @@
  *   --qnap  Use QNAP-specific template to avoid ZFS build issues
  */
 
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync } from "node:fs"
+import { join } from "node:path"
 
 interface EnvVars {
   [key: string]: string
@@ -31,11 +31,11 @@ async function parseEnvFile(filePath: string): Promise<EnvVars> {
   const content = await envFile.text()
   const envVars: EnvVars = {}
 
-  for (const line of content.split('\n')) {
+  for (const line of content.split("\n")) {
     const trimmed = line.trim()
 
     // Skip empty lines and comments
-    if (!trimmed || trimmed.startsWith('#')) continue
+    if (!trimmed || trimmed.startsWith("#")) continue
 
     // Parse KEY=VALUE or KEY="VALUE"
     const match = trimmed.match(/^([^=]+)=(.*)$/)
@@ -43,7 +43,7 @@ async function parseEnvFile(filePath: string): Promise<EnvVars> {
       const key = match[1]
       const value = match[2]
       // Remove surrounding quotes if present
-      envVars[key.trim()] = value.trim().replace(/^["']|["']$/g, '')
+      envVars[key.trim()] = value.trim().replace(/^["']|["']$/g, "")
     }
   }
 
@@ -59,12 +59,12 @@ function replacePlaceholders(content: string, envVars: EnvVars): string {
   // Define placeholder patterns
   const placeholders = [
     {
-      placeholder: 'xxxGEOIPUPDATE_ACCOUNT_IDxxx',
-      envKey: 'GEOIPUPDATE_ACCOUNT_ID'
+      placeholder: "xxxGEOIPUPDATE_ACCOUNT_IDxxx",
+      envKey: "GEOIPUPDATE_ACCOUNT_ID"
     },
     {
-      placeholder: 'xxxGEOIPUPDATE_LICENSE_KEYxxx',
-      envKey: 'GEOIPUPDATE_LICENSE_KEY'
+      placeholder: "xxxGEOIPUPDATE_LICENSE_KEYxxx",
+      envKey: "GEOIPUPDATE_LICENSE_KEY"
     }
   ]
 
@@ -77,7 +77,7 @@ function replacePlaceholders(content: string, envVars: EnvVars): string {
     }
 
     // Replace all occurrences of the placeholder
-    const regex = new RegExp(placeholder, 'g')
+    const regex = new RegExp(placeholder, "g")
     result = result.replace(regex, value)
 
     console.log(`✅ Replaced ${placeholder} with ${envKey}`)
@@ -91,12 +91,12 @@ function replacePlaceholders(content: string, envVars: EnvVars): string {
  */
 function shouldUseQnapTemplate(): boolean {
   // Check command line arguments
-  if (process.argv.includes('--qnap')) {
+  if (process.argv.includes("--qnap")) {
     return true
   }
 
   // Auto-detect QNAP environment
-  if (existsSync('/etc/config/uLinux.conf') || existsSync('/share/CACHEDEV1_DATA') || process.env.QNAP_PLATFORM) {
+  if (existsSync("/etc/config/uLinux.conf") || existsSync("/share/CACHEDEV1_DATA") || process.env.QNAP_PLATFORM) {
     return true
   }
 
@@ -111,14 +111,14 @@ async function main() {
   const useQnap = shouldUseQnapTemplate()
 
   // Always read template from the netflow directory
-  const netflowDir = join(cwd, 'code', 'docker', 'netflow')
-  const templateFileName = useQnap ? 'docker-compose.qnap.template.yml' : 'docker-compose.template.yml'
+  const netflowDir = join(cwd, "code", "docker", "netflow")
+  const templateFileName = useQnap ? "docker-compose.qnap.template.yml" : "docker-compose.template.yml"
   const templatePath = join(netflowDir, templateFileName)
-  const envPath = join(cwd, '.env') // still use .env from cwd
-  const outputPath = join(cwd, 'docker-compose.yml') // output to cwd
+  const envPath = join(cwd, ".env") // still use .env from cwd
+  const outputPath = join(cwd, "docker-compose.yml") // output to cwd
 
-  console.log('🚀 Starting netflow deployment preparation...')
-  console.log(`📋 Using ${useQnap ? 'QNAP-specific' : 'standard'} template\n`)
+  console.log("🚀 Starting netflow deployment preparation...")
+  console.log(`📋 Using ${useQnap ? "QNAP-specific" : "standard"} template\n`)
 
   // Check if template file exists
   if (!existsSync(templatePath)) {
@@ -128,7 +128,7 @@ async function main() {
 
   try {
     // Parse environment variables
-    console.log('📖 Reading environment variables...')
+    console.log("📖 Reading environment variables...")
     const envVars = await parseEnvFile(envPath)
     console.log(`✅ Loaded ${Object.keys(envVars).length} environment variables\n`)
 
@@ -136,31 +136,31 @@ async function main() {
     console.log(`📄 Reading docker-compose template (${templateFileName})...`)
     const templateFile = Bun.file(templatePath)
     const templateContent = await templateFile.text()
-    console.log('✅ Template loaded successfully\n')
+    console.log("✅ Template loaded successfully\n")
 
     // Replace placeholders
-    console.log('🔄 Replacing placeholders...')
+    console.log("🔄 Replacing placeholders...")
     const processedContent = replacePlaceholders(templateContent, envVars)
     console.log()
 
     // Write output file
-    console.log('💾 Writing docker-compose.yml to repo root...')
+    console.log("💾 Writing docker-compose.yml to repo root...")
     await Bun.write(outputPath, processedContent)
     console.log(`✅ Successfully wrote ${outputPath}\n`)
 
-    console.log('🎉 Docker Compose file generated successfully!')
-    console.log('📝 The file contains embedded secrets and is ready for deployment.')
-    console.log('⚠️  Remember: docker-compose.yml is gitignored for security.')
+    console.log("🎉 Docker Compose file generated successfully!")
+    console.log("📝 The file contains embedded secrets and is ready for deployment.")
+    console.log("⚠️  Remember: docker-compose.yml is gitignored for security.")
   } catch (error) {
-    console.error('❌ Error processing files:', error)
+    console.error("❌ Error processing files:", error)
     process.exit(1)
   }
 }
 
 // Run the script
-if (process.argv[1]?.endsWith('netflow.ts') || process.argv[1]?.endsWith('netflow.js')) {
+if (process.argv[1]?.endsWith("netflow.ts") || process.argv[1]?.endsWith("netflow.js")) {
   main().catch((error) => {
-    console.error('❌ Unexpected error:', error)
+    console.error("❌ Unexpected error:", error)
     process.exit(1)
   })
 }

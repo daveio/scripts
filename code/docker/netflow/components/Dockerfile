@@ -17,14 +17,15 @@ WORKDIR /prefetch
 
 # Prefetch all source repositories with shallow clones and caching
 RUN --mount=type=cache,target=/root/.cache/git,sharing=locked \
-    git clone --depth 1 --branch ${NDPI_VERSION} https://github.com/ntop/nDPI.git nDPI \
-    && git clone --depth 1 --branch ${NTOP_VERSION} https://github.com/ntop/ntopng.git ntopng \
-    && git clone --depth 1 --branch v${NETFLOW2NG_VERSION} https://github.com/synfinatic/netflow2ng.git netflow2ng
+    git clone --depth 1 --branch "${NDPI_VERSION}" https://github.com/ntop/nDPI.git nDPI \
+    && git clone --depth 1 --branch "${NTOP_VERSION}" https://github.com/ntop/ntopng.git ntopng \
+    && git clone --depth 1 --branch "v${NETFLOW2NG_VERSION}" https://github.com/synfinatic/netflow2ng.git netflow2ng
 
 # Runtime dependencies stage
 FROM base AS runtime-deps
 
 # Install runtime prerequisites with mount cache
+# trunk-ignore(hadolint/DL3008)
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     sed -i -e's/ main/ main contrib/g' /etc/apt/sources.list.d/debian.sources \
@@ -102,16 +103,18 @@ RUN --mount=type=cache,target=/tmp/downloads,sharing=locked \
     ARCH=$(dpkg --print-architecture) \
     && GEOIP_VERSION="7.1.0" \
     && if [ ! -f "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" ]; then \
-         wget -O "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" \
+         wget --progress=dot:giga -O "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" \
            "https://github.com/maxmind/geoipupdate/releases/download/v${GEOIP_VERSION}/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb"; \
        fi \
     && dpkg -i "/tmp/downloads/geoipupdate_${GEOIP_VERSION}_linux_${ARCH}.deb" || true \
-    && apt-get update && apt-get install -f -y
+    && apt-get update && apt-get install --no-install-recommends -f -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies stage
 FROM runtime-deps AS build-deps
 
 # Install build prerequisites with mount cache
+# trunk-ignore(hadolint/DL3008)
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update \
@@ -171,9 +174,9 @@ FROM build-deps AS mise-tools
 
 # Install Go with mise and cache the installation
 RUN --mount=type=cache,target=/root/.cache/mise,sharing=locked \
-    mise use go@${GO_VERSION} \
-    && mise install go@${GO_VERSION} \
-    && mise which go
+    mise use "go@${GO_VERSION}" \
+    && mise install "go@${GO_VERSION}" \
+    && mise which "go@${GO_VERSION}"
 
 # Set mise environment for subsequent stages
 ENV PATH="/root/.local/share/mise/installs/go/${GO_VERSION}/bin:${PATH}"
@@ -197,7 +200,7 @@ WORKDIR /src/netflow2ng
 # Build netflow2ng with Go module and build caches
 RUN --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
     --mount=type=cache,target=/go/pkg/mod,sharing=locked \
-    mise exec go@${GO_VERSION} -- go build -ldflags="-s -w" -o /usr/local/bin/netflow2ng ./cmd/...
+    mise exec "go@${GO_VERSION}" -- go build -ldflags="-s -w" -o /usr/local/bin/netflow2ng ./cmd/...
 
 # nDPI build stage
 FROM source-prepared AS ndpi-builder
@@ -301,7 +304,8 @@ RUN touch /etc/GeoIP.conf \
       /var/lib/redis \
       /var/log/redis \
       /var/run/redis \
-      /etc/redis/redis.conf
+    && chown ntopng:ntopng /etc/redis/redis.conf \
+    && chmod 644 /etc/redis/redis.conf
 
 USER ntopng
 

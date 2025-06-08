@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, openExtensionPreferences } from '@raycast/api'
+import { Action, ActionPanel, Icon, openExtensionPreferences } from "@raycast/api"
 
 export const PreferencesActionSection = () => (
   <ActionPanel.Section title="Preferences">

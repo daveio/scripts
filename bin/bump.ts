@@ -10,18 +10,18 @@
  * - Provides beautiful terminal UI with detailed progress information
  */
 
-import { exec as execCallback } from 'node:child_process'
-import * as fs from 'node:fs/promises'
-import * as path from 'node:path'
-import { promisify } from 'node:util'
-import * as toml from '@iarna/toml'
-import axios from 'axios'
-import boxen from 'boxen'
-import chalk from 'chalk'
-import { Command } from 'commander'
-import * as yaml from 'js-yaml'
-import ora from 'ora'
-import * as semver from 'semver'
+import { exec as execCallback } from "node:child_process"
+import * as fs from "node:fs/promises"
+import * as path from "node:path"
+import { promisify } from "node:util"
+import * as toml from "@iarna/toml"
+import axios from "axios"
+import boxen from "boxen"
+import chalk from "chalk"
+import { Command } from "commander"
+import * as yaml from "js-yaml"
+import ora from "ora"
+import * as semver from "semver"
 
 const exec = promisify(execCallback)
 
@@ -68,12 +68,12 @@ interface Dependency {
   name: string
   currentVersion: string
   latestVersion?: string
-  manager: 'npm' | 'pypi' | 'rubygems'
-  updateType?: 'none' | 'patch' | 'minor' | 'major'
+  manager: "npm" | "pypi" | "rubygems"
+  updateType?: "none" | "patch" | "minor" | "major"
   repository: string
   repoPath: string
   filePath: string
-  fileType: 'package.json' | 'pyproject.toml' | 'gemfile' | 'gemspec'
+  fileType: "package.json" | "pyproject.toml" | "gemfile" | "gemspec"
 }
 
 interface UpdateSummary {
@@ -90,16 +90,16 @@ const program = new Command()
 
 // Set up the Commander CLI
 program
-  .name('bump')
-  .description('A tool for updating dependencies across repositories')
-  .version('1.0.0')
-  .option('--dry-run', 'Make no changes, just print what would be updated', false)
-  .option('--unsafe', 'Override version rules to bump all version levels to latest', false)
-  .option('--no-pull', 'Skip git fetch and pull operations')
-  .option('--no-install', 'Skip dependency installation/update')
-  .option('--no-commit', 'Skip git commit step')
-  .option('--no-push', 'Skip git push step')
-  .argument('[repo]', 'Target a specific repository')
+  .name("bump")
+  .description("A tool for updating dependencies across repositories")
+  .version("1.0.0")
+  .option("--dry-run", "Make no changes, just print what would be updated", false)
+  .option("--unsafe", "Override version rules to bump all version levels to latest", false)
+  .option("--no-pull", "Skip git fetch and pull operations")
+  .option("--no-install", "Skip dependency installation/update")
+  .option("--no-commit", "Skip git commit step")
+  .option("--no-push", "Skip git push step")
+  .argument("[repo]", "Target a specific repository")
   .parse()
 
 const options: CommandOptions = program.opts()
@@ -107,14 +107,14 @@ options.repo = program.args[0]
 
 // Discover repositories to process
 async function discoverRepositories(targetRepo?: string): Promise<string[]> {
-  const spinner = ora('Discovering repositories...').start()
+  const spinner = ora("Discovering repositories...").start()
 
   try {
-    const baseDir = '/Users/dave/src/github.com/daveio'
+    const baseDir = "/Users/dave/src/github.com/daveio"
 
     if (targetRepo) {
       // Sanitize targetRepo to prevent path traversal attacks
-      const sanitizedTargetRepo = targetRepo.replace(/\.\./g, '').replace(/[\/\\]/g, '')
+      const sanitizedTargetRepo = targetRepo.replace(/\.\./g, "").replace(/[\/\\]/g, "")
       const repoPath = path.isAbsolute(sanitizedTargetRepo)
         ? sanitizedTargetRepo
         : path.join(baseDir, sanitizedTargetRepo)
@@ -127,12 +127,12 @@ async function discoverRepositories(targetRepo?: string): Promise<string[]> {
       const isGitRepo =
         isDir &&
         (await fs
-          .stat(path.join(repoPath, '.git'))
+          .stat(path.join(repoPath, ".git"))
           .then((stat) => stat.isDirectory())
           .catch(() => false))
 
       if (!isGitRepo) {
-        spinner.fail(`${chalk.red('Error:')} ${repoPath} is not a valid git repository.`)
+        spinner.fail(`${chalk.red("Error:")} ${repoPath} is not a valid git repository.`)
         process.exit(1)
       }
 
@@ -148,7 +148,7 @@ async function discoverRepositories(targetRepo?: string): Promise<string[]> {
       if (entry.isDirectory()) {
         const dirPath = path.join(baseDir, entry.name)
         const isGitRepo = await fs
-          .stat(path.join(dirPath, '.git'))
+          .stat(path.join(dirPath, ".git"))
           .then((stat) => stat.isDirectory())
           .catch(() => false)
 
@@ -161,7 +161,7 @@ async function discoverRepositories(targetRepo?: string): Promise<string[]> {
     spinner.succeed(`Discovered ${chalk.green(repoDirs.length)} repositories.`)
     return repoDirs
   } catch (error) {
-    spinner.fail(`${chalk.red('Error:')} Failed to discover repositories.`)
+    spinner.fail(`${chalk.red("Error:")} Failed to discover repositories.`)
     console.error(error)
     process.exit(1)
   }
@@ -170,7 +170,7 @@ async function discoverRepositories(targetRepo?: string): Promise<string[]> {
 // Sync git repositories
 async function syncGitRepositories(repoPaths: string[], shouldPull: boolean): Promise<void> {
   if (!shouldPull) {
-    console.log(chalk.yellow('Git pull operations skipped.'))
+    console.log(chalk.yellow("Git pull operations skipped."))
     return
   }
 
@@ -183,10 +183,10 @@ async function syncGitRepositories(repoPaths: string[], shouldPull: boolean): Pr
       process.chdir(repoPath)
 
       // Fetch all branches, tags, and prune
-      await exec('git fetch --all --prune --tags --prune-tags --recurse-submodules=yes | cat')
+      await exec("git fetch --all --prune --tags --prune-tags --recurse-submodules=yes | cat")
 
       // Pull all branches and rebase
-      await exec('git pull --all --prune --rebase | cat')
+      await exec("git pull --all --prune --rebase | cat")
 
       spinner.succeed(`Synced repository: ${chalk.green(repoName)}`)
     } catch (error) {
@@ -206,28 +206,28 @@ async function readDependencies(repoPaths: string[]): Promise<Dependency[]> {
 
     try {
       // Look for package.json files
-      const packageJsonFiles = await findFiles(repoPath, 'package.json')
+      const packageJsonFiles = await findFiles(repoPath, "package.json")
       for (const filePath of packageJsonFiles) {
         const deps = await readPackageJsonDependencies(filePath, repoName, repoPath)
         allDependencies.push(...deps)
       }
 
       // Look for pyproject.toml files
-      const pyprojectTomlFiles = await findFiles(repoPath, 'pyproject.toml')
+      const pyprojectTomlFiles = await findFiles(repoPath, "pyproject.toml")
       for (const filePath of pyprojectTomlFiles) {
         const deps = await readPyprojectTomlDependencies(filePath, repoName, repoPath)
         allDependencies.push(...deps)
       }
 
       // Look for Gemfile files
-      const gemfileFiles = await findFiles(repoPath, 'Gemfile')
+      const gemfileFiles = await findFiles(repoPath, "Gemfile")
       for (const filePath of gemfileFiles) {
         const deps = await readGemfileDependencies(filePath, repoName, repoPath)
         allDependencies.push(...deps)
       }
 
       // Look for .gemspec files
-      const gemspecFiles = await findFiles(repoPath, '*.gemspec')
+      const gemspecFiles = await findFiles(repoPath, "*.gemspec")
       for (const filePath of gemspecFiles) {
         const deps = await readGemspecDependencies(filePath, repoName, repoPath)
         allDependencies.push(...deps)
@@ -247,18 +247,18 @@ async function readDependencies(repoPaths: string[]): Promise<Dependency[]> {
 async function findFiles(dir: string, pattern: string): Promise<string[]> {
   try {
     // Escape special characters in directory path
-    const escapedDir = dir.replace(/(["\s'$`\\])/g, '\\$1')
+    const escapedDir = dir.replace(/(["\s'$`\\])/g, "\\$1")
 
     // Create a proper find command that explicitly excludes node_modules and .git directories
     // The -path patterns need to come before -name to properly exclude directories
     const findCommand = `find ${escapedDir} -type f \\( -path "*/node_modules/*" -o -path "*/.git/*" \\) -prune -o -type f -name "${pattern}" -print`
 
-    console.log('DEBUG: Running find command:', findCommand)
+    console.log("DEBUG: Running find command:", findCommand)
 
     const { stdout } = await exec(findCommand)
-    const files = stdout.trim().split('\n').filter(Boolean)
+    const files = stdout.trim().split("\n").filter(Boolean)
 
-    console.log('DEBUG: Found files matching pattern in directory:', {
+    console.log("DEBUG: Found files matching pattern in directory:", {
       count: files.length,
       pattern,
       directory: dir
@@ -266,7 +266,7 @@ async function findFiles(dir: string, pattern: string): Promise<string[]> {
 
     return files
   } catch (error) {
-    console.error('Error finding files:', error)
+    console.error("Error finding files:", error)
     return []
   }
 }
@@ -280,10 +280,10 @@ async function readPackageJsonDependencies(
   const dependencies: Dependency[] = []
 
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
+    const content = await fs.readFile(filePath, "utf-8")
     const pkg = JSON.parse(content)
 
-    const sections = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
+    const sections = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]
 
     for (const section of sections) {
       if (pkg[section]) {
@@ -291,17 +291,17 @@ async function readPackageJsonDependencies(
           dependencies.push({
             name,
             currentVersion: version as string,
-            manager: 'npm',
+            manager: "npm",
             repository: repoName,
             repoPath,
             filePath,
-            fileType: 'package.json'
+            fileType: "package.json"
           })
         }
       }
     }
   } catch (error) {
-    console.error('Error reading package.json file:', filePath, error)
+    console.error("Error reading package.json file:", filePath, error)
   }
 
   return dependencies
@@ -316,31 +316,31 @@ async function readPyprojectTomlDependencies(
   const dependencies: Dependency[] = []
 
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
+    const content = await fs.readFile(filePath, "utf-8")
     const pyproject = toml.parse(content) as PyProject
 
     // Poetry dependencies
     if (pyproject.tool?.poetry?.dependencies) {
       const poetryDeps = pyproject.tool.poetry.dependencies
       for (const name of Object.keys(poetryDeps)) {
-        if (name !== 'python') {
+        if (name !== "python") {
           const versionInfo = poetryDeps[name]
-          let version = ''
+          let version = ""
 
-          if (typeof versionInfo === 'string') {
+          if (typeof versionInfo === "string") {
             version = versionInfo
-          } else if (versionInfo && typeof versionInfo === 'object' && 'version' in versionInfo) {
-            version = versionInfo.version || ''
+          } else if (versionInfo && typeof versionInfo === "object" && "version" in versionInfo) {
+            version = versionInfo.version || ""
           }
 
           dependencies.push({
             name,
             currentVersion: version,
-            manager: 'pypi',
+            manager: "pypi",
             repository: repoName,
             repoPath,
             filePath,
-            fileType: 'pyproject.toml'
+            fileType: "pyproject.toml"
           })
         }
       }
@@ -363,17 +363,17 @@ async function readPyprojectTomlDependencies(
           dependencies.push({
             name,
             currentVersion: `${operator}${version}`,
-            manager: 'pypi',
+            manager: "pypi",
             repository: repoName,
             repoPath,
             filePath,
-            fileType: 'pyproject.toml'
+            fileType: "pyproject.toml"
           })
         }
       }
     }
   } catch (error) {
-    console.error('Error reading pyproject.toml file:', filePath, error)
+    console.error("Error reading pyproject.toml file:", filePath, error)
   }
 
   return dependencies
@@ -384,8 +384,8 @@ async function readGemfileDependencies(filePath: string, repoName: string, repoP
   const dependencies: Dependency[] = []
 
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    const lines = content.split('\n')
+    const content = await fs.readFile(filePath, "utf-8")
+    const lines = content.split("\n")
 
     // Simple regex-based parsing for gem declarations
     const gemRegex = /^\s*gem\s+['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"])?/
@@ -396,17 +396,17 @@ async function readGemfileDependencies(filePath: string, repoName: string, repoP
         const [, name, version] = match
         dependencies.push({
           name,
-          currentVersion: version || '*',
-          manager: 'rubygems',
+          currentVersion: version || "*",
+          manager: "rubygems",
           repository: repoName,
           repoPath,
           filePath,
-          fileType: 'gemfile'
+          fileType: "gemfile"
         })
       }
     }
   } catch (error) {
-    console.error('Error reading Gemfile:', filePath, error)
+    console.error("Error reading Gemfile:", filePath, error)
   }
 
   return dependencies
@@ -417,8 +417,8 @@ async function readGemspecDependencies(filePath: string, repoName: string, repoP
   const dependencies: Dependency[] = []
 
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    const lines = content.split('\n')
+    const content = await fs.readFile(filePath, "utf-8")
+    const lines = content.split("\n")
 
     // Simple regex-based parsing for gemspec dependencies
     const addDependencyRegex =
@@ -430,17 +430,17 @@ async function readGemspecDependencies(filePath: string, repoName: string, repoP
         const [, , name, version] = match
         dependencies.push({
           name,
-          currentVersion: version || '*',
-          manager: 'rubygems',
+          currentVersion: version || "*",
+          manager: "rubygems",
           repository: repoName,
           repoPath,
           filePath,
-          fileType: 'gemspec'
+          fileType: "gemspec"
         })
       }
     }
   } catch (error) {
-    console.error('Error reading gemspec file:', filePath, error)
+    console.error("Error reading gemspec file:", filePath, error)
   }
 
   return dependencies
@@ -485,29 +485,29 @@ async function retryWithBackoff<T>(
       ): err is {
         response?: { status?: number; headers?: Record<string, string> }
       } => {
-        return typeof err === 'object' && err !== null && 'response' in err
+        return typeof err === "object" && err !== null && "response" in err
       }
 
       // Type guard for error with message property
       const hasMessage = (err: unknown): err is { message: string } => {
         return (
-          typeof err === 'object' &&
+          typeof err === "object" &&
           err !== null &&
-          'message' in err &&
-          typeof (err as { message: unknown }).message === 'string'
+          "message" in err &&
+          typeof (err as { message: unknown }).message === "string"
         )
       }
 
       // Check if the error is due to rate limiting
       const isRateLimit =
         (hasResponse(error) && error.response?.status === 429) ||
-        (hasMessage(error) && error.message.includes('rate limit'))
+        (hasMessage(error) && error.message.includes("rate limit"))
 
       // If it's a rate limit error, use a longer delay
       if (isRateLimit) {
         let retryAfter: string | undefined
         if (hasResponse(error)) {
-          retryAfter = error.response?.headers?.['retry-after']
+          retryAfter = error.response?.headers?.["retry-after"]
         }
         if (retryAfter && !Number.isNaN(Number.parseInt(retryAfter))) {
           delay = Number.parseInt(retryAfter) * 1000
@@ -549,7 +549,7 @@ async function processNpmDependenciesBatch(deps: Dependency[], batchSize: number
                 `https://registry.npmjs.org/${encodeURIComponent(dep.name)}`,
                 { timeout: 15000 } // 15 second timeout
               )
-              const latestVersion = response.data['dist-tags']?.latest
+              const latestVersion = response.data["dist-tags"]?.latest
 
               if (latestVersion) {
                 dep.latestVersion = latestVersion
@@ -557,7 +557,7 @@ async function processNpmDependenciesBatch(deps: Dependency[], batchSize: number
               }
             })
           } catch (error) {
-            console.error('Error fetching npm package after retries:', chalk.yellow(dep.name), error)
+            console.error("Error fetching npm package after retries:", chalk.yellow(dep.name), error)
           }
         })
       )
@@ -599,7 +599,7 @@ async function processPypiDependenciesBatch(deps: Dependency[], batchSize: numbe
               }
             })
           } catch (error) {
-            console.error('Error fetching PyPI package after retries:', chalk.yellow(dep.name), error)
+            console.error("Error fetching PyPI package after retries:", chalk.yellow(dep.name), error)
           }
         })
       )
@@ -641,7 +641,7 @@ async function processRubygemsDependenciesBatch(deps: Dependency[], batchSize: n
               }
             })
           } catch (error) {
-            console.error('Error fetching RubyGems package after retries:', chalk.yellow(dep.name), error)
+            console.error("Error fetching RubyGems package after retries:", chalk.yellow(dep.name), error)
           }
         })
       )
@@ -656,13 +656,13 @@ async function processRubygemsDependenciesBatch(deps: Dependency[], batchSize: n
 
 // Check for updates using package manager APIs with batching
 async function checkForUpdates(dependencies: Dependency[]): Promise<Dependency[]> {
-  const spinner = ora('Checking for updates...').start()
+  const spinner = ora("Checking for updates...").start()
 
   try {
     // Group dependencies by manager to reduce API calls
-    const npmDeps = dependencies.filter((dep) => dep.manager === 'npm')
-    const pypiDeps = dependencies.filter((dep) => dep.manager === 'pypi')
-    const rubygemsDeps = dependencies.filter((dep) => dep.manager === 'rubygems')
+    const npmDeps = dependencies.filter((dep) => dep.manager === "npm")
+    const pypiDeps = dependencies.filter((dep) => dep.manager === "pypi")
+    const rubygemsDeps = dependencies.filter((dep) => dep.manager === "rubygems")
 
     // Deduplicate dependencies by name to reduce API calls even further
     const uniqueNpmDeps = Array.from(new Map(npmDeps.map((dep) => [dep.name, dep])).values())
@@ -688,7 +688,7 @@ async function checkForUpdates(dependencies: Dependency[]): Promise<Dependency[]
     const rubygemsBatchSize = 10 // RubyGems has stricter rate limits
 
     // Process all package managers in parallel
-    spinner.text = 'Checking for updates in parallel batches...'
+    spinner.text = "Checking for updates in parallel batches..."
 
     const startTime = Date.now()
 
@@ -708,7 +708,7 @@ async function checkForUpdates(dependencies: Dependency[]): Promise<Dependency[]
       string,
       {
         latestVersion?: string
-        updateType?: 'none' | 'patch' | 'minor' | 'major'
+        updateType?: "none" | "patch" | "minor" | "major"
       }
     >()
 
@@ -736,7 +736,7 @@ async function checkForUpdates(dependencies: Dependency[]): Promise<Dependency[]
     spinner.succeed(`Checked ${chalk.green(dependencies.length)} dependencies for updates in ${chalk.blue(duration)}s.`)
     return dependencies
   } catch (error) {
-    spinner.fail(`${chalk.red('Error:')} Failed to check for updates.`)
+    spinner.fail(`${chalk.red("Error:")} Failed to check for updates.`)
     console.error(error)
     return dependencies
   }
@@ -749,19 +749,19 @@ function extractVersionFromConstraint(constraint: string): string {
 }
 
 // Determine update type based on semver
-function determineUpdateType(currentVersion: string, latestVersion: string): 'none' | 'patch' | 'minor' | 'major' {
+function determineUpdateType(currentVersion: string, latestVersion: string): "none" | "patch" | "minor" | "major" {
   // Extract version numbers from version strings that might have constraints
   const currentClean = extractVersionFromConstraint(currentVersion)
   const latestClean = extractVersionFromConstraint(latestVersion)
 
   // Skip if the current version is already the latest
   if (currentClean === latestClean) {
-    return 'none'
+    return "none"
   }
 
   // Skip invalid semver versions
   if (!semver.valid(semver.coerce(currentClean)) || !semver.valid(semver.coerce(latestClean))) {
-    return 'none'
+    return "none"
   }
 
   // Parse semver
@@ -769,29 +769,29 @@ function determineUpdateType(currentVersion: string, latestVersion: string): 'no
   const latest = semver.coerce(latestClean)
 
   if (!current || !latest) {
-    return 'none'
+    return "none"
   }
 
   // Compare major, minor, and patch versions
   if (latest.major > current.major) {
-    return 'major'
+    return "major"
   }
   if (latest.minor > current.minor) {
-    return 'minor'
+    return "minor"
   }
   if (latest.patch > current.patch) {
-    return 'patch'
+    return "patch"
   }
 
-  return 'none'
+  return "none"
 }
 
 // Apply updates according to version bump rules
 async function applyUpdates(dependencies: Dependency[], options: CommandOptions): Promise<Dependency[]> {
-  const spinner = ora('Applying updates...').start()
+  const spinner = ora("Applying updates...").start()
 
   if (options.dryRun) {
-    spinner.info(chalk.blue('Dry run mode enabled. No changes will be made.'))
+    spinner.info(chalk.blue("Dry run mode enabled. No changes will be made."))
   }
 
   // Group dependencies by file to minimize file I/O
@@ -819,11 +819,11 @@ async function applyUpdates(dependencies: Dependency[], options: CommandOptions)
         }
 
         // Apply updates based on version bump rules
-        if (dep.updateType === 'major' && !options.unsafe) {
+        if (dep.updateType === "major" && !options.unsafe) {
           return false
         }
 
-        return dep.updateType !== 'none'
+        return dep.updateType !== "none"
       })
 
       if (depsToUpdate.length === 0) {
@@ -844,29 +844,29 @@ async function applyUpdates(dependencies: Dependency[], options: CommandOptions)
       }
 
       // Read file content
-      const content = await fs.readFile(filePath, 'utf-8')
+      const content = await fs.readFile(filePath, "utf-8")
 
       // Update file content based on file type
       let updatedContent = content
 
       switch (fileType) {
-        case 'package.json':
+        case "package.json":
           updatedContent = updatePackageJson(content, depsToUpdate)
           break
-        case 'pyproject.toml':
+        case "pyproject.toml":
           updatedContent = updatePyprojectToml(content, depsToUpdate)
           break
-        case 'gemfile':
+        case "gemfile":
           updatedContent = updateGemfile(content, depsToUpdate)
           break
-        case 'gemspec':
+        case "gemspec":
           updatedContent = updateGemspec(content, depsToUpdate)
           break
       }
 
       // Write updated content back to file
       if (updatedContent !== content) {
-        await fs.writeFile(filePath, updatedContent, 'utf-8')
+        await fs.writeFile(filePath, updatedContent, "utf-8")
 
         // Mark dependencies as updated
         for (const dep of depsToUpdate) {
@@ -879,7 +879,7 @@ async function applyUpdates(dependencies: Dependency[], options: CommandOptions)
         }
       }
     } catch (error) {
-      console.error('Error updating file:', filePath, error)
+      console.error("Error updating file:", filePath, error)
     }
   }
 
@@ -893,7 +893,7 @@ function updatePackageJson(content: string, dependencies: Dependency[]): string 
     const pkg = JSON.parse(content)
 
     // Update each dependency section
-    const sections = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
+    const sections = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]
 
     for (const section of sections) {
       if (pkg[section]) {
@@ -910,7 +910,7 @@ function updatePackageJson(content: string, dependencies: Dependency[]): string 
     // Preserve formatting
     return `${JSON.stringify(pkg, null, 2)}\n`
   } catch (error) {
-    console.error('Error updating package.json:', error)
+    console.error("Error updating package.json:", error)
     return content
   }
 }
@@ -918,7 +918,7 @@ function updatePackageJson(content: string, dependencies: Dependency[]): string 
 // Update pyproject.toml
 function updatePyprojectToml(content: string, dependencies: Dependency[]): string {
   try {
-    const lines = content.split('\n')
+    const lines = content.split("\n")
     const updatedLines = [...lines]
 
     for (const dep of dependencies) {
@@ -948,7 +948,7 @@ function updatePyprojectToml(content: string, dependencies: Dependency[]): strin
             const depString = match[1]
             if (depString.startsWith(dep.name)) {
               const operatorMatch = depString.match(/^[^<>=!~]+([<>=!~]+)/)
-              const operator = operatorMatch ? operatorMatch[1] : '=='
+              const operator = operatorMatch ? operatorMatch[1] : "=="
               const newDepString = `${dep.name}${operator}${dep.latestVersion}`
               updatedLines[i] = line.replace(match[0], `"${newDepString}"`)
             }
@@ -957,9 +957,9 @@ function updatePyprojectToml(content: string, dependencies: Dependency[]): strin
       }
     }
 
-    return updatedLines.join('\n')
+    return updatedLines.join("\n")
   } catch (error) {
-    console.error('Error updating pyproject.toml:', error)
+    console.error("Error updating pyproject.toml:", error)
     return content
   }
 }
@@ -967,7 +967,7 @@ function updatePyprojectToml(content: string, dependencies: Dependency[]): strin
 // Update Gemfile
 function updateGemfile(content: string, dependencies: Dependency[]): string {
   try {
-    const lines = content.split('\n')
+    const lines = content.split("\n")
     const updatedLines = [...lines]
 
     for (const dep of dependencies) {
@@ -1009,9 +1009,9 @@ function updateGemfile(content: string, dependencies: Dependency[]): string {
       }
     }
 
-    return updatedLines.join('\n')
+    return updatedLines.join("\n")
   } catch (error) {
-    console.error('Error updating Gemfile:', error)
+    console.error("Error updating Gemfile:", error)
     return content
   }
 }
@@ -1019,7 +1019,7 @@ function updateGemfile(content: string, dependencies: Dependency[]): string {
 // Update .gemspec
 function updateGemspec(content: string, dependencies: Dependency[]): string {
   try {
-    const lines = content.split('\n')
+    const lines = content.split("\n")
     const updatedLines = [...lines]
 
     for (const dep of dependencies) {
@@ -1070,9 +1070,9 @@ function updateGemspec(content: string, dependencies: Dependency[]): string {
       }
     }
 
-    return updatedLines.join('\n')
+    return updatedLines.join("\n")
   } catch (error) {
-    console.error('Error updating .gemspec:', error)
+    console.error("Error updating .gemspec:", error)
     return content
   }
 }
@@ -1080,7 +1080,7 @@ function updateGemspec(content: string, dependencies: Dependency[]): string {
 // Update lockfiles
 async function updateLockfiles(repoPaths: string[], shouldInstall: boolean): Promise<void> {
   if (!shouldInstall) {
-    console.log(chalk.yellow('Dependency installation skipped.'))
+    console.log(chalk.yellow("Dependency installation skipped."))
     return
   }
 
@@ -1094,35 +1094,35 @@ async function updateLockfiles(repoPaths: string[], shouldInstall: boolean): Pro
 
       // Check for package.json
       const hasPackageJson = await fs
-        .stat(path.join(repoPath, 'package.json'))
+        .stat(path.join(repoPath, "package.json"))
         .then(() => true)
         .catch(() => false)
 
       // Check for pyproject.toml
       const hasPyprojectToml = await fs
-        .stat(path.join(repoPath, 'pyproject.toml'))
+        .stat(path.join(repoPath, "pyproject.toml"))
         .then(() => true)
         .catch(() => false)
 
       // Check for Gemfile
       const hasGemfile = await fs
-        .stat(path.join(repoPath, 'Gemfile'))
+        .stat(path.join(repoPath, "Gemfile"))
         .then(() => true)
         .catch(() => false)
 
       // Update JavaScript/TypeScript lockfiles
       if (hasPackageJson) {
-        await exec('bun install --no-save | cat')
+        await exec("bun install --no-save | cat")
       }
 
       // Update Python lockfiles
       if (hasPyprojectToml) {
-        await exec('uv sync | cat')
+        await exec("uv sync | cat")
       }
 
       // Update Ruby lockfiles
       if (hasGemfile) {
-        await exec('bundle update | cat')
+        await exec("bundle update | cat")
       }
 
       spinner.succeed(`Updated lockfiles for ${chalk.green(repoName)}`)
@@ -1136,7 +1136,7 @@ async function updateLockfiles(repoPaths: string[], shouldInstall: boolean): Pro
 // Commit and push changes
 async function commitAndPush(repoPaths: string[], shouldCommit: boolean, shouldPush: boolean): Promise<void> {
   if (!shouldCommit) {
-    console.log(chalk.yellow('Git commit operations skipped.'))
+    console.log(chalk.yellow("Git commit operations skipped."))
     return
   }
 
@@ -1149,7 +1149,7 @@ async function commitAndPush(repoPaths: string[], shouldCommit: boolean, shouldP
       process.chdir(repoPath)
 
       // Check if there are changes to commit
-      const { stdout: status } = await exec('git status --porcelain | cat')
+      const { stdout: status } = await exec("git status --porcelain | cat")
 
       if (!status.trim()) {
         spinner.info(`No changes to commit for ${chalk.blue(repoName)}`)
@@ -1157,10 +1157,10 @@ async function commitAndPush(repoPaths: string[], shouldCommit: boolean, shouldP
       }
 
       // Add all changes
-      await exec('git add -A .')
+      await exec("git add -A .")
 
       // Commit changes using opencommit
-      await exec('oco --fgm --yes | cat')
+      await exec("oco --fgm --yes | cat")
 
       spinner.succeed(`Committed changes for ${chalk.green(repoName)}`)
 
@@ -1169,7 +1169,7 @@ async function commitAndPush(repoPaths: string[], shouldCommit: boolean, shouldP
         const pushSpinner = ora(`Pushing changes for ${repoName}...`).start()
 
         try {
-          await exec('git push | cat')
+          await exec("git push | cat")
           pushSpinner.succeed(`Pushed changes for ${chalk.green(repoName)}`)
         } catch (error) {
           pushSpinner.fail(`Failed to push changes for ${chalk.red(repoName)}`)
@@ -1206,19 +1206,19 @@ function printUpdateSummary(
     }
 
     switch (dep.updateType) {
-      case 'patch':
+      case "patch":
         if (options.dryRun || updatedDependencies.some((d) => d.name === dep.name && d.repository === dep.repository)) {
           summary.patches++
           summary.updated++
         }
         break
-      case 'minor':
+      case "minor":
         if (options.dryRun || updatedDependencies.some((d) => d.name === dep.name && d.repository === dep.repository)) {
           summary.minors++
           summary.updated++
         }
         break
-      case 'major':
+      case "major":
         if (
           options.unsafe &&
           (options.dryRun || updatedDependencies.some((d) => d.name === dep.name && d.repository === dep.repository))
@@ -1236,17 +1236,17 @@ function printUpdateSummary(
   const byDep = new Map<string, Map<string, Dependency>>()
 
   for (const dep of dependencies) {
-    if (!dep.updateType || !dep.latestVersion || dep.updateType === 'none') {
+    if (!dep.updateType || !dep.latestVersion || dep.updateType === "none") {
       continue
     }
 
     // Skip patches in output unless dry run
-    if (dep.updateType === 'patch' && !options.dryRun) {
+    if (dep.updateType === "patch" && !options.dryRun) {
       continue
     }
 
     // Skip majors unless unsafe mode
-    if (dep.updateType === 'major' && !options.unsafe) {
+    if (dep.updateType === "major" && !options.unsafe) {
       continue
     }
 
@@ -1282,31 +1282,31 @@ function printUpdateSummary(
   }
 
   // Generate summary output
-  console.log('\n')
+  console.log("\n")
   console.log(
-    boxen(chalk.bold('Dependency Update Summary'), {
+    boxen(chalk.bold("Dependency Update Summary"), {
       padding: 1,
-      borderColor: 'green'
+      borderColor: "green"
     })
   )
-  console.log('\n')
+  console.log("\n")
 
   if (options.dryRun) {
-    console.log(chalk.yellow('Dry run mode: no changes were made.'))
+    console.log(chalk.yellow("Dry run mode: no changes were made."))
   }
 
   if (options.unsafe) {
-    console.log(chalk.red('Unsafe mode: major version bumps were included.'))
+    console.log(chalk.red("Unsafe mode: major version bumps were included."))
   }
 
-  console.log('\n')
+  console.log("\n")
   console.log(`Total dependencies: ${chalk.cyan(summary.total)}`)
   console.log(`Updates applied: ${chalk.green(summary.updated)}`)
   console.log(`Patch updates: ${chalk.green(summary.patches)}`)
   console.log(`Minor updates: ${chalk.yellow(summary.minors)}`)
   console.log(`Major updates skipped: ${chalk.red(summary.majorsSkipped)}`)
   console.log(`Errors: ${chalk.red(summary.errors)}`)
-  console.log('\n')
+  console.log("\n")
 
   // Display dependency updates grouped by mode
   if (options.repo) {
@@ -1316,16 +1316,16 @@ function printUpdateSummary(
 
       for (const [repoName, dep] of repoMap.entries()) {
         const updateSymbol =
-          dep.updateType === 'major'
-            ? chalk.red('✗')
-            : dep.updateType === 'minor'
-              ? chalk.yellow('△')
-              : chalk.green('✓')
+          dep.updateType === "major"
+            ? chalk.red("✗")
+            : dep.updateType === "minor"
+              ? chalk.yellow("△")
+              : chalk.green("✓")
 
         console.log(`  ${updateSymbol} ${chalk.blue(repoName)}: ${dep.currentVersion} → ${dep.latestVersion}`)
       }
 
-      console.log('\n')
+      console.log("\n")
     }
   } else {
     // Group by repository and then dependency
@@ -1336,16 +1336,16 @@ function printUpdateSummary(
         const dep = deps[0] // Take the first one since they're grouped by name
 
         const updateSymbol =
-          dep.updateType === 'major'
-            ? chalk.red('✗')
-            : dep.updateType === 'minor'
-              ? chalk.yellow('△')
-              : chalk.green('✓')
+          dep.updateType === "major"
+            ? chalk.red("✗")
+            : dep.updateType === "minor"
+              ? chalk.yellow("△")
+              : chalk.green("✓")
 
         console.log(`  ${updateSymbol} ${chalk.blue(depName)}: ${dep.currentVersion} → ${dep.latestVersion}`)
       }
 
-      console.log('\n')
+      console.log("\n")
     }
   }
 }
@@ -1353,9 +1353,9 @@ function printUpdateSummary(
 // Main function to orchestrate the entire process
 async function main() {
   console.log(
-    boxen(chalk.bold.green('Dependency Bumper'), {
+    boxen(chalk.bold.green("Dependency Bumper"), {
       padding: 1,
-      borderColor: 'green'
+      borderColor: "green"
     })
   )
 
@@ -1364,21 +1364,21 @@ async function main() {
 
   try {
     const startTime = Date.now()
-    const mainSpinner = ora('Starting dependency update process...').start()
+    const mainSpinner = ora("Starting dependency update process...").start()
 
     // Discover repositories to process
-    mainSpinner.text = 'Discovering repositories...'
+    mainSpinner.text = "Discovering repositories..."
     const repoPaths = await discoverRepositories(options.repo)
     mainSpinner.succeed(`Found ${chalk.green(repoPaths.length)} repositories to process.`)
 
     // Read ALL dependencies up front from all repositories - this is key for efficient batching
-    const depsSpinner = ora('Reading all dependencies from all repositories...').start()
+    const depsSpinner = ora("Reading all dependencies from all repositories...").start()
     const dependencies = await readDependencies(repoPaths)
 
     // Log statistics about discovered dependencies
-    const npmDeps = dependencies.filter((dep) => dep.manager === 'npm')
-    const pypiDeps = dependencies.filter((dep) => dep.manager === 'pypi')
-    const rubygemsDeps = dependencies.filter((dep) => dep.manager === 'rubygems')
+    const npmDeps = dependencies.filter((dep) => dep.manager === "npm")
+    const pypiDeps = dependencies.filter((dep) => dep.manager === "pypi")
+    const rubygemsDeps = dependencies.filter((dep) => dep.manager === "rubygems")
 
     depsSpinner.succeed(
       `Found ${chalk.green(dependencies.length)} dependencies across ${chalk.blue(repoPaths.length)} repositories.\n` +
@@ -1389,41 +1389,41 @@ async function main() {
 
     // Git operations only after we've read all dependencies
     if (options.pull) {
-      const gitSpinner = ora('Syncing git repositories...').start()
+      const gitSpinner = ora("Syncing git repositories...").start()
       await syncGitRepositories(repoPaths, options.pull)
       gitSpinner.succeed(`Synced ${chalk.green(repoPaths.length)} git repositories.`)
     } else {
-      console.log(chalk.yellow('Git operations skipped (--no-pull).'))
+      console.log(chalk.yellow("Git operations skipped (--no-pull)."))
     }
 
     // Check for updates using package manager APIs with batching
-    console.log(chalk.blue.bold('\nChecking for dependency updates:'))
+    console.log(chalk.blue.bold("\nChecking for dependency updates:"))
     const depsWithUpdates = await checkForUpdates(dependencies)
 
     // Apply updates according to version bump rules
-    const updateSpinner = ora('Applying dependency updates...').start()
+    const updateSpinner = ora("Applying dependency updates...").start()
     const updatedDependencies = await applyUpdates(depsWithUpdates, options)
     updateSpinner.succeed(`Applied ${chalk.green(updatedDependencies.length)} dependency updates.`)
 
     // Update lockfiles
     if (!options.dryRun) {
       if (options.install) {
-        const lockSpinner = ora('Updating lockfiles...').start()
+        const lockSpinner = ora("Updating lockfiles...").start()
         await updateLockfiles(repoPaths, options.install)
-        lockSpinner.succeed('Updated lockfiles for all repositories.')
+        lockSpinner.succeed("Updated lockfiles for all repositories.")
       } else {
-        console.log(chalk.yellow('Lockfile updates skipped (--no-install).'))
+        console.log(chalk.yellow("Lockfile updates skipped (--no-install)."))
       }
     }
 
     // Commit and push changes
     if (!options.dryRun) {
       if (options.commit) {
-        const commitSpinner = ora('Committing changes...').start()
+        const commitSpinner = ora("Committing changes...").start()
         await commitAndPush(repoPaths, options.commit, options.push)
-        commitSpinner.succeed(`Committed changes${options.push ? ' and pushed' : ''}.`)
+        commitSpinner.succeed(`Committed changes${options.push ? " and pushed" : ""}.`)
       } else {
-        console.log(chalk.yellow('Git commit operations skipped (--no-commit).'))
+        console.log(chalk.yellow("Git commit operations skipped (--no-commit)."))
       }
     }
 
@@ -1434,7 +1434,7 @@ async function main() {
     const totalTime = ((Date.now() - startTime) / 1000).toFixed(2)
     console.log(`\nTotal execution time: ${chalk.blue(totalTime)}s`)
   } catch (error) {
-    console.error(chalk.red('Error:'), error)
+    console.error(chalk.red("Error:"), error)
     process.exit(1)
   }
 }

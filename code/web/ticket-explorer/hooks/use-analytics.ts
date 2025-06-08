@@ -1,4 +1,4 @@
-import { track as vercelTrack } from '@vercel/analytics'
+import { track as vercelTrack } from "@vercel/analytics"
 
 type TicketEvent = {
   ticketId: string
@@ -8,7 +8,7 @@ type TicketEvent = {
 }
 
 type ThemeEvent = {
-  theme: 'synthwave' | 'light' | 'dark'
+  theme: "synthwave" | "light" | "dark"
   enabled: boolean
 }
 
@@ -22,11 +22,11 @@ export const useAnalytics = () => {
     if (ticket.status) eventData.status = ticket.status
     if (ticket.priority) eventData.priority = ticket.priority
 
-    vercelTrack('ticket_view', eventData)
+    vercelTrack("ticket_view", eventData)
   }
 
   const trackThemeChange = (themeEvent: ThemeEvent) => {
-    vercelTrack('theme_change', {
+    vercelTrack("theme_change", {
       theme: themeEvent.theme,
       enabled: themeEvent.enabled,
       timestamp: new Date().toISOString()
@@ -34,7 +34,7 @@ export const useAnalytics = () => {
   }
 
   const trackSearch = (query: string, resultCount: number) => {
-    vercelTrack('ticket_search', {
+    vercelTrack("ticket_search", {
       query,
       resultCount,
       timestamp: new Date().toISOString()
@@ -42,14 +42,14 @@ export const useAnalytics = () => {
   }
 
   const trackFilterChange = (filters: Record<string, unknown>) => {
-    vercelTrack('filter_change', {
+    vercelTrack("filter_change", {
       ...filters,
       timestamp: new Date().toISOString()
     })
   }
 
   const trackError = (error: Error, componentName: string) => {
-    vercelTrack('error_occurred', {
+    vercelTrack("error_occurred", {
       error: error.message,
       component: componentName,
       timestamp: new Date().toISOString()

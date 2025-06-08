@@ -1,11 +1,11 @@
-import { Action, ActionPanel, Icon, LaunchType, List, useNavigation } from '@raycast/api'
-import { useState } from 'react'
-import packageJson from '../package.json'
-import { DestructiveAction } from './actions'
-import { DEFAULT_COMMANDS, useCommand } from './hooks/useCommand'
-import type { Command, CommandHook } from './type'
-import CommandView, { type CommandLaunchProps } from './views/command/command-view'
-import { CommandForm, iconsByContentSource } from './views/command/from'
+import { Action, ActionPanel, Icon, LaunchType, List, useNavigation } from "@raycast/api"
+import { useState } from "react"
+import packageJson from "../package.json"
+import { DestructiveAction } from "./actions"
+import { DEFAULT_COMMANDS, useCommand } from "./hooks/useCommand"
+import type { Command, CommandHook } from "./type"
+import CommandView, { type CommandLaunchProps } from "./views/command/command-view"
+import { CommandForm, iconsByContentSource } from "./views/command/from"
 
 export default function EntryPoint(props: CommandLaunchProps) {
   const requestModelId = props.launchContext?.commandId
@@ -18,21 +18,21 @@ export default function EntryPoint(props: CommandLaunchProps) {
 function SearchAiCommand() {
   const commands = useCommand()
   const navigation = useNavigation()
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>("")
   const [selectedCommandId, setSelectedCommandId] = useState<string | null>(null)
 
   const sortedCommands = Object.values(commands.data).sort((a, b) => a.name.localeCompare(b.name))
   const filteredCommands = sortedCommands
     .filter((value, index, self) => index === self.findIndex((cmd) => cmd.id === value.id))
     .filter((cmd) => {
-      if (searchText === '') return true
+      if (searchText === "") return true
       return cmd.name.toLowerCase().includes(searchText.toLowerCase())
     })
 
   const getActionPanel = (cmd: Command) => (
     <ActionPanel>
       <Action
-        title={'Open AI Command'}
+        title={"Open AI Command"}
         icon={Icon.AppWindowSidebarRight}
         onAction={() =>
           navigation.push(
@@ -48,20 +48,20 @@ function SearchAiCommand() {
 
       <ActionPanel.Section>
         <Action
-          title={'Edit AI Command'}
-          shortcut={{ modifiers: ['cmd'], key: 'e' }}
+          title={"Edit AI Command"}
+          shortcut={{ modifiers: ["cmd"], key: "e" }}
           icon={Icon.Pencil}
           onAction={() => navigation.push(<CommandForm cmd={cmd} use={{ commands }} />)}
         />
         <Action
-          title={'Create AI Command'}
-          shortcut={{ modifiers: ['cmd'], key: 'n' }}
+          title={"Create AI Command"}
+          shortcut={{ modifiers: ["cmd"], key: "n" }}
           icon={Icon.NewDocument}
           onAction={() => navigation.push(<CommandForm use={{ commands }} />)}
         />
         <Action
-          title={'Duplicate AI Command'}
-          shortcut={{ modifiers: ['cmd'], key: 'd' }}
+          title={"Duplicate AI Command"}
+          shortcut={{ modifiers: ["cmd"], key: "d" }}
           icon={Icon.Duplicate}
           onAction={() => navigation.push(<CommandForm cmd={cmd} isNew={true} use={{ commands }} />)}
         />
@@ -80,7 +80,7 @@ function SearchAiCommand() {
           <DestructiveAction
             title="Remove"
             dialog={{
-              title: 'Are you sure you want to remove this AI command from your collection?'
+              title: "Are you sure you want to remove this AI command from your collection?"
             }}
             icon={Icon.Trash}
             onAction={() => commands.remove(cmd)}
@@ -90,7 +90,7 @@ function SearchAiCommand() {
           <DestructiveAction
             title="Reset"
             dialog={{
-              title: 'Are you sure you want to reset this action to its default settings?'
+              title: "Are you sure you want to reset this action to its default settings?"
             }}
             icon={Icon.Repeat}
             onAction={() => resetToDefaults(cmd, DEFAULT_COMMANDS, commands)}
@@ -98,14 +98,14 @@ function SearchAiCommand() {
           />
         )}
         <DestructiveAction
-          title={'Delete All'}
+          title={"Delete All"}
           dialog={{
             title:
-              'Are you sure? All your custom AI commands will be deleted, and default AI commands will be recreated with their default values.'
+              "Are you sure? All your custom AI commands will be deleted, and default AI commands will be recreated with their default values."
           }}
           icon={Icon.Trash}
           onAction={commands.clear}
-          shortcut={{ modifiers: ['shift', 'ctrl'], key: 'x' }}
+          shortcut={{ modifiers: ["shift", "ctrl"], key: "x" }}
         />
       </ActionPanel.Section>
     </ActionPanel>
@@ -153,7 +153,7 @@ function SearchAiCommand() {
             />
           ))}
       </List.Section>
-      {searchText !== '' && (
+      {searchText !== "" && (
         <List.Section title="Create New">
           <List.Item
             title={searchText}

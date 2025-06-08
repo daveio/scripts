@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { AlertTriangle, Search } from 'lucide-react'
-import { useState } from 'react'
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { AlertTriangle, Search } from "lucide-react"
+import { useState } from "react"
 
 interface SuspiciousDomainsProps {
   domains: Array<{
@@ -18,7 +18,7 @@ interface SuspiciousDomainsProps {
 }
 
 export function SuspiciousDomains({ domains }: SuspiciousDomainsProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
 
   // Filter domains based on search term
   const filteredDomains = domains.filter(
@@ -77,7 +77,7 @@ export function SuspiciousDomains({ domains }: SuspiciousDomainsProps) {
                       <TableCell className="font-medium">{domain.domain}</TableCell>
                       <TableCell>{domain.source_ip}</TableCell>
                       <TableCell>
-                        <Badge variant={domain.status === 'blocked' ? 'outline' : 'destructive'}>{domain.status}</Badge>
+                        <Badge variant={domain.status === "blocked" ? "outline" : "destructive"}>{domain.status}</Badge>
                       </TableCell>
                       <TableCell>{formatTimestamp(domain.timestamp)}</TableCell>
                       <TableCell className="max-w-xs truncate" title={domain.matchedPattern}>

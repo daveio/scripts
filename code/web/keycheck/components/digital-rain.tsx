@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
 interface DigitalRainProps {
   opacity?: number
@@ -13,7 +13,7 @@ export default function DigitalRain({ opacity = 0.15 }: DigitalRainProps) {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
     // Set canvas dimensions
@@ -24,11 +24,11 @@ export default function DigitalRain({ opacity = 0.15 }: DigitalRainProps) {
 
     // Initialize canvas
     resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
+    window.addEventListener("resize", resizeCanvas)
 
     // Characters to use (mix of katakana, numbers, and symbols)
     const characters =
-      'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ'
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ"
 
     // Create drops
     const fontSize = 14
@@ -47,7 +47,7 @@ export default function DigitalRain({ opacity = 0.15 }: DigitalRainProps) {
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       // Set text style
-      ctx.fillStyle = '#0fa'
+      ctx.fillStyle = "#0fa"
       ctx.font = `${fontSize}px monospace`
 
       // Draw characters
@@ -68,7 +68,7 @@ export default function DigitalRain({ opacity = 0.15 }: DigitalRainProps) {
         // Only draw if within canvas
         if (y > 0 && y < canvas.height) {
           // Draw the head character with full brightness
-          ctx.fillStyle = '#0fa'
+          ctx.fillStyle = "#0fa"
           ctx.fillText(char, x, y)
 
           // Draw trailing characters with decreasing brightness
@@ -107,7 +107,7 @@ export default function DigitalRain({ opacity = 0.15 }: DigitalRainProps) {
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', resizeCanvas)
+      window.removeEventListener("resize", resizeCanvas)
       cancelAnimationFrame(animationFrameId)
     }
   }, [opacity])

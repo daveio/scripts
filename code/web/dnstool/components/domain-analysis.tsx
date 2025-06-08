@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ChevronDown, ChevronUp, Search } from 'lucide-react'
-import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChevronDown, ChevronUp, Search } from "lucide-react"
+import { useState } from "react"
 
 interface DomainAnalysisProps {
   relationships: {
@@ -26,8 +26,8 @@ interface DomainAnalysisProps {
 }
 
 export function DomainAnalysis({ relationships }: DomainAnalysisProps) {
-  const [ipSearchTerm, setIpSearchTerm] = useState('')
-  const [domainSearchTerm, setDomainSearchTerm] = useState('')
+  const [ipSearchTerm, setIpSearchTerm] = useState("")
+  const [domainSearchTerm, setDomainSearchTerm] = useState("")
   const [expandedIpRows, setExpandedIpRows] = useState<Record<string, boolean>>({})
   const [expandedDomainRows, setExpandedDomainRows] = useState<Record<string, boolean>>({})
 
@@ -100,7 +100,7 @@ export function DomainAnalysis({ relationships }: DomainAnalysisProps) {
                       <TableRow key={item.ip}>
                         <TableCell className="font-medium">{item.ip}</TableCell>
                         <TableCell>
-                          <div className={expandedIpRows[item.ip] ? '' : 'max-h-24 overflow-auto'}>
+                          <div className={expandedIpRows[item.ip] ? "" : "max-h-24 overflow-auto"}>
                             {(expandedIpRows[item.ip] ? item.domains : item.domains.slice(0, 5)).map((domain) => (
                               <div key={domain.domain} className="text-sm">
                                 {domain.domain} <span className="text-muted-foreground">({domain.count})</span>
@@ -174,7 +174,7 @@ export function DomainAnalysis({ relationships }: DomainAnalysisProps) {
                       <TableRow key={item.domain}>
                         <TableCell className="font-medium">{item.domain}</TableCell>
                         <TableCell>
-                          <div className={expandedDomainRows[item.domain] ? '' : 'max-h-24 overflow-auto'}>
+                          <div className={expandedDomainRows[item.domain] ? "" : "max-h-24 overflow-auto"}>
                             {(expandedDomainRows[item.domain] ? item.ips : item.ips.slice(0, 5)).map((ip) => (
                               <div key={ip.ip} className="text-sm">
                                 {ip.ip} <span className="text-muted-foreground">({ip.count})</span>

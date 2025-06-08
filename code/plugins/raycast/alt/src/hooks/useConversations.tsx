@@ -1,7 +1,7 @@
-import { LocalStorage, Toast, showToast } from '@raycast/api'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { Conversation, ConversationsHook } from '../type'
-import { useAutoSaveConversation } from './useAutoSaveConversation'
+import { LocalStorage, Toast, showToast } from "@raycast/api"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { Conversation, ConversationsHook } from "../type"
+import { useAutoSaveConversation } from "./useAutoSaveConversation"
 
 export function useConversations(): ConversationsHook {
   const [data, setData] = useState<Conversation[]>([])
@@ -11,7 +11,7 @@ export function useConversations(): ConversationsHook {
 
   useEffect(() => {
     ;(async () => {
-      const storedConversations = await LocalStorage.getItem<string>('conversations')
+      const storedConversations = await LocalStorage.getItem<string>("conversations")
 
       if (storedConversations) {
         setData((previous) => [...previous, ...JSON.parse(storedConversations)])
@@ -21,7 +21,7 @@ export function useConversations(): ConversationsHook {
   }, [])
 
   useEffect(() => {
-    LocalStorage.setItem('conversations', JSON.stringify(data.filter((x) => x.chats.length > 0)))
+    LocalStorage.setItem("conversations", JSON.stringify(data.filter((x) => x.chats.length > 0)))
   }, [data])
 
   const add = useCallback(
@@ -29,7 +29,7 @@ export function useConversations(): ConversationsHook {
       setData([...data, conversation])
       if (!isAutoSaveConversation) {
         await showToast({
-          title: 'Conversation saved!',
+          title: "Conversation saved!",
           style: Toast.Style.Success
         })
       }
@@ -61,12 +61,12 @@ export function useConversations(): ConversationsHook {
   const remove = useCallback(
     async (conversation: Conversation) => {
       const toast = await showToast({
-        title: 'Removing conversation...',
+        title: "Removing conversation...",
         style: Toast.Style.Animated
       })
       const newConversations: Conversation[] = data.filter((item) => item.id !== conversation.id)
       setData(newConversations)
-      toast.title = 'Conversation removed!'
+      toast.title = "Conversation removed!"
       toast.style = Toast.Style.Success
     },
     [setData, data]
@@ -74,11 +74,11 @@ export function useConversations(): ConversationsHook {
 
   const clear = useCallback(async () => {
     const toast = await showToast({
-      title: 'Clearing conversations ...',
+      title: "Clearing conversations ...",
       style: Toast.Style.Animated
     })
     setData([])
-    toast.title = 'Conversations cleared!'
+    toast.title = "Conversations cleared!"
     toast.style = Toast.Style.Success
   }, [setData])
 

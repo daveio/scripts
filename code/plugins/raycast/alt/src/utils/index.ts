@@ -1,13 +1,13 @@
-import * as fs from 'node:fs'
-import path from 'node:path'
-import type OpenAI from 'openai/index'
-import type { Chat, Message } from '../type'
+import * as fs from "node:fs"
+import path from "node:path"
+import type OpenAI from "openai/index"
+import type { Chat, Message } from "../type"
 
 type ChatCompletionContentPart = OpenAI.ChatCompletionContentPart
 
 function countOpenAITokens(text: string): number {
   // 100 tokens ~= 75 words
-  const words = text.split(' ').length
+  const words = text.split(" ").length
   return Math.ceil(words / 75) * 100
 }
 
@@ -35,15 +35,15 @@ function limitConversationLength(chats: Chat[]) {
 
 export function chatTransformer(chat: Chat[], prompt: string): Message[] {
   const messages: Message[] = []
-  if (prompt !== '') {
+  if (prompt !== "") {
     // only add system prompt if it's not empty
-    messages.push({ role: 'system', content: prompt })
+    messages.push({ role: "system", content: prompt })
   }
   const limitedChat = limitConversationLength(chat)
   limitedChat.forEach(({ question, answer }) => {
-    messages.push({ role: 'user', content: question })
+    messages.push({ role: "user", content: question })
     messages.push({
-      role: 'assistant',
+      role: "assistant",
       content: answer
     })
   })
@@ -51,9 +51,9 @@ export function chatTransformer(chat: Chat[], prompt: string): Message[] {
 }
 
 export const getConfigUrl = (params: Preferences) => {
-  if (params.useAzure) return params.azureEndpoint + '/openai/deployments/' + params.azureDeployment
+  if (params.useAzure) return params.azureEndpoint + "/openai/deployments/" + params.azureDeployment
   if (params.useApiEndpoint) return params.apiEndpoint
-  return 'https://api.openai.com/v1'
+  return "https://api.openai.com/v1"
 }
 
 export const checkFileValidity = (file: string): boolean => {
@@ -64,11 +64,11 @@ export const checkFileValidity = (file: string): boolean => {
 
 // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
 export const formats: { [K: string]: string } = {
-  '.png': 'image/png',
-  '.jpeg': 'image/jpeg',
-  '.jpg': 'image/jpeg',
-  '.webp': 'image/webp',
-  '.gif': 'image/gif'
+  ".png": "image/png",
+  ".jpeg": "image/jpeg",
+  ".jpg": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif"
 }
 
 export const imgFormat = (file: string) => {
@@ -76,12 +76,12 @@ export const imgFormat = (file: string) => {
   let type = formats[fileExtension]
   if (!type) {
     // guess it from the clipboard
-    type = formats['.png']
+    type = formats[".png"]
   }
   // file:///var/folders/vx/xs9f3rcj74d2wlp32sz0t0h80000gn/T/Image%20(1772x1172)
-  const replace = file.replace('file://', '').replace('%20', ' ')
+  const replace = file.replace("file://", "").replace("%20", " ")
   // data:image/jpeg;base64,{base64_image}
-  return `data:${type};base64,${fs.readFileSync(replace).toString('base64')}`
+  return `data:${type};base64,${fs.readFileSync(replace).toString("base64")}`
 }
 
 export const buildUserMessage = (question: string, files?: string[]) => {
@@ -93,14 +93,14 @@ export const buildUserMessage = (question: string, files?: string[]) => {
   // If there are files, create an array
   const content: ChatCompletionContentPart[] = [
     {
-      type: 'text',
+      type: "text",
       text: question
     }
   ]
 
   files.forEach((img) => {
     content.push({
-      type: 'image_url',
+      type: "image_url",
       image_url: {
         // Format images to base64
         url: imgFormat(img)
@@ -112,7 +112,7 @@ export const buildUserMessage = (question: string, files?: string[]) => {
 }
 
 export const toUnit = (size: number) => {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
   let unitIndex = 0
   let unit = units[unitIndex]
   while (size >= 1024) {

@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import * as THREE from 'three'
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
+import * as THREE from "three"
 
 interface EpicTransitionProps {
   isActive: boolean
@@ -36,8 +36,8 @@ export function EpicTransition({ isActive, isSynthwave, onTransitionComplete }: 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: false,
-      powerPreference: 'high-performance',
-      precision: 'mediump' // Use medium precision for better performance
+      powerPreference: "high-performance",
+      precision: "mediump" // Use medium precision for better performance
     })
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Limit pixel ratio
@@ -54,11 +54,11 @@ export function EpicTransition({ isActive, isSynthwave, onTransitionComplete }: 
       rendererRef.current.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize)
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener("resize", handleResize)
       if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current)
 
       // Store containerRef.current in a variable to avoid the React hooks/exhaustive-deps warning
@@ -393,7 +393,7 @@ export function EpicTransition({ isActive, isSynthwave, onTransitionComplete }: 
                 <p className="text-xl text-gray-400">Fun detected. Eliminating...</p>
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: '100%' }}
+                  animate={{ width: "100%" }}
                   transition={{ delay: 1, duration: 1 }}
                   className="mt-4 h-2 bg-gray-300 rounded-full"
                 />

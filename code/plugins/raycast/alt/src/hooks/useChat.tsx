@@ -1,15 +1,15 @@
-import { Toast, clearSearchBar, getPreferenceValues, showToast } from '@raycast/api'
-import type { ChatCompletion, ChatCompletionChunk } from 'openai/resources/chat/completions'
-import type { Stream } from 'openai/streaming'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import say from 'say'
-import { v4 as uuidv4 } from 'uuid'
-import type { Chat, ChatHook, Model } from '../type'
-import { buildUserMessage, chatTransformer } from '../utils'
-import { useAutoTTS } from './useAutoTTS'
-import { getConfiguration, useChatGPT } from './useChatGPT'
-import { useHistory } from './useHistory'
-import { useProxy } from './useProxy'
+import { Toast, clearSearchBar, getPreferenceValues, showToast } from "@raycast/api"
+import type { ChatCompletion, ChatCompletionChunk } from "openai/resources/chat/completions"
+import type { Stream } from "openai/streaming"
+import { useCallback, useMemo, useRef, useState } from "react"
+import say from "say"
+import { v4 as uuidv4 } from "uuid"
+import type { Chat, ChatHook, Model } from "../type"
+import { buildUserMessage, chatTransformer } from "../utils"
+import { useAutoTTS } from "./useAutoTTS"
+import { getConfiguration, useChatGPT } from "./useChatGPT"
+import { useHistory } from "./useHistory"
+import { useProxy } from "./useProxy"
 
 export function useChat<T extends Chat>(props: T[]): ChatHook {
   const [data, setData] = useState<Chat[]>(props)
@@ -41,14 +41,14 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
 
     setLoading(true)
     const toast = await showToast({
-      title: 'Getting your answer...',
+      title: "Getting your answer...",
       style: Toast.Style.Animated
     })
     let chat: Chat = {
       id: uuidv4(),
       question,
       files,
-      answer: '',
+      answer: "",
       created_at: new Date().toISOString()
     }
 
@@ -66,8 +66,8 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
         return { apiKey: {}, params: {} }
       }
       return {
-        apiKey: { 'api-key': config.apiKey },
-        params: { 'api-version': '2023-06-01-preview' }
+        apiKey: { "api-key": config.apiKey },
+        params: { "api-version": "2023-06-01-preview" }
       }
     }
 
@@ -81,7 +81,7 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
           temperature: Number(model.temperature),
           messages: [
             ...chatTransformer(data.reverse(), model.prompt),
-            { role: 'user', content: buildUserMessage(question, files) }
+            { role: "user", content: buildUserMessage(question, files) }
           ],
           stream: useStream
         },
@@ -108,12 +108,12 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
               }
             } catch (error) {
               if (abortSignal.aborted) {
-                toast.title = 'Request canceled'
+                toast.title = "Request canceled"
                 toast.message = undefined
                 setIsAborted(true)
               } else {
                 const message = `Couldn't stream message: ${error}`
-                toast.title = 'Error'
+                toast.title = "Error"
                 toast.message = message
                 setErrorMsg(message)
               }
@@ -129,7 +129,7 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
           const completion = res as ChatCompletion
           chat = {
             ...chat,
-            answer: completion.choices.map((x) => x.message)[0]?.content ?? ''
+            answer: completion.choices.map((x) => x.message)[0]?.content ?? ""
           }
         }
         if (isAutoTTS) {
@@ -138,11 +138,11 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
         }
         setLoading(false)
         if (abortSignal.aborted) {
-          toast.title = 'Request canceled'
+          toast.title = "Request canceled"
           toast.style = Toast.Style.Failure
           setIsAborted(true)
         } else {
-          toast.title = 'Got your answer!'
+          toast.title = "Got your answer!"
           toast.style = Toast.Style.Success
         }
 
@@ -160,17 +160,17 @@ export function useChat<T extends Chat>(props: T[]): ChatHook {
       })
       .catch((err) => {
         if (abortSignal.aborted) {
-          toast.title = 'Request canceled'
+          toast.title = "Request canceled"
           toast.message = undefined
           setIsAborted(true)
         } else if (err?.message) {
-          if (err.message.includes('429')) {
-            const message = 'Rate limit reached for requests'
-            toast.title = 'Error'
+          if (err.message.includes("429")) {
+            const message = "Rate limit reached for requests"
+            toast.title = "Error"
             toast.message = message
             setErrorMsg(message)
           } else {
-            toast.title = 'Error'
+            toast.title = "Error"
             toast.message = err.message
             setErrorMsg(err.message)
           }

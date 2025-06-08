@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Area,
   AreaChart,
@@ -16,7 +16,7 @@ import {
   Tooltip,
   XAxis,
   YAxis
-} from 'recharts'
+} from "recharts"
 
 interface TimeSeriesChartProps {
   timeSeriesData: {
@@ -30,13 +30,13 @@ export function TimeSeriesChart({ timeSeriesData }: TimeSeriesChartProps) {
   const formattedHourlyData = timeSeriesData.hourly_distribution.map((item) => ({
     ...item,
     hour: new Date(item.hour).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: "2-digit",
+      minute: "2-digit"
     })
   }))
 
   // Colors for pie chart
-  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
+  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
 
   return (
     <div className="space-y-6">

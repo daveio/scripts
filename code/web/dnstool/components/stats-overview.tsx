@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Activity, Clock, Database, Shield } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Activity, Clock, Database, Shield } from "lucide-react"
 
 interface StatsOverviewProps {
   stats: {
@@ -20,8 +20,8 @@ interface StatsOverviewProps {
 export function StatsOverview({ stats }: StatsOverviewProps) {
   // Calculate blocked percentage
   const totalQueries = stats.total_queries
-  const blockedQueries = stats.status_distribution.find((s) => s.status === 'blocked')?.count || 0
-  const blockedPercentage = totalQueries > 0 ? ((blockedQueries / totalQueries) * 100).toFixed(2) : '0'
+  const blockedQueries = stats.status_distribution.find((s) => s.status === "blocked")?.count || 0
+  const blockedPercentage = totalQueries > 0 ? ((blockedQueries / totalQueries) * 100).toFixed(2) : "0"
 
   // Format dates
   const formatDate = (dateString: string) => {
@@ -125,7 +125,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                         <div
-                          className={`h-full ${status.status === 'blocked' ? 'bg-destructive' : 'bg-primary'} progress-bar-width`}
+                          className={`h-full ${status.status === "blocked" ? "bg-destructive" : "bg-primary"} progress-bar-width`}
                           style={{
                             width: `${(status.count / stats.total_queries) * 100}%`
                           }}

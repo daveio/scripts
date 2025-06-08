@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Search } from 'lucide-react'
-import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Search } from "lucide-react"
+import { useState } from "react"
 import {
   Bar,
   BarChart,
@@ -17,7 +17,7 @@ import {
   Tooltip,
   XAxis,
   YAxis
-} from 'recharts'
+} from "recharts"
 
 interface DeviceBreakdownProps {
   devices: Array<{
@@ -30,7 +30,7 @@ interface DeviceBreakdownProps {
 }
 
 export function DeviceBreakdown({ devices }: DeviceBreakdownProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("")
 
   // Filter devices based on search term
   const filteredDevices = devices.filter((device) => device.ip.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -47,16 +47,16 @@ export function DeviceBreakdown({ devices }: DeviceBreakdownProps) {
 
   const pieChartData = [
     {
-      name: 'Allowed',
+      name: "Allowed",
       value: devices.reduce((sum, device) => sum + (device.query_count - device.blocked_count), 0)
     },
     {
-      name: 'Blocked',
+      name: "Blocked",
       value: devices.reduce((sum, device) => sum + device.blocked_count, 0)
     }
   ]
 
-  const COLORS = ['#10b981', '#ef4444']
+  const COLORS = ["#10b981", "#ef4444"]
 
   return (
     <div className="space-y-6">

@@ -1,10 +1,10 @@
-import { Action, ActionPanel, Form, Icon, Toast, showToast, useNavigation } from '@raycast/api'
-import { FormValidation, useFetch, useForm } from '@raycast/utils'
-import { parse } from 'csv-parse/sync'
-import { useCallback, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { getConfiguration } from '../../hooks/useChatGPT'
-import type { CSVPrompt, Model, ModelHook } from '../../type'
+import { Action, ActionPanel, Form, Icon, Toast, showToast, useNavigation } from "@raycast/api"
+import { FormValidation, useFetch, useForm } from "@raycast/utils"
+import { parse } from "csv-parse/sync"
+import { useCallback, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { getConfiguration } from "../../hooks/useChatGPT"
+import type { CSVPrompt, Model, ModelHook } from "../../type"
 
 export const ModelForm = (props: {
   model?: Model
@@ -24,7 +24,7 @@ export const ModelForm = (props: {
       updatedModel = { ...updatedModel, temperature: updatedModel.temperature }
       if (props.model) {
         const toast = await showToast({
-          title: 'Update your model...',
+          title: "Update your model...",
           style: Toast.Style.Animated
         })
         use.models.update({
@@ -32,11 +32,11 @@ export const ModelForm = (props: {
           id: props.model.id,
           created_at: props.model.created_at
         })
-        toast.title = 'Model updated!'
+        toast.title = "Model updated!"
         toast.style = Toast.Style.Success
       } else {
         await showToast({
-          title: 'Save your model...',
+          title: "Save your model...",
           style: Toast.Style.Animated
         })
         use.models.add({
@@ -45,7 +45,7 @@ export const ModelForm = (props: {
           created_at: new Date().toISOString()
         })
         await showToast({
-          title: 'Model saved',
+          title: "Model saved",
           style: Toast.Style.Animated
         })
       }
@@ -58,9 +58,9 @@ export const ModelForm = (props: {
           const numValue = Number(value)
           if (!isNaN(numValue)) {
             if (numValue < 0) {
-              return 'Minimal value is 0'
+              return "Minimal value is 0"
             } else if (numValue > 2) {
-              return 'Maximal value is 2'
+              return "Maximal value is 2"
             }
           }
         } else {
@@ -69,10 +69,10 @@ export const ModelForm = (props: {
       }
     },
     initialValues: {
-      name: model?.name ?? props.name ?? '',
-      temperature: model?.temperature.toString() ?? '1',
-      option: model?.option ?? 'gpt-4o-mini',
-      prompt: model?.prompt ?? 'You are a helpful assistant.',
+      name: model?.name ?? props.name ?? "",
+      temperature: model?.temperature.toString() ?? "1",
+      option: model?.option ?? "gpt-4o-mini",
+      prompt: model?.prompt ?? "You are a helpful assistant.",
       pinned: model?.pinned ?? false,
       vision: model?.vision ?? false
     }
@@ -81,7 +81,7 @@ export const ModelForm = (props: {
   const MODEL_OPTIONS = use.models.option
 
   const { isLoading, data } = useFetch<CSVPrompt[]>(
-    'https://raw.githubusercontent.com/awesome-chatgpt-prompts/awesome-chatgpt-prompts-github/awesome-chatgpt-prompts/prompts.csv',
+    "https://raw.githubusercontent.com/awesome-chatgpt-prompts/awesome-chatgpt-prompts-github/awesome-chatgpt-prompts/prompts.csv",
     {
       parseResponse: async (response) => {
         try {
@@ -102,8 +102,8 @@ export const ModelForm = (props: {
 
   const setPrompt = useCallback(
     (value: string) => {
-      if (value !== 'none') {
-        setValue('prompt', value)
+      if (value !== "none") {
+        setValue("prompt", value)
       }
     },
     [setValue]
@@ -118,7 +118,7 @@ export const ModelForm = (props: {
           <Action.SubmitForm title="Submit" icon={Icon.SaveDocument} onSubmit={handleSubmit} />
           <Action
             title="Toggle Awesome Prompts"
-            icon={{ source: '🧠' }}
+            icon={{ source: "🧠" }}
             onAction={() => setShowAwesomePrompts((s) => !s)}
           />
         </ActionPanel>
@@ -133,7 +133,7 @@ export const ModelForm = (props: {
           defaultValue="none"
           onChange={setPrompt}
         >
-          <Form.Dropdown.Item value="none" title="Choose an Awesome ChatGPT Prompts" icon={'🧠'} />
+          <Form.Dropdown.Item value="none" title="Choose an Awesome ChatGPT Prompts" icon={"🧠"} />
           {(data || []).map((prompt) => (
             <Form.Dropdown.Item value={prompt.prompt} title={prompt.act} key={prompt.prompt} />
           ))}
@@ -161,7 +161,7 @@ export const ModelForm = (props: {
       )}
 
       <Form.Checkbox title="Vision" label="Enable vision capabilities" {...itemProps.vision} />
-      {model?.id !== 'default' && <Form.Checkbox title="Pinned" label="Pin model" {...itemProps.pinned} />}
+      {model?.id !== "default" && <Form.Checkbox title="Pinned" label="Pin model" {...itemProps.pinned} />}
     </Form>
   )
 }

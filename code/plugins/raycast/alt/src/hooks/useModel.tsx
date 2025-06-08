@@ -1,17 +1,17 @@
-import { LocalStorage, Toast, showToast } from '@raycast/api'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { Model, ModelHook } from '../type'
-import { getConfiguration, useChatGPT } from './useChatGPT'
-import { useProxy } from './useProxy'
+import { LocalStorage, Toast, showToast } from "@raycast/api"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { Model, ModelHook } from "../type"
+import { getConfiguration, useChatGPT } from "./useChatGPT"
+import { useProxy } from "./useProxy"
 
 export const DEFAULT_MODEL: Model = {
-  id: 'default',
+  id: "default",
   updated_at: new Date().toISOString(),
   created_at: new Date().toISOString(),
-  name: 'Default',
-  prompt: 'You are a helpful assistant.',
-  option: 'gpt-4o-mini',
-  temperature: '1',
+  name: "Default",
+  prompt: "You are a helpful assistant.",
+  option: "gpt-4o-mini",
+  temperature: "1",
   pinned: false,
   vision: false
 }
@@ -23,7 +23,7 @@ export function useModel(): ModelHook {
   const gpt = useChatGPT()
   const proxy = useProxy()
   const { useAzure, isCustomModel } = getConfiguration()
-  const [option, setOption] = useState<Model['option'][]>(['gpt-4o-mini', 'chatgpt-4o-latest'])
+  const [option, setOption] = useState<Model["option"][]>(["gpt-4o-mini", "chatgpt-4o-latest"])
   const isInitialMount = useRef(true)
 
   useEffect(() => {
@@ -55,14 +55,14 @@ export function useModel(): ModelHook {
             return
           }
           await showToast(
-            err.message.includes('401')
+            err.message.includes("401")
               ? {
-                  title: 'Could not authenticate to API',
-                  message: 'Please ensure that your API token is valid',
+                  title: "Could not authenticate to API",
+                  message: "Please ensure that your API token is valid",
                   style: Toast.Style.Failure
                 }
               : {
-                  title: 'Error',
+                  title: "Error",
                   message: err.message,
                   style: Toast.Style.Failure
                 }
@@ -79,7 +79,7 @@ export function useModel(): ModelHook {
   useEffect(() => {
     ;(async () => {
       const storedModels: Model[] | Record<string, Model> = JSON.parse(
-        (await LocalStorage.getItem<string>('models')) || '{}'
+        (await LocalStorage.getItem<string>("models")) || "{}"
       )
       const storedModelsLength = ((models: Record<string, Model> | Model[]): number =>
         Array.isArray(models) ? models.length : Object.keys(models).length)(storedModels)
@@ -109,20 +109,20 @@ export function useModel(): ModelHook {
     if (isInitialMount.current) {
       return
     }
-    LocalStorage.setItem('models', JSON.stringify(data))
+    LocalStorage.setItem("models", JSON.stringify(data))
   }, [data])
 
   const add = useCallback(
     async (model: Model) => {
       const toast = await showToast({
-        title: 'Saving your model...',
+        title: "Saving your model...",
         style: Toast.Style.Animated
       })
       setData((prevData) => ({
         ...prevData,
         [model.id]: { ...model, created_at: new Date().toISOString() }
       }))
-      toast.title = 'Model saved!'
+      toast.title = "Model saved!"
       toast.style = Toast.Style.Success
     },
     [setData]
@@ -131,7 +131,7 @@ export function useModel(): ModelHook {
   const update = useCallback(
     async (model: Model) => {
       const toast = await showToast({
-        title: 'Updating your model...',
+        title: "Updating your model...",
         style: Toast.Style.Animated
       })
       setData((prevData) => ({
@@ -142,7 +142,7 @@ export function useModel(): ModelHook {
           updated_at: new Date().toISOString()
         }
       }))
-      toast.title = 'Model updated!'
+      toast.title = "Model updated!"
       toast.style = Toast.Style.Success
     },
     [setData]
@@ -151,7 +151,7 @@ export function useModel(): ModelHook {
   const remove = useCallback(
     async (model: Model) => {
       const toast = await showToast({
-        title: 'Removing your model...',
+        title: "Removing your model...",
         style: Toast.Style.Animated
       })
       setData((prevData) => {
@@ -159,7 +159,7 @@ export function useModel(): ModelHook {
         delete newData[model.id]
         return newData
       })
-      toast.title = 'Model removed!'
+      toast.title = "Model removed!"
       toast.style = Toast.Style.Success
     },
     [setData]
@@ -167,11 +167,11 @@ export function useModel(): ModelHook {
 
   const clear = useCallback(async () => {
     const toast = await showToast({
-      title: 'Clearing your models ...',
+      title: "Clearing your models ...",
       style: Toast.Style.Animated
     })
     setData({ [DEFAULT_MODEL.id]: DEFAULT_MODEL })
-    toast.title = 'Models cleared!'
+    toast.title = "Models cleared!"
     toast.style = Toast.Style.Success
   }, [setData])
 

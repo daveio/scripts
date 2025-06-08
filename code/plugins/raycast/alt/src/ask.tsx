@@ -1,19 +1,19 @@
-import { ActionPanel, List, clearSearchBar, getPreferenceValues, useNavigation } from '@raycast/api'
-import { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { PrimaryAction } from './actions'
-import { FormInputActionSection } from './actions/form-input'
-import { PreferencesActionSection } from './actions/preferences'
-import { useAutoSaveConversation } from './hooks/useAutoSaveConversation'
-import { useChat } from './hooks/useChat'
-import { useConversations } from './hooks/useConversations'
-import { DEFAULT_MODEL, useModel } from './hooks/useModel'
-import { useQuestion } from './hooks/useQuestion'
-import { useSavedChat } from './hooks/useSavedChat'
-import type { Chat, Conversation, Model } from './type'
-import { ChatView } from './views/chat'
-import { ModelDropdown } from './views/model/dropdown'
-import { QuestionForm } from './views/question/form'
+import { ActionPanel, List, clearSearchBar, getPreferenceValues, useNavigation } from "@raycast/api"
+import { useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { PrimaryAction } from "./actions"
+import { FormInputActionSection } from "./actions/form-input"
+import { PreferencesActionSection } from "./actions/preferences"
+import { useAutoSaveConversation } from "./hooks/useAutoSaveConversation"
+import { useChat } from "./hooks/useChat"
+import { useConversations } from "./hooks/useConversations"
+import { DEFAULT_MODEL, useModel } from "./hooks/useModel"
+import { useQuestion } from "./hooks/useQuestion"
+import { useSavedChat } from "./hooks/useSavedChat"
+import type { Chat, Conversation, Model } from "./type"
+import { ChatView } from "./views/chat"
+import { ModelDropdown } from "./views/model/dropdown"
+import { QuestionForm } from "./views/question/form"
 
 export default function Ask(props: {
   conversation?: Conversation
@@ -25,7 +25,7 @@ export default function Ask(props: {
   const isAutoSaveConversation = useAutoSaveConversation()
   const chats = useChat<Chat>(props.conversation ? props.conversation.chats : [])
   const question = useQuestion({
-    initialQuestion: '',
+    initialQuestion: "",
     disableAutoLoad: !!props.conversation
   })
 
@@ -42,7 +42,7 @@ export default function Ask(props: {
       chats: [],
       model: DEFAULT_MODEL,
       pinned: false,
-      updated_at: '',
+      updated_at: "",
       created_at: new Date().toISOString()
     }
   )
@@ -50,7 +50,7 @@ export default function Ask(props: {
   const [isLoading, setLoading] = useState<boolean>(true)
 
   const [selectedModelId, setSelectedModelId] = useState<string>(
-    props.conversation ? props.conversation.model.id : 'default'
+    props.conversation ? props.conversation.model.id : "default"
   )
 
   const [{ isAutoFullInput, isAutoLoadText }] = useState(() => {
@@ -172,7 +172,7 @@ export default function Ask(props: {
       isLoading={isLoading || question.isLoading || chats.isLoading || models.isLoading}
       onSearchTextChange={question.update}
       throttle={false}
-      navigationTitle={'Ask'}
+      navigationTitle={"Ask"}
       actions={
         !question.data ? (
           <ActionPanel>
@@ -199,7 +199,7 @@ export default function Ask(props: {
       }
       // https://github.com/raycast/extensions/issues/10844
       // `onSelectionChange` may cause race condition
-      searchBarPlaceholder={chats.data.length > 0 ? 'Ask another question...' : 'Ask a question...'}
+      searchBarPlaceholder={chats.data.length > 0 ? "Ask another question..." : "Ask a question..."}
     >
       <ChatView
         data={chats.data}

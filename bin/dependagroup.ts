@@ -1,8 +1,8 @@
 #!/usr/bin/env -S bun --enable-source-maps
-import fs from 'node:fs'
-import path from 'node:path'
-import { Command } from 'commander'
-import * as yaml from 'js-yaml'
+import fs from "node:fs"
+import path from "node:path"
+import { Command } from "commander"
+import * as yaml from "js-yaml"
 
 // Type definitions for Dependabot config
 interface DependabotGroup {
@@ -10,7 +10,7 @@ interface DependabotGroup {
 }
 
 interface DependabotUpdate {
-  'package-ecosystem': string
+  "package-ecosystem": string
   directory: string
   schedule: {
     interval: string
@@ -27,7 +27,7 @@ interface DependabotConfig {
 
 // Process a single repository
 async function processRepository(repoPath: string): Promise<boolean> {
-  const dependabotPath = path.join(repoPath, '.github', 'dependabot.yml')
+  const dependabotPath = path.join(repoPath, ".github", "dependabot.yml")
 
   // Check if dependabot.yml exists
   if (!fs.existsSync(dependabotPath)) {
@@ -38,7 +38,7 @@ async function processRepository(repoPath: string): Promise<boolean> {
 
   try {
     // Read and parse the dependabot.yml file
-    const content = fs.readFileSync(dependabotPath, 'utf-8')
+    const content = fs.readFileSync(dependabotPath, "utf-8")
     const config = yaml.load(content) as DependabotConfig
 
     if (!config.updates || !Array.isArray(config.updates)) {
@@ -52,8 +52,8 @@ async function processRepository(repoPath: string): Promise<boolean> {
     for (const update of config.updates) {
       // Always set up the groups object with our all-dependencies group
       update.groups = {
-        'all-dependencies': {
-          patterns: ['*']
+        "all-dependencies": {
+          patterns: ["*"]
         }
       }
       modified = true
@@ -89,11 +89,11 @@ function findRepositories(rootDir: string): string[] {
     const entries = fs.readdirSync(rootDir, { withFileTypes: true })
 
     for (const entry of entries) {
-      if (entry.isDirectory() && !entry.name.startsWith('.')) {
+      if (entry.isDirectory() && !entry.name.startsWith(".")) {
         const repoPath = path.join(rootDir, entry.name)
 
         // Check if it's a git repository
-        if (fs.existsSync(path.join(repoPath, '.git'))) {
+        if (fs.existsSync(path.join(repoPath, ".git"))) {
           repos.push(repoPath)
         }
       }
@@ -110,10 +110,10 @@ async function main() {
   // Set up command-line interface
   const program = new Command()
   program
-    .name('dependagroup')
-    .description('Enable Dependabot dependency grouping for repositories')
-    .argument('[directory]', 'specific repository directory to process')
-    .option('-d, --dry-run', 'show what would be changed without making modifications')
+    .name("dependagroup")
+    .description("Enable Dependabot dependency grouping for repositories")
+    .argument("[directory]", "specific repository directory to process")
+    .option("-d, --dry-run", "show what would be changed without making modifications")
     .parse()
 
   const options = program.opts()
@@ -132,7 +132,7 @@ async function main() {
     }
 
     // Check if it's a repository itself
-    if (fs.existsSync(path.join(targetPath, '.git'))) {
+    if (fs.existsSync(path.join(targetPath, ".git"))) {
       repositories = [targetPath]
     } else {
       console.error(`❌ Not a git repository: ${targetPath}`)
@@ -140,20 +140,20 @@ async function main() {
     }
   } else {
     // Process all subdirectories of the default path
-    const defaultPath = '/Users/dave/src/github.com/daveio'
+    const defaultPath = "/Users/dave/src/github.com/daveio"
     console.log(`🔍 Scanning for repositories in: ${defaultPath}`)
     repositories = findRepositories(defaultPath)
   }
 
   if (repositories.length === 0) {
-    console.log('No repositories found to process')
+    console.log("No repositories found to process")
     return
   }
 
   console.log(`Found ${repositories.length} repository(ies) to process\n`)
 
   if (isDryRun) {
-    console.log('🔍 DRY RUN MODE - No changes will be made\n')
+    console.log("🔍 DRY RUN MODE - No changes will be made\n")
   }
 
   // Process each repository
@@ -167,7 +167,7 @@ async function main() {
       processedCount++
     } else {
       // In dry run mode, just check if the file exists and needs updating
-      const dependabotPath = path.join(repoPath, '.github', 'dependabot.yml')
+      const dependabotPath = path.join(repoPath, ".github", "dependabot.yml")
       if (fs.existsSync(dependabotPath)) {
         console.log(`Would process: ${path.basename(repoPath)}`)
         processedCount++
@@ -176,8 +176,8 @@ async function main() {
   }
 
   // Summary
-  console.log('\n📊 Summary')
-  console.log('================')
+  console.log("\n📊 Summary")
+  console.log("================")
   console.log(`Repositories scanned: ${repositories.length}`)
   console.log(`Dependabot configs found: ${processedCount}`)
   if (!isDryRun) {

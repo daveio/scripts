@@ -1,4 +1,4 @@
-import { Cache } from '@raycast/api'
+import { Cache } from "@raycast/api"
 
 export class CacheAdapter {
   private readonly key: string
@@ -7,7 +7,7 @@ export class CacheAdapter {
   constructor(key: string) {
     this.key = key
     this.cache = new Cache({
-      namespace: 'abielzulio.chatgpt'
+      namespace: "abielzulio.chatgpt"
     })
   }
 

@@ -1,4 +1,4 @@
-import type OpenAI from 'openai'
+import type OpenAI from "openai"
 
 export type Set<T> = React.Dispatch<React.SetStateAction<T>>
 
@@ -40,7 +40,7 @@ export interface Model {
   vision?: boolean
 }
 
-export type CommandContentSource = 'clipboard' | 'selectedText' | 'browserTab'
+export type CommandContentSource = "clipboard" | "selectedText" | "browserTab"
 
 export interface Command {
   id: string
@@ -88,7 +88,7 @@ export type ModelHook = BaseHook<Record<string, Model>> &
   BaseFunctionHook<Model> & {
     setModels: PromiseFunctionWithOneArg<Record<string, Model>>
     update: PromiseFunctionWithOneArg<Model>
-    option: Model['option'][]
+    option: Model["option"][]
     isFetching: boolean
   }
 
@@ -145,11 +145,11 @@ export interface CSVPrompt {
   prompt: string
 }
 
-export type ContentFormat = 'html' | 'text' | 'markdown'
+export type ContentFormat = "html" | "text" | "markdown"
 
 export type AskImageProps = {
   user_prompt: string
-  load: 'clipboard' | 'selected'
+  load: "clipboard" | "selected"
   selected_text?: string // If defined, uses this as selected text
   user_extra_msg?: string // Textfield in Form -> If not empty, appends this to the user message
   model_override?: string

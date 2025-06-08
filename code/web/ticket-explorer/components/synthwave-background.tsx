@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
-import * as THREE from 'three'
+import { useEffect, useRef } from "react"
+import * as THREE from "three"
 
 export function SynthwaveBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -23,8 +23,8 @@ export function SynthwaveBackground() {
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
-      powerPreference: 'high-performance',
-      precision: 'mediump' // Use medium precision for better performance
+      powerPreference: "high-performance",
+      precision: "mediump" // Use medium precision for better performance
     })
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Limit pixel ratio for better performance
@@ -76,7 +76,7 @@ export function SynthwaveBackground() {
       mountainVertices.push(i, -2, -10)
     }
 
-    mountainGeometry.setAttribute('position', new THREE.Float32BufferAttribute(mountainVertices, 3))
+    mountainGeometry.setAttribute("position", new THREE.Float32BufferAttribute(mountainVertices, 3))
     const mountainMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff })
     const mountains = new THREE.LineSegments(mountainGeometry, mountainMaterial)
     scene.add(mountains)
@@ -93,7 +93,7 @@ export function SynthwaveBackground() {
       starsVertices.push(x, y, z)
     }
 
-    starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3))
+    starsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starsVertices, 3))
     const starsMaterial = new THREE.PointsMaterial({
       color: 0xffffff,
       size: 0.1,
@@ -133,11 +133,11 @@ export function SynthwaveBackground() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Limit pixel ratio on resize too
     }
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize)
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener("resize", handleResize)
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }

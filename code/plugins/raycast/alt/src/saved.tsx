@@ -1,15 +1,15 @@
-import { ActionPanel, Icon, List } from '@raycast/api'
-import { useState } from 'react'
-import { DestructiveAction, TextToSpeechAction } from './actions'
-import { CopyActionSection } from './actions/copy'
-import { PreferencesActionSection } from './actions/preferences'
-import { useSavedChat } from './hooks/useSavedChat'
-import type { Chat } from './type'
-import { AnswerDetailView } from './views/answer-detail'
+import { ActionPanel, Icon, List } from "@raycast/api"
+import { useState } from "react"
+import { DestructiveAction, TextToSpeechAction } from "./actions"
+import { CopyActionSection } from "./actions/copy"
+import { PreferencesActionSection } from "./actions/preferences"
+import { useSavedChat } from "./hooks/useSavedChat"
+import type { Chat } from "./type"
+import { AnswerDetailView } from "./views/answer-detail"
 
 export default function Saved() {
   const savedChat = useSavedChat()
-  const [searchText, setSearchText] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>("")
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null)
 
   const getActionPanel = (chat: Chat) => (
@@ -22,17 +22,17 @@ export default function Saved() {
         <DestructiveAction
           title="Unsave"
           dialog={{
-            title: 'Are you sure you want to unsave this answer from your collection?'
+            title: "Are you sure you want to unsave this answer from your collection?"
           }}
           onAction={() => savedChat.remove(chat)}
         />
         <DestructiveAction
           title="Clear All"
           dialog={{
-            title: 'Are you sure you want to clear all your saved answer from your collection?'
+            title: "Are you sure you want to clear all your saved answer from your collection?"
           }}
           onAction={() => savedChat.clear()}
-          shortcut={{ modifiers: ['cmd', 'shift'], key: 'delete' }}
+          shortcut={{ modifiers: ["cmd", "shift"], key: "delete" }}
         />
       </ActionPanel.Section>
       <PreferencesActionSection />
@@ -46,7 +46,7 @@ export default function Saved() {
   const filteredSavedChats = sortedSavedChats
     .filter((value, index, self) => index === self.findIndex((answer) => answer.id === value.id))
     .filter((answer) => {
-      if (searchText === '') {
+      if (searchText === "") {
         return true
       }
       return (
