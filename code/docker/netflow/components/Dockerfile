@@ -31,6 +31,9 @@ RUN --mount=type=cache,target=/root/.cache/git,sharing=locked \
 # GeoIP data fetch stage
 FROM base AS geoip-fetcher
 
+# Set shell options for better error handling
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 WORKDIR /geoip
 
 # Install curl and jq for API calls

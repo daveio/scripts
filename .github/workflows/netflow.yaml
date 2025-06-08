@@ -162,8 +162,8 @@ jobs:
             NDPI_VERSION=${{ env.NDPI_VERSION }}
             NTOP_VERSION=${{ env.NTOP_VERSION }}
             NETFLOW2NG_VERSION=${{ env.NETFLOW2NG_VERSION }}
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID || '0' }}
+            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY || '' }}
           no-cache-filters: dependency-prefetch
           secrets: |
             APT_METADATA_CACHE=/tmp/apt-metadata-cache
