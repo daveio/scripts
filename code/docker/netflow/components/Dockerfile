@@ -1,6 +1,9 @@
 # syntax=docker/dockerfile:1.4
 FROM jdxcode/mise@sha256:cff42e2bf1063ae6a8729c148a1003357d5befa2fe7656c5d0c99e62b68aab7d AS base
 
+# Set shell options for better error handling
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Build arguments for versions - pinned for cache consistency
 ARG NDPI_VERSION="4.14"
 ARG NTOP_VERSION="6.4"
@@ -31,6 +34,7 @@ FROM base AS geoip-fetcher
 WORKDIR /geoip
 
 # Install curl and jq for API calls
+# trunk-ignore(hadolint/DL3008)
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update \
@@ -45,10 +49,9 @@ RUN --mount=type=cache,target=/tmp/geoip-cache,sharing=locked \
         for edition in GeoLite2-City GeoLite2-Country GeoLite2-ASN; do \
             echo "Processing ${edition}..."; \
             # Get metadata to find current date
-            METADATA=$(curl -u "${GEOIPUPDATE_ACCOUNT_ID}:${GEOIPUPDATE_LICENSE_KEY}" \
+            if METADATA=$(curl -u "${GEOIPUPDATE_ACCOUNT_ID}:${GEOIPUPDATE_LICENSE_KEY}" \
                 -H "User-Agent: geoipupdate/7.1.0" \
-                -s "https://updates.maxmind.com/geoip/updates/metadata?edition_id=${edition}"); \
-            if [ $? -eq 0 ]; then \
+                -s "https://updates.maxmind.com/geoip/updates/metadata?edition_id=${edition}"); then \
                 DATE=$(echo "$METADATA" | jq -r '.databases[0].date // empty'); \
                 if [ -n "$DATE" ] && [ "$DATE" != "null" ]; then \
                     # Convert date format (remove dashes)
