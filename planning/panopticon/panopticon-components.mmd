@@ -1,145 +1,173 @@
 ---
 config:
-  id: c52ba88c-eb4a-4a60-9f83-c315e73a0003
-  layout: elk
   theme: neo-dark
+  layout: elk
+id: c52ba88c-eb4a-4a60-9f83-c315e73a0003
 ---
 
 flowchart TB
-  %% Input Sources
-  subgraph Infrastructure["Infrastructure & Performance"]
+    %% Input Sources - Left Side (arranged in columns)
     PM[Performance metrics]:::green
     Infra[Infrastructure]:::green
     NewRelic[New Relic]:::green
-  end
 
-  subgraph BuildsInventory["Builds & Inventory"]
     NewBuilds[New builds]:::purple
     Decomm[Decommissions]:::purple
     Inventory[Inventory]:::purple
-  end
 
-  subgraph Monitoring["Monitoring Services"]
     Pingdom[Pingdom]:::cyan
     PagerDuty[PagerDuty]:::blue
     Nagios[Nagios]:::blue
+
     DataDog[DataDog]:::blue
     StatusPage[StatusPage]:::blue
     Observium[Observium]:::blue
-    AWS[AWS-native monitoring]:::blue
-  end
 
-  subgraph Manual["Manual & Human Input"]
+    AWS[AWS-native monitoring]:::blue
     Bugzilla[Bugzilla]:::magenta
     ManualEntry[Manual entry]:::red
+
     HumanReq[Human requests and reports]:::yellow
     ServiceNow[Service Now]:::yellow
     Tickets[Tickets]:::yellow
-    ChangeControl[Change control]:::yellow
-  end
 
-  subgraph Activity["Activity & Presence"]
+    ChangeControl[Change control]:::yellow
     Presence[Presence]:::yellow
     Bots[Bots]:::yellow
+
     ActivityNode[Activity]:::yellow
     IRC[IRC]:::yellow
-  end
 
-  %% Central Processing
-  UEL[["🎯 Unified Event Listener"]]:::central
-  UER[["📊 Unified Event Record"]]:::central
-  ASM[["🤖 Automatic Service Matching"]]:::central
+    %% Central Processing (vertical flow)
+    UEL[["🎯 Unified Event Listener"]]:::central
+    UER[["📊 Unified Event Record"]]:::central
+    ASM[["🤖 Automatic Service Matching"]]:::central
 
-  %% Branches
-  KnownServices[["⚙️ Known Services"]]:::branch
-  ManualMatching[["✍️ Manual Service Matching"]]:::branch
-  KnownAssoc[["🔗 Known Associations"]]:::branch
+    %% Three Branches (horizontal)
+    KnownServices[["⚙️ Known Services"]]:::branch
+    ManualMatching[["✍️ Manual Service Matching"]]:::branch
+    KnownAssoc[["🔗 Known Associations"]]:::branch
 
-  %% Attributes feeding into Known Associations
-  subgraph Attributes["Event Attributes"]
+    %% Attributes - Right Side (in columns)
     URL[URL]:::attr
     Hostname[Hostname]:::attr
     Port[Port]:::attr
     Component[Component]:::attr
+
     UserID[User ID]:::attr
     Tags[Tags]:::attr
     DateTime[Date & time]:::attr
     Team[Team]:::attr
-  end
 
-  %% Output Actions
-  Documentation[Documentation]:::action
-  OwningTeam[Owning team]:::action
-  Name[Name]:::action
-  CreateNew[Create new service]:::action
-  PickExisting[Pick existing service]:::action
-  CreateRule[Create matching rule]:::action
-  ModifyRule[Modify matching rule]:::action
+    %% Output Actions - Bottom (in columns)
+    Documentation[Documentation]:::action
+    OwningTeam[Owning team]:::action
+    Name[Name]:::action
 
-  %% Connections - Inputs to UEL
-  PM --> UEL
-  Infra --> UEL
-  NewRelic --> UEL
-  NewBuilds --> UEL
-  Decomm --> UEL
-  Inventory --> UEL
-  Pingdom --> UEL
-  Bugzilla --> UEL
-  ManualEntry --> UEL
-  HumanReq --> UEL
-  ServiceNow --> UEL
-  Tickets --> UEL
-  ChangeControl --> UEL
-  Presence --> UEL
-  Bots --> UEL
-  ActivityNode --> UEL
-  IRC --> UEL
-  PagerDuty --> UEL
-  Nagios --> UEL
-  DataDog --> UEL
-  StatusPage --> UEL
-  Observium --> UEL
-  AWS --> UEL
+    CreateNew[Create new service]:::action
+    PickExisting[Pick existing service]:::action
 
-  %% Central flow
-  UEL --> UER
-  UER --> ASM
+    CreateRule[Create matching rule]:::action
+    ModifyRule[Modify matching rule]:::action
 
-  %% Branching
-  ASM --> KnownServices
-  ASM --> ManualMatching
-  ASM --> KnownAssoc
+    %% Connections - Inputs to UEL (from left)
+    PM --> UEL
+    Infra --> UEL
+    NewRelic --> UEL
+    NewBuilds --> UEL
+    Decomm --> UEL
+    Inventory --> UEL
+    Pingdom --> UEL
+    PagerDuty --> UEL
+    Nagios --> UEL
+    DataDog --> UEL
+    StatusPage --> UEL
+    Observium --> UEL
+    AWS --> UEL
+    Bugzilla --> UEL
+    ManualEntry --> UEL
+    HumanReq --> UEL
+    ServiceNow --> UEL
+    Tickets --> UEL
+    ChangeControl --> UEL
+    Presence --> UEL
+    Bots --> UEL
+    ActivityNode --> UEL
+    IRC --> UEL
 
-  %% Attributes to Known Associations
-  URL --> KnownAssoc
-  Hostname --> KnownAssoc
-  Port --> KnownAssoc
-  Component --> KnownAssoc
-  UserID --> KnownAssoc
-  Tags --> KnownAssoc
-  DateTime --> KnownAssoc
-  Team --> KnownAssoc
+    %% Central vertical flow
+    UEL --> UER
+    UER --> ASM
 
-  %% Output connections
-  KnownServices --> Documentation
-  KnownServices --> OwningTeam
-  KnownServices --> Name
+    %% Branching (horizontal spread)
+    ASM --> KnownServices
+    ASM --> ManualMatching
+    ASM --> KnownAssoc
 
-  ManualMatching --> CreateNew
-  ManualMatching --> PickExisting
+    %% Attributes to Known Associations (from right)
+    URL --> KnownAssoc
+    Hostname --> KnownAssoc
+    Port --> KnownAssoc
+    Component --> KnownAssoc
+    UserID --> KnownAssoc
+    Tags --> KnownAssoc
+    DateTime --> KnownAssoc
+    Team --> KnownAssoc
 
-  KnownAssoc --> CreateRule
-  KnownAssoc --> ModifyRule
+    %% Output connections (downward)
+    KnownServices --> Documentation
+    KnownServices --> OwningTeam
+    KnownServices --> Name
 
-  %% Styling
-  classDef green fill:#90EE90,stroke:#228B22,stroke-width:2px,color:#000
-  classDef purple fill:#DDA0DD,stroke:#9370DB,stroke-width:2px,color:#000
-  classDef cyan fill:#00CED1,stroke:#008B8B,stroke-width:2px,color:#000
-  classDef magenta fill:#FF69B4,stroke:#C71585,stroke-width:2px,color:#000
-  classDef red fill:#FF6B6B,stroke:#DC143C,stroke-width:2px,color:#000
-  classDef yellow fill:#FFD700,stroke:#FFA500,stroke-width:2px,color:#000
-  classDef blue fill:#87CEEB,stroke:#4682B4,stroke-width:2px,color:#000
-  classDef central fill:#F0F0F0,stroke:#333,stroke-width:3px,color:#000
-  classDef branch fill:#E6E6FA,stroke:#6A5ACD,stroke-width:2px,color:#000
-  classDef attr fill:#B0E0E6,stroke:#4682B4,stroke-width:2px,color:#000
-  classDef action fill:#98FB98,stroke:#228B22,stroke-width:2px,color:#000
+    ManualMatching --> CreateNew
+    ManualMatching --> PickExisting
+
+    KnownAssoc --> CreateRule
+    KnownAssoc --> ModifyRule
+
+    %% Positioning hints to create columns
+    PM ~~~ NewBuilds
+    NewBuilds ~~~ Pingdom
+    Pingdom ~~~ DataDog
+    DataDog ~~~ AWS
+    AWS ~~~ HumanReq
+    HumanReq ~~~ ChangeControl
+    ChangeControl ~~~ ActivityNode
+
+    Infra ~~~ Decomm
+    Decomm ~~~ PagerDuty
+    PagerDuty ~~~ StatusPage
+    StatusPage ~~~ Bugzilla
+    Bugzilla ~~~ ServiceNow
+    ServiceNow ~~~ Presence
+    Presence ~~~ IRC
+
+    NewRelic ~~~ Inventory
+    Inventory ~~~ Nagios
+    Nagios ~~~ Observium
+    Observium ~~~ ManualEntry
+    ManualEntry ~~~ Tickets
+    Tickets ~~~ Bots
+
+    URL ~~~ UserID
+    Hostname ~~~ Tags
+    Port ~~~ DateTime
+    Component ~~~ Team
+
+    Documentation ~~~ CreateNew
+    OwningTeam ~~~ PickExisting
+    Name ~~~ CreateRule
+    CreateNew ~~~ ModifyRule
+
+    %% Styling
+    classDef green fill:#90EE90,stroke:#228B22,stroke-width:2px,color:#000
+    classDef purple fill:#DDA0DD,stroke:#9370DB,stroke-width:2px,color:#000
+    classDef cyan fill:#00CED1,stroke:#008B8B,stroke-width:2px,color:#000
+    classDef magenta fill:#FF69B4,stroke:#C71585,stroke-width:2px,color:#000
+    classDef red fill:#FF6B6B,stroke:#DC143C,stroke-width:2px,color:#000
+    classDef yellow fill:#FFD700,stroke:#FFA500,stroke-width:2px,color:#000
+    classDef blue fill:#87CEEB,stroke:#4682B4,stroke-width:2px,color:#000
+    classDef central fill:#F0F0F0,stroke:#333,stroke-width:3px,color:#000
+    classDef branch fill:#E6E6FA,stroke:#6A5ACD,stroke-width:2px,color:#000
+    classDef attr fill:#B0E0E6,stroke:#4682B4,stroke-width:2px,color:#000
+    classDef action fill:#98FB98,stroke:#228B22,stroke-width:2px,color:#000
