@@ -350,7 +350,7 @@ RUN chmod +x /opt/ntopng.bash \
       /var/lib/redis \
       /var/log/redis \
       /var/run/redis \
-    && chown ntopng:ntopng /etc/redis/redis.conf \
+      /etc/redis/redis.conf \
     && chmod 644 /etc/redis/redis.conf
 
 USER ntopng

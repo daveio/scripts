@@ -73,41 +73,26 @@ cleanup() {
 
 trap cleanup SIGTERM SIGINT
 
-# Function to attempt GeoIP database update
-update_geoip_databases() {
-  log "Checking GeoIP configuration..."
+# Function to check GeoIP database availability
+check_geoip_databases() {
+  log "Checking GeoIP database availability..."
 
-  # Check if we have valid credentials
-  if [[ ${GEOIPUPDATE_ACCOUNT_ID:-0} != "0" ]] && [[ -n ${GEOIPUPDATE_LICENSE_KEY-} ]] && [[ ${GEOIPUPDATE_LICENSE_KEY-} != "000000000000" ]]; then
-    log "Valid GeoIP credentials detected, attempting database update..."
+  local geoip_dir="/usr/share/GeoIP"
+  local databases=("GeoLite2-Country.mmdb" "GeoLite2-City.mmdb" "GeoLite2-ASN.mmdb")
+  local found_count=0
 
-    # Create GeoIP configuration file
-    log "Creating GeoIP configuration file..."
-    cat >/etc/GeoIP.conf <<EOF
-# GeoIP.conf configuration file
-# Generated automatically by ntopng startup script
-
-# Account ID and License Key from environment variables
-AccountID ${GEOIPUPDATE_ACCOUNT_ID}
-LicenseKey ${GEOIPUPDATE_LICENSE_KEY}
-
-# Database directory
-DatabaseDirectory ${GEOIPUPDATE_DB_DIR:-/usr/share/GeoIP}
-
-# Edition IDs to download
-EditionIDs GeoLite2-Country GeoLite2-City GeoLite2-ASN
-EOF
-
-    if geoipupdate -v 2>&1 | tee -a "${LOG_FILE}"; then
-      log "✓ GeoIP databases updated successfully"
-      log "Geographic IP location features enabled"
-    else
-      log "⚠ Failed to update GeoIP databases, but continuing without geolocation"
-      log "ntopng will work normally without geographic IP information"
+  for db in "${databases[@]}"; do
+    if [[ -f "${geoip_dir}/${db}" ]] && [[ -s "${geoip_dir}/${db}" ]]; then
+      ((found_count++))
     fi
+  done
+
+  if [[ ${found_count} -eq 3 ]]; then
+    log "✓ All GeoIP databases available - geographic IP location features enabled"
+  elif [[ ${found_count} -gt 0 ]]; then
+    log "⚠ Partial GeoIP databases available (${found_count}/3) - limited geographic features"
   else
-    log "ℹ No GeoIP credentials provided - running without geolocation features"
-    log "To enable: set GEOIPUPDATE_ACCOUNT_ID and GEOIPUPDATE_LICENSE_KEY environment variables"
+    log "ℹ No GeoIP databases available - running without geolocation features"
   fi
 }
 
@@ -152,8 +137,8 @@ main() {
   # Parse Redis configuration
   parse_redis_config
 
-  # Update GeoIP databases if credentials provided
-  update_geoip_databases
+  # Check GeoIP database availability
+  check_geoip_databases
 
   # Start Redis server only if using local Redis
   if [[ ${USE_LOCAL_REDIS} == true ]]; then

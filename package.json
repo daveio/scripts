@@ -15,10 +15,7 @@
   "trustedDependencies": ["@anthropic-ai/claude-code", "@biomejs/biome"],
   "module": "index.ts",
   "type": "module",
-  "scripts": {
-    "netflow": "bun run bin/netflow.ts",
-    "ai": "bun run ai.ts"
-  },
+  "scripts": {},
   "dependencies": {
     "@anthropic-ai/sdk": "^0.53.0",
     "@iarna/toml": "^2.2.5",
