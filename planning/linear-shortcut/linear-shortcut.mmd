@@ -1,0 +1,18 @@
+---
+config:
+  theme: redux-dark
+  layout: elk
+  look: neo
+---
+
+flowchart TD
+    A("Start") --> B["Decision"] & C["Option"]
+    B --> C
+    B@{ shape: hex}
+     A:::beginEnd
+     B:::decision
+     C:::option
+    classDef option fill:#181926, stroke-width:1px, stroke-dasharray:none, stroke:#a6da95, color:#a6da95
+    classDef beginEnd fill:#181926, stroke-width:1px, stroke-dasharray:none, stroke:#c6a0f6, color:#c6a0f6
+    classDef decision fill:#181926, stroke-width:1px, stroke-dasharray:none, stroke:#f5a97f, color:#f5a97f
+
