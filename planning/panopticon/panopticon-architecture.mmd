@@ -1,0 +1,60 @@
+---
+config:
+  theme: neo-dark
+  layout: elk
+---
+
+flowchart TB
+  %% Monitoring Services (Blue)
+  Nagios[Nagios]:::monitoring
+  Pingdom[Pingdom]:::monitoring
+  PagerDuty[PagerDuty]:::monitoring
+  StatusPage[StatusPage]:::monitoring
+
+  %% Omnivore Layer (Green)
+  OmnivoreRedis[(Omnivore Redis)]:::omnivore
+  OmnivoreTaskQueue{{Omnivore Task Queue}}:::omnivore
+  Omnivore[Omnivore]:::omnivore
+  OmnivorePostgres[(Omnivore Postgres)]:::omnivore
+
+  %% Graylog Layer (Yellow)
+  GraylogMongoDB[(Graylog MongoDB)]:::graylog
+  Graylog[Graylog]:::graylog
+  GraylogElasticsearch[(Graylog Elasticsearch)]:::graylog
+
+  %% Core Layer (Red)
+  CoreRedis[(Core Redis)]:::core
+  CoreTaskQueue{{Core Task Queue}}:::core
+  Core[Core]:::core
+  CorePostgres[(Core Postgres)]:::core
+
+  %% User
+  User([User]):::user
+
+  %% Connections
+  Nagios --> Omnivore
+  Pingdom --> Omnivore
+  PagerDuty <--> Omnivore
+  StatusPage --> Omnivore
+
+  OmnivoreRedis <--> OmnivoreTaskQueue
+  OmnivoreTaskQueue <--> Omnivore
+  Omnivore <--> OmnivorePostgres
+
+  Omnivore --> Graylog
+  GraylogMongoDB <--> Graylog
+  Graylog <--> GraylogElasticsearch
+
+  Graylog --> Core
+  CoreRedis <--> CoreTaskQueue
+  CoreTaskQueue <--> Core
+  Core <--> CorePostgres
+
+  Core <--> User
+
+  %% Styling
+  classDef monitoring fill:#87CEEB,stroke:#4682B4,stroke-width:2px,color:#000
+  classDef omnivore fill:#90EE90,stroke:#228B22,stroke-width:2px,color:#000
+  classDef graylog fill:#FFD700,stroke:#FFA500,stroke-width:2px,color:#000
+  classDef core fill:#FFB6C1,stroke:#DC143C,stroke-width:2px,color:#000
+  classDef user fill:#DDA0DD,stroke:#9370DB,stroke-width:2px,color:#000
