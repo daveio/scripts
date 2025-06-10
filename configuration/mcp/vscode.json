@@ -17,6 +17,9 @@
         ],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
+      "cloudflareDocumentation": {
+        "url": "https://docs.mcp.cloudflare.com/sse"
+      },
       "context7": {
         "args": [
           "x",
