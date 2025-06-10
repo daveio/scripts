@@ -8,14 +8,6 @@
       "args": ["x", "@upstash/context7-mcp"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
-    "docker": {
-      "args": ["ai", "mcpserver"],
-      "command": "docker"
-    },
-    "duckduckgo": {
-      "args": ["duckduckgo-mcp-server"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
     "fetch": {
       "args": ["mcp-server-fetch"],
       "command": "/Users/dave/.local/share/mise/shims/uvx"
@@ -33,18 +25,6 @@
       ],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
-    "git": {
-      "args": ["mcp-server-git"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
-    "github": {
-      "args": ["x", "@modelcontextprotocol/server-github"],
-      "command": "/Users/dave/.local/share/mise/shims/bun"
-    },
-    "pdfReader": {
-      "args": ["mcp-read-pdf"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
     "sequentialThinking": {
       "args": ["x", "@modelcontextprotocol/server-sequential-thinking"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
@@ -55,10 +35,7 @@
       "env": {
         "MEMORY_FILE_PATH": "/Users/dave/.memory"
       }
-    },
-    "time": {
-      "args": ["mcp-server-time", "--local-timezone=Europe/London"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
     }
   }
 }
+
