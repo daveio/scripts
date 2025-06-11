@@ -4,17 +4,12 @@
       "args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
+    "cloudflareDocumentation": {
+      "url": "https://docs.mcp.cloudflare.com/sse"
+    },
     "context7": {
       "args": ["x", "@upstash/context7-mcp"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
-    },
-    "docker": {
-      "args": ["ai", "mcpserver"],
-      "command": "docker"
-    },
-    "duckduckgo": {
-      "args": ["duckduckgo-mcp-server"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
     },
     "fetch": {
       "args": ["mcp-server-fetch"],
@@ -33,18 +28,6 @@
       ],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
-    "git": {
-      "args": ["mcp-server-git"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
-    "github": {
-      "args": ["x", "@modelcontextprotocol/server-github"],
-      "command": "/Users/dave/.local/share/mise/shims/bun"
-    },
-    "pdfReader": {
-      "args": ["mcp-read-pdf"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
-    },
     "sequentialThinking": {
       "args": ["x", "@modelcontextprotocol/server-sequential-thinking"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
@@ -56,9 +39,17 @@
         "MEMORY_FILE_PATH": "/Users/dave/.memory"
       }
     },
-    "time": {
-      "args": ["mcp-server-time", "--local-timezone=Europe/London"],
-      "command": "/Users/dave/.local/share/mise/shims/uvx"
+    "vscode": {
+      "args": ["x", "vscode-mcp-server"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "tavily": {
+      "args": ["x", "mcp-remote", "https://tavily.api.tadata.com/mcp/tavily/[sensitive]"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
+    "linear": {
+      "args": ["x", "mcp-remote", "https://mcp.linear.app/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
     }
   }
 }
