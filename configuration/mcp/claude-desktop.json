@@ -8,6 +8,10 @@
       "args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
+    "cloudflareRendering": {
+      "args": ["x", "mcp-remote", "https://browser.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
+    },
     "context7": {
       "args": ["x", "@upstash/context7-mcp"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
@@ -45,7 +49,11 @@
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "tavily": {
-      "args": ["x", "mcp-remote", "https://tavily.api.tadata.com/mcp/tavily/[sensitive]"],
+      "args": [
+        "x",
+        "mcp-remote",
+        "https://tavily.api.tadata.com/mcp/tavily/[SENSITIVE]"
+      ],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "linear": {
