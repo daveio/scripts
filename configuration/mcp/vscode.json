@@ -9,28 +9,19 @@
   "mcp": {
     "servers": {
       "claudeCode": {
-        "args": [
-          "x",
-          "@anthropic-ai/claude-code",
-          "mcp",
-          "serve"
-        ],
+        "args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "cloudflareDocumentation": {
-        "url": "https://docs.mcp.cloudflare.com/sse"
+        "args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
+        "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "context7": {
-        "args": [
-          "x",
-          "@upstash/context7-mcp"
-        ],
+        "args": ["x", "@upstash/context7-mcp"],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "fetch": {
-        "args": [
-          "mcp-server-fetch"
-        ],
+        "args": ["mcp-server-fetch"],
         "command": "/Users/dave/.local/share/mise/shims/uvx"
       },
       "filesystem": {
@@ -47,43 +38,26 @@
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "sequentialThinking": {
-        "args": [
-          "x",
-          "@modelcontextprotocol/server-sequential-thinking"
-        ],
+        "args": ["x", "@modelcontextprotocol/server-sequential-thinking"],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "sharedMemory": {
-        "args": [
-          "x",
-          "@modelcontextprotocol/server-memory"
-        ],
+        "args": ["x", "@modelcontextprotocol/server-memory"],
         "command": "/Users/dave/.local/share/mise/shims/bun",
         "env": {
           "MEMORY_FILE_PATH": "/Users/dave/.memory"
         }
       },
       "vscode": {
-        "args": [
-          "x",
-          "vscode-mcp-server"
-        ],
+        "args": ["x", "vscode-mcp-server"],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "tavily": {
-        "args": [
-          "x",
-          "mcp-remote",
-          "https://tavily.api.tadata.com/mcp/tavily/[sensitive]"
-        ],
+        "args": ["x", "mcp-remote", "https://tavily.api.tadata.com/mcp/tavily/[sensitive]"],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       },
       "linear": {
-        "args": [
-          "x",
-          "mcp-remote",
-          "https://mcp.linear.app/sse"
-        ],
+        "args": ["x", "mcp-remote", "https://mcp.linear.app/sse"],
         "command": "/Users/dave/.local/share/mise/shims/bun"
       }
     }

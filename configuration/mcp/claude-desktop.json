@@ -5,7 +5,8 @@
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "cloudflareDocumentation": {
-      "url": "https://docs.mcp.cloudflare.com/sse"
+      "args": ["x", "mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
+      "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "context7": {
       "args": ["x", "@upstash/context7-mcp"],
