@@ -7,3 +7,6 @@
 [submodule "schemastore--schemastore"]
 	path = submodules/schemastore--schemastore
 	url = https://github.com/SchemaStore/schemastore.git
+[submodule "cloudflare--api-schemas"]
+	path = submodules/cloudflare--api-schemas
+	url = https://github.com/cloudflare/api-schemas.git
