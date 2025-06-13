@@ -1,35 +1,41 @@
-# `{{projectName}}`
+# `{{ projectName }}`
 
-<!-- trunk-ignore-all(markdownlint/MD036) -->
+## 🛑 MANDATORY RULES - CHECK BEFORE EVERY ACTION
 
-## 🚨 CRITICAL DEVELOPMENT RULES - MANDATORY FOR EVERY REQUEST
+### PRE-TASK CHECKLIST (Mental Review Required)
+□ Am I following ALL 10 rules below?
+□ Have I checked `AGENTS.md` for latest specs?
+□ Will my code be production-ready?
 
-**⚠️ THESE RULES MUST BE FOLLOWED AT ALL TIMES, IN EVERY REQUEST ⚠️**
+### THE 10 COMMANDMENTS
 
-**1. Breaking Changes**: NO backwards compatibility. Document in AGENTS.md. ❌ No migration code.
+**1. BREAK**: Ship breaking changes freely. Document in `AGENTS.md`. Never add migration code.
 
-**2. Quality > Speed**: Unlimited time/calls for correct implementations. Refactor ruthlessly. ❌ No "good enough".
+**2. PERFECT**: Take unlimited time/calls for correctness. Refactor aggressively. No "good enough".
 
-**3. Mandatory Testing**: EVERYTHING with logic/side effects needs tests. ❌ Skip trivial getters, frontend components, config.
+**3. TEST**: Test everything with logic/side effects. Skip only: trivial getters, UI components, config.
 
-**4. Documentation Sync**: AGENTS.md = source of truth. Update after API/feature/auth changes. CLAUDE.md = symlink to AGENTS.md. README.md = symlink to AGENTS.md. ❌ No outdated docs.
+**4. SYNC**: `AGENTS.md` = truth. Update after API/feature/auth changes. `CLAUDE.md` & `README.md` = symlinks to `AGENTS.md`.
 
-**5. Quality Verification**: Use the linting, typechecking, and testing tools. ❌ Never commit broken code.
+**5. VERIFY**: Run lint/typecheck/test before proceeding. Never continue with errors.
 
-**6. Commit Hygiene**: `git add -A . && oco --fgm --yes` or `git add -A . && git commit -am "[emoji] [description]"`. Commit after features/bugs/refactoring.
+**6. COMMIT**: `git add -A . && oco --fgm --yes` after each feature/fix/refactor.
 
-**7. Zero Mock Data**: Only real service calls. Crash loudly on failure. ❌ No `Math.random()`, hardcoded values, fake delays. Exception: test files.
+**7. REAL**: Use actual service calls only. Crash on failure. No mocks/randoms/delays (except tests).
 
-**8. No Incomplete Code**: Comment with `TODO: [description]`. Prefer explicit errors over silent failures.
+**8. COMPLETE**: Finish all code or mark `TODO: [description]`. Fail explicitly, never silently.
 
-**9. TODO Management**: Use 6-hex IDs per logical issue. Update TODO.md. Examples:
+**9. TRACK**: TODOs use 6-hex IDs. Update TODO.md:
+   ```typescript
+   // TODO: (37c7b2) Skip Bun mocking - test separately
+   ```
+   ```markdown
+   - **TODO:** _37c7b2_ `test/file.ts:18` Description
+   ```
 
-```typescript
-// TODO: (37c7b2) Skip Bun mocking - test separately
-```
+**10. SHARE**: Extract duplicated logic to a shared utility immediately. Add docs+tests+types.
 
-```markdown
-- **TODO:** _37c7b2_ `test/file.ts:18` Description
-```
+### ⚡ QUICK REFERENCE
+**ALWAYS**: Break compatibility • Test everything • Real data only • Complete code • Extract duplicates
+**NEVER**: Migration code • Mock data • Silent failures • Copy-paste • Outdated docs
 
-**10. Shared Code**: Extract duplicated logic to `server/utils/` immediately. Add documentation, comments, tests, types. ❌ No copy-pasting.
