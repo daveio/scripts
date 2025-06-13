@@ -1,4 +1,4 @@
-# `{{ projectName }}`
+# `{{projectName}}`
 
 <!-- trunk-ignore-all(markdownlint/MD036) -->
 
