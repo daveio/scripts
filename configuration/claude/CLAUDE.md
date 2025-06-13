@@ -32,6 +32,4 @@
 - **TODO:** _37c7b2_ `test/file.ts:18` Description
 ```
 
-**10. KV Data**: Simple values only. Hierarchical keys: `metrics:api:ok`. Kebab-case: `auth:token-uuid`. Update `data/kv/_init.yaml`.
-
-**11. Shared Code**: Extract duplicated logic to `server/utils/` immediately. Add documentation, comments, tests, types. ❌ No copy-pasting.
+**10. Shared Code**: Extract duplicated logic to `server/utils/` immediately. Add documentation, comments, tests, types. ❌ No copy-pasting.
