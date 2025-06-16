@@ -49,15 +49,7 @@
       "command": "/Users/dave/.local/share/mise/shims/bun"
     },
     "tavily": {
-      "args": [
-        "x",
-        "mcp-remote",
-        "https://tavily.api.tadata.com/mcp/tavily/[SENSITIVE]"
-      ],
-      "command": "/Users/dave/.local/share/mise/shims/bun"
-    },
-    "linear": {
-      "args": ["x", "mcp-remote", "https://mcp.linear.app/sse"],
+      "args": ["x", "mcp-remote", "https://tavily.api.tadata.com/mcp/tavily/[SENSITIVE]"],
       "command": "/Users/dave/.local/share/mise/shims/bun"
     }
   }
