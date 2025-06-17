@@ -101,7 +101,7 @@ servers:
     description: Cloudflare Workers storage and compute bindings
     enabled: false
     env: {}
-    name: Cloudflare Workers Bindings.
+    name: Cloudflare Workers Bindings
     settings: {}
     timeout: 1200
     type: stdio
@@ -140,7 +140,7 @@ servers:
     description: Access to Cloudflare Developer Documentation
     enabled: true
     env: {}
-    name: Cloudflare Documentation.
+    name: Cloudflare Documentation
     settings: {}
     timeout: 1200
     type: stdio
@@ -153,7 +153,7 @@ servers:
     description: Cloudflare Workers Observability and monitoring
     enabled: true
     env: {}
-    name: Cloudflare Observability.
+    name: Cloudflare Observability
     settings: {}
     timeout: 1200
     type: stdio
@@ -166,7 +166,7 @@ servers:
     description: Global Internet traffic insights and trends
     enabled: false
     env: {}
-    name: Cloudflare Radar.
+    name: Cloudflare Radar
     settings: {}
     timeout: 1200
     type: stdio
@@ -179,7 +179,7 @@ servers:
     description: Browser rendering and screenshot capabilities
     enabled: true
     env: {}
-    name: Cloudflare Browser Rendering.
+    name: Cloudflare Browser Rendering
     settings: {}
     timeout: 1200
     type: stdio
@@ -188,7 +188,7 @@ servers:
       - x
       - "@upstash/context7-mcp"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Documentation database and context search.
+    description: Documentation database and context search
     enabled: true
     env: {}
     name: Context7
@@ -200,7 +200,7 @@ servers:
       - ai
       - mcpserver
     command: docker
-    description: Docker container management and integration.
+    description: Docker container management and integration
     enabled: true
     env: {}
     name: Docker
@@ -211,7 +211,7 @@ servers:
     args:
       - duckduckgo-mcp-server
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Web search and page fetching capabilities.
+    description: Web search and page fetching capabilities
     enabled: true
     env: {}
     name: DuckDuckGo
@@ -222,7 +222,7 @@ servers:
     args:
       - mcp-server-fetch
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Web content fetching and processing.
+    description: Web content fetching and processing
     enabled: true
     env: {}
     name: Fetch
@@ -240,7 +240,7 @@ servers:
       - /Users/dave
       - /Volumes
     command: /Users/dave/.local/share/mise/shims/bun
-    description: File system access and manipulation.
+    description: File system access and manipulation
     enabled: false
     env: {}
     name: File System
@@ -251,7 +251,7 @@ servers:
     args:
       - mcp-server-git
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Git repository management and version control.
+    description: Git repository management and version control
     enabled: true
     env: {}
     name: Git
@@ -263,7 +263,7 @@ servers:
       - x
       - "@modelcontextprotocol/server-github"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: GitHub API integration for repositories and issues.
+    description: GitHub API integration for repositories and issues
     enabled: false
     env: {}
     name: GitHub
@@ -276,7 +276,7 @@ servers:
       - mcp-remote
       - https://mcp.linear.app/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Linear project management integration.
+    description: Linear project management integration
     enabled: false
     env: {}
     name: Linear
@@ -288,7 +288,7 @@ servers:
       - x
       - "@notionhq/notion-mcp-server"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Notion workspace integration.
+    description: Notion workspace integration
     enabled: false
     env:
       OPENAPI_MCP_HEADERS: >-
@@ -301,7 +301,7 @@ servers:
     args:
       - mcp-read-pdf
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Read and process PDF documents.
+    description: Read and process PDF documents
     enabled: true
     env: {}
     name: PDF Reader
@@ -314,7 +314,7 @@ servers:
       - mcp-remote
       - http://localhost:391200/model_context_protocol/2024-11-05/sse
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Pieces long-term memory engine integration.
+    description: Pieces long-term memory engine integration
     enabled: true
     env: {}
     name: Pieces
@@ -326,7 +326,7 @@ servers:
       - x
       - "@modelcontextprotocol/server-sequential-thinking"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Tools for dynamic and reflective problem-solving through a structured thinking process.
+    description: Tools for dynamic and reflective problem-solving through a structured thinking process
     enabled: true
     env: {}
     name: Sequential Thinking
@@ -338,7 +338,7 @@ servers:
       - x
       - "@modelcontextprotocol/server-memory"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Persistent memory storage and retrieval.
+    description: Persistent memory storage and retrieval
     enabled: true
     env:
       MEMORY_FILE_PATH: /Users/dave/.memory
@@ -351,7 +351,7 @@ servers:
       - x
       - "@modelcontextprotocol/server-slack"
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Slack ChatOps and chat integration.
+    description: Slack ChatOps and chat integration
     enabled: true
     env:
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
@@ -365,10 +365,37 @@ servers:
       - mcp-server-time
       - --local-timezone=Europe/London
     command: /Users/dave/.local/share/mise/shims/uvx
-    description: Time and date management, with time zone support and conversion.
+    description: Time and date management, with time zone support and conversion
     enabled: true
     env: {}
     name: Time
+    settings: {}
+    timeout: 1200
+    type: stdio
+  toolbase:
+    args:
+      - -p=proxy
+      - -f=/Users/dave/.toolbase/config.json
+      - -l=/Users/dave/Library/Logs/Toolbase/goose-toolbase-proxy.log
+      - -v=${CLIENT_NAME}
+    command: /Users/dave/.toolbase/toolbase-runner
+    description: Toolbase proxy integration
+    enabled: true
+    env: {}
+    name: Toolbase
+    settings: {}
+    timeout: 1200
+    type: stdio
+  tavily:
+    args:
+      - x
+      - mcp-remote
+      - https://tavily.api.tadata.com/mcp/tavily/${TAVILY_MCP_TOKEN}
+    command: /Users/dave/.local/share/mise/shims/bun
+    description: Tavily search and research tool integration
+    enabled: true
+    env: {}
+    name: Tavily
     settings: {}
     timeout: 1200
     type: stdio
@@ -377,7 +404,7 @@ servers:
       - x
       - vscode-mcp-server
     command: /Users/dave/.local/share/mise/shims/bun
-    description: Visual Studio Code integration.
+    description: Visual Studio Code integration
     enabled: false
     env: {}
     name: VS Code

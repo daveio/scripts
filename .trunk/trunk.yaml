@@ -47,20 +47,20 @@ lint:
     - biome@1.9.4
     - sourcery@1.37.0
     - isort@6.0.1
-    - semgrep@1.124.0
+    - semgrep@1.125.0
     - markdownlint-cli2@0.18.1
     - ruff@0.11.13
     - black@25.1.0
-    - osv-scanner@2.0.2
+    - osv-scanner@2.0.3
     - actionlint@1.7.7
-    - bandit@1.8.3
-    - checkov@3.2.437
+    - bandit@1.8.5
+    - checkov@3.2.442
     - git-diff-check
     - ruff@0.11.13
     - shellcheck@0.10.0
     - shfmt@3.6.0
     - taplo@0.9.3
-    - trufflehog@3.88.35
+    - trufflehog@3.89.2
     - yamllint@1.37.1
 actions:
   enabled:
