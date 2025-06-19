@@ -363,7 +363,7 @@ def main(yes: bool):
     console.print(
         Panel.fit(
             "[bold red]Swipe - S3-Compatible Storage Deletion Tool[/bold red]\n"
-            "[yellow]⚠️  WARNING: This will permanently delete ALL objects![/yellow]",
+            "[yellow]⚠️  WARNING: This will delete ALL objects![/yellow]",
             border_style="red",
             box=box.DOUBLE,
         )
@@ -474,7 +474,7 @@ def main(yes: bool):
             console.print(f"[green]✅ Bucket '{bucket_name}' is now empty![/green]")
         else:
             console.print(
-                "[yellow]⚠️  Bucket may still contain objects. Please verify manually.[/yellow]"ow]"
+                "[yellow]⚠️  Bucket may still contain objects. Please verify manually.[/yellow]"
             )
 
     # Final status
