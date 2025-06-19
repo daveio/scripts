@@ -363,7 +363,7 @@ def main(yes: bool):
     console.print(
         Panel.fit(
             "[bold red]Swipe - S3-Compatible Storage Deletion Tool[/bold red]\n"
-            "[yellow]⚠️  WARNING: This will delete ALL objects![/yellow]",
+            "[yellow]WARNING: This will permanently delete ALL objects![/yellow]",
             border_style="red",
             box=box.DOUBLE,
         )
