@@ -167,39 +167,66 @@ class S3Deleter:
             console.print(f"[red]❌ Connection error: {str(e)}[/red]")
             return False
 
-    def list_objects(self, progress: Optional[Progress] = None) -> List[dict]:
-        """List all objects in the bucket with pagination support."""
+    def list_objects(self) -> List[dict]:
+        """List all objects in the bucket with pagination support and live progress display."""
         objects = []
         total_size = 0
+        start_time = time.time()
 
         paginator = self.s3_client.get_paginator("list_objects_v2")
         page_iterator = paginator.paginate(Bucket=self.bucket_name)
 
-        try:
-            for page in page_iterator:
-                if shutdown_requested:
-                    break
+        # Create progress display for counting
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            TimeElapsedColumn(),
+            console=console,
+            transient=False,
+        ) as progress:
+            
+            task = progress.add_task(
+                "[cyan]📋 Counting objects...[/cyan]", 
+                total=None  # Indeterminate progress since we don't know total count
+            )
 
-                if "Contents" in page:
-                    for obj in page["Contents"]:
-                        objects.append(
-                            {
-                                "Key": obj["Key"],
-                                "Size": obj.get("Size", 0),
-                                "LastModified": obj.get("LastModified"),
-                            }
-                        )
-                        total_size += obj.get("Size", 0)
+            try:
+                for page in page_iterator:
+                    if shutdown_requested:
+                        break
 
-                        if progress:
-                            progress.console.print(
-                                f"[dim]Found: {len(objects)} objects ({self._format_size(total_size)})[/dim]",
-                                end="\r",
+                    if "Contents" in page:
+                        for obj in page["Contents"]:
+                            objects.append(
+                                {
+                                    "Key": obj["Key"],
+                                    "Size": obj.get("Size", 0),
+                                    "LastModified": obj.get("LastModified"),
+                                }
                             )
+                            total_size += obj.get("Size", 0)
 
-        except ClientError as e:
-            console.print(f"[red]❌ Error listing objects: {e}[/red]")
-            return []
+                            # Update progress every 100 objects for performance
+                            if len(objects) % 100 == 0 or len(objects) < 100:
+                                elapsed = time.time() - start_time
+                                rate = len(objects) / elapsed if elapsed > 0 else 0
+                                
+                                progress.update(
+                                    task,
+                                    description=f"[cyan]📋 Found: {len(objects):,} objects ({self._format_size(total_size)}) | Rate: {rate:.0f} obj/sec[/cyan]"
+                                )
+
+            except ClientError as e:
+                console.print(f"[red]❌ Error listing objects: {e}[/red]")
+                return []
+
+            # Final update with complete count
+            elapsed = time.time() - start_time
+            rate = len(objects) / elapsed if elapsed > 0 else 0
+            progress.update(
+                task,
+                description=f"[green]✅ Found: {len(objects):,} objects ({self._format_size(total_size)}) | Rate: {rate:.0f} obj/sec[/green]"
+            )
 
         self.objects = objects
         self.total_size = total_size
@@ -558,9 +585,8 @@ def main(yes: bool):
         sys.exit(1)
     console.print("[green]✅ Successfully connected to storage[/green]\n")
 
-    # List objects
-    with console.status("[cyan]📋 Listing objects in bucket...[/cyan]"):
-        objects = deleter.list_objects()
+    # List objects with live progress display
+    objects = deleter.list_objects()
 
     if not objects:
         console.print(f"[green]✨ Bucket '{bucket_name}' is already empty![/green]")
