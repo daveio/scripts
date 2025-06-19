@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>DaisyUI 5 Complete Demo</title>
+        <!-- DaisyUI 5 + Tailwind CSS 4 -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"
+              rel="stylesheet"
+              type="text/css" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5"
+              rel="stylesheet"
+              type="text/css" />
+        <!-- Catppuccin themes for DaisyUI -->
+        <link href="https://cdn.jsdelivr.net/npm/@catppuccin/daisyui@2.1.1/themes.css"
+              rel="stylesheet"
+              type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <style>
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: oklch(var(--color-base-200)); }
+        ::-webkit-scrollbar-thumb { background: oklch(var(--color-base-content) / 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: oklch(var(--color-base-content) / 0.5); }
+        </style>
+    </head>
+    <body class="min-h-screen bg-base-100">
+        <!-- Theme Controller in top-right -->
+        <div class="fixed top-4 right-4 z-50">
+            <select class="select select-bordered select-sm theme-controller">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="cupcake">Cupcake</option>
+                <option value="bumblebee">Bumblebee</option>
+                <option value="emerald">Emerald</option>
+                <option value="corporate">Corporate</option>
+                <option value="synthwave">Synthwave</option>
+                <option value="retro">Retro</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="valentine">Valentine</option>
+                <option value="halloween">Halloween</option>
+                <option value="garden">Garden</option>
+                <option value="forest">Forest</option>
+                <option value="aqua">Aqua</option>
+                <option value="lofi">Lofi</option>
+                <option value="pastel">Pastel</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="wireframe">Wireframe</option>
+                <option value="black">Black</option>
+                <option value="luxury">Luxury</option>
+                <option value="dracula">Dracula</option>
+                <option value="cmyk">CMYK</option>
+                <option value="autumn">Autumn</option>
+                <option value="business">Business</option>
+                <option value="acid">Acid</option>
+                <option value="lemonade">Lemonade</option>
+                <option value="night">Night</option>
+                <option value="coffee">Coffee</option>
+                <option value="winter">Winter</option>
+                <option value="dim">Dim</option>
+                <option value="nord">Nord</option>
+                <option value="sunset">Sunset</option>
+                <option value="latte">Catppuccin Latte</option>
+                <option value="frappe">Catppuccin Frappé</option>
+                <option value="macchiato">Catppuccin Macchiato</option>
+                <option value="mocha">Catppuccin Mocha</option>
+            </select>
+        </div>
+        <!-- Drawer wrapper -->
+        <div class="drawer lg:drawer-open">
+            <input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
+            <!-- Main content -->
+            <div class="drawer-content">
+                <!-- Navbar -->
+                <div class="navbar bg-base-200 lg:hidden">
+                    <div class="flex-none">
+                        <label for="drawer-toggle" class="btn btn-square btn-ghost drawer-button">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 class="inline-block w-5 h-5 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </label>
+                    </div>
+                    <div class="flex-1">
+                        <a class="btn btn-ghost text-xl">DaisyUI Demo</a>
+                    </div>
+                </div>
+                <!-- Page content -->
+                <div class="p-4 lg:p-8">
+                    <!-- Hero Section -->
+                    <div class="hero min-h-[50vh] bg-base-200 rounded-box mb-8">
+                        <div class="hero-content text-center">
+                            <div class="max-w-md">
+                                <h1 class="text-5xl font-bold">DaisyUI 5 Demo</h1>
+                                <p class="py-6">
+                                    A comprehensive showcase of all DaisyUI components and features. Browse through categories on the left to explore different components.
+                                </p>
+                                <button class="btn btn-primary">Get Started</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Actions Section -->
+                    <section id="actions" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Actions</h2>
+                        <!-- Buttons -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Buttons</h3>
+                            <!-- Basic buttons -->
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <button class="btn">Default</button>
+                                <button class="btn btn-neutral">Neutral</button>
+                                <button class="btn btn-primary">Primary</button>
+                                <button class="btn btn-secondary">Secondary</button>
+                                <button class="btn btn-accent">Accent</button>
+                                <button class="btn btn-info">Info</button>
+                                <button class="btn btn-success">Success</button>
+                                <button class="btn btn-warning">Warning</button>
+                                <button class="btn btn-error">Error</button>
+                            </div>
+                            <!-- Button styles -->
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <button class="btn btn-outline">Outline</button>
+                                <button class="btn btn-dash btn-primary">Dash</button>
+                                <button class="btn btn-soft btn-secondary">Soft</button>
+                                <button class="btn btn-ghost">Ghost</button>
+                                <button class="btn btn-link">Link</button>
+                            </div>
+                            <!-- Button sizes -->
+                            <div class="flex flex-wrap items-center gap-2 mb-4">
+                                <button class="btn btn-xs">Extra Small</button>
+                                <button class="btn btn-sm">Small</button>
+                                <button class="btn btn-md">Medium</button>
+                                <button class="btn btn-lg">Large</button>
+                                <button class="btn btn-xl">Extra Large</button>
+                            </div>
+                            <!-- Button states -->
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <button class="btn btn-active">Active</button>
+                                <button class="btn" disabled>Disabled</button>
+                                <button class="btn">
+                                    <span class="loading loading-spinner"></span>Loading
+                                </button>
+                                <button class="btn btn-square">□</button>
+                                <button class="btn btn-circle">●</button>
+                            </div>
+                            <!-- Wide and block buttons -->
+                            <div class="space-y-2">
+                                <button class="btn btn-wide">Wide button</button>
+                                <button class="btn btn-block">Block button</button>
+                            </div>
+                        </div>
+                        <!-- Dropdowns -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Dropdowns</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <!-- Using details/summary -->
+                                <details class="dropdown">
+                                    <summary class="btn">Click dropdown</summary>
+                                    <ul class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <a>Item 2</a>
+                                        </li>
+                                        <li>
+                                            <a>Item 3</a>
+                                        </li>
+                                    </ul>
+                                </details>
+                                <!-- Hover dropdown -->
+                                <div class="dropdown dropdown-hover">
+                                    <div tabindex="0" role="button" class="btn">Hover dropdown</div>
+                                    <ul tabindex="0"
+                                        class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <a>Item 2</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Different positions -->
+                                <details class="dropdown dropdown-end">
+                                    <summary class="btn">End aligned</summary>
+                                    <ul class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <a>Item 2</a>
+                                        </li>
+                                    </ul>
+                                </details>
+                                <details class="dropdown dropdown-top">
+                                    <summary class="btn">Top dropdown</summary>
+                                    <ul class="dropdown-content menu bg-base-200 rounded-box z-[1] w-52 p-2 shadow mb-2">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <a>Item 2</a>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Modal</h3>
+                            <!-- Open modal button -->
+                            <button class="btn" onclick="my_modal_1.showModal()">Open Modal</button>
+                            <!-- Modal -->
+                            <dialog id="my_modal_1" class="modal">
+                                <div class="modal-box">
+                                    <h3 class="text-lg font-bold">Hello!</h3>
+                                    <p class="py-4">Press ESC key or click the button below to close</p>
+                                    <div class="modal-action">
+                                        <form method="dialog">
+                                            <button class="btn">Close</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <form method="dialog" class="modal-backdrop">
+                                    <button>close</button>
+                                </form>
+                            </dialog>
+                        </div>
+                        <!-- Swap -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Swap</h3>
+                            <div class="flex gap-4">
+                                <label class="swap">
+                                    <input type="checkbox" />
+                                    <div class="swap-on">ON</div>
+                                    <div class="swap-off">OFF</div>
+                                </label>
+                                <label class="swap swap-rotate">
+                                    <input type="checkbox" />
+                                    <svg class="swap-on w-8 h-8"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 24 24"
+                                         fill="currentColor">
+                                        <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0z" />
+                                    </svg>
+                                    <svg class="swap-off w-8 h-8"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 24 24"
+                                         fill="currentColor">
+                                        <path fillRule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" />
+                                    </svg>
+                                </label>
+                                <label class="swap swap-flip">
+                                    <input type="checkbox" />
+                                    <div class="swap-on">😈</div>
+                                    <div class="swap-off">😇</div>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Data Display Section -->
+                    <section id="data-display" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Data Display</h2>
+                        <!-- Accordion -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Accordion</h3>
+                            <div class="space-y-2">
+                                <div class="collapse collapse-arrow bg-base-200">
+                                    <input type="radio" name="accordion-1" checked="checked" />
+                                    <div class="collapse-title text-xl font-medium">Click to open this one and close others</div>
+                                    <div class="collapse-content">
+                                        <p>This is the content of the first accordion item. Only one item can be open at a time.</p>
+                                    </div>
+                                </div>
+                                <div class="collapse collapse-arrow bg-base-200">
+                                    <input type="radio" name="accordion-1" />
+                                    <div class="collapse-title text-xl font-medium">Click to open this one</div>
+                                    <div class="collapse-content">
+                                        <p>This is the content of the second accordion item.</p>
+                                    </div>
+                                </div>
+                                <div class="collapse collapse-arrow bg-base-200">
+                                    <input type="radio" name="accordion-1" />
+                                    <div class="collapse-title text-xl font-medium">Click to open this one</div>
+                                    <div class="collapse-content">
+                                        <p>This is the content of the third accordion item.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Avatar -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Avatar</h3>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <!-- Single avatars -->
+                                <div class="avatar">
+                                    <div class="w-24 rounded">
+                                        <img src="https://picsum.photos/100/100?random=1" alt="Avatar" />
+                                    </div>
+                                </div>
+                                <div class="avatar">
+                                    <div class="w-24 rounded-full">
+                                        <img src="https://picsum.photos/100/100?random=2" alt="Avatar" />
+                                    </div>
+                                </div>
+                                <div class="avatar online">
+                                    <div class="w-24 rounded-full">
+                                        <img src="https://picsum.photos/100/100?random=3" alt="Avatar" />
+                                    </div>
+                                </div>
+                                <div class="avatar offline">
+                                    <div class="w-24 rounded-full">
+                                        <img src="https://picsum.photos/100/100?random=4" alt="Avatar" />
+                                    </div>
+                                </div>
+                                <div class="avatar placeholder">
+                                    <div class="w-24 rounded-full bg-neutral text-neutral-content">
+                                        <span class="text-3xl">D</span>
+                                    </div>
+                                </div>
+                                <!-- Avatar group -->
+                                <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://picsum.photos/50/50?random=5" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://picsum.photos/50/50?random=6" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://picsum.photos/50/50?random=7" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar placeholder">
+                                        <div class="w-12 bg-neutral text-neutral-content">
+                                            <span>+99</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Badge -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Badge</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="badge">default</span>
+                                <span class="badge badge-neutral">neutral</span>
+                                <span class="badge badge-primary">primary</span>
+                                <span class="badge badge-secondary">secondary</span>
+                                <span class="badge badge-accent">accent</span>
+                                <span class="badge badge-info">info</span>
+                                <span class="badge badge-success">success</span>
+                                <span class="badge badge-warning">warning</span>
+                                <span class="badge badge-error">error</span>
+                                <span class="badge badge-outline">outline</span>
+                                <span class="badge badge-dash badge-primary">dash</span>
+                                <span class="badge badge-soft badge-secondary">soft</span>
+                                <span class="badge badge-ghost">ghost</span>
+                                <span class="badge badge-xs">xs</span>
+                                <span class="badge badge-sm">sm</span>
+                                <span class="badge badge-md">md</span>
+                                <span class="badge badge-lg">lg</span>
+                                <span class="badge badge-xl">xl</span>
+                            </div>
+                        </div>
+                        <!-- Card -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Card</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <!-- Basic card -->
+                                <div class="card bg-base-200 shadow-xl">
+                                    <figure>
+                                        <img src="https://picsum.photos/400/200?random=8" alt="Random" />
+                                    </figure>
+                                    <div class="card-body">
+                                        <h2 class="card-title">Basic Card</h2>
+                                        <p>This is a basic card with an image and some content.</p>
+                                        <div class="card-actions justify-end">
+                                            <button class="btn btn-primary">Action</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card with badge -->
+                                <div class="card bg-base-200 shadow-xl">
+                                    <figure>
+                                        <img src="https://picsum.photos/400/200?random=9" alt="Random" />
+                                    </figure>
+                                    <div class="card-body">
+                                        <h2 class="card-title">
+                                            Card with Badge
+                                            <div class="badge badge-secondary">NEW</div>
+                                        </h2>
+                                        <p>This card has a badge in the title.</p>
+                                        <div class="card-actions justify-end">
+                                            <div class="badge badge-outline">Fashion</div>
+                                            <div class="badge badge-outline">Products</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Side card -->
+                                <div class="card card-side bg-base-200 shadow-xl md:col-span-2 lg:col-span-1">
+                                    <figure class="w-1/3">
+                                        <img src="https://picsum.photos/200/200?random=10"
+                                             alt="Random"
+                                             class="h-full object-cover" />
+                                    </figure>
+                                    <div class="card-body">
+                                        <h2 class="card-title">Side Card</h2>
+                                        <p>Image on the side</p>
+                                        <div class="card-actions justify-end">
+                                            <button class="btn btn-primary btn-sm">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Carousel</h3>
+                            <div class="carousel w-full max-w-4xl">
+                                <div class="carousel-item w-full">
+                                    <img src="https://picsum.photos/800/400?random=11"
+                                         class="w-full"
+                                         alt="Slide 1" />
+                                </div>
+                                <div class="carousel-item w-full">
+                                    <img src="https://picsum.photos/800/400?random=12"
+                                         class="w-full"
+                                         alt="Slide 2" />
+                                </div>
+                                <div class="carousel-item w-full">
+                                    <img src="https://picsum.photos/800/400?random=13"
+                                         class="w-full"
+                                         alt="Slide 3" />
+                                </div>
+                                <div class="carousel-item w-full">
+                                    <img src="https://picsum.photos/800/400?random=14"
+                                         class="w-full"
+                                         alt="Slide 4" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Chat -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Chat</h3>
+                            <div class="w-full max-w-2xl">
+                                <div class="chat chat-start">
+                                    <div class="chat-image avatar">
+                                        <div class="w-10 rounded-full">
+                                            <img src="https://picsum.photos/50/50?random=15" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="chat-header">
+                                        User 1
+                                        <time class="text-xs opacity-50">12:45</time>
+                                    </div>
+                                    <div class="chat-bubble">Hello! How are you?</div>
+                                    <div class="chat-footer opacity-50">Delivered</div>
+                                </div>
+                                <div class="chat chat-end">
+                                    <div class="chat-image avatar">
+                                        <div class="w-10 rounded-full">
+                                            <img src="https://picsum.photos/50/50?random=16" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="chat-header">
+                                        User 2
+                                        <time class="text-xs opacity-50">12:46</time>
+                                    </div>
+                                    <div class="chat-bubble chat-bubble-primary">I'm doing great, thanks for asking!</div>
+                                    <div class="chat-footer opacity-50">Seen</div>
+                                </div>
+                                <div class="chat chat-start">
+                                    <div class="chat-bubble chat-bubble-secondary">That's wonderful to hear!</div>
+                                </div>
+                                <div class="chat chat-end">
+                                    <div class="chat-bubble chat-bubble-accent">What about you?</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Collapse -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Collapse</h3>
+                            <div class="space-y-2">
+                                <div tabindex="0" class="collapse bg-base-200">
+                                    <div class="collapse-title text-xl font-medium">Click me to show/hide content</div>
+                                    <div class="collapse-content">
+                                        <p>This is a simple collapse component that can be toggled by clicking.</p>
+                                    </div>
+                                </div>
+                                <div tabindex="0" class="collapse collapse-arrow bg-base-200">
+                                    <div class="collapse-title text-xl font-medium">With arrow indicator</div>
+                                    <div class="collapse-content">
+                                        <p>This collapse has an arrow indicator.</p>
+                                    </div>
+                                </div>
+                                <div tabindex="0" class="collapse collapse-plus bg-base-200">
+                                    <div class="collapse-title text-xl font-medium">With plus indicator</div>
+                                    <div class="collapse-content">
+                                        <p>This collapse has a plus/minus indicator.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Countdown -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Countdown</h3>
+                            <div class="flex gap-5 items-center">
+                                <span class="countdown font-mono text-6xl">
+                                    <span style="--value:15;"></span>
+                                </span>
+                                <span class="countdown font-mono text-6xl">
+                                    <span style="--value:10;"></span>
+                                </span>
+                                <span class="countdown font-mono text-6xl">
+                                    <span style="--value:24;"></span>
+                                </span>
+                                <span class="countdown font-mono text-6xl">
+                                    <span style="--value:53;"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Diff -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Diff</h3>
+                            <figure class="diff aspect-[16/9] max-w-md">
+                                <div class="diff-item-1">
+                                    <img src="https://picsum.photos/400/300?random=17" alt="daisy" />
+                                </div>
+                                <div class="diff-item-2">
+                                    <img src="https://picsum.photos/400/300?random=18" alt="daisy" />
+                                </div>
+                                <div class="diff-resizer"></div>
+                            </figure>
+                        </div>
+                        <!-- Kbd -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Keyboard</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <kbd class="kbd">A</kbd>
+                                <kbd class="kbd">B</kbd>
+                                <kbd class="kbd">C</kbd>
+                                <kbd class="kbd kbd-xs">xs</kbd>
+                                <kbd class="kbd kbd-sm">sm</kbd>
+                                <kbd class="kbd kbd-md">md</kbd>
+                                <kbd class="kbd kbd-lg">lg</kbd>
+                                <kbd class="kbd kbd-xl">xl</kbd>
+                                <kbd class="kbd">⌘</kbd>
+                                <kbd class="kbd">⌥</kbd>
+                                <kbd class="kbd">⇧</kbd>
+                                <div class="flex gap-1">
+                                    <kbd class="kbd">ctrl</kbd>
+                                    <kbd class="kbd">+</kbd>
+                                    <kbd class="kbd">shift</kbd>
+                                    <kbd class="kbd">+</kbd>
+                                    <kbd class="kbd">del</kbd>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Stat -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Stats</h3>
+                            <div class="stats shadow">
+                                <div class="stat">
+                                    <div class="stat-figure text-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             class="inline-block w-8 h-8 stroke-current">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div class="stat-title">Total Likes</div>
+                                    <div class="stat-value text-primary">25.6K</div>
+                                    <div class="stat-desc">21% more than last month</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-figure text-secondary">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             class="inline-block w-8 h-8 stroke-current">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="stat-title">Page Views</div>
+                                    <div class="stat-value text-secondary">2.6M</div>
+                                    <div class="stat-desc">21% more than last month</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-figure text-secondary">
+                                        <div class="avatar online">
+                                            <div class="w-16 rounded-full">
+                                                <img src="https://picsum.photos/100/100?random=19" alt="Avatar" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-value">86%</div>
+                                    <div class="stat-title">Tasks done</div>
+                                    <div class="stat-desc text-secondary">31 tasks remaining</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Table -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Table</h3>
+                            <div class="overflow-x-auto">
+                                <table class="table table-zebra">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Job</th>
+                                            <th>Favorite Color</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>1</th>
+                                            <td>Cy Ganderton</td>
+                                            <td>Quality Control Specialist</td>
+                                            <td>Blue</td>
+                                        </tr>
+                                        <tr>
+                                            <th>2</th>
+                                            <td>Hart Hagerty</td>
+                                            <td>Desktop Support Technician</td>
+                                            <td>Purple</td>
+                                        </tr>
+                                        <tr>
+                                            <th>3</th>
+                                            <td>Brice Swyre</td>
+                                            <td>Tax Accountant</td>
+                                            <td>Red</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Timeline -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Timeline</h3>
+                            <ul class="timeline timeline-vertical">
+                                <li>
+                                    <div class="timeline-start">1984</div>
+                                    <div class="timeline-middle">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="w-5 h-5">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="timeline-end timeline-box">First Macintosh computer</div>
+                                    <hr />
+                                </li>
+                                <li>
+                                    <hr />
+                                    <div class="timeline-start">1998</div>
+                                    <div class="timeline-middle">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="w-5 h-5">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="timeline-end timeline-box">iMac</div>
+                                    <hr />
+                                </li>
+                                <li>
+                                    <hr />
+                                    <div class="timeline-start">2001</div>
+                                    <div class="timeline-middle">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="w-5 h-5">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="timeline-end timeline-box">iPod</div>
+                                    <hr />
+                                </li>
+                                <li>
+                                    <hr />
+                                    <div class="timeline-start">2007</div>
+                                    <div class="timeline-middle">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="w-5 h-5">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="timeline-end timeline-box">iPhone</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    <!-- Navigation Section -->
+                    <section id="navigation" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Navigation</h2>
+                        <!-- Breadcrumbs -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Breadcrumbs</h3>
+                            <div class="breadcrumbs">
+                                <ul>
+                                    <li>
+                                        <a>Home</a>
+                                    </li>
+                                    <li>
+                                        <a>Documents</a>
+                                    </li>
+                                    <li>Add Document</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Dock -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Dock</h3>
+                            <div class="relative h-32 bg-base-200 rounded-box">
+                                <div class="dock dock-bottom">
+                                    <button class="dock-active">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-5 w-5"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                        </svg>
+                                        <span class="dock-label">Home</span>
+                                    </button>
+                                    <button>
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-5 w-5"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        <span class="dock-label">Search</span>
+                                    </button>
+                                    <button>
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-5 w-5"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span class="dock-label">Settings</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Menu -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Menu</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Vertical menu -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-2">Vertical Menu</h4>
+                                    <ul class="menu bg-base-200 w-56 rounded-box">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <details open>
+                                                <summary>Parent</summary>
+                                                <ul>
+                                                    <li>
+                                                        <a>Submenu 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a>Submenu 2</a>
+                                                    </li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <a>Item 3</a>
+                                        </li>
+                                        <li class="menu-title">Category</li>
+                                        <li>
+                                            <a>Item 4</a>
+                                        </li>
+                                        <li class="disabled">
+                                            <a>Disabled item</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Horizontal menu -->
+                                <div>
+                                    <h4 class="text-lg font-medium mb-2">Horizontal Menu</h4>
+                                    <ul class="menu menu-horizontal bg-base-200 rounded-box">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Parent</summary>
+                                                <ul class="p-2 bg-base-200 rounded-box">
+                                                    <li>
+                                                        <a>Submenu 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a>Submenu 2</a>
+                                                    </li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <a>Item 3</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Navbar -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Navbar</h3>
+                            <div class="navbar bg-base-200 rounded-box">
+                                <div class="navbar-start">
+                                    <div class="dropdown">
+                                        <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-5 w-5"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                                            </svg>
+                                        </div>
+                                        <ul tabindex="0"
+                                            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                                            <li>
+                                                <a>Item 1</a>
+                                            </li>
+                                            <li>
+                                                <a>Parent</a>
+                                                <ul class="p-2">
+                                                    <li>
+                                                        <a>Submenu 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a>Submenu 2</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a>Item 3</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <a class="btn btn-ghost text-xl">daisyUI</a>
+                                </div>
+                                <div class="navbar-center hidden lg:flex">
+                                    <ul class="menu menu-horizontal px-1">
+                                        <li>
+                                            <a>Item 1</a>
+                                        </li>
+                                        <li>
+                                            <details>
+                                                <summary>Parent</summary>
+                                                <ul class="p-2">
+                                                    <li>
+                                                        <a>Submenu 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a>Submenu 2</a>
+                                                    </li>
+                                                </ul>
+                                            </details>
+                                        </li>
+                                        <li>
+                                            <a>Item 3</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="navbar-end">
+                                    <a class="btn">Button</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pagination -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Pagination</h3>
+                            <div class="join">
+                                <button class="join-item btn">«</button>
+                                <button class="join-item btn">Page 1</button>
+                                <button class="join-item btn btn-active">Page 2</button>
+                                <button class="join-item btn">Page 3</button>
+                                <button class="join-item btn">»</button>
+                            </div>
+                        </div>
+                        <!-- Steps -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Steps</h3>
+                            <ul class="steps w-full">
+                                <li class="step step-primary">Register</li>
+                                <li class="step step-primary">Choose plan</li>
+                                <li class="step">Purchase</li>
+                                <li class="step">Receive Product</li>
+                            </ul>
+                        </div>
+                        <!-- Tabs -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Tabs</h3>
+                            <div role="tablist" class="tabs tabs-box mb-4">
+                                <input type="radio"
+                                       name="my_tabs_1"
+                                       role="tab"
+                                       class="tab"
+                                       aria-label="Tab 1"
+                                       checked />
+                                <div role="tabpanel" class="tab-content p-4">Tab content 1</div>
+                                <input type="radio"
+                                       name="my_tabs_1"
+                                       role="tab"
+                                       class="tab"
+                                       aria-label="Tab 2" />
+                                <div role="tabpanel" class="tab-content p-4">Tab content 2</div>
+                                <input type="radio"
+                                       name="my_tabs_1"
+                                       role="tab"
+                                       class="tab"
+                                       aria-label="Tab 3" />
+                                <div role="tabpanel" class="tab-content p-4">Tab content 3</div>
+                            </div>
+                            <div role="tablist" class="tabs tabs-border">
+                                <button role="tab" class="tab">Bordered</button>
+                                <button role="tab" class="tab tab-active">Active</button>
+                                <button role="tab" class="tab">Tab</button>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Feedback Section -->
+                    <section id="feedback" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Feedback</h2>
+                        <!-- Alert -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Alert</h3>
+                            <div class="space-y-2">
+                                <div role="alert" class="alert">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         class="stroke-info h-6 w-6 shrink-0">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                    <span>Default alert message</span>
+                                </div>
+                                <div role="alert" class="alert alert-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         class="stroke-current h-6 w-6 shrink-0">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                    <span>Info alert! Click here for more info.</span>
+                                </div>
+                                <div role="alert" class="alert alert-success">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="stroke-current h-6 w-6 shrink-0"
+                                         fill="none"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Your purchase has been confirmed!</span>
+                                </div>
+                                <div role="alert" class="alert alert-warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="stroke-current h-6 w-6 shrink-0"
+                                         fill="none"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <span>Warning: Invalid email address!</span>
+                                </div>
+                                <div role="alert" class="alert alert-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="stroke-current h-6 w-6 shrink-0"
+                                         fill="none"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Error! Task failed successfully.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Loading -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Loading</h3>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <span class="loading loading-spinner loading-xs"></span>
+                                <span class="loading loading-spinner loading-sm"></span>
+                                <span class="loading loading-spinner loading-md"></span>
+                                <span class="loading loading-spinner loading-lg"></span>
+                                <span class="loading loading-spinner loading-xl"></span>
+                                <span class="loading loading-dots loading-lg"></span>
+                                <span class="loading loading-ring loading-lg"></span>
+                                <span class="loading loading-ball loading-lg"></span>
+                                <span class="loading loading-bars loading-lg"></span>
+                                <span class="loading loading-infinity loading-lg"></span>
+                            </div>
+                        </div>
+                        <!-- Progress -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Progress</h3>
+                            <div class="space-y-2">
+                                <progress class="progress w-56" value="0" max="100"></progress>
+                                <progress class="progress progress-primary w-56" value="10" max="100"></progress>
+                                <progress class="progress progress-secondary w-56" value="25" max="100"></progress>
+                                <progress class="progress progress-accent w-56" value="40" max="100"></progress>
+                                <progress class="progress progress-info w-56" value="55" max="100"></progress>
+                                <progress class="progress progress-success w-56" value="70" max="100"></progress>
+                                <progress class="progress progress-warning w-56" value="85" max="100"></progress>
+                                <progress class="progress progress-error w-56" value="100" max="100"></progress>
+                            </div>
+                        </div>
+                        <!-- Radial Progress -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Radial Progress</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="radial-progress" style="--value:0;" role="progressbar">0%</div>
+                                <div class="radial-progress" style="--value:25;" role="progressbar">25%</div>
+                                <div class="radial-progress" style="--value:50;" role="progressbar">50%</div>
+                                <div class="radial-progress" style="--value:75;" role="progressbar">75%</div>
+                                <div class="radial-progress" style="--value:100;" role="progressbar">100%</div>
+                                <div class="radial-progress text-primary"
+                                     style="--value:70;
+                                            --size:8rem;
+                                            --thickness:2px"
+                                     role="progressbar">70%</div>
+                                <div class="radial-progress text-secondary"
+                                     style="--value:85;
+                                            --size:6rem;
+                                            --thickness:1rem"
+                                     role="progressbar">85%</div>
+                            </div>
+                        </div>
+                        <!-- Skeleton -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Skeleton</h3>
+                            <div class="space-y-4">
+                                <div class="skeleton h-4 w-full"></div>
+                                <div class="skeleton h-4 w-28"></div>
+                                <div class="flex gap-4">
+                                    <div class="skeleton h-32 w-32"></div>
+                                    <div class="flex-1 space-y-4">
+                                        <div class="skeleton h-4 w-full"></div>
+                                        <div class="skeleton h-4 w-full"></div>
+                                        <div class="skeleton h-4 w-1/2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Toast -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Toast</h3>
+                            <div class="relative h-64 bg-base-200 rounded-box">
+                                <div class="toast toast-end">
+                                    <div class="alert alert-info">
+                                        <span>New message arrived.</span>
+                                    </div>
+                                    <div class="alert alert-success">
+                                        <span>Message sent successfully.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Data Input Section -->
+                    <section id="data-input" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Data Input</h2>
+                        <!-- Checkbox -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Checkbox</h3>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <input type="checkbox" class="checkbox" />
+                                <input type="checkbox" class="checkbox checkbox-primary" checked />
+                                <input type="checkbox" class="checkbox checkbox-secondary" checked />
+                                <input type="checkbox" class="checkbox checkbox-accent" checked />
+                                <input type="checkbox" class="checkbox checkbox-success" checked />
+                                <input type="checkbox" class="checkbox checkbox-warning" checked />
+                                <input type="checkbox" class="checkbox checkbox-info" checked />
+                                <input type="checkbox" class="checkbox checkbox-error" checked />
+                                <input type="checkbox" class="checkbox checkbox-xs" />
+                                <input type="checkbox" class="checkbox checkbox-sm" />
+                                <input type="checkbox" class="checkbox checkbox-md" />
+                                <input type="checkbox" class="checkbox checkbox-lg" />
+                                <input type="checkbox" class="checkbox checkbox-xl" />
+                            </div>
+                        </div>
+                        <!-- File Input -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">File Input</h3>
+                            <div class="space-y-2">
+                                <input type="file" class="file-input w-full max-w-xs" />
+                                <input type="file" class="file-input file-input-primary w-full max-w-xs" />
+                                <input type="file" class="file-input file-input-secondary w-full max-w-xs" />
+                                <input type="file" class="file-input file-input-accent w-full max-w-xs" />
+                                <input type="file" class="file-input file-input-ghost w-full max-w-xs" />
+                            </div>
+                        </div>
+                        <!-- Fieldset -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Fieldset</h3>
+                            <fieldset class="fieldset">
+                                <legend class="fieldset-legend">Personal Information</legend>
+                                <label class="input">
+                                    <span class="label">Name</span>
+                                    <input type="text" placeholder="John Doe" />
+                                </label>
+                                <label class="input">
+                                    <span class="label">Email</span>
+                                    <input type="email" placeholder="john@example.com" />
+                                </label>
+                                <p class="label">Please provide your personal information</p>
+                            </fieldset>
+                        </div>
+                        <!-- Input -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Input</h3>
+                            <div class="space-y-2">
+                                <input type="text" placeholder="Default input" class="input w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Primary input"
+                                       class="input input-primary w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Secondary input"
+                                       class="input input-secondary w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Accent input"
+                                       class="input input-accent w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Info input"
+                                       class="input input-info w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Success input"
+                                       class="input input-success w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Warning input"
+                                       class="input input-warning w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Error input"
+                                       class="input input-error w-full max-w-xs" />
+                                <input type="text"
+                                       placeholder="Ghost input"
+                                       class="input input-ghost w-full max-w-xs" />
+                            </div>
+                        </div>
+                        <!-- Label -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Label</h3>
+                            <div class="space-y-4">
+                                <label class="input">
+                                    <span class="label">Username</span>
+                                    <input type="text" placeholder="Enter username" />
+                                </label>
+                                <label class="floating-label">
+                                    <input type="text" placeholder=" " class="input" />
+                                    <span>Floating Label</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Radio -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Radio</h3>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <input type="radio" name="radio-1" class="radio" checked />
+                                <input type="radio" name="radio-1" class="radio" />
+                                <input type="radio" name="radio-2" class="radio radio-primary" />
+                                <input type="radio" name="radio-2" class="radio radio-secondary" />
+                                <input type="radio" name="radio-2" class="radio radio-accent" />
+                                <input type="radio" name="radio-2" class="radio radio-success" />
+                                <input type="radio" name="radio-2" class="radio radio-warning" />
+                                <input type="radio" name="radio-2" class="radio radio-info" />
+                                <input type="radio" name="radio-2" class="radio radio-error" />
+                            </div>
+                        </div>
+                        <!-- Range -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Range</h3>
+                            <div class="space-y-2">
+                                <input type="range" min="0" max="100" value="40" class="range" />
+                                <input type="range" min="0" max="100" value="50" class="range range-primary" />
+                                <input type="range"
+                                       min="0"
+                                       max="100"
+                                       value="60"
+                                       class="range range-secondary" />
+                                <input type="range" min="0" max="100" value="70" class="range range-accent" />
+                                <input type="range" min="0" max="100" value="80" class="range range-success" />
+                            </div>
+                        </div>
+                        <!-- Rating -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Rating</h3>
+                            <div class="space-y-2">
+                                <div class="rating">
+                                    <input type="radio" name="rating-1" class="mask mask-star" />
+                                    <input type="radio" name="rating-1" class="mask mask-star" />
+                                    <input type="radio" name="rating-1" class="mask mask-star" checked />
+                                    <input type="radio" name="rating-1" class="mask mask-star" />
+                                    <input type="radio" name="rating-1" class="mask mask-star" />
+                                </div>
+                                <div class="rating rating-half">
+                                    <input type="radio" name="rating-2" class="rating-hidden" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-1" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-2" />
+                                    <input type="radio"
+                                           name="rating-2"
+                                           class="mask mask-star-2 mask-half-1"
+                                           checked />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-2" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-1" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-2" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-1" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-2" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-1" />
+                                    <input type="radio" name="rating-2" class="mask mask-star-2 mask-half-2" />
+                                </div>
+                                <div class="rating gap-1">
+                                    <input type="radio" name="rating-3" class="mask mask-heart bg-red-400" />
+                                    <input type="radio" name="rating-3" class="mask mask-heart bg-orange-400" />
+                                    <input type="radio" name="rating-3" class="mask mask-heart bg-yellow-400" />
+                                    <input type="radio"
+                                           name="rating-3"
+                                           class="mask mask-heart bg-lime-400"
+                                           checked />
+                                    <input type="radio" name="rating-3" class="mask mask-heart bg-green-400" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Select -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Select</h3>
+                            <div class="space-y-2">
+                                <select class="select w-full max-w-xs">
+                                    <option disabled selected>Pick your favorite Simpson</option>
+                                    <option>Homer</option>
+                                    <option>Marge</option>
+                                    <option>Bart</option>
+                                    <option>Lisa</option>
+                                    <option>Maggie</option>
+                                </select>
+                                <select class="select select-primary w-full max-w-xs">
+                                    <option disabled selected>What is the best TV show?</option>
+                                    <option>Game of Thrones</option>
+                                    <option>Lost</option>
+                                    <option>Breaking Bad</option>
+                                    <option>Walking Dead</option>
+                                </select>
+                                <select class="select select-ghost w-full max-w-xs">
+                                    <option disabled selected>Pick your favorite language</option>
+                                    <option>Java</option>
+                                    <option>Go</option>
+                                    <option>C</option>
+                                    <option>C#</option>
+                                    <option>C++</option>
+                                    <option>Rust</option>
+                                    <option>JavaScript</option>
+                                    <option>Python</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Textarea -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Textarea</h3>
+                            <div class="space-y-2">
+                                <textarea class="textarea" placeholder="Bio"></textarea>
+                                <textarea class="textarea textarea-primary" placeholder="Primary"></textarea>
+                                <textarea class="textarea textarea-secondary" placeholder="Secondary"></textarea>
+                                <textarea class="textarea textarea-accent" placeholder="Accent"></textarea>
+                                <textarea class="textarea textarea-info" placeholder="Info"></textarea>
+                                <textarea class="textarea textarea-success" placeholder="Success"></textarea>
+                                <textarea class="textarea textarea-warning" placeholder="Warning"></textarea>
+                                <textarea class="textarea textarea-error" placeholder="Error"></textarea>
+                            </div>
+                        </div>
+                        <!-- Toggle -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Toggle</h3>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <input type="checkbox" class="toggle" />
+                                <input type="checkbox" class="toggle toggle-primary" checked />
+                                <input type="checkbox" class="toggle toggle-secondary" checked />
+                                <input type="checkbox" class="toggle toggle-accent" checked />
+                                <input type="checkbox" class="toggle toggle-success" checked />
+                                <input type="checkbox" class="toggle toggle-warning" checked />
+                                <input type="checkbox" class="toggle toggle-info" checked />
+                                <input type="checkbox" class="toggle toggle-error" checked />
+                                <input type="checkbox" class="toggle toggle-xs" />
+                                <input type="checkbox" class="toggle toggle-sm" />
+                                <input type="checkbox" class="toggle toggle-md" />
+                                <input type="checkbox" class="toggle toggle-lg" />
+                                <input type="checkbox" class="toggle toggle-xl" />
+                            </div>
+                        </div>
+                        <!-- Validator -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Validator</h3>
+                            <div class="space-y-2">
+                                <input type="email" class="input validator" placeholder="Email" required />
+                                <p class="validator-hint text-error">Please enter a valid email</p>
+                                <input type="text"
+                                       class="input validator"
+                                       placeholder="Username"
+                                       pattern="[a-zA-Z0-9]+"
+                                       required />
+                                <p class="validator-hint text-error">Username must be alphanumeric</p>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Layout Section -->
+                    <section id="layout" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Layout</h2>
+                        <!-- Divider -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Divider</h3>
+                            <div>
+                                <div class="flex w-full">
+                                    <div class="grid h-20 flex-grow card bg-base-300 rounded-box place-items-center">content</div>
+                                    <div class="divider divider-horizontal">OR</div>
+                                    <div class="grid h-20 flex-grow card bg-base-300 rounded-box place-items-center">content</div>
+                                </div>
+                                <div class="flex flex-col w-full">
+                                    <div class="grid h-20 card bg-base-300 rounded-box place-items-center">content</div>
+                                    <div class="divider">OR</div>
+                                    <div class="grid h-20 card bg-base-300 rounded-box place-items-center">content</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Footer -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Footer</h3>
+                            <footer class="footer bg-base-200 text-base-content p-10 rounded-box">
+                                <nav>
+                                    <h6 class="footer-title">Services</h6>
+                                    <a class="link link-hover">Branding</a>
+                                    <a class="link link-hover">Design</a>
+                                    <a class="link link-hover">Marketing</a>
+                                    <a class="link link-hover">Advertisement</a>
+                                </nav>
+                                <nav>
+                                    <h6 class="footer-title">Company</h6>
+                                    <a class="link link-hover">About us</a>
+                                    <a class="link link-hover">Contact</a>
+                                    <a class="link link-hover">Jobs</a>
+                                    <a class="link link-hover">Press kit</a>
+                                </nav>
+                                <nav>
+                                    <h6 class="footer-title">Legal</h6>
+                                    <a class="link link-hover">Terms of use</a>
+                                    <a class="link link-hover">Privacy policy</a>
+                                    <a class="link link-hover">Cookie policy</a>
+                                </nav>
+                                <form>
+                                    <h6 class="footer-title">Newsletter</h6>
+                                    <fieldset class="form-control w-80">
+                                        <label class="label">
+                                            <span class="label-text">Enter your email address</span>
+                                        </label>
+                                        <div class="join">
+                                            <input type="text"
+                                                   placeholder="username@site.com"
+                                                   class="input input-bordered join-item" />
+                                            <button class="btn btn-primary join-item">Subscribe</button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </footer>
+                        </div>
+                        <!-- Indicator -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Indicator</h3>
+                            <div class="flex flex-wrap gap-8">
+                                <div class="indicator">
+                                    <span class="indicator-item badge badge-secondary">99+</span>
+                                    <button class="btn">Inbox</button>
+                                </div>
+                                <div class="indicator">
+                                    <span class="indicator-item badge badge-primary">new</span>
+                                    <button class="btn">Inbox</button>
+                                </div>
+                                <div class="indicator">
+                                    <span class="indicator-item indicator-start badge badge-secondary">99+</span>
+                                    <button class="btn">Inbox</button>
+                                </div>
+                                <div class="indicator">
+                                    <span class="indicator-item indicator-center badge badge-secondary">99+</span>
+                                    <button class="btn">Inbox</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Join -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Join</h3>
+                            <div class="space-y-4">
+                                <div class="join">
+                                    <button class="btn join-item">Button</button>
+                                    <button class="btn join-item">Button</button>
+                                    <button class="btn join-item">Button</button>
+                                </div>
+                                <div class="join join-vertical">
+                                    <button class="btn join-item">Button</button>
+                                    <button class="btn join-item">Button</button>
+                                    <button class="btn join-item">Button</button>
+                                </div>
+                                <div class="join">
+                                    <input class="input input-bordered join-item" placeholder="Email" />
+                                    <button class="btn join-item">Subscribe</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- List -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">List</h3>
+                            <ul class="list bg-base-200 rounded-box w-full max-w-md">
+                                <li class="list-row">
+                                    <div class="avatar">
+                                        <div class="w-12 rounded-full">
+                                            <img src="https://picsum.photos/50/50?random=20" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Hart Hagerty</div>
+                                        <div class="text-sm opacity-50">United States</div>
+                                    </div>
+                                    <button class="btn btn-sm">View</button>
+                                </li>
+                                <li class="list-row">
+                                    <div class="avatar">
+                                        <div class="w-12 rounded-full">
+                                            <img src="https://picsum.photos/50/50?random=21" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Brice Swyre</div>
+                                        <div class="text-sm opacity-50">China</div>
+                                    </div>
+                                    <button class="btn btn-sm">View</button>
+                                </li>
+                                <li class="list-row">
+                                    <div class="avatar">
+                                        <div class="w-12 rounded-full">
+                                            <img src="https://picsum.photos/50/50?random=22" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Marjy Ferencz</div>
+                                        <div class="text-sm opacity-50">Russia</div>
+                                    </div>
+                                    <button class="btn btn-sm">View</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Stack -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Stack</h3>
+                            <div class="stack w-32">
+                                <img src="https://picsum.photos/200/200?random=23"
+                                     alt="Image 1"
+                                     class="rounded" />
+                                <img src="https://picsum.photos/200/200?random=24"
+                                     alt="Image 2"
+                                     class="rounded" />
+                                <img src="https://picsum.photos/200/200?random=25"
+                                     alt="Image 3"
+                                     class="rounded" />
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Mockups Section -->
+                    <section id="mockups" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Mockups</h2>
+                        <!-- Browser Mockup -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Browser Mockup</h3>
+                            <div class="mockup-browser bg-base-300 max-w-2xl">
+                                <div class="mockup-browser-toolbar">
+                                    <div class="input">https://daisyui.com</div>
+                                </div>
+                                <div class="bg-base-200 px-4 py-16 text-center">Hello World!</div>
+                            </div>
+                        </div>
+                        <!-- Code Mockup -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Code Mockup</h3>
+                            <div class="mockup-code max-w-2xl">
+                                <pre data-prefix="$"><code>npm i daisyui</code></pre>
+                                <pre data-prefix=">" class="text-warning"><code>installing...</code></pre>
+                                <pre data-prefix=">" class="text-success"><code>Done!</code></pre>
+                            </div>
+                        </div>
+                        <!-- Phone Mockup -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Phone Mockup</h3>
+                            <div class="mockup-phone">
+                                <div class="mockup-phone-camera"></div>
+                                <div class="mockup-phone-display">
+                                    <div class="artboard artboard-demo phone-1 bg-base-200 text-center p-4">
+                                        <p>Hi.</p>
+                                        <p>This is a phone mockup!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Window Mockup -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Window Mockup</h3>
+                            <div class="mockup-window bg-base-300 max-w-2xl">
+                                <div class="bg-base-200 px-4 py-16 text-center">Hello World!</div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Effects Section -->
+                    <section id="effects" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Effects</h2>
+                        <!-- Glass Effect -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Glass Effect</h3>
+                            <div class="relative p-8 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-box">
+                                <!-- Background with glass cards -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="card glass shadow-xl">
+                                        <div class="card-body">
+                                            <h2 class="card-title">Glass Card</h2>
+                                            <p>This card has a glass effect that creates a frosted glass appearance.</p>
+                                            <div class="card-actions justify-end">
+                                                <button class="btn glass">Glass Button</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card glass shadow-xl">
+                                        <figure>
+                                            <img src="https://picsum.photos/400/200?random=40" alt="Glass" />
+                                        </figure>
+                                        <div class="card-body">
+                                            <h2 class="card-title">Image Glass Card</h2>
+                                            <p>Glass effect works great with images too.</p>
+                                        </div>
+                                    </div>
+                                    <div class="stats glass shadow">
+                                        <div class="stat">
+                                            <div class="stat-title">Glass Stats</div>
+                                            <div class="stat-value">31K</div>
+                                            <div class="stat-desc">Transparent</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Glass modals and overlays -->
+                                <div class="mt-8 flex flex-wrap gap-4">
+                                    <div class="alert glass">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             class="stroke-current shrink-0 w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                        <span>Glass alert with transparency!</span>
+                                    </div>
+                                    <div class="navbar glass rounded-box w-64">
+                                        <a class="btn btn-ghost text-xl">Glass Navbar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 3D Effect -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">3D Effect</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="card shadow-3d bg-base-200">
+                                    <div class="card-body">
+                                        <h2 class="card-title">3D Card</h2>
+                                        <p>This card has enhanced depth with 3D shadows.</p>
+                                        <div class="card-actions justify-end">
+                                            <button class="btn shadow-3d btn-primary">3D Button</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="stats shadow-3d bg-base-200">
+                                    <div class="stat">
+                                        <div class="stat-figure text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 class="inline-block w-8 h-8 stroke-current">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div class="stat-title">3D Stats</div>
+                                        <div class="stat-value text-primary">3D</div>
+                                        <div class="stat-desc">Enhanced depth</div>
+                                    </div>
+                                </div>
+                                <div class="mockup-window shadow-3d bg-base-300">
+                                    <div class="bg-base-200 px-4 py-8 text-center">3D Window!</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-4 mt-4">
+                                <button class="btn shadow-3d btn-secondary">3D Secondary</button>
+                                <button class="btn shadow-3d btn-accent">3D Accent</button>
+                                <div class="badge shadow-3d badge-lg">3D Badge</div>
+                                <div class="avatar shadow-3d">
+                                    <div class="w-12 rounded-full">
+                                        <img src="https://picsum.photos/50/50?random=41" alt="3D Avatar" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Noise Effect -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Noise Effect</h3>
+                            <div class="space-y-4">
+                                <div class="alert alert-info noise">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         class="stroke-current shrink-0 w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                    <span>This alert has a subtle noise texture overlay for added visual interest.</span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="card noise bg-base-200 shadow-xl">
+                                        <div class="card-body">
+                                            <h2 class="card-title">Noise Texture Card</h2>
+                                            <p>The noise effect adds a subtle film grain texture that gives depth and character to surfaces.</p>
+                                            <div class="card-actions justify-end">
+                                                <button class="btn noise btn-primary">Noise Button</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hero noise bg-base-300 rounded-box">
+                                        <div class="hero-content text-center">
+                                            <div class="max-w-md">
+                                                <h1 class="text-3xl font-bold">Noise Hero</h1>
+                                                <p class="py-4">Perfect for creating vintage or textured aesthetics.</p>
+                                                <button class="btn noise btn-accent">Get Started</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="navbar noise bg-base-200 rounded-box">
+                                    <div class="flex-1">
+                                        <a class="btn btn-ghost text-xl">Noise Navbar</a>
+                                    </div>
+                                    <div class="flex-none">
+                                        <button class="btn noise btn-square btn-ghost">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-5 w-5"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Combined Effects -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Combined Effects</h3>
+                            <div class="relative p-8 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 rounded-box">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="card glass shadow-3d noise">
+                                        <div class="card-body">
+                                            <h2 class="card-title">All Effects Combined</h2>
+                                            <p>This card combines glass transparency, 3D depth, and noise texture for a rich visual experience.</p>
+                                            <div class="card-actions justify-end">
+                                                <button class="btn glass shadow-3d noise btn-primary">Triple Effect</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="stats glass shadow-3d noise">
+                                        <div class="stat">
+                                            <div class="stat-figure text-secondary">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     fill="none"
+                                                     viewBox="0 0 24 24"
+                                                     class="inline-block w-8 h-8 stroke-current">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="stat-title">Power Level</div>
+                                            <div class="stat-value text-secondary">9000+</div>
+                                            <div class="stat-desc">Over nine thousand!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tooltip -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Tooltip</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="tooltip" data-tip="This is a tooltip!">
+                                    <button class="btn">Hover me</button>
+                                </div>
+                                <div class="tooltip tooltip-open" data-tip="Always visible">
+                                    <button class="btn">Always open</button>
+                                </div>
+                                <div class="tooltip tooltip-top" data-tip="Top tooltip">
+                                    <button class="btn">Top</button>
+                                </div>
+                                <div class="tooltip tooltip-bottom" data-tip="Bottom tooltip">
+                                    <button class="btn">Bottom</button>
+                                </div>
+                                <div class="tooltip tooltip-left" data-tip="Left tooltip">
+                                    <button class="btn">Left</button>
+                                </div>
+                                <div class="tooltip tooltip-right" data-tip="Right tooltip">
+                                    <button class="btn">Right</button>
+                                </div>
+                                <div class="tooltip tooltip-primary" data-tip="Primary colored tooltip">
+                                    <button class="btn btn-primary">Primary</button>
+                                </div>
+                                <div class="tooltip tooltip-secondary"
+                                     data-tip="Secondary colored tooltip">
+                                    <button class="btn btn-secondary">Secondary</button>
+                                </div>
+                                <div class="tooltip tooltip-accent" data-tip="Accent colored tooltip">
+                                    <button class="btn btn-accent">Accent</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bottom Navigation -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Bottom Navigation</h3>
+                            <div class="btm-nav bg-base-200 rounded-box">
+                                <button class="active">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                    <span class="btm-nav-label">Home</span>
+                                </button>
+                                <button>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <span class="btm-nav-label">Search</span>
+                                </button>
+                                <button>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5l-5-5h5v-5a7.5 7.5 0 0 1 15 0v5z" />
+                                    </svg>
+                                    <span class="btm-nav-label">Downloads</span>
+                                </button>
+                                <button>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span class="btm-nav-label">Profile</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Artboard -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Artboard</h3>
+                            <div class="flex gap-4 flex-wrap">
+                                <div class="artboard artboard-demo">320×568</div>
+                                <div class="artboard artboard-demo phone-1">375×812</div>
+                                <div class="artboard artboard-demo phone-2">414×896</div>
+                                <div class="artboard artboard-demo phone-3">360×640</div>
+                                <div class="artboard artboard-demo phone-4">375×667</div>
+                                <div class="artboard artboard-demo phone-5">414×736</div>
+                                <div class="artboard artboard-demo phone-6">320×568</div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Utilities Section -->
+                    <section id="utilities" class="mb-16">
+                        <h2 class="text-3xl font-bold mb-8">Utilities</h2>
+                        <!-- Mask -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Mask</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <img class="mask mask-squircle w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=26"
+                                     alt="Squircle" />
+                                <img class="mask mask-heart w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=27"
+                                     alt="Heart" />
+                                <img class="mask mask-hexagon w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=28"
+                                     alt="Hexagon" />
+                                <img class="mask mask-hexagon-2 w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=29"
+                                     alt="Hexagon 2" />
+                                <img class="mask mask-decagon w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=30"
+                                     alt="Decagon" />
+                                <img class="mask mask-pentagon w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=31"
+                                     alt="Pentagon" />
+                                <img class="mask mask-diamond w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=32"
+                                     alt="Diamond" />
+                                <img class="mask mask-square w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=33"
+                                     alt="Square" />
+                                <img class="mask mask-circle w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=34"
+                                     alt="Circle" />
+                                <img class="mask mask-star w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=35"
+                                     alt="Star" />
+                                <img class="mask mask-star-2 w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=36"
+                                     alt="Star 2" />
+                                <img class="mask mask-triangle w-24 h-24"
+                                     src="https://picsum.photos/100/100?random=37"
+                                     alt="Triangle" />
+                            </div>
+                        </div>
+                        <!-- Link -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Link</h3>
+                            <div class="space-x-4">
+                                <a class="link">Default link</a>
+                                <a class="link link-hover">Hover link</a>
+                                <a class="link link-primary">Primary link</a>
+                                <a class="link link-secondary">Secondary link</a>
+                                <a class="link link-accent">Accent link</a>
+                                <a class="link link-success">Success link</a>
+                                <a class="link link-info">Info link</a>
+                                <a class="link link-warning">Warning link</a>
+                                <a class="link link-error">Error link</a>
+                            </div>
+                        </div>
+                        <!-- Status -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Status (Invisible indicator)</h3>
+                            <div class="flex items-center gap-4">
+                                <span>Online status:</span>
+                                <span class="status status-success"></span>
+                                <span>Offline status:</span>
+                                <span class="status status-error"></span>
+                                <span>Busy status:</span>
+                                <span class="status status-warning"></span>
+                            </div>
+                        </div>
+                        <!-- Filter -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold mb-4">Filter</h3>
+                            <form class="filter">
+                                <input class="btn btn-square" type="reset" value="×" />
+                                <input class="btn" type="radio" name="filter-demo" aria-label="All" checked />
+                                <input class="btn" type="radio" name="filter-demo" aria-label="Photos" />
+                                <input class="btn" type="radio" name="filter-demo" aria-label="Videos" />
+                                <input class="btn" type="radio" name="filter-demo" aria-label="Documents" />
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- Drawer sidebar -->
+            <div class="drawer-side z-40">
+                <label for="drawer-toggle" class="drawer-overlay" aria-label="close sidebar"></label>
+                <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                    <li class="menu-title">DaisyUI Components</li>
+                    <li>
+                        <a href="#actions">Actions</a>
+                    </li>
+                    <li>
+                        <a href="#data-display">Data Display</a>
+                    </li>
+                    <li>
+                        <a href="#navigation">Navigation</a>
+                    </li>
+                    <li>
+                        <a href="#feedback">Feedback</a>
+                    </li>
+                    <li>
+                        <a href="#data-input">Data Input</a>
+                    </li>
+                    <li>
+                        <a href="#layout">Layout</a>
+                    </li>
+                    <li>
+                        <a href="#mockups">Mockups</a>
+                    </li>
+                    <li>
+                        <a href="#effects">Effects</a>
+                    </li>
+                    <li>
+                        <a href="#utilities">Utilities</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- JavaScript for interactive components -->
+        <script>
+        // Countdown demo
+        function updateCountdown() {
+            const countdowns = document.querySelectorAll('.countdown span');
+            countdowns.forEach(span => {
+                let value = parseInt(span.style.getPropertyValue('--value'));
+                if (value > 0) {
+                    value--;
+                    span.style.setProperty('--value', value);
+                    span.textContent = value;
+                }
+            });
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Theme persistence
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Get the theme selector specifically (first select element on page)
+        const themeSelector = document.querySelector('.fixed.top-4.right-4 select');
+        if (themeSelector) {
+            themeSelector.value = savedTheme;
+            
+            // Add event listener to save theme changes
+            themeSelector.addEventListener('change', (e) => {
+                const newTheme = e.target.value;
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+        </script>
+    </body>
+</html>
