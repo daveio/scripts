@@ -11,6 +11,7 @@ This tool provides a safe and efficient way to empty any S3-compatible bucket wi
 """
 
 import os
+import shutil
 import signal
 import sys
 import time
@@ -19,6 +20,8 @@ from typing import List, Optional, Tuple
 
 import boto3
 import click
+import colorama
+import pyfiglet
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from rich import box
@@ -34,9 +37,13 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 from rich.table import Table
+from termcolor import colored
 
 # Load environment variables
 load_dotenv()
+
+# Initialize colorama for cross-platform color support
+colorama.init()
 
 # Initialize Rich console
 console = Console()
@@ -54,6 +61,65 @@ def signal_handler(sig, frame):
 
 # Register signal handler
 signal.signal(signal.SIGINT, signal_handler)
+
+
+def get_rainbow_colors():
+    """Get a list of rainbow colors for cycling through."""
+    return ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta']
+
+
+def apply_rainbow_effect(text: str, start_color_index: int = 0) -> str:
+    """Apply rainbow colors to text character by character."""
+    colors = get_rainbow_colors()
+    colored_chars = []
+    
+    color_index = start_color_index
+    for char in text:
+        if char.strip():  # Only color non-whitespace characters
+            colored_chars.append(colored(char, colors[color_index % len(colors)]))
+            color_index += 1
+        else:
+            colored_chars.append(char)
+    
+    return ''.join(colored_chars)
+
+
+def clear_screen():
+    """Clear the terminal screen."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def hide_cursor():
+    """Hide the terminal cursor."""
+    print('\033[?25l', end='')
+
+
+def show_cursor():
+    """Show the terminal cursor."""
+    print('\033[?25h', end='')
+
+
+def get_terminal_size():
+    """Get terminal size (width, height)."""
+    try:
+        return shutil.get_terminal_size()
+    except (OSError, ValueError):
+        return os.terminal_size([80, 24])  # fallback
+
+
+def center_text(text: str, width: int) -> str:
+    """Center text horizontally in the given width."""
+    lines = text.split('\n')
+    centered_lines = []
+    
+    for line in lines:
+        # Remove ANSI escape codes for length calculation
+        import re
+        clean_line = re.sub(r'\x1b\[[0-9;]*m', '', line)
+        padding = max(0, (width - len(clean_line)) // 2)
+        centered_lines.append(' ' * padding + line)
+    
+    return '\n'.join(centered_lines)
 
 
 class S3Deleter:
@@ -237,6 +303,86 @@ def create_config_table() -> Table:
     )
 
     return table
+
+
+def big_countdown_with_cancel(seconds: int) -> bool:
+    """Display a spectacular full-screen countdown with figlet and rainbow colors."""
+    terminal_size = get_terminal_size()
+    term_width = terminal_size.columns
+    term_height = terminal_size.lines
+    
+    # Store original terminal state
+    clear_screen()
+    hide_cursor()
+    
+    try:
+        for remaining in range(seconds, 0, -1):
+            if shutdown_requested:
+                return False
+            
+            # Clear screen and move to top
+            clear_screen()
+            
+            # Create figlet text for the number
+            figlet_text = pyfiglet.figlet_format(str(remaining), font='big')
+            
+            # Apply rainbow colors to the figlet text
+            # Use remaining as color offset for animation effect
+            colored_figlet = apply_rainbow_effect(figlet_text, start_color_index=remaining)
+            
+            # Center the figlet text horizontally
+            centered_figlet = center_text(colored_figlet, term_width)
+            
+            # Calculate vertical positioning
+            figlet_lines = len(figlet_text.split('\n'))
+            vertical_padding = max(0, (term_height - figlet_lines - 6) // 2)
+            
+            # Print vertical padding
+            print('\n' * vertical_padding)
+            
+            # Print the centered, colored figlet text
+            print(centered_figlet)
+            
+            # Add some spacing
+            print('\n' * 2)
+            
+            # Create and center the cancellation message
+            cancel_msg = "⏱️  Press Ctrl+C to cancel deletion  ⏱️"
+            cancel_msg_colored = apply_rainbow_effect(cancel_msg, start_color_index=remaining + 10)
+            centered_cancel = center_text(cancel_msg_colored, term_width)
+            print(centered_cancel)
+            
+            # Create and center the description
+            desc_msg = f"Starting S3 bucket deletion in {remaining} second{'s' if remaining != 1 else ''}..."
+            desc_msg_colored = colored(desc_msg, 'white', attrs=['bold'])
+            centered_desc = center_text(desc_msg_colored, term_width)
+            print('\n' + centered_desc)
+            
+            time.sleep(1)
+        
+        # Final flash effect
+        clear_screen()
+        go_text = pyfiglet.figlet_format("GO!", font='big')
+        colored_go = apply_rainbow_effect(go_text, start_color_index=0)
+        centered_go = center_text(colored_go, term_width)
+        
+        vertical_padding = max(0, (term_height - len(go_text.split('\n')) - 4) // 2)
+        print('\n' * vertical_padding)
+        print(centered_go)
+        
+        launch_msg = "🚀 LAUNCHING DELETION SEQUENCE! 🚀"
+        launch_colored = apply_rainbow_effect(launch_msg, start_color_index=5)
+        centered_launch = center_text(launch_colored, term_width)
+        print('\n' + centered_launch)
+        
+        time.sleep(1.5)
+        
+    finally:
+        # Restore terminal state
+        clear_screen()
+        show_cursor()
+    
+    return True
 
 
 def countdown_with_cancel(seconds: int) -> bool:
@@ -441,7 +587,7 @@ def main(yes: bool):
 
     # Countdown
     console.print("\n")
-    if not countdown_with_cancel(10):
+    if not big_countdown_with_cancel(10):
         console.print("[yellow]❌ Operation cancelled by user[/yellow]")
         sys.exit(0)
 

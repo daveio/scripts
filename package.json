@@ -2,9 +2,9 @@
   "name": "myriad",
   "private": true,
   "devDependencies": {
-    "@anthropic-ai/claude-code": "^1.0.29",
+    "@anthropic-ai/claude-code": "1.0.30",
     "@biomejs/biome": "^2.0.0",
-    "@openai/codex": "^0.1.2505172129",
+    "@openai/codex": "0.1.2505291658",
     "@trunkio/launcher": "^1.3.4",
     "@types/bun": "^1.2.16",
     "@types/js-yaml": "^4.0.9",
