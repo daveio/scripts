@@ -15,18 +15,14 @@ import signal
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
 from typing import List, Optional, Tuple
 
 import boto3
 import click
-from botocore.exceptions import BotoCoreError, ClientError
+from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from rich import box
-from rich.align import Align
 from rich.console import Console
-from rich.layout import Layout
-from rich.live import Live
 from rich.panel import Panel
 from rich.progress import (
     BarColumn,
@@ -464,7 +460,7 @@ def main(yes: bool):
     # Display errors if any
     if results["errors"]:
         console.print("\n[red]❌ Errors encountered:[/red]")
-        for i, error in enumerate(results["errors"][:10]):  # Show first 10 errors
+        for _i, error in enumerate(results["errors"][:10]):  # Show first 10 errors
             console.print(f"  • {error}")
         if len(results["errors"]) > 10:
             console.print(
@@ -478,7 +474,7 @@ def main(yes: bool):
             console.print(f"[green]✅ Bucket '{bucket_name}' is now empty![/green]")
         else:
             console.print(
-                f"[yellow]⚠️  Bucket may still contain objects. Please verify manually.[/yellow]"
+                "[yellow]⚠️  Bucket may still contain objects. Please verify manually.[/yellow]"ow]"
             )
 
     # Final status

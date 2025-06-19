@@ -17,6 +17,7 @@ A powerful dependency manager that updates packages across multiple repositories
 ## 📦 Installation
 
 The script is already installed at:
+
 ```bash
 /Users/dave/src/github.com/daveio/myriad/typescript/bump/
 ```
@@ -67,43 +68,50 @@ bump --unsafe
 
 ## 🎛️ Options
 
-| Option | Description |
-|--------|-------------|
-| `--dry-run` | Make no changes, just print what would be updated |
-| `--unsafe` | Override version rules to bump all version levels to latest |
-| `--no-pull` | Skip git fetch and pull operations |
-| `--no-install` | Skip dependency installation/update |
-| `--no-commit` | Skip git commit step |
-| `--no-push` | Skip git push step |
-| `[repo]` | Target a specific repository |
+| Option         | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `--dry-run`    | Make no changes, just print what would be updated           |
+| `--unsafe`     | Override version rules to bump all version levels to latest |
+| `--no-pull`    | Skip git fetch and pull operations                          |
+| `--no-install` | Skip dependency installation/update                         |
+| `--no-commit`  | Skip git commit step                                        |
+| `--no-push`    | Skip git push step                                          |
+| `[repo]`       | Target a specific repository                                |
 
 ## ⚙️ How It Works
 
 1. **Repository Discovery**
+
    - Find all git repositories under `/Users/dave/src/github.com/daveio/`
    - Or focus on a specific repository provided as an argument
 
 2. **Git Operations**
+
    - Fetch all branches, tags, and prune
    - Pull with rebase
 
 3. **Dependency Reading**
+
    - Parse dependency files based on language
    - Extract dependency names and versions
 
 4. **Update Check**
+
    - Query package manager APIs for latest versions
    - Determine update type (patch, minor, major)
 
 5. **Apply Updates**
+
    - Update files with new versions based on update rules
    - Respect original file formatting
 
 6. **Update Lockfiles**
+
    - Run appropriate package manager commands
    - Ensure dependencies are properly locked
 
 7. **Commit & Push**
+
    - Add all changes
    - Commit using OpenCommit
    - Push to remote
@@ -114,11 +122,11 @@ bump --unsafe
 
 ## 📄 Supported File Types
 
-| Language | File Types |
-|----------|------------|
-| JavaScript/TypeScript | `package.json` |
-| Python | `pyproject.toml` |
-| Ruby | `Gemfile`, `*.gemspec` |
+| Language              | File Types             |
+| --------------------- | ---------------------- |
+| JavaScript/TypeScript | `package.json`         |
+| Python                | `pyproject.toml`       |
+| Ruby                  | `Gemfile`, `*.gemspec` |
 
 ## 🔮 Limitations & Future Improvements
 
@@ -135,4 +143,3 @@ bump --unsafe
 ## 📝 License
 
 MIT
-

@@ -29,18 +29,18 @@ docker run \
 
 The `-v` flags in the `docker run` command map directories from your host machine into the container. This is crucial for persistent data storage and configuration:
 
--  `hathCache:/hath/cache`: Stores cached data for Hentai@Home.
--  `hathData:/hath/data`: Contains essential data files for the application.
--  `hathDownload:/hath/download`: Used for downloaded content.
--  `hathLog:/hath/log`: Stores application logs.
--  `hathTmp:/hath/tmp`: Used for temporary files.
+- `hathCache:/hath/cache`: Stores cached data for Hentai@Home.
+- `hathData:/hath/data`: Contains essential data files for the application.
+- `hathDownload:/hath/download`: Used for downloaded content.
+- `hathLog:/hath/log`: Stores application logs.
+- `hathTmp:/hath/tmp`: Used for temporary files.
 
 You can replace `hathCache`, `hathData`, etc., with specific paths on your host system if you prefer named volumes over Docker-managed volumes (e.g., `/path/on/your/host/cache:/hath/cache`).
 
 ### Client Credentials
 
--  `HATH_CLIENT_ID`: Your personal Hentai@Home client ID.
--  `HATH_CLIENT_KEY`: Your personal Hentai@Home client key.
+- `HATH_CLIENT_ID`: Your personal Hentai@Home client ID.
+- `HATH_CLIENT_KEY`: Your personal Hentai@Home client key.
 
 These credentials are required for the application to connect to the Hentai@Home network. You should obtain these from your Hentai@Home account/settings.
 
@@ -50,24 +50,27 @@ If bridge neteworking doesn't work on your Docker host for some reason, try `--n
 
 The Hentai@Home Docker image uses several environment variables to customize its operation. These are passed using the `-e` flag in the `docker run` command.
 
--  `HATH_CLIENT_ID=YOUR_HATH_CLIENT_ID`
-   -  **Purpose:** Your personal Hentai@Home client ID.
-   -  **Required:** Yes.
-   -  **Details:** Obtain this from your Hentai@Home account settings.
+- `HATH_CLIENT_ID=YOUR_HATH_CLIENT_ID`
 
--  `HATH_CLIENT_KEY=YOUR_HATH_CLIENT_KEY`
-   -  **Purpose:** Your personal Hentai@Home client key.
-   -  **Required:** Yes.
-   -  **Details:** Obtain this from your Hentai@Home account settings.
+  - **Purpose:** Your personal Hentai@Home client ID.
+  - **Required:** Yes.
+  - **Details:** Obtain this from your Hentai@Home account settings.
 
--  `UMASK=000`
-   -  **Purpose:** Sets the umask for files created by the application within the container. A value of `000` is permissive; adjust as needed for your security requirements (e.g., `022`).
-   -  **Default:** The example shows `000`. The application's default might vary if not set.
+- `HATH_CLIENT_KEY=YOUR_HATH_CLIENT_KEY`
 
--  `TZ=Europe/London`
-   -  **Purpose:** Sets the timezone for the container.
-   -  **Default:** The example shows `Europe/London`.
-   -  **Details:** Use a valid TZ database name (e.g., `America/New_York`, `Etc/UTC`).
+  - **Purpose:** Your personal Hentai@Home client key.
+  - **Required:** Yes.
+  - **Details:** Obtain this from your Hentai@Home account settings.
+
+- `UMASK=000`
+
+  - **Purpose:** Sets the umask for files created by the application within the container. A value of `000` is permissive; adjust as needed for your security requirements (e.g., `022`).
+  - **Default:** The example shows `000`. The application's default might vary if not set.
+
+- `TZ=Europe/London`
+  - **Purpose:** Sets the timezone for the container.
+  - **Default:** The example shows `Europe/London`.
+  - **Details:** Use a valid TZ database name (e.g., `America/New_York`, `Etc/UTC`).
 
 ## Building from Source
 
@@ -100,6 +103,6 @@ For more details on the build process, see the [Dockerfile](Dockerfile).
 
 This project aims to provide secure and verifiable Docker images.
 
--  **GHCR Publishing:** Images are published to the GitHub Container Registry (GHCR) at `ghcr.io/daveio/hath`.
--  **Automated Builds:** Images are built automatically via GitHub Actions. You can inspect the [build workflow](.github/workflows/container.yaml).
--  **SLSA Provenance and SBOM:** The build process generates SLSA Level 3 provenance attestations and SBOM (Software Bill of Materials) attestations. These provide verifiable information about the build process and the components included in the image, enhancing supply chain security. These attestations are attached to the images pushed to GHCR.
+- **GHCR Publishing:** Images are published to the GitHub Container Registry (GHCR) at `ghcr.io/daveio/hath`.
+- **Automated Builds:** Images are built automatically via GitHub Actions. You can inspect the [build workflow](.github/workflows/container.yaml).
+- **SLSA Provenance and SBOM:** The build process generates SLSA Level 3 provenance attestations and SBOM (Software Bill of Materials) attestations. These provide verifiable information about the build process and the components included in the image, enhancing supply chain security. These attestations are attached to the images pushed to GHCR.

@@ -5,11 +5,13 @@
 The geoipupdate tool uses two main endpoints:
 
 ### 1. Metadata Endpoint
+
 ```http
 GET https://updates.maxmind.com/geoip/updates/metadata?edition_id={EDITION_ID}
 ```
 
 ### 2. Download Endpoint
+
 ```http
 GET https://updates.maxmind.com/geoip/databases/{EDITION_ID}/download?date={DATE}&suffix=tar.gz
 ```
@@ -17,12 +19,14 @@ GET https://updates.maxmind.com/geoip/databases/{EDITION_ID}/download?date={DATE
 ## Required Authentication
 
 All requests require HTTP Basic Authentication:
+
 - Username: Your MaxMind Account ID (as string)
 - Password: Your License Key
 
 ## cURL Commands
 
 ### Step 1: Get Database Metadata
+
 ```bash
 curl -u "YOUR_ACCOUNT_ID:YOUR_LICENSE_KEY" \
   -H "User-Agent: geoipupdate/7.1.0" \
@@ -30,6 +34,7 @@ curl -u "YOUR_ACCOUNT_ID:YOUR_LICENSE_KEY" \
 ```
 
 This returns JSON with the database date and MD5 hash:
+
 ```json
 {
   "databases": [
@@ -43,7 +48,9 @@ This returns JSON with the database date and MD5 hash:
 ```
 
 ### Step 2: Download the Database
+
 Using the date from the metadata response (with dashes removed):
+
 ```bash
 curl -u "YOUR_ACCOUNT_ID:YOUR_LICENSE_KEY" \
   -H "User-Agent: geoipupdate/7.1.0" \
@@ -58,10 +65,11 @@ curl -u "YOUR_ACCOUNT_ID:YOUR_LICENSE_KEY" \
 2. **Date Format**: The date in the download URL must have dashes removed (YYYYMMDD format).
 
 3. **Available Editions**: Common edition IDs include:
-  - `GeoLite2-City`
-  - `GeoLite2-Country`
-  - `GeoIP2-City`
-  - `GeoIP2-Country`
+
+- `GeoLite2-City`
+- `GeoLite2-Country`
+- `GeoIP2-City`
+- `GeoIP2-Country`
 
 4. **CDN Redirect**: The download endpoint redirects to R2 presigned URLs on CloudFlare, so your system needs to reach `mm-prod-geoip-databases.a2649acb697e2c09b632799562c076f2.r2.cloudflarestorage.com`.
 

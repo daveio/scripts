@@ -63,6 +63,7 @@ This is a simple Go application with a straightforward architecture:
 2. **Data collection**: `GetUpdatedValues()` fetches data from the AAISP CHAOS API using credentials from environment variables.
 
 3. **Metrics exposition**: The following metrics are exposed:
+
    - `upstream_sync_rate`: Upload sync rate in bits/sec
    - `downstream_sync_rate`: Download sync rate in bits/sec
    - `downstream_rate_adjusted`: Adjusted downstream rate after rate limiting in bits/sec

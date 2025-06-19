@@ -1,6 +1,6 @@
 # Myriad 🌈
 
-*One repository to rule them all, one repository to find them...*
+_One repository to rule them all, one repository to find them..._
 
 Welcome to my delightfully chaotic software development playground where I've collected everything from DNS analysis tools to network traffic monitors, because apparently I have commitment issues with single-purpose repositories.
 
@@ -44,24 +44,28 @@ graph TB
 ## The Greatest Hits 🎵
 
 ### Web Applications That Actually Work
+
 - **[dnstool](projects/dnstool/)** - DNS analysis that won't make you cry (unlike bind9 config files)
 - **[keycheck](projects/keycheck/)** - Check if your credentials have been compromised (spoiler: they probably have)
 - **[ticket-explorer](projects/ticket-explorer/)** - Ticket management with a synthwave aesthetic because the 80s never died
 - **[movietool](projects/movietool/)** - Find duplicate movies before your storage costs spiral into existential dread
 
 ### System Tools for the Masochistic
+
 - **[aaisp-exporter](projects/aaisp-exporter/)** - Prometheus exporter for AAISP metrics (because someone has to monitor the monitors)
 - **[netflow](projects/netflow/)** - Network traffic analysis that's somehow more entertaining than watching paint dry
 - **[envhunter](projects/envhunter/)** - Ruby gem that finds `.env` files with secrets in the wild (terrifyingly effective)
 - **[lsr](projects/lsr/)** - Python reconnaissance tool for when you need to know **everything**
 
 ### Development Tools for the Perpetually Unsatisfied
+
 - **[alt](projects/alt/)** - Raycast extension for AI-powered alt text (accessibility with a side of automation)
 - **[bump](projects/bump/)** - Version bumping that doesn't require a PhD in semantic versioning
 - **[mcp](projects/mcp/)** - Model Context Protocol processor because AI needs more context, apparently
 - **[rails-template](projects/rails-template/)** - Rails 8 template with more opinions than a Twitter thread
 
 ### Infrastructure & Configs
+
 - **[mikrotik](projects/mikrotik/)** - RouterOS configurations that might not destroy your network
 - **[webdummy](projects/webdummy/)** - HTTP test server for when nginx is being dramatic
 
@@ -70,6 +74,7 @@ graph TB
 Because I believe in using the right tool for the job (and sometimes the wrong tool for the entertainment value):
 
 **Primary Arsenal:**
+
 - **Bun** (1.2.15) - JavaScript runtime that's actually fast
 - **TypeScript** (5.8.3) - JavaScript with types and feelings
 - **Python** (3.13.4) - For when you need something that just works
@@ -77,12 +82,14 @@ Because I believe in using the right tool for the job (and sometimes the wrong t
 - **Ruby** (3.4.3) - Because elegance never goes out of style
 
 **Quality Assurance Theatre:**
+
 - **mise** - Tool version management that doesn't hate you
 - **Trunk** - Code quality platform (the bouncer of the software world)
 - **Biome** - Formatting and linting at the speed of light
 - **Claude Code** - AI pair programming (my rubber duck got an upgrade)
 
 **Deployment Destinations:**
+
 - **Cloudflare Workers** - Serverless that actually scales
 - **Vercel** - For when you want deployment to be suspiciously easy
 - **Docker** - Containerization for the commitment-phobic
@@ -90,13 +97,16 @@ Because I believe in using the right tool for the job (and sometimes the wrong t
 ## Getting Started (AKA "What Have I Gotten Myself Into?") 🚀
 
 ### Prerequisites
+
 You'll need to be comfortable with:
+
 - Multiple programming languages (polyglot or bust)
 - The existential dread of dependency management
 - TypeScript's passive-aggressive error messages
 - The fact that "it works on my machine" is not a deployment strategy
 
 ### Installation
+
 ```bash
 # Clone the chaos
 git clone https://github.com/daveio/myriad.git
@@ -127,6 +137,7 @@ bun run typecheck    # Appease the TypeScript gods
 ```
 
 **Quality Verification Ritual:**
+
 ```bash
 # The holy trinity of "does it work?"
 bun run lint && bun run typecheck && bun run test
@@ -145,6 +156,7 @@ The `baseline/` directory contains my opinionated collection of development temp
 - **Security setups** that assume everyone is trying to hack you (because they are)
 
 **Common Baseline Operations:**
+
 ```bash
 # Pin GitHub Actions to SHAs across all repos (security theater at its finest)
 bun run baseline/scripts/pin.ts
@@ -176,6 +188,7 @@ The `research/` directory is where I document my journey through the seven circl
 The `images/` directory contains logos, icons, and other visual assets organized with the obsessive-compulsive precision of someone who's tired of hunting for that one PNG file.
 
 **Structure:**
+
 ```plaintext
 images/
 ├── projects/        # Project-specific branding
@@ -190,11 +203,13 @@ images/
 Because manual work is for people who have given up on life:
 
 ### GitHub Actions Security Theater
+
 - **Automatic SHA pinning** - Because version tags are for optimists
 - **Dependabot grouping** - Turning dependency update chaos into manageable inconvenience
 - **Security scanning** - Assuming the worst about everyone and everything
 
 ### Development Environment Automation
+
 - **Docker Compose generation** - Templates with environment substitution
 - **Tool version management** - mise keeps everything in line
 - **Quality verification** - Automated checks because humans are fallible
@@ -212,6 +227,7 @@ Want to contribute? That's... unexpected but welcome! Here's how to avoid making
 ### Development Philosophy
 
 This repository follows these principles:
+
 - **Quality over speed** - We're building for the long haul, not the next sprint
 - **Real data only** - Mock data is the enemy of debugging
 - **Test everything** - If it has logic, it has tests
@@ -238,7 +254,7 @@ This monorepo represents years of accumulated digital detritus, polished into so
 
 Whether you're here to use a tool, steal some code, or just marvel at the audacity of putting this many different technologies in one repository, welcome to the madness. Try not to break anything too important.
 
-*"The best code is code that works, the second best code is code that fails fast and loudly."* - Some developer, probably after debugging mock data for 6 hours
+_"The best code is code that works, the second best code is code that fails fast and loudly."_ - Some developer, probably after debugging mock data for 6 hours
 
 ---
 

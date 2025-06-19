@@ -31,12 +31,14 @@ A comprehensive JSON Schema that validates MCP configuration files:
 A full-featured TypeScript utility built with the Commander.js framework:
 
 #### Core Features
+
 - **Multi-format support**: Reads JSON, JSON5, YAML, and Goose configuration formats
 - **Format normalization**: Automatically converts different input formats to canonical structure
 - **Pretty output**: Uses boxen, chalk, and ora for professional CLI experience
 - **Comprehensive logging**: Debug, info, warning, error, and spinner-based feedback
 
 #### Commands Implemented
+
 - `mcp list` - Display all configured MCP servers with detailed information
 - `mcp validate` - Validate configuration file syntax and structure
 - `mcp export` - Export configurations for different clients (framework ready)
@@ -45,6 +47,7 @@ A full-featured TypeScript utility built with the Commander.js framework:
 - `mcp enable/disable` - Toggle server states (stubbed for future implementation)
 
 #### Global Options
+
 - `--dry-run` - Preview changes without execution
 - `--verbose` - Enable debug output
 - `--quiet` - Suppress non-error output
@@ -109,27 +112,35 @@ bun run mcp list --quiet
 ## Server Categories Included
 
 ### Development Tools
+
 - Claude Code, Docker, Git, GitHub, VS Code
 
-### Cloudflare Services  
+### Cloudflare Services
+
 - Documentation, Observability, Browser Rendering, Workers Bindings, Container, AI Gateway, Audit Logs, AutoRAG, DNS Analytics, Radar
 
 ### Documentation & Context
+
 - Context7 documentation database
 
 ### Web & Content Tools
+
 - DuckDuckGo search, Fetch, PDF Reader
 
 ### Memory & Storage
+
 - Shared Memory, Pieces long-term memory
 
 ### Productivity Tools
+
 - Notion, Linear project management
 
 ### Development Monitoring
+
 - Console Ninja
 
 ### Music Production
+
 - Ableton Live integration
 
 ## Code Quality
@@ -162,7 +173,7 @@ The foundation is complete and ready for:
 ## Standards Compliance
 
 - Follows JSON Schema Draft-07 specification
-- Compatible with YAML 1.2 specification  
+- Compatible with YAML 1.2 specification
 - Adheres to semantic versioning for configuration schema
 - Implements Node.js import protocols and best practices
 - Meets all project linting and formatting requirements (Biome, TypeScript)

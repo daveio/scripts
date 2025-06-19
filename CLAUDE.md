@@ -8,6 +8,7 @@
 These rules are REQUIRED for all repositories and override all other considerations.
 
 ### 1️⃣ **QUALITY OVER SPEED**
+
 - Unlimited time for correct implementations
 - Unlimited AI calls for research/verification
 - Most robust solution, not quickest
@@ -15,6 +16,7 @@ These rules are REQUIRED for all repositories and override all other considerati
 - FORBIDDEN: "good enough", hacks, shortcuts, API call concerns
 
 ### 2️⃣ **MANDATORY TESTING**
+
 - All logic/side effects MUST have tests
 - NO EXCEPTIONS - function written = test written
 - Cover edge cases and error conditions
@@ -23,36 +25,45 @@ These rules are REQUIRED for all repositories and override all other considerati
 - SKIP: trivial getters/setters, frontend components, pure config objects
 
 ### 3️⃣ **SYNCHRONIZED DOCUMENTATION**
+
 After ANY significant change, update BOTH:
+
 - `CLAUDE.md` - Technical reference for AI agents
 - `README.md` - User-friendly guide
 - TRIGGERS: API changes, features, architecture, auth, config, breaking changes
 
 ### 4️⃣ **QUALITY VERIFICATION WORKFLOW**
+
 MANDATORY SEQUENCE:
+
 1. PRIMARY: `bun run lint`, `bun run typecheck`, `bun run test`
 2. FULL BUILD: `bun run check` (only after primary passes)
+
 - Fix immediately if fails
 - Add specific TODOs if must defer
 
 ### 5️⃣ **COMMIT HYGIENE**
+
 - WHEN: after features/bugs/refactoring, before new work
 - METHOD: `git add -A . && oco --fgm --yes` or `git add -A . && git commit -am "[emoji] [description]"`
 - NEVER COMMIT: failing tests, TS errors, lint violations, broken builds
 
 ### 6️⃣ **ZERO TOLERANCE MOCK DATA**
+
 - PRINCIPLE: Real service calls only, crash loudly on failure
 - FORBIDDEN: Math.random(), hardcoded metrics, mock data, demo modes, fallback masking
 - REQUIRED: Real service calls, explicit errors, proper HTTP codes, visible crashes
 - EXCEPTION: Test files only
 
 ### 7️⃣ **NO INCOMPLETE IMPLEMENTATIONS**
+
 - Nothing "for later" without explicit marking
 - FORBIDDEN: Empty functions, generic errors, silent failures
 - REQUIRED: `// TODO: [specific description]` for all incomplete work
 - PRINCIPLE: Crash visibly vs fail silently
 
 ### 8️⃣ **PRE-PRODUCTION BREAKING CHANGES** (Active Until Production)
+
 - Break freely to improve code quality
 - FORBIDDEN: migrations, backwards compatibility
 - REQUIRED: Document changes, list breakage, explain improvements
@@ -113,8 +124,8 @@ Optimize DNS performance and debug issues based on current set up.
 
 Get up to date reference information from Cloudflare Developer Documentation.
 
-  - Consult this MCP whenever you need to interact with Cloudflare or develop for a Cloudflare platform.
-  - It can both answer questions and provide best practices, so check it early and often.
+- Consult this MCP whenever you need to interact with Cloudflare or develop for a Cloudflare platform.
+- It can both answer questions and provide best practices, so check it early and often.
 
 ### `cloudflare-observability` / `cloudflareObservability` / `cloudflareobservability`
 
@@ -166,7 +177,6 @@ Web search and page fetching capabilities. Often fails due to rate limiting.
 
 Web content fetching and processing.
 
-
 `fetch` - Fetches a URL from the internet and extracts its contents as markdown.
 
 - url (string, required): URL to fetch
@@ -174,18 +184,15 @@ Web content fetching and processing.
 - start_index (integer, optional): Start content from this character index (default: 0)
 - raw (booleanå, optional): Get raw content without markdown conversion (default: false)
 
-
 ### `filesystem`
 
 Filesystem utilities, including file manipulation, editing, and searching.
-
 
 - Read/write files
 - Create/list/delete directories
 - Move files/directories
 - Search files
 - Get file metadata
-
 
 ### `git`
 
@@ -239,7 +246,7 @@ Access the Pieces long-term memory engine. It monitors my computer use and forms
 
 You can ask `pieces` about what I've been doing and it will answer with context. Due to my memory issues, Pieces is likely to remember things better than I can.
 
-Prefer `shared-memory` / `sharedMemory` / `sharedmemory` when writing information, but ask  `pieces` questions as much as you like.
+Prefer `shared-memory` / `sharedMemory` / `sharedmemory` when writing information, but ask `pieces` questions as much as you like.
 
 Writing to Pieces can be difficult due to the expected JSON format.
 
@@ -254,7 +261,6 @@ Provides tools for dynamic and reflective problem-solving through a structured t
 - Branch into alternative paths of reasoning
 - Adjust the total number of thoughts dynamically
 - Generate and verify solution hypotheses
-
 
 ### `shared-memory` / `sharedMemory` / `sharedmemory`
 
@@ -323,7 +329,9 @@ graph TB
 ## 📁 REPOSITORY STRUCTURE
 
 ### `/projects/` - Active Development
+
 **Web Applications**:
+
 - `dnstool/` - Next.js DNS analysis (Cloudflare)
 - `keycheck/` - Next.js security tool (Vercel)
 - `ticket-explorer/` - React ticket management (synthwave UI)
@@ -331,22 +339,26 @@ graph TB
 - `neocities/` - Static site generation
 
 **System Tools**:
+
 - `aaisp-exporter/` - Go Prometheus exporter
 - `netflow/` - Docker ntopng traffic analysis
 - `envhunter/` - Ruby env discovery gem
 - `lsr/` - Python security reconnaissance
 
 **Development Tools**:
+
 - `alt/` - Raycast AI alt-text extension
 - `bump/` - TypeScript version bumping
 - `mcp/` - Model Context Protocol processor
 - `rails-template/` - Rails 8 application template
 
 **Infrastructure**:
+
 - `mikrotik/` - RouterOS configs
 - `webdummy/` - HTTP test server
 
 ### `/baseline/` - Templates & Standards
+
 - Complete project templates with standardized configs
 - Cursor rules for 100+ frameworks
 - GitHub Actions workflows, Dependabot configs
@@ -355,6 +367,7 @@ graph TB
 - PostgreSQL development environment
 
 ### `/bin/` - Utility Scripts
+
 - `netflow.ts` - Docker Compose processor
 - `pin.ts` - GitHub Actions SHA pinning
 - `dependagroup.ts` - Dependabot grouping
@@ -362,31 +375,38 @@ graph TB
 - `delete-workers-deployments.js` - Cloudflare cleanup
 
 ### `/research/` - Knowledge Repository
+
 - Cloudflare platform guides
 - JavaScript ecosystem research
 - Network analysis documentation
 - Security research
 
 ### `/boneyard/` - Archived Projects
+
 Legacy tools restored on request via GitHub Issues
 
 ### `/submodules/` - External Resources
+
 - Rust learning materials
 - Cursor rules collection
 - JSON Schema store
 
 ### `/images/` - Asset Management
+
 Project assets in multiple formats (JPEG/PNG/square)
 
 ## 🔧 DEVELOPMENT WORKFLOWS
 
 ### Project Commands
+
 **Root Level**:
+
 ```bash
 bun run netflow          # Docker Compose generator
 ```
 
 **Individual Projects**: Each has own package.json with:
+
 ```bash
 bun run dev              # Development server
 bun run build            # Production build
@@ -396,6 +416,7 @@ bun run typecheck        # Type checking
 ```
 
 ### Quality Verification
+
 ```bash
 # Individual projects
 bun run lint && bun run typecheck && bun run test
@@ -410,11 +431,13 @@ bun run scripts/maint          # Full maintenance
 ## 📋 PROJECT CONVENTIONS
 
 ### Naming
+
 - Directories: kebab-case
 - Files: kebab-case or camelCase (framework dependent)
 - KV keys: `colon:separated:lowercase:kebab-case`
 
 ### Technology Preferences
+
 - **JavaScript Runtime**: Bun over npm/yarn
 - **TypeScript**: TypeScript-first development
 - **React**: Next.js for applications
@@ -423,6 +446,7 @@ bun run scripts/maint          # Full maintenance
 - **Testing**: Vitest for unit tests
 
 ### Security
+
 - GitHub Actions pinned to SHAs
 - Dependabot grouping enabled
 - Code scanning (DevSkim, CodeQL)
@@ -431,6 +455,7 @@ bun run scripts/maint          # Full maintenance
 ## 🔍 REPOSITORY-SPECIFIC RULES
 
 ### Myriad Monorepo Conventions
+
 1. **Self-contained projects** - Each project has independent dependencies
 2. **Polyglot by design** - Use most appropriate technology per project
 3. **Consistent asset management** - Images follow naming conventions
@@ -438,21 +463,24 @@ bun run scripts/maint          # Full maintenance
 5. **Documentation dual-format** - Technical (CLAUDE.md) + Human (README.md)
 
 ### KV Storage (Cloudflare Projects)
+
 ```typescript
 // ✅ CORRECT
-await env.DATA.put("metrics:api:success", "42")
-await env.DATA.put("auth:session:user-123", "active")
+await env.DATA.put("metrics:api:success", "42");
+await env.DATA.put("auth:session:user-123", "active");
 
 // ❌ WRONG
-await env.DATA.put("metricsApiSuccess", "42")
+await env.DATA.put("metricsApiSuccess", "42");
 ```
 
 ### MCP Configuration
+
 - Template-based generation via `bin/mcp.ts`
 - Supports Claude Desktop, Goose, Zed
 - Configuration files in `projects/mcp/`
 
 ### Asset Organization
+
 ```mermaid
 graph LR
     A[images/] --> B[projects/]
@@ -470,16 +498,19 @@ graph LR
 ## 🚀 AUTOMATION SYSTEMS
 
 ### GitHub Actions Pinning
+
 - Bulk SHA pinning across repositories
 - GraphQL optimization for metadata fetching
 - Timestamped backups in `~/.actions-backups/`
 
 ### Dependency Management
+
 - Automated Dependabot grouping
 - Reduces PR noise via related updates
 - Security-first approach
 
 ### Development Environment
+
 - mise tool version management
 - Docker-based services (PostgreSQL, ntopng)
 - Standardized across all projects
@@ -487,12 +518,14 @@ graph LR
 ## 📊 METRICS & MONITORING
 
 ### Project Health
+
 - Test coverage requirements
 - Linting compliance
 - TypeScript strict mode
 - Security scanning results
 
 ### Performance
+
 - Build time optimization
 - Bundle size monitoring (where applicable)
 - Runtime performance tracking
@@ -500,11 +533,13 @@ graph LR
 ## 🔐 SECURITY POLICIES
 
 ### Supply Chain
+
 - GitHub Actions pinned to commit SHAs
 - Dependabot security updates enabled
 - Regular dependency auditing
 
 ### Code Quality
+
 - DevSkim security linting
 - CodeQL analysis
 - Trunk security checks

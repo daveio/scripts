@@ -44,22 +44,26 @@ Supports AWS S3, Cloudflare R2, MinIO, and any other S3-compatible storage provi
 ## Installation 🔧
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/swipe.git
 cd swipe
 ```
 
 2. Install dependencies using `uv`:
+
 ```bash
 uv sync
 ```
 
 Or install manually:
+
 ```bash
 pip install boto3 rich click python-dotenv
 ```
 
 3. Copy the example environment file:
+
 ```bash
 cp .env.example .env
 ```
@@ -67,6 +71,7 @@ cp .env.example .env
 4. Edit `.env` with your storage provider credentials:
 
 ### For Cloudflare R2:
+
 ```env
 S3_HOSTNAME=your-account-id.r2.cloudflarestorage.com
 S3_PROTOCOL=https
@@ -76,6 +81,7 @@ S3_BUCKET_NAME=your-bucket-name-here
 ```
 
 ### For AWS S3:
+
 ```env
 # Leave S3_HOSTNAME empty for AWS S3
 S3_PROTOCOL=https
@@ -85,6 +91,7 @@ S3_BUCKET_NAME=your-bucket-name-here
 ```
 
 ### For MinIO or other providers:
+
 ```env
 S3_HOSTNAME=your-minio-server.com:9000
 S3_PROTOCOL=https
@@ -98,6 +105,7 @@ S3_BUCKET_NAME=your-bucket-name-here
 ### Basic Usage
 
 Run the tool with confirmation prompts:
+
 ```bash
 uv run python -m swipe.main
 ```
@@ -105,16 +113,19 @@ uv run python -m swipe.main
 ### Skip Confirmation
 
 To skip the confirmation prompt (useful for automation):
+
 ```bash
 uv run python -m swipe.main --yes
 ```
 
 Or use the short flag:
+
 ```bash
 uv run python -m swipe.main -y
 ```
 
 ### Using the installed command (after installing):
+
 ```bash
 uv run swipe
 uv run swipe --yes
@@ -148,6 +159,7 @@ When you run the tool, you'll see:
 ## Architecture 🏗️
 
 The tool is built with:
+
 - **boto3**: AWS SDK for Python (works with all S3-compatible providers)
 - **rich**: Beautiful terminal formatting and progress bars
 - **click**: Command-line interface creation
@@ -166,19 +178,20 @@ The tool is built with:
 
 ### Environment Variables
 
-| Variable | Description | Required | Example |
-|----------|-------------|----------|---------|
-| `S3_HOSTNAME` | Storage provider hostname | No (AWS S3) / Yes (others) | `account.r2.cloudflarestorage.com` |
-| `S3_PROTOCOL` | Protocol to use | No (defaults to https) | `https` |
-| `S3_ACCESS_KEY_ID` | Access key ID | Yes | `your_access_key` |
-| `S3_SECRET_KEY` | Secret access key | Yes | `your_secret_key` |
-| `S3_BUCKET_NAME` | Target bucket name | Yes | `my-bucket` |
+| Variable           | Description               | Required                   | Example                            |
+| ------------------ | ------------------------- | -------------------------- | ---------------------------------- |
+| `S3_HOSTNAME`      | Storage provider hostname | No (AWS S3) / Yes (others) | `account.r2.cloudflarestorage.com` |
+| `S3_PROTOCOL`      | Protocol to use           | No (defaults to https)     | `https`                            |
+| `S3_ACCESS_KEY_ID` | Access key ID             | Yes                        | `your_access_key`                  |
+| `S3_SECRET_KEY`    | Secret access key         | Yes                        | `your_secret_key`                  |
+| `S3_BUCKET_NAME`   | Target bucket name        | Yes                        | `my-bucket`                        |
 
 **Note**: If `S3_HOSTNAME` is not provided, the tool will use AWS S3 as the default provider.
 
 ## Error Handling 🔧
 
 The tool handles various error scenarios:
+
 - Missing or invalid credentials
 - Bucket not found or access denied
 - Network connectivity issues
@@ -221,22 +234,26 @@ uv run python -m swipe.main
 ## Troubleshooting 🔍
 
 ### "Bucket not found" error
+
 - Verify the bucket name in your `.env` file
 - Ensure your credentials have access to the bucket
 - Check that you're using the correct hostname for your provider
 
 ### "Access denied" error
+
 - Verify your credentials have the necessary permissions:
   - List bucket contents
   - Delete objects
   - Access bucket metadata
 
 ### "Connection error" with custom endpoint
+
 - Verify the `S3_HOSTNAME` is correct for your provider
 - Check that `S3_PROTOCOL` matches your provider's requirements
 - Ensure the hostname includes the port if required (e.g., `localhost:9000`)
 
 ### Slow deletion speed
+
 - Check your network connection
 - Consider running closer to your storage provider (same region/datacenter)
 - Verify there are no rate limiting policies
@@ -244,15 +261,18 @@ uv run python -m swipe.main
 ## Provider-Specific Notes 📝
 
 ### Cloudflare R2
+
 - No region required (doesn't use regions)
 - Hostname format: `{account-id}.r2.cloudflarestorage.com`
 - Supports all S3 API operations used by this tool
 
 ### MinIO
+
 - Include port in hostname if not using standard ports
 - Example: `localhost:9000` or `minio.example.com:9000`
 
 ### AWS S3
+
 - Leave `S3_HOSTNAME` empty to use default AWS endpoints
 - Regions are handled automatically by boto3
 

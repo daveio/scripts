@@ -8,13 +8,13 @@ metadata:
 
 transform:
   rootKey: "extensions"
-  
+
   serverFilter:
     enabledOnly: true
-  
+
   serverNameMapping:
     strategy: "singleWord"
-  
+
   propertyMappings:
     command: "cmd"
     args: "args"
@@ -24,16 +24,16 @@ transform:
     type: "type"
     env: "envs"
     name: "name"
-  
+
   staticProperties:
     bundled: null
     env_keys: []
-  
+
   conditionalProperties:
     - condition: "$.env"
       properties:
         env_keys: "{{extractEnvKeys}}"
-  
+
   globalProperties:
     GOOSE_MODE: "smart_approve"
     GOOSE_MODEL: "claude-sonnet-4-20250514"

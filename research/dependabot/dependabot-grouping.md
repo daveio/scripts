@@ -17,7 +17,7 @@ updates:
       # The nuclear option: combine ALL THE THINGS
       all-the-deps:
         patterns:
-          - "*"  # Warning: This might create a PR so large it achieves sentience
+          - "*" # Warning: This might create a PR so large it achieves sentience
 
       # Or be more sensible and group by type
       dev-dependencies:
@@ -37,11 +37,13 @@ The beauty of this approach is that Dependabot is smart enough to close all the 
 If you prefer command-line solutions (or GitHub's grouping doesn't quite scratch your itch), there's a GitHub CLI extension called `gh-combine-prs` that combines multiple PRs into one.
 
 Installation is straightforward:
+
 ```fish
 gh extension install rnorth/gh-combine-prs
 ```
 
 Then you can run:
+
 ```fish
 gh combine-prs --query "author:app/dependabot"
 ```

@@ -314,7 +314,7 @@ Nuxt 3 + Cloudflare Workers REST API platform. Migrated from simple Worker to en
 ## Deployment
 
 **Setup**: Create KV/D1/Analytics resources, configure `wrangler.jsonc`, set secrets
-**Environment**: `bun run deploy:env` - validates config, excludes API_DEV_* vars, requires CLOUDFLARE_API_TOKEN
+**Environment**: `bun run deploy:env` - validates config, excludes API*DEV*\* vars, requires CLOUDFLARE_API_TOKEN
 **Process**: `bun check` → `bun run deploy:env` → `bun run deploy` → monitor
 **Verification**: Test `/api/health` and run `bun run test:api --url production-url`
 

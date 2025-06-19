@@ -57,6 +57,7 @@ The container now fetches GeoIP databases during the build process:
 ### Available Databases
 
 The following databases are included:
+
 - `GeoLite2-City.mmdb` - City-level geolocation
 - `GeoLite2-Country.mmdb` - Country-level geolocation
 - `GeoLite2-ASN.mmdb` - Autonomous System Number data
@@ -148,6 +149,7 @@ Common build issues:
 ## License
 
 This project builds upon open-source components:
+
 - ntopng: GPL-3.0
 - nDPI: GPL-3.0
 - netflow2ng: Apache-2.0

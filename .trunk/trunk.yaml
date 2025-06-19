@@ -15,16 +15,37 @@ runtimes:
 lint:
   ignore:
     - linters:
-      - ALL
+        - prettier
       paths:
-      - submodules
+        - "**/*.html"
+        - "**/*.css"
+        - "**/*.js"
+        - "**/*.json"
+        - "**/*.jsonc"
+        - "**/*.jsx"
+        - "**/*.ts"
+        - "**/*.tsx"
+        - "**/*.cjs"
+        - "**/*.mjs"
+        - "**/*.cts"
+        - "**/*.mts"
     - linters:
-      - markdownlint-cli2
+        - ALL
       paths:
-      - research/roadman-dialect/ROADMAN-SLANG-DICTIONARY.md
-      - research/roadman-dialect/uk-roadman-slang-dictionary.md
+        - submodules
+        - demos
+        - boneyard
+        - code/cli
+        - code/docker
+        - code/plugins
+        - code/templates
+        - code/web
+    - linters:
+        - markdownlint-cli2
+      paths:
+        - research/roadman-dialect/ROADMAN-SLANG-DICTIONARY.md
+        - research/roadman-dialect/uk-roadman-slang-dictionary.md
   disabled:
-    - prettier
     - flake8
     - pyright
     - pylint
@@ -34,6 +55,7 @@ lint:
     - cspell
     - renovate
   enabled:
+    - prettier@3.5.3
     - trunk-toolbox@0.5.4
     - brakeman@5.4.0:
         packages:
@@ -47,16 +69,16 @@ lint:
     - biome@1.9.4
     - sourcery@1.37.0
     - isort@6.0.1
-    - semgrep@1.125.0
+    - semgrep@1.126.0
     - markdownlint-cli2@0.18.1
-    - ruff@0.11.13
+    - ruff@0.12.0
     - black@25.1.0
     - osv-scanner@2.0.3
     - actionlint@1.7.7
     - bandit@1.8.5
     - checkov@3.2.442
     - git-diff-check
-    - ruff@0.11.13
+    - ruff@0.12.0
     - shellcheck@0.10.0
     - shfmt@3.6.0
     - taplo@0.9.3

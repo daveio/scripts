@@ -8,21 +8,21 @@ metadata:
 
 transform:
   rootKey: "mcpServers"
-  
+
   serverFilter:
     enabledOnly: true
-  
+
   serverNameMapping:
     strategy: "camelCase"
-  
+
   propertyMappings:
     command: "command.path"
     args: "command.args"
     env: "command.env"
-  
+
   staticProperties:
     settings: {}
-  
+
   conditionalProperties: []
 
 postProcess:

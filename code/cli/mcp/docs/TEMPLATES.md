@@ -13,6 +13,7 @@ mcp.yaml (source) → Template (YAML/JSON) → Tool Config (JSON/YAML)
 ```
 
 The system consists of:
+
 - **Source Configuration** (`mcp.yaml`): Canonical MCP server definitions
 - **Template Definitions** (`mcp-templates/*.yaml`): Transformation rules
 - **Output Configurations**: Tool-specific generated files
@@ -37,20 +38,23 @@ metadata:
 The core transformation logic:
 
 #### Root Key
+
 ```yaml
 transform:
-  rootKey: "mcpServers"  # Root property name in output
+  rootKey: "mcpServers" # Root property name in output
 ```
 
 #### Server Filtering
+
 ```yaml
 serverFilter:
-  enabledOnly: true           # Only include enabled servers
-  include: ["server1", "server2"]  # Whitelist specific servers
-  exclude: ["server3"]        # Blacklist specific servers
+  enabledOnly: true # Only include enabled servers
+  include: ["server1", "server2"] # Whitelist specific servers
+  exclude: ["server3"] # Blacklist specific servers
 ```
 
 #### Server Name Mapping
+
 ```yaml
 serverNameMapping:
   strategy: "singleWord" | "camelCase" | "kebab-case" | "keep"
@@ -59,19 +63,21 @@ serverNameMapping:
 ```
 
 **Strategies:**
+
 - `singleWord`: Remove hyphens, underscores, spaces → `claudecode`, `cloudflarecontainer`
 - `camelCase`: First word lowercase, subsequent capitalized → `claudeCode`, `cloudflareContainer`
 - `kebab-case`: All lowercase with hyphens → `claude-code`, `cloudflare-container`
 - `keep`: Preserve original names unchanged
 
 #### Property Mappings
+
 Map input properties to output properties:
 
 ```yaml
 propertyMappings:
   # Simple mapping
   command: "cmd"
-  
+
   # Complex mapping with transformation
   command:
     path: "command.path"      # Nested output path
@@ -81,11 +87,13 @@ propertyMappings:
 ```
 
 Supported transforms:
+
 - `string`, `number`, `boolean`: Type coercion
 - `array`, `object`: Structure validation
 - `omit`: Exclude from output
 
 #### Static Properties
+
 Add fixed properties to all servers:
 
 ```yaml
@@ -96,11 +104,12 @@ staticProperties:
 ```
 
 #### Conditional Properties
+
 Add properties based on conditions:
 
 ```yaml
 conditionalProperties:
-  - condition: "$.env"        # JSONPath condition
+  - condition: "$.env" # JSONPath condition
     properties:
       env_keys: []
   - condition: "$.type == 'stdio'"
@@ -109,6 +118,7 @@ conditionalProperties:
 ```
 
 #### Global Properties
+
 Add properties at the root level:
 
 ```yaml
@@ -121,10 +131,10 @@ globalProperties:
 
 ```yaml
 postProcess:
-  removeEmptyObjects: true    # Remove empty {} objects
-  removeNullValues: true      # Remove null values
-  sortKeys: false            # Sort object keys alphabetically
-  customTransforms:          # Advanced transformations
+  removeEmptyObjects: true # Remove empty {} objects
+  removeNullValues: true # Remove null values
+  sortKeys: false # Sort object keys alphabetically
+  customTransforms: # Advanced transformations
     - name: "flatten-env"
       jsonPath: "$.*.env"
       operation: "transform"
@@ -166,12 +176,12 @@ metadata:
 
 transform:
   rootKey: "mcpServers"
-  
+
   propertyMappings:
     command: "command.path"
     args: "command.args"
     env: "command.env"
-  
+
   staticProperties:
     settings: {}
 ```
@@ -199,18 +209,18 @@ Goose requires single-word names and a specific structure:
 ```yaml
 transform:
   rootKey: "extensions"
-  
+
   serverNameMapping:
-    strategy: "singleWord"  # claude-code → claudecode
-  
+    strategy: "singleWord" # claude-code → claudecode
+
   propertyMappings:
     command: "cmd"
     env: "envs"
-  
+
   staticProperties:
     bundled: null
     env_keys: []
-  
+
   globalProperties:
     GOOSE_MODE: "smart_approve"
 ```
@@ -222,10 +232,10 @@ Claude Desktop uses camelCase names and a simpler structure:
 ```yaml
 transform:
   rootKey: "mcpServers"
-  
+
   serverNameMapping:
-    strategy: "camelCase"  # claude-code → claudeCode
-  
+    strategy: "camelCase" # claude-code → claudeCode
+
   propertyMappings:
     command: "command"
     args: "args"
@@ -380,14 +390,16 @@ conditionalOutputs:
 ### Common Issues
 
 **Missing Properties**: Check property mapping paths
+
 ```yaml
 # Wrong
 command: "cmd.path"
-# Right  
+# Right
 command: "command.path"
 ```
 
 **Name Conflicts**: Choose appropriate strategy or use prefix/suffix
+
 ```yaml
 serverNameMapping:
   strategy: "singleWord"
@@ -395,6 +407,7 @@ serverNameMapping:
 ```
 
 **Type Mismatches**: Use transform property
+
 ```yaml
 timeout:
   path: "timeout"
@@ -418,12 +431,14 @@ This template system provides a powerful, flexible way to maintain MCP configura
 The MCP Template system has been fully implemented and tested with the following components:
 
 #### Core System
+
 - **Template Processor** (`scripts/mcp-template-processor.ts`): Complete TypeScript implementation
 - **JSON Schema** (`mcp-templates/template.schema.json`): Comprehensive validation schema
 - **Template Definitions**: Working templates for Goose, Claude Desktop, and Zed
 - **Validation System** (`scripts/validate-mcp-templates.ts`): Automated testing and comparison
 
 #### Supported Features
+
 - ✅ **Server Filtering**: Include/exclude servers by name or enabled status
 - ✅ **Name Transformations**: camelCase, kebab-case, snake_case, custom mappings
 - ✅ **Property Mappings**: Simple and complex property transformations with dot notation
@@ -437,20 +452,23 @@ The MCP Template system has been fully implemented and tested with the following
 #### Generated Configurations
 
 **Goose Configuration** (`mcp-goose.yaml`):
+
 ```yaml
 GOOSE_MODE: smart_approve
 extensions:
-  claudecode:  # singleWord strategy
+  claudecode: # singleWord strategy
     cmd: /Users/dave/.local/share/mise/shims/bun
     env_keys: []
     bundled: null
 ```
 
 **Claude Desktop** (`mcp-claude-desktop.json`):
+
 ```json
 {
   "mcpServers": {
-    "claudeCode": {  // camelCase strategy
+    "claudeCode": {
+      // camelCase strategy
       "command": "/Users/dave/.local/share/mise/shims/bun",
       "args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"]
     }
@@ -459,10 +477,12 @@ extensions:
 ```
 
 **Zed Configuration** (`mcp-zed.json`):
+
 ```json
 {
   "mcpServers": {
-    "claudeCode": {  // camelCase strategy
+    "claudeCode": {
+      // camelCase strategy
       "command": {
         "path": "/Users/dave/.local/share/mise/shims/bun",
         "args": ["x", "@anthropic-ai/claude-code", "mcp", "serve"]
@@ -492,9 +512,10 @@ bun run mcp-validate-structural
 ### 📊 Validation Results
 
 The system successfully processes all templates:
+
 - ✅ **14 servers** filtered from 25 total (enabled only)
 - ✅ **Goose**: Perfect match with reference
-- ✅ **Zed**: Perfect match with reference  
+- ✅ **Zed**: Perfect match with reference
 - ⚠️ **Claude Desktop**: Includes additional enabled servers (expected behavior)
 
 ### 🔄 Workflow Integration

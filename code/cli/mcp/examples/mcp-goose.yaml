@@ -6,7 +6,7 @@ extensions:
     cmd: /Users/dave/.local/share/mise/shims/bun
     args:
       - x
-      - '@anthropic-ai/claude-code'
+      - "@anthropic-ai/claude-code"
       - mcp
       - serve
     description: Claude Code tools for development assistance
@@ -90,7 +90,7 @@ extensions:
     cmd: /Users/dave/.local/share/mise/shims/bun
     args:
       - x
-      - '@upstash/context7-mcp'
+      - "@upstash/context7-mcp"
     description: Documentation database and context search
     enabled: true
     timeout: 300
@@ -178,7 +178,7 @@ extensions:
     cmd: /Users/dave/.local/share/mise/shims/bun
     args:
       - x
-      - '@modelcontextprotocol/server-memory'
+      - "@modelcontextprotocol/server-memory"
     description: Persistent memory storage and retrieval
     enabled: true
     timeout: 300

@@ -65,7 +65,7 @@ class MIDIClockReceiver:
 def main(args=None):
     print("INFO:broadlink:Locating infrared transmitter. This may take a few attempts.")
     devices = []
-    while len(devices) < 1:
+    while not devices:
         print("INFO:broadlink:Running discovery with 10s timeout.")
         devices = bl_discover(timeout=10)
     print("INFO:broadlink:Transmitter found. Authenticating.")
